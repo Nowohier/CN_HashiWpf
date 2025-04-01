@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35828.75
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CN_HashiWpf", "CN_HashiWpf\CN_HashiWpf.csproj", "{E261B679-C699-4924-84CC-C378F28B343B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CN_HashiWpf.Test", "CN_HashiWpf.Test\CN_HashiWpf.Test.csproj", "{2502E7E1-41CE-45B0-BD0A-9616DCDE26DB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E261B679-C699-4924-84CC-C378F28B343B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E261B679-C699-4924-84CC-C378F28B343B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E261B679-C699-4924-84CC-C378F28B343B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E261B679-C699-4924-84CC-C378F28B343B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2502E7E1-41CE-45B0-BD0A-9616DCDE26DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2502E7E1-41CE-45B0-BD0A-9616DCDE26DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2502E7E1-41CE-45B0-BD0A-9616DCDE26DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2502E7E1-41CE-45B0-BD0A-9616DCDE26DB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {44AAC170-FFE4-48F9-AA74-BBE3AD5F8ECF}
+	EndGlobalSection
+EndGlobal
