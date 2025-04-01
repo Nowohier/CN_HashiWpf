@@ -1,19 +1,21 @@
-﻿using CNHashiWpf.Models.V3.LinearSolution;
+﻿using CNHashiLinearSolver.Models;
 using Google.OrTools.Sat;
 using System.Diagnostics;
 
-
-namespace CN_HashiWpf.Models.V3.LinearSolution
+namespace CNHashiLinearSolver
 {
-    public class V3LinearSolutionWithIterativ
+    /// <summary>
+    /// Represents a linear solution solver with iterative approach.
+    /// </summary>
+    public class LinearSolutionSolverWithIterativ
     {
         private char[][] fieldChars;
 
         public CpSolverStatus Solve(int[][] mainField)
         {
-            var nodes = new List<V3LinearIsland>();
-            var bridges = new List<V3LinearBridge>();
-            var delta = new List<V3LinearBridgePair>();
+            var islands = new List<Island>();
+            var bridges = new List<Bridge>();
+            var delta = new List<BridgePair>();
 
             var solver = new CpSolver();
             var model = new CpModel();
@@ -26,47 +28,47 @@ namespace CN_HashiWpf.Models.V3.LinearSolution
                 {
                     if (mainField[row][col] == 0) continue;
                     numberOfNodes++;
-                    nodes.Add(new V3LinearIsland(mainField[row][col], row, col, numberOfNodes - 1));
+                    islands.Add(new Island(mainField[row][col], row, col, numberOfNodes - 1));
                 }
             }
 
-            // Set node neighbors
-            foreach (var node in nodes)
+            // Set islands neighbors
+            foreach (var island in islands)
             {
-                node.SetAllNeighbors(mainField, nodes);
+                island.SetAllNeighbors(mainField, islands);
             }
 
-            // Set node lower and upper neighbors
-            foreach (var node in nodes)
+            // Set islands lower and upper neighbors
+            foreach (var island in islands)
             {
-                if (node.Up != null)
+                if (island.Up != null)
                 {
-                    node.LowerNeighbours.Add(node.Up);
+                    island.LowerNeighbors.Add(island.Up);
                 }
-                if (node.Left != null)
+                if (island.Left != null)
                 {
-                    node.LowerNeighbours.Add(node.Left);
+                    island.LowerNeighbors.Add(island.Left);
                 }
-                if (node.Right != null)
+                if (island.Right != null)
                 {
-                    node.UpNeighbours.Add(node.Right);
+                    island.UpNeighbors.Add(island.Right);
                 }
-                if (node.Down != null)
+                if (island.Down != null)
                 {
-                    node.UpNeighbours.Add(node.Down);
+                    island.UpNeighbors.Add(island.Down);
                 }
             }
 
             // Alle möglichen Kanten werden in bridges hinzugefügt
-            foreach (var node in nodes)
+            foreach (var island in islands)
             {
-                foreach (var nodelow in node.LowerNeighbours)
+                foreach (var islandLow in island.LowerNeighbors)
                 {
                     var checker = false;
-                    var edgeAdd = new V3LinearBridge(node, nodelow);
-                    foreach (var edge in bridges)
+                    var bridgeAdd = new Bridge(island, islandLow);
+                    foreach (var bridge in bridges)
                     {
-                        if (edge.Node1.X == edgeAdd.Node1.X && edge.Node1.Y == edgeAdd.Node1.Y && edge.Node2.X == edgeAdd.Node2.X && edge.Node2.Y == edgeAdd.Node2.Y)
+                        if (bridge.Island1.X == bridgeAdd.Island1.X && bridge.Island1.Y == bridgeAdd.Island1.Y && bridge.Island2.X == bridgeAdd.Island2.X && bridge.Island2.Y == bridgeAdd.Island2.Y)
                         {
                             checker = true;
                             break;
@@ -74,16 +76,16 @@ namespace CN_HashiWpf.Models.V3.LinearSolution
                     }
                     if (!checker)
                     {
-                        bridges.Add(edgeAdd);
+                        bridges.Add(bridgeAdd);
                     }
                 }
-                foreach (var nodeup in node.UpNeighbours)
+                foreach (var islandUp in island.UpNeighbors)
                 {
                     var checker = false;
-                    var edgeAdd = new V3LinearBridge(node, nodeup);
-                    foreach (var edge in bridges)
+                    var bridgeAdd = new Bridge(island, islandUp);
+                    foreach (var bridge in bridges)
                     {
-                        if (edge.Node1.X == edgeAdd.Node1.X && edge.Node1.Y == edgeAdd.Node1.Y && edge.Node2.X == edgeAdd.Node2.X && edge.Node2.Y == edgeAdd.Node2.Y)
+                        if (bridge.Island1.X == bridgeAdd.Island1.X && bridge.Island1.Y == bridgeAdd.Island1.Y && bridge.Island2.X == bridgeAdd.Island2.X && bridge.Island2.Y == bridgeAdd.Island2.Y)
                         {
                             checker = true;
                             break;
@@ -91,57 +93,57 @@ namespace CN_HashiWpf.Models.V3.LinearSolution
                     }
                     if (!checker)
                     {
-                        bridges.Add(edgeAdd);
+                        bridges.Add(bridgeAdd);
                     }
                 }
             }
 
             // Suchen von möglichen sich kreuzenden Kanten, diese Kantenpaare werden in delta gespeichert
-            foreach (var node in nodes)
+            foreach (var island in islands)
             {
                 // Kontrolliert für den Knoten nach unten
-                if (node.Down != null)
+                if (island.Down != null)
                 {
-                    var givenDown = node.DownBlocked(nodes);
+                    var potentialBlockingIslandsDown = island.DownBlocked(islands);
                     var checkDown = false;
-                    foreach (var nodedown in givenDown)
+                    foreach (var islandDown in potentialBlockingIslandsDown)
                     {
-                        foreach (var edge in delta)
+                        foreach (var bridgePair in delta)
                         {
-                            if ((edge.Edge1[0] == node.Number && edge.Edge1[1] == node.Down.Number
-                                    && edge.Edge2[0] == nodedown.Number && edge.Edge2[1] == nodedown.Right.Number)
-                                    || (edge.Edge2[0] == node.Number && edge.Edge2[1] == node.Down.Number
-                                    && edge.Edge1[0] == nodedown.Number && edge.Edge1[1] == nodedown.Right.Number))
+                            if ((bridgePair.Bridge1[0] == island.Number && bridgePair.Bridge1[1] == island.Down.Number
+                                    && bridgePair.Bridge2[0] == islandDown.Number && bridgePair.Bridge2[1] == islandDown.Right.Number)
+                                    || (bridgePair.Bridge2[0] == island.Number && bridgePair.Bridge2[1] == island.Down.Number
+                                    && bridgePair.Bridge1[0] == islandDown.Number && bridgePair.Bridge1[1] == islandDown.Right.Number))
                             {
                                 checkDown = true;
                             }
                         }
                         if (!checkDown)
                         {
-                            delta.Add(new V3LinearBridgePair(node.Number, node.Down.Number, nodedown.Number, nodedown.Right.Number));
+                            delta.Add(new BridgePair(island.Number, island.Down.Number, islandDown.Number, islandDown.Right.Number));
                         }
                     }
                 }
                 // Kontrolliert für den Knoten nach rechts
-                if (node.Right != null)
+                if (island.Right != null)
                 {
-                    var givenRight = node.RightBlocked(nodes);
+                    var potentialBlockingIslandsRight = island.RightBlocked(islands);
                     var checkRight = false;
-                    foreach (var noderight in givenRight)
+                    foreach (var islandRight in potentialBlockingIslandsRight)
                     {
-                        foreach (var edge in delta)
+                        foreach (var bridgePair in delta)
                         {
-                            if ((edge.Edge1[0] == node.Number && edge.Edge1[1] == node.Right.Number
-                                    && edge.Edge2[0] == noderight.Number && edge.Edge2[1] == noderight.Down.Number)
-                                    || (edge.Edge2[0] == node.Number && edge.Edge2[1] == node.Right.Number
-                                    && edge.Edge1[0] == noderight.Number && edge.Edge1[1] == noderight.Down.Number))
+                            if ((bridgePair.Bridge1[0] == island.Number && bridgePair.Bridge1[1] == island.Right.Number
+                                    && bridgePair.Bridge2[0] == islandRight.Number && bridgePair.Bridge2[1] == islandRight.Down.Number)
+                                    || (bridgePair.Bridge2[0] == island.Number && bridgePair.Bridge2[1] == island.Right.Number
+                                    && bridgePair.Bridge1[0] == islandRight.Number && bridgePair.Bridge1[1] == islandRight.Down.Number))
                             {
                                 checkRight = true;
                             }
                         }
                         if (!checkRight)
                         {
-                            delta.Add(new V3LinearBridgePair(node.Number, node.Right.Number, noderight.Number, noderight.Down.Number));
+                            delta.Add(new BridgePair(island.Number, island.Right.Number, islandRight.Number, islandRight.Down.Number));
                         }
                     }
                 }
@@ -153,51 +155,51 @@ namespace CN_HashiWpf.Models.V3.LinearSolution
             // Jeder x Wert entspricht der Anzahl an Kanten zwischen zwei Knoten, damit ist der Wert zwischen einschließlich 0 und 2
             for (var i = 0; i < x.Length; i++)
             {
-                x[i] = model.NewIntVar(0, 2, $"{bridges[i].Node1.Y}/{bridges[i].Node1.X},{bridges[i].Node2.Y}/{bridges[i].Node2.X}");
+                x[i] = model.NewIntVar(0, 2, $"{bridges[i].Island1.Y}/{bridges[i].Island1.X},{bridges[i].Island2.Y}/{bridges[i].Island2.X}");
             }
 
             // Jeder y Wert gibt an, ob eine Kante zwischen zwei Knoten existiert
             for (var i = 0; i < y.Length; i++)
             {
-                y[i] = model.NewIntVar(0, 1, $"{bridges[i].Node1.Y}/{bridges[i].Node1.X},{bridges[i].Node2.Y}/{bridges[i].Node2.X}");
+                y[i] = model.NewIntVar(0, 1, $"{bridges[i].Island1.Y}/{bridges[i].Island1.X},{bridges[i].Island2.Y}/{bridges[i].Island2.X}");
             }
 
-            foreach (var node in nodes)
+            foreach (var island in islands)
             {
                 // Speichert in posEdgesLow die Positionen von den Kanten in x,
                 // welche zwischen dem aktuellen Knoten und dem Knoten aus lowerNeighbours sind
-                var posEdgesLow = new List<int>();
-                foreach (var nodeLow in node.LowerNeighbours)
+                var positionBridgesLow = new List<int>();
+                foreach (var islandLow in island.LowerNeighbors)
                 {
                     for (var i = 0; i < bridges.Count; i++)
                     {
-                        if (bridges[i].Node1 == nodeLow && bridges[i].Node2 == node)
+                        if (bridges[i].Island1 == islandLow && bridges[i].Island2 == island)
                         {
-                            posEdgesLow.Add(i);
+                            positionBridgesLow.Add(i);
                         }
                     }
                 }
                 // Speichert in posEdgesUp die Positionen von den Kanten in x,
                 // welche zwischen dem aktuellen Knoten und dem Knoten aus upNeighbours sind
-                var posEdgesUp = new List<int>();
-                foreach (var nodeUp in node.UpNeighbours)
+                var positionBridgesUp = new List<int>();
+                foreach (var islandUp in island.UpNeighbors)
                 {
                     for (var i = 0; i < bridges.Count; i++)
                     {
-                        if (bridges[i].Node1 == node && bridges[i].Node2 == nodeUp)
+                        if (bridges[i].Island1 == island && bridges[i].Island2 == islandUp)
                         {
-                            posEdgesUp.Add(i);
+                            positionBridgesUp.Add(i);
                         }
                     }
                 }
                 // Erstellt zwei Variablen um die x Werte summieren zu können
-                var lowIntVars = LinearExpr.Sum(posEdgesLow.Select(low => x[low]).ToList());
-                var upIntVars = LinearExpr.Sum(posEdgesUp.Select(up => x[up]).ToList());
+                var lowIntVars = LinearExpr.Sum(positionBridgesLow.Select(low => x[low]).ToList());
+                var upIntVars = LinearExpr.Sum(positionBridgesUp.Select(up => x[up]).ToList());
 
 
 
                 // lowIntVars und upIntVars zusammen addiert sollen dem Wert des aktuellen Knotens entsprechen
-                model.Add(upIntVars + lowIntVars == node.Value);
+                model.Add(upIntVars + lowIntVars == island.Value);
             }
 
             // Der x Wert der Kante befindet sich zwischen dem y Wert der Kante und dem doppelten des y Werts
@@ -211,17 +213,17 @@ namespace CN_HashiWpf.Models.V3.LinearSolution
 
             // Das Addieren von den y Werten der beiden Kanten in den jeweiligen Kantenpaaren muss kleiner gleich 1
             // Dabei wird in first und second die Stelle der Kanten gespeichert an der diese sich im y Array befinden
-            foreach (var edgePair in delta)
+            foreach (var bridgePair in delta)
             {
                 var first = 0;
                 var second = 0;
                 for (var i = 0; i < bridges.Count; i++)
                 {
-                    if (bridges[i].Node1.Number == edgePair.Edge1[0] && bridges[i].Node2.Number == edgePair.Edge1[1])
+                    if (bridges[i].Island1.Number == bridgePair.Bridge1[0] && bridges[i].Island2.Number == bridgePair.Bridge1[1])
                     {
                         first = i;
                     }
-                    if (bridges[i].Node1.Number == edgePair.Edge2[0] && bridges[i].Node2.Number == edgePair.Edge2[1])
+                    if (bridges[i].Island1.Number == bridgePair.Bridge2[0] && bridges[i].Island2.Number == bridgePair.Bridge2[1])
                     {
                         second = i;
                     }
@@ -254,7 +256,7 @@ namespace CN_HashiWpf.Models.V3.LinearSolution
                 values[i] = solution[i];
             }
 
-            var allComp = FindComponents(bridges, nodes.Count, values);
+            var allComp = FindComponents(bridges, islands.Count, values);
 
             while (allComp.Count > 1)
             {
@@ -285,7 +287,7 @@ namespace CN_HashiWpf.Models.V3.LinearSolution
                     values[i] = solution[i];
                 }
                 allComp.Clear();
-                allComp = FindComponents(bridges, nodes.Count, values);
+                allComp = FindComponents(bridges, islands.Count, values);
                 Debug.WriteLine(allComp.Count);
             }
 
@@ -302,7 +304,7 @@ namespace CN_HashiWpf.Models.V3.LinearSolution
                 fieldChars[i] = new char[mainField[0].Length];
                 Array.Fill(fieldChars[i], '0');
             }
-            foreach (var node in nodes)
+            foreach (var node in islands)
             {
                 fieldChars[node.Y][node.X] = (char)(node.Value + 48);
             }
@@ -310,7 +312,7 @@ namespace CN_HashiWpf.Models.V3.LinearSolution
             for (var i = 0; i < values.Length; i++)
             {
                 if (values[i] == 0) continue;
-                Debug.WriteLine($"{iteration++}. Kante: Von Knoten ({bridges[i].Node1.Y}/{bridges[i].Node1.X}) mit Wert {bridges[i].Node1.Value} nach Knoten ({bridges[i].Node2.Y}/{bridges[i].Node2.X}) mit Wert {bridges[i].Node2.Value} mit Kantenanzahl: {values[i]}.\n");
+                Debug.WriteLine($"{iteration++}. Kante: Von Knoten ({bridges[i].Island1.Y}/{bridges[i].Island1.X}) mit Wert {bridges[i].Island1.Value} nach Knoten ({bridges[i].Island2.Y}/{bridges[i].Island2.X}) mit Wert {bridges[i].Island2.Value} mit Kantenanzahl: {values[i]}.\n");
                 PrintBridges(bridges[i], values[i]);
             }
             Debug.WriteLine(string.Join("\n", fieldChars.Select(row => "{" + string.Join(", ", row) + "}")));
@@ -322,18 +324,18 @@ namespace CN_HashiWpf.Models.V3.LinearSolution
         /// 
         /// </summary>
         /// <param name="bridges"></param>
-        /// <param name="numNodes"></param>
+        /// <param name="amountIslands"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public List<Helper> FindComponents(List<V3LinearBridge> bridges, int numNodes, long[] value)
+        public List<Helper> FindComponents(List<Bridge> bridges, int amountIslands, long[] value)
         {
             var components = new List<Helper>();
-            var besucht = new bool[numNodes];
+            var checkedIslands = new bool[amountIslands];
 
             // Erstelle den Graphen in einer Liste wobei gespeichert wird,
-            // zu welchen Knoten eine Kante existiert für den jeweiligen Knoten
+            // zu welcher Insel eine Bridge existiert für die jeweilige Insel
             var graph = new List<Helper>();
-            for (var i = 0; i < numNodes; i++)
+            for (var i = 0; i < amountIslands; i++)
             {
                 graph.Add(new Helper(new List<int>(), new List<int>()));
             }
@@ -341,40 +343,40 @@ namespace CN_HashiWpf.Models.V3.LinearSolution
             for (var i = 0; i < bridges.Count; i++)
             {
                 if (value[i] == 0) continue;
-                graph[bridges[i].Node1.Number].Node.Add(bridges[i].Node2.Number);
-                graph[bridges[i].Node2.Number].Node.Add(bridges[i].Node1.Number);
-                graph[bridges[i].Node1.Number].Bridges.Add(i);
+                graph[bridges[i].Island1.Number].Islands.Add(bridges[i].Island2.Number);
+                graph[bridges[i].Island2.Number].Islands.Add(bridges[i].Island1.Number);
+                graph[bridges[i].Island1.Number].Bridges.Add(i);
             }
 
-            for (var node = 0; node < numNodes; node++)
+            for (var islandIndex = 0; islandIndex < amountIslands; islandIndex++)
             {
-                if (besucht[node]) continue;
+                if (checkedIslands[islandIndex]) continue;
                 var component = new Helper(new List<int>(), new List<int>());
-                Dfs(graph, node, besucht, component);
+                FindConnectedComponents(graph, islandIndex, checkedIslands, component);
                 components.Add(component);
             }
             return components;
         }
 
         /// <summary>
-        /// 
+        /// Depth-first search algorithm to find all connected components.
         /// </summary>
-        /// <param name="graph"></param>
-        /// <param name="node"></param>
-        /// <param name="besucht"></param>
-        /// <param name="component"></param>
-        private void Dfs(List<Helper> graph, int node, bool[] besucht, Helper component)
+        /// <param name="graph">A list of helper elements.</param>
+        /// <param name="islandIndex">The current island index.</param>
+        /// <param name="checkedIslands">A list containing values if islands have been checked already or not.</param>
+        /// <param name="component">The actual helper component.</param>
+        private void FindConnectedComponents(IReadOnlyList<Helper> graph, int islandIndex, IList<bool> checkedIslands, Helper component)
         {
-            besucht[node] = true;
-            component.Node.Add(node);
-            for (var i = 0; i < graph[node].Bridges.Count; i++)
+            checkedIslands[islandIndex] = true;
+            component.Islands.Add(islandIndex);
+            for (var i = 0; i < graph[islandIndex].Bridges.Count; i++)
             {
-                component.Bridges.Add(graph[node].Bridges[i]);
+                component.Bridges.Add(graph[islandIndex].Bridges[i]);
             }
 
-            foreach (var neighbor in graph[node].Node.Where(neighbor => !besucht[neighbor]))
+            foreach (var neighbor in graph[islandIndex].Islands.Where(neighbor => !checkedIslands[neighbor]))
             {
-                Dfs(graph, neighbor, besucht, component);
+                FindConnectedComponents(graph, neighbor, checkedIslands, component);
             }
         }
 
@@ -383,53 +385,53 @@ namespace CN_HashiWpf.Models.V3.LinearSolution
         /// </summary>
         /// <param name="bridge"></param>
         /// <param name="edgeNumber"></param>
-        public void PrintBridges(V3LinearBridge bridge, long edgeNumber)
+        public void PrintBridges(Bridge bridge, long edgeNumber)
         {
-            if (bridge.Node1.X < bridge.Node2.X)
+            if (bridge.Island1.X < bridge.Island2.X)
             {
-                for (var i = bridge.Node1.X + 1; i < bridge.Node2.X; i++)
+                for (var i = bridge.Island1.X + 1; i < bridge.Island2.X; i++)
                 {
-                    fieldChars[bridge.Node1.Y][i] = edgeNumber switch
+                    fieldChars[bridge.Island1.Y][i] = edgeNumber switch
                     {
                         1 => '-',
                         2 => '=',
-                        _ => fieldChars[bridge.Node1.Y][i]
+                        _ => fieldChars[bridge.Island1.Y][i]
                     };
                 }
             }
-            if (bridge.Node1.X > bridge.Node2.X)
+            if (bridge.Island1.X > bridge.Island2.X)
             {
-                for (var i = bridge.Node2.X + 1; i < bridge.Node1.X; i++)
+                for (var i = bridge.Island2.X + 1; i < bridge.Island1.X; i++)
                 {
-                    fieldChars[bridge.Node1.Y][i] = edgeNumber switch
+                    fieldChars[bridge.Island1.Y][i] = edgeNumber switch
                     {
                         1 => '-',
                         2 => '=',
-                        _ => fieldChars[bridge.Node1.Y][i]
+                        _ => fieldChars[bridge.Island1.Y][i]
                     };
                 }
             }
-            if (bridge.Node1.Y < bridge.Node2.Y)
+            if (bridge.Island1.Y < bridge.Island2.Y)
             {
-                for (var i = bridge.Node1.Y + 1; i < bridge.Node2.Y; i++)
+                for (var i = bridge.Island1.Y + 1; i < bridge.Island2.Y; i++)
                 {
-                    fieldChars[i][bridge.Node1.X] = edgeNumber switch
+                    fieldChars[i][bridge.Island1.X] = edgeNumber switch
                     {
                         1 => '|',
                         2 => '"',
-                        _ => fieldChars[i][bridge.Node1.X]
+                        _ => fieldChars[i][bridge.Island1.X]
                     };
                 }
             }
-            if (bridge.Node1.Y > bridge.Node2.Y)
+            if (bridge.Island1.Y > bridge.Island2.Y)
             {
-                for (var i = bridge.Node2.Y + 1; i < bridge.Node1.Y; i++)
+                for (var i = bridge.Island2.Y + 1; i < bridge.Island1.Y; i++)
                 {
-                    fieldChars[i][bridge.Node1.X] = edgeNumber switch
+                    fieldChars[i][bridge.Island1.X] = edgeNumber switch
                     {
                         1 => '|',
                         2 => '"',
-                        _ => fieldChars[i][bridge.Node1.X]
+                        _ => fieldChars[i][bridge.Island1.X]
                     };
                 }
             }
@@ -438,12 +440,12 @@ namespace CN_HashiWpf.Models.V3.LinearSolution
 
     public class Helper
     {
-        public List<int> Node { get; }
+        public List<int> Islands { get; }
         public List<int> Bridges { get; }
 
-        public Helper(List<int> node, List<int> bridges)
+        public Helper(List<int> islands, List<int> bridges)
         {
-            Node = node;
+            Islands = islands;
             Bridges = bridges;
         }
     }
