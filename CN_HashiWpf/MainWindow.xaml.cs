@@ -29,7 +29,8 @@ namespace CNHashiWpf
             //var v2 = new V2Main();
 
             //V3
-            var v3 = new HashiGeneratorCaller(4);
+            var v3 = new HashiGenerator();
+            var result = v3.GenerateHash(4);
         }
 
         private void DrawGame()
