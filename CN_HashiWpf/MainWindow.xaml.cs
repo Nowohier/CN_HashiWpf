@@ -1,5 +1,5 @@
-﻿using CNHashiWpf.Models.V1;
-using CNHashiWpf.Models.V3.Generator;
+﻿using CNHashiGenerator;
+using CNHashiWpf.Models.V1;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -13,6 +13,7 @@ namespace CNHashiWpf
 
         public MainWindow()
         {
+            //var testField = new HashiPuzzleLoader().LoadPuzzle(HashiFileEnum.Hs_16_100_25_00_001);
             InitializeComponent();
             InitializeGame();
         }
@@ -28,7 +29,7 @@ namespace CNHashiWpf
             //var v2 = new V2Main();
 
             //V3
-            var v3 = new V3Main(4);
+            var v3 = new HashiGeneratorCaller(4);
         }
 
         private void DrawGame()
