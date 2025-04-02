@@ -1,4 +1,5 @@
 ﻿using CNHashiGenerator;
+using CNHashiWpf.Enums;
 using CNHashiWpf.Messages;
 using CommunityToolkit.Mvvm.Messaging;
 using System.Collections.ObjectModel;
@@ -61,13 +62,76 @@ namespace CNHashiWpf.ViewModels
             }
 
             var sourceIsland = connectionInfos.SourceIsland;
-            var receiverIsland = connectionInfos.ReceiverIsland;
+            var targetIsland = connectionInfos.TargetIsland;
 
-            if (IsValidConnection(sourceIsland, receiverIsland))
+            Action bridgeAction = connectionInfos.BridgeOperationType switch
             {
-                sourceIsland.AddConnection(receiverIsland.Coordinates);
-                receiverIsland.AddConnection(sourceIsland.Coordinates);
+                BridgeOperationType.Add => () => AddConnection(sourceIsland, targetIsland),
+                BridgeOperationType.Remove => () => RemoveConnection(sourceIsland, targetIsland),
+                _ => throw new ArgumentOutOfRangeException()
+            };
+
+            bridgeAction();
+        }
+
+        private void AddConnection(IslandViewModel sourceIsland, IslandViewModel targetIsland)
+        {
+            if (IsValidConnection(sourceIsland, targetIsland))
+            {
+                var islandsToConnect = GetIslandsBetween(sourceIsland, targetIsland);
+
+                foreach (var island in islandsToConnect)
+                {
+                    if (island.MaxConnections == 0)
+                    {
+                        island.AddConnection(sourceIsland.Coordinates);
+                        island.AddConnection(targetIsland.Coordinates);
+                    }
+
+                    if (island == sourceIsland)
+                    {
+                        island.AddConnection(targetIsland.Coordinates);
+                    }
+
+                    if (island == targetIsland)
+                    {
+                        island.AddConnection(sourceIsland.Coordinates);
+                    }
+                }
             }
+        }
+
+        private void RemoveConnection(IslandViewModel sourceIsland, IslandViewModel targetIsland)
+        {
+
+        }
+
+        private IEnumerable<IslandViewModel> GetIslandsBetween(IslandViewModel source, IslandViewModel target)
+        {
+            var islandsBetween = new List<IslandViewModel>();
+
+            if (source.Coordinates.X == target.Coordinates.X)
+            {
+                var minY = (int)Math.Min(source.Coordinates.Y, target.Coordinates.Y);
+                var maxY = (int)Math.Max(source.Coordinates.Y, target.Coordinates.Y);
+                for (var y = minY; y <= maxY; y++)
+                {
+                    var island = Islands[y][(int)source.Coordinates.X];
+                    islandsBetween.Add(island);
+                }
+            }
+            else if (source.Coordinates.Y == target.Coordinates.Y)
+            {
+                var minX = (int)Math.Min(source.Coordinates.X, target.Coordinates.X);
+                var maxX = (int)Math.Max(source.Coordinates.X, target.Coordinates.X);
+                for (var x = minX; x <= maxX; x++)
+                {
+                    var island = Islands[(int)source.Coordinates.Y][x];
+                    islandsBetween.Add(island);
+                }
+            }
+
+            return islandsBetween;
         }
 
         private bool IsValidConnection(IslandViewModel sourceIsland, IslandViewModel targetIsland)

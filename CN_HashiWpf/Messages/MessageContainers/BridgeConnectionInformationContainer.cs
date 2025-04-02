@@ -1,4 +1,5 @@
-﻿using CNHashiWpf.ViewModels;
+﻿using CNHashiWpf.Enums;
+using CNHashiWpf.ViewModels;
 // ReSharper disable CompareOfFloatsByEqualityOperator
 
 namespace CNHashiWpf.Messages.MessageContainers
@@ -12,11 +13,13 @@ namespace CNHashiWpf.Messages.MessageContainers
         /// Initializes a new instance of the <see cref="BridgeConnectionInformationContainer"/> class.
         /// </summary>
         /// <param name="sourceIsland">The source island.</param>
-        /// <param name="receiverIsland">The receiver island.</param>
-        public BridgeConnectionInformationContainer(IslandViewModel sourceIsland, IslandViewModel receiverIsland)
+        /// <param name="targetIsland">The target island.</param>
+        /// <param name="bridgeOperationType">The bridge operation type.</param>
+        public BridgeConnectionInformationContainer(IslandViewModel sourceIsland, IslandViewModel targetIsland, BridgeOperationType bridgeOperationType)
         {
             SourceIsland = sourceIsland;
-            ReceiverIsland = receiverIsland;
+            TargetIsland = targetIsland;
+            BridgeOperationType = bridgeOperationType;
         }
 
         /// <summary>
@@ -25,13 +28,18 @@ namespace CNHashiWpf.Messages.MessageContainers
         public IslandViewModel SourceIsland { get; }
 
         /// <summary>
-        /// Gets the receiver island.
+        /// Gets the target island.
         /// </summary>
-        public IslandViewModel ReceiverIsland { get; }
+        public IslandViewModel TargetIsland { get; }
+
+        /// <summary>
+        /// Gets the bridge operation type.
+        /// </summary>
+        public BridgeOperationType BridgeOperationType { get; }
 
         /// <summary>
         /// Gets a value indicating whether the connection is diagonal and therefore not allowed.
         /// </summary>
-        public bool IsDiagonalConnection => SourceIsland.Coordinates.X != ReceiverIsland.Coordinates.X && SourceIsland.Coordinates.Y != ReceiverIsland.Coordinates.Y;
+        public bool IsDiagonalConnection => SourceIsland.Coordinates.X != TargetIsland.Coordinates.X && SourceIsland.Coordinates.Y != TargetIsland.Coordinates.Y;
     }
 }
