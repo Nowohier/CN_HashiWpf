@@ -4,6 +4,9 @@ using System.Windows.Data;
 
 namespace CNHashiWpf.Converters
 {
+    /// <summary>
+    /// Converts a list of points to a visibility value based on the number of points.
+    /// </summary>
     public class SingleLineVisibilityConverter : IValueConverter
     {
         /// <inheritdoc/>
@@ -11,10 +14,10 @@ namespace CNHashiWpf.Converters
         {
             if (value is not List<Point> list)
             {
-                return Visibility.Collapsed;
+                return Visibility.Hidden;
             }
 
-            return list.Count == 1 ? Visibility.Visible : Visibility.Collapsed;
+            return list.Count == 1 ? Visibility.Visible : Visibility.Hidden;
         }
 
         /// <inheritdoc/>

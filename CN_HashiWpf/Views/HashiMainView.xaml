@@ -9,52 +9,54 @@
         xmlns:behaviors="clr-namespace:CNHashiWpf.Behaviors"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance {x:Type viewModels:MainViewModel}, IsDesignTimeCreatable=False}"
-        Title="Hashiwokakero" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+        Title="Hashiwokakero" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" MaxHeight="1200">
     <Window.Resources>
         <converters:IslandVisibilityConverter x:Key="IslandVisibilityConverter"/>
         <converters:DoubleLineVisibilityConverter x:Key="DoubleLineVisibilityConverter"/>
         <converters:SingleLineVisibilityConverter x:Key="SingleLineVisibilityConverter"/>
         <DataTemplate x:Key="DataTemplateLevel2" DataType="{x:Type viewModels:IslandViewModel}">
-            <Grid Visibility="{Binding MaxConnections, Converter={StaticResource IslandVisibilityConverter}}" IsHitTestVisible="True" AllowDrop="True" Background="Transparent">
-                <!--Double Lines horizontal right-->
-                <Line X1="20" Y1="-2" X2="60" Y2="-2" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding BridgesRight, Converter={StaticResource DoubleLineVisibilityConverter}}"/>
-                <Line X1="20" Y1="10" X2="60" Y2="10" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding BridgesRight, Converter={StaticResource DoubleLineVisibilityConverter}}"/>
+            <Border BorderThickness="1">
+                <Grid>
+                    <!--Double Lines horizontal right-->
+                    <Line X1="30" Y1="-2" X2="62" Y2="-2" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="{Binding BridgesRight, Converter={StaticResource DoubleLineVisibilityConverter}}"/>
+                    <Line X1="30" Y1="8" X2="62" Y2="8" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="{Binding BridgesRight, Converter={StaticResource DoubleLineVisibilityConverter}}"/>
 
-                <!--Double Lines horizontal left-->
-                <Line X1="20" Y1="-2" X2="-20" Y2="-2" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding BridgesLeft, Converter={StaticResource DoubleLineVisibilityConverter}}"/>
-                <Line X1="20" Y1="10" X2="-20" Y2="10" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding BridgesLeft, Converter={StaticResource DoubleLineVisibilityConverter}}"/>
+                    <!--Double Lines horizontal left-->
+                    <Line X1="-2" Y1="-2" X2="30" Y2="-2" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Left" VerticalAlignment="Center" Visibility="{Binding BridgesLeft, Converter={StaticResource DoubleLineVisibilityConverter}}"/>
+                    <Line X1="-2" Y1="8" X2="30" Y2="8" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Left" VerticalAlignment="Center" Visibility="{Binding BridgesLeft, Converter={StaticResource DoubleLineVisibilityConverter}}"/>
 
-                <!--Double Lines vertical top-->
-                <Line X1="10" Y1="-30" X2="10" Y2="-2" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding BridgesUp, Converter={StaticResource DoubleLineVisibilityConverter}}"/>
-                <Line X1="-2" Y1="-30" X2="-2" Y2="-2" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding BridgesUp, Converter={StaticResource DoubleLineVisibilityConverter}}"/>
+                    <!--Double Lines vertical top-->
+                    <Line X1="-3" Y1="-2" X2="-3" Y2="30" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Top" Visibility="{Binding BridgesUp, Converter={StaticResource DoubleLineVisibilityConverter}}"/>
+                    <Line X1="8" Y1="-2" X2="8" Y2="30" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Top" Visibility="{Binding BridgesUp, Converter={StaticResource DoubleLineVisibilityConverter}}"/>
 
-                <!--Double Lines vertical bottom-->
-                <Line X1="10" Y1="30" X2="10" Y2="60" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding BridgesDown, Converter={StaticResource DoubleLineVisibilityConverter}}"/>
-                <Line X1="-2" Y1="30" X2="-2" Y2="60" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding BridgesDown, Converter={StaticResource DoubleLineVisibilityConverter}}"/>
+                    <!--Double Lines vertical bottom-->
+                    <Line X1="-3" Y1="30" X2="-3" Y2="62" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Bottom" Visibility="{Binding BridgesDown, Converter={StaticResource DoubleLineVisibilityConverter}}"/>
+                    <Line X1="8" Y1="30" X2="8" Y2="62" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Bottom" Visibility="{Binding BridgesDown, Converter={StaticResource DoubleLineVisibilityConverter}}"/>
 
-                <!--Single line horizontal right-->
-                <Line X1="20" Y1="4" X2="60" Y2="4" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding BridgesRight, Converter={StaticResource SingleLineVisibilityConverter}}"/>
+                    <!--Single line horizontal right-->
+                    <Line X1="30" Y1="0" X2="62" Y2="0" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="{Binding BridgesRight, Converter={StaticResource SingleLineVisibilityConverter}}"/>
 
-                <!--Single line horizontal left-->
-                <Line X1="20" Y1="4" X2="-20" Y2="4" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding BridgesLeft, Converter={StaticResource SingleLineVisibilityConverter}}"/>
+                    <!--Single line horizontal left-->
+                    <Line X1="-2" Y1="0" X2="30" Y2="0" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Left" VerticalAlignment="Center" Visibility="{Binding BridgesLeft, Converter={StaticResource SingleLineVisibilityConverter}}"/>
 
-                <!--Single line vertical top-->
-                <Line X1="4" Y1="-30" X2="4" Y2="-2" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding BridgesUp, Converter={StaticResource SingleLineVisibilityConverter}}"/>
+                    <!--Single line vertical top-->
+                    <Line X1="0" Y1="-2" X2="0" Y2="30" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Top" Visibility="{Binding BridgesUp, Converter={StaticResource SingleLineVisibilityConverter}}"/>
 
-                <!--Single line vertical bottom-->
-                <Line X1="4" Y1="30" X2="4" Y2="60" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding BridgesDown, Converter={StaticResource SingleLineVisibilityConverter}}"/>
+                    <!--Single line vertical bottom-->
+                    <Line X1="0" Y1="30" X2="0" Y2="62" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Bottom" Visibility="{Binding BridgesDown, Converter={StaticResource SingleLineVisibilityConverter}}"/>
 
-
-                <Ellipse Width="40" Height="40" Fill="LightBlue" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                <TextBlock Text="{Binding MaxConnections}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" FontWeight="Bold"/>
-                <b:Interaction.Behaviors>
-                    <behaviors:IslandDragDropBehavior
-                        DragEnterCommand="{Binding DragEnterCommand}"
-                        DragOverCommand="{Binding DragOverCommand}"
-                        DropCommand="{Binding DropCommand}"
-                        MouseMoveCommand="{Binding MouseMoveCommand}" />
-                </b:Interaction.Behaviors>
-            </Grid>
+                    <Ellipse Width="40" Height="40" Fill="LightBlue" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding MaxConnections, Converter={StaticResource IslandVisibilityConverter}}" IsHitTestVisible="True" AllowDrop="True"/>
+                    <TextBlock Text="{Binding MaxConnections}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Visibility="{Binding MaxConnections, Converter={StaticResource IslandVisibilityConverter}}" IsHitTestVisible="True" AllowDrop="True"/>
+                    <b:Interaction.Behaviors>
+                        <behaviors:IslandDragDropBehavior
+                            DragEnterCommand="{Binding DragEnterCommand}"
+                            DragOverCommand="{Binding DragOverCommand}"
+                            DropCommand="{Binding DropCommand}"
+                            MouseMoveCommand="{Binding MouseMoveCommand}" />
+                    </b:Interaction.Behaviors>
+                </Grid>
+            </Border>
+            
         </DataTemplate>
         <DataTemplate x:Key="DataTemplateLevel1">
             <ItemsControl ItemsSource="{Binding}" ItemTemplate="{DynamicResource DataTemplateLevel2}" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -68,6 +70,8 @@
     </Window.Resources>
 
     <Grid Margin="10">
-        <ItemsControl Margin="10" ItemTemplate="{StaticResource DataTemplateLevel1}" ItemsSource="{Binding Islands}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+        <Viewbox Stretch="Uniform">
+            <ItemsControl Margin="10" ItemTemplate="{StaticResource DataTemplateLevel1}" ItemsSource="{Binding Islands}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+        </Viewbox>
     </Grid>
 </Window>

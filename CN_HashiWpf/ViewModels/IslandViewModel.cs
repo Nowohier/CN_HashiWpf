@@ -1,4 +1,5 @@
-﻿using CNHashiWpf.Messages;
+﻿using CNHashiWpf.Enums;
+using CNHashiWpf.Messages;
 using CNHashiWpf.Messages.MessageContainers;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -98,7 +99,7 @@ namespace CNHashiWpf.ViewModels
 
             if (islandToConnectWith == this) return;
 
-            WeakReferenceMessenger.Default.Send(new BridgeConnectionChangedMessage(new BridgeConnectionInformationContainer(islandToConnectWith, this)));
+            WeakReferenceMessenger.Default.Send(new BridgeConnectionChangedMessage(new BridgeConnectionInformationContainer(islandToConnectWith, this, BridgeOperationType.Add)));
         }
 
         public void MouseMoveCommandExecute(MouseEventArgs? e)
