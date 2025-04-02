@@ -14,9 +14,9 @@ namespace CNHashiWpf.ViewModels
             DrawGame(result);
         }
 
-        private void DrawGame(int[][] mainArray)
+        private void DrawGame(IReadOnlyList<int[]> mainArray)
         {
-            for (var row = 0; row < mainArray.Length; row++)
+            for (var row = 0; row < mainArray.Count; row++)
             {
                 var rowCollection = new ObservableCollection<IslandViewModel>();
                 for (var column = 0; column < mainArray[0].Length; column++)
