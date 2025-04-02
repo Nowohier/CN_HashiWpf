@@ -10,12 +10,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Google.OrTools" Version="9.12.4544" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CN_Hashi_Generator\CN_Hashi_Generator.csproj" />
-    <ProjectReference Include="..\CN_Hashi_SolvedPuzzles\CN_Hashi_SolvedPuzzles.csproj" />
   </ItemGroup>
 
 </Project>
