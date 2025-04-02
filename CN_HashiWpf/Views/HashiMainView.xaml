@@ -3,27 +3,57 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:converters="clr-namespace:CNHashiWpf.Converters"
         xmlns:viewModels="clr-namespace:CNHashiWpf.ViewModels"
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:behaviors="clr-namespace:CNHashiWpf.Behaviors"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance {x:Type viewModels:MainViewModel}, IsDesignTimeCreatable=False}"
         Title="Hashiwokakero" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Window.Resources>
         <converters:IslandVisibilityConverter x:Key="IslandVisibilityConverter"/>
+        <converters:DoubleLineVisibilityConverter x:Key="DoubleLineVisibilityConverter"/>
+        <converters:SingleLineVisibilityConverter x:Key="SingleLineVisibilityConverter"/>
         <DataTemplate x:Key="DataTemplateLevel2" DataType="{x:Type viewModels:IslandViewModel}">
-            <Grid Margin="20, 20" Visibility="{Binding Value, Converter={StaticResource IslandVisibilityConverter}}" IsHitTestVisible="True">
+            <Grid Visibility="{Binding MaxConnections, Converter={StaticResource IslandVisibilityConverter}}" IsHitTestVisible="True" AllowDrop="True" Background="Transparent">
+                <!--Double Lines horizontal right-->
+                <Line X1="20" Y1="-2" X2="60" Y2="-2" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding BridgesRight, Converter={StaticResource DoubleLineVisibilityConverter}}"/>
+                <Line X1="20" Y1="10" X2="60" Y2="10" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding BridgesRight, Converter={StaticResource DoubleLineVisibilityConverter}}"/>
+
+                <!--Double Lines horizontal left-->
+                <Line X1="20" Y1="-2" X2="-20" Y2="-2" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding BridgesLeft, Converter={StaticResource DoubleLineVisibilityConverter}}"/>
+                <Line X1="20" Y1="10" X2="-20" Y2="10" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding BridgesLeft, Converter={StaticResource DoubleLineVisibilityConverter}}"/>
+
+                <!--Double Lines vertical top-->
+                <Line X1="10" Y1="-30" X2="10" Y2="-2" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding BridgesUp, Converter={StaticResource DoubleLineVisibilityConverter}}"/>
+                <Line X1="-2" Y1="-30" X2="-2" Y2="-2" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding BridgesUp, Converter={StaticResource DoubleLineVisibilityConverter}}"/>
+
+                <!--Double Lines vertical bottom-->
+                <Line X1="10" Y1="30" X2="10" Y2="60" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding BridgesDown, Converter={StaticResource DoubleLineVisibilityConverter}}"/>
+                <Line X1="-2" Y1="30" X2="-2" Y2="60" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding BridgesDown, Converter={StaticResource DoubleLineVisibilityConverter}}"/>
+
+                <!--Single line horizontal right-->
+                <Line X1="20" Y1="4" X2="60" Y2="4" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding BridgesRight, Converter={StaticResource SingleLineVisibilityConverter}}"/>
+
+                <!--Single line horizontal left-->
+                <Line X1="20" Y1="4" X2="-20" Y2="4" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding BridgesLeft, Converter={StaticResource SingleLineVisibilityConverter}}"/>
+
+                <!--Single line vertical top-->
+                <Line X1="4" Y1="-30" X2="4" Y2="-2" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding BridgesUp, Converter={StaticResource SingleLineVisibilityConverter}}"/>
+
+                <!--Single line vertical bottom-->
+                <Line X1="4" Y1="30" X2="4" Y2="60" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding BridgesDown, Converter={StaticResource SingleLineVisibilityConverter}}"/>
+
+
                 <Ellipse Width="40" Height="40" Fill="LightBlue" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                <TextBlock Text="{Binding Value}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" FontWeight="Bold"/>
-                <b:Interaction.Triggers>
-                    <b:EventTrigger EventName="MouseLeftButtonDown">
-                        <b:InvokeCommandAction Command="{Binding DragEnterCommand}" PassEventArgsToCommand="True" />
-                    </b:EventTrigger>
-                    <b:EventTrigger EventName="Drop">
-                        <b:InvokeCommandAction Command="{Binding DropCommand}" PassEventArgsToCommand="True"/>
-                    </b:EventTrigger>
-                </b:Interaction.Triggers>
+                <TextBlock Text="{Binding MaxConnections}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" FontWeight="Bold"/>
+                <b:Interaction.Behaviors>
+                    <behaviors:IslandDragDropBehavior
+                        DragEnterCommand="{Binding DragEnterCommand}"
+                        DragOverCommand="{Binding DragOverCommand}"
+                        DropCommand="{Binding DropCommand}"
+                        MouseMoveCommand="{Binding MouseMoveCommand}" />
+                </b:Interaction.Behaviors>
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="DataTemplateLevel1">
