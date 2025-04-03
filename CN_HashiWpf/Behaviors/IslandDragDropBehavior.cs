@@ -15,11 +15,20 @@ namespace CNHashiWpf.Behaviors
         public static readonly DependencyProperty DragOverCommandProperty =
             DependencyProperty.Register(nameof(DragOverCommand), typeof(ICommand), typeof(IslandDragDropBehavior));
 
+        public static readonly DependencyProperty DragLeaveCommandProperty =
+            DependencyProperty.Register(nameof(DragLeaveCommand), typeof(ICommand), typeof(IslandDragDropBehavior));
+
         public static readonly DependencyProperty DropCommandProperty =
             DependencyProperty.Register(nameof(DropCommand), typeof(ICommand), typeof(IslandDragDropBehavior));
 
         public static readonly DependencyProperty MouseMoveCommandProperty =
             DependencyProperty.Register(nameof(MouseMoveCommand), typeof(ICommand), typeof(IslandDragDropBehavior));
+
+        public static readonly DependencyProperty MouseLeftButtonDownCommandProperty =
+            DependencyProperty.Register(nameof(MouseLeftButtonDownCommand), typeof(ICommand), typeof(IslandDragDropBehavior));
+
+        public static readonly DependencyProperty MouseLeftButtonUpCommandProperty =
+            DependencyProperty.Register(nameof(MouseLeftButtonUpCommand), typeof(ICommand), typeof(IslandDragDropBehavior));
 
         /// <summary>
         /// Gets or sets the drag enter command.
@@ -40,6 +49,15 @@ namespace CNHashiWpf.Behaviors
         }
 
         /// <summary>
+        /// Gets or sets the drag leave command.
+        /// </summary>
+        public ICommand DragLeaveCommand
+        {
+            get => (ICommand)GetValue(DragLeaveCommandProperty);
+            set => SetValue(DragLeaveCommandProperty, value);
+        }
+
+        /// <summary>
         /// Gets or sets the drop command.
         /// </summary>
         public ICommand DropCommand
@@ -57,6 +75,24 @@ namespace CNHashiWpf.Behaviors
             set => SetValue(MouseMoveCommandProperty, value);
         }
 
+        /// <summary>
+        /// Gets or sets the mouse left button down command.
+        /// </summary>
+        public ICommand MouseLeftButtonDownCommand
+        {
+            get => (ICommand)GetValue(MouseLeftButtonDownCommandProperty);
+            set => SetValue(MouseLeftButtonDownCommandProperty, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the mouse left button up command.
+        /// </summary>
+        public ICommand MouseLeftButtonUpCommand
+        {
+            get => (ICommand)GetValue(MouseLeftButtonUpCommandProperty);
+            set => SetValue(MouseLeftButtonUpCommandProperty, value);
+        }
+
         /// <inheritdoc/>
         protected override void OnAttached()
         {
@@ -66,6 +102,9 @@ namespace CNHashiWpf.Behaviors
             AssociatedObject.DragOver += OnDragOver;
             AssociatedObject.Drop += OnDrop;
             AssociatedObject.MouseMove += OnMouseMove;
+            AssociatedObject.MouseLeftButtonDown += OnMouseLeftButtonDown;
+            AssociatedObject.MouseLeftButtonUp += OnMouseLeftButtonUp;
+            AssociatedObject.DragLeave += OnDragLeave;
         }
 
         /// <inheritdoc/>
@@ -76,6 +115,9 @@ namespace CNHashiWpf.Behaviors
             AssociatedObject.DragOver -= OnDragOver;
             AssociatedObject.Drop -= OnDrop;
             AssociatedObject.MouseMove -= OnMouseMove;
+            AssociatedObject.MouseLeftButtonDown -= OnMouseLeftButtonDown;
+            AssociatedObject.MouseLeftButtonUp -= OnMouseLeftButtonUp;
+            AssociatedObject.DragLeave -= OnDragLeave;
         }
 
         private void OnDragEnter(object sender, DragEventArgs e)
@@ -88,6 +130,11 @@ namespace CNHashiWpf.Behaviors
             DragOverCommand.Execute(e);
         }
 
+        private void OnDragLeave(object sender, DragEventArgs e)
+        {
+            DragLeaveCommand.Execute(e);
+        }
+
         private void OnDrop(object sender, DragEventArgs e)
         {
             DropCommand.Execute(e);
@@ -96,6 +143,16 @@ namespace CNHashiWpf.Behaviors
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
             MouseMoveCommand.Execute(e);
+        }
+
+        private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            MouseLeftButtonDownCommand.Execute(e);
+        }
+
+        private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            MouseLeftButtonUpCommand.Execute(e);
         }
     }
 }
