@@ -115,12 +115,33 @@ namespace CNHashiWpf.ViewModels
         /// </summary>
         public ICommand MouseMoveCommand { get; }
 
+        ///// <summary>
+        ///// Checks if the other island is on the same axis as this island.
+        ///// </summary>
+        ///// <param name="otherIsland">The other island.</param>
+        ///// <returns>a boolean value indicating if the other island is on the same axis of this one or not.</returns>
+        //public bool IsIslandOnSameAxis(IslandViewModel otherIsland) => (otherIsland.Coordinates.X == Coordinates.X || otherIsland.Coordinates.Y == Coordinates.Y) && otherIsland != this;
+
         /// <summary>
-        /// Checks if the other island is on the same axis as this island.
+        /// Gets the connection type between two islands.
         /// </summary>
-        /// <param name="otherIsland">The other island.</param>
-        /// <returns>a boolean value indicating if the other island is on the same axis of this one or not.</returns>
-        public bool IsIslandOnSameAxis(IslandViewModel otherIsland) => (otherIsland.Coordinates.X == Coordinates.X || otherIsland.Coordinates.Y == Coordinates.Y) && otherIsland != this;
+        /// <param name="targetIsland">The island to perform the check on.</param>
+        /// <returns>a <see cref="ConnectionTypeEnum"/>.</returns>
+        public ConnectionTypeEnum GetConnectionType(IslandViewModel targetIsland)
+        {
+            if (Coordinates.X == targetIsland.Coordinates.X)
+            {
+                return ConnectionTypeEnum.Vertical;
+            }
+            else if (Coordinates.Y == targetIsland.Coordinates.Y)
+            {
+                return ConnectionTypeEnum.Horizontal;
+            }
+            else
+            {
+                return ConnectionTypeEnum.Diagonal;
+            }
+        }
 
         /// <summary>
         /// Handles the drag enter event during drag-and-drop operation.
@@ -286,7 +307,7 @@ namespace CNHashiWpf.ViewModels
         /// </summary>
         /// <param name="islandToConnectWith">The island to connect with.</param>
         /// <returns>a boolean value if drop target is valid.</returns>
-        private bool IsValidDropTarget(IslandViewModel islandToConnectWith) => !MaxConnectionsReached && !islandToConnectWith.MaxConnectionsReached && IsIslandOnSameAxis(islandToConnectWith);
+        private bool IsValidDropTarget(IslandViewModel islandToConnectWith) => !MaxConnectionsReached && !islandToConnectWith.MaxConnectionsReached && GetConnectionType(islandToConnectWith) != ConnectionTypeEnum.Diagonal;
 
         protected void NotifyBridgeConnections()
         {
