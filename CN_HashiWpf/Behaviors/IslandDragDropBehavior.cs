@@ -1,5 +1,7 @@
-﻿using Microsoft.Xaml.Behaviors;
+﻿using CNHashiWpf.EventArgs;
+using Microsoft.Xaml.Behaviors;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace CNHashiWpf.Behaviors
@@ -29,6 +31,18 @@ namespace CNHashiWpf.Behaviors
 
         public static readonly DependencyProperty MouseLeftButtonUpCommandProperty =
             DependencyProperty.Register(nameof(MouseLeftButtonUpCommand), typeof(ICommand), typeof(IslandDragDropBehavior));
+
+        public static readonly DependencyProperty ConnectedViewBoxProperty =
+            DependencyProperty.Register(nameof(ConnectedViewBox), typeof(Viewbox), typeof(IslandDragDropBehavior));
+
+        /// <summary>
+        /// Gets or sets the drag enter command.
+        /// </summary>
+        public Viewbox ConnectedViewBox
+        {
+            get => (Viewbox)GetValue(ConnectedViewBoxProperty);
+            set => SetValue(ConnectedViewBoxProperty, value);
+        }
 
         /// <summary>
         /// Gets or sets the drag enter command.
@@ -142,7 +156,8 @@ namespace CNHashiWpf.Behaviors
 
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
-            MouseMoveCommand.Execute(e);
+            var dragStartPosition = e.GetPosition(ConnectedViewBox);
+            MouseMoveCommand.Execute(new MouseEventArgsWithCorrectViewBoxPosition(e, dragStartPosition));
         }
 
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)

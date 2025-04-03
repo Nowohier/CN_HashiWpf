@@ -1,4 +1,7 @@
 ﻿using CNHashiWpf.Enums;
+using CNHashiWpf.EventArgs;
+using CNHashiWpf.Helpers;
+using CNHashiWpf.Interfaces;
 using CNHashiWpf.Messages;
 using CNHashiWpf.Messages.MessageContainers;
 using CommunityToolkit.Mvvm.Input;
@@ -16,6 +19,10 @@ namespace CNHashiWpf.ViewModels
         private Point mouseDownPosition;
         private bool isDragging;
         private Brush islandColor = Brushes.LightBlue;
+        private double currentDragLineX1;
+        private double currentDragLineX2;
+        private double currentDragLineY1;
+        private double currentDragLineY2;
 
         protected IslandBaseViewModel(int maxConnections, Point coordinates)
         {
@@ -26,9 +33,33 @@ namespace CNHashiWpf.ViewModels
             DropCommand = new RelayCommand<DragEventArgs>(DropCommandExecute);
             DragOverCommand = new RelayCommand<DragEventArgs>(DragOverCommandExecute);
             DragLeaveCommand = new RelayCommand<DragEventArgs>(DragLeaveCommandExecute);
-            MouseMoveCommand = new RelayCommand<MouseEventArgs>(MouseMoveCommandExecute);
+            MouseMoveCommand = new RelayCommand<MouseEventArgsWithCorrectViewBoxPosition>(MouseMoveCommandExecute);
             MouseLeftButtonDownCommand = new RelayCommand<MouseButtonEventArgs>(MouseLeftButtonDownCommandExecute);
             MouseLeftButtonUpCommand = new RelayCommand<MouseButtonEventArgs>(MouseLeftButtonUpCommandExecute);
+        }
+
+        public double CurrentDragLineX1
+        {
+            get => currentDragLineX1;
+            set => Set(ref currentDragLineX1, value);
+        }
+
+        public double CurrentDragLineX2
+        {
+            get => currentDragLineX2;
+            set => Set(ref currentDragLineX2, value);
+        }
+
+        public double CurrentDragLineY1
+        {
+            get => currentDragLineY1;
+            set => Set(ref currentDragLineY1, value);
+        }
+
+        public double CurrentDragLineY2
+        {
+            get => currentDragLineY2;
+            set => Set(ref currentDragLineY2, value);
         }
 
         /// <summary>
@@ -144,6 +175,17 @@ namespace CNHashiWpf.ViewModels
         }
 
         /// <summary>
+        /// Notifies the bridge connections.
+        /// </summary>
+        public void NotifyBridgeConnections()
+        {
+            OnPropertyChanged(nameof(BridgesLeft));
+            OnPropertyChanged(nameof(BridgesRight));
+            OnPropertyChanged(nameof(BridgesUp));
+            OnPropertyChanged(nameof(BridgesDown));
+        }
+
+        /// <summary>
         /// Handles the drag enter event during drag-and-drop operation.
         /// </summary>
         /// <param name="e">The <see cref="DragEventArgs"/>.</param>
@@ -219,27 +261,36 @@ namespace CNHashiWpf.ViewModels
         /// Handles the mouse move event during drag-and-drop operation.
         /// </summary>
         /// <param name="e">The <see cref="MouseEventArgs"/>.</param>
-        protected virtual void MouseMoveCommandExecute(MouseEventArgs? e)
+        protected virtual void MouseMoveCommandExecute(MouseEventArgsWithCorrectViewBoxPosition? e)
         {
             if (e == null)
             {
                 throw new ArgumentNullException(nameof(e));
             }
 
-            if (e is not { LeftButton: MouseButtonState.Pressed }) return;
+            if (e.MouseEventArgs is not { LeftButton: MouseButtonState.Pressed }) return;
 
             // Check if mouse is being dragged
-            var currentPosition = e.GetPosition(null);
+            var currentPosition = e.MouseEventArgs.GetPosition(null);
             if (!(Math.Abs(currentPosition.X - mouseDownPosition.X) > SystemParameters.MinimumHorizontalDragDistance) &&
                 !(Math.Abs(currentPosition.Y - mouseDownPosition.Y) >
                   SystemParameters.MinimumVerticalDragDistance)) return;
 
+            if (e.MouseEventArgs.OriginalSource is not DependencyObject depObject)
+            {
+                return;
+            }
+
             isDragging = true;
-            DragDrop.AddGiveFeedbackHandler((DependencyObject)e.OriginalSource, GiveFeedbackHandler);
-            DragDrop.AddQueryContinueDragHandler((DependencyObject)e.OriginalSource, QueryContinueDragHandler);
-            DragDrop.DoDragDrop((DependencyObject)e.OriginalSource, this, DragDropEffects.Link);
-            DragDrop.RemoveGiveFeedbackHandler((DependencyObject)e.OriginalSource, GiveFeedbackHandler);
-            DragDrop.RemoveQueryContinueDragHandler((DependencyObject)e.OriginalSource, QueryContinueDragHandler);
+            CurrentDragLineX1 = e.DragStartPosition.X;
+            CurrentDragLineY1 = e.DragStartPosition.Y;
+            CurrentDragLineX2 = e.DragStartPosition.X;
+            CurrentDragLineY2 = e.DragStartPosition.Y;
+            WeakReferenceMessenger.Default.Send(new CurrentSourceIslandChangedMessage((IslandViewModel)this));
+
+            DragDrop.AddQueryContinueDragHandler(depObject, QueryContinueDragHandler);
+            DragDrop.DoDragDrop(depObject, this, DragDropEffects.Link);
+            DragDrop.RemoveQueryContinueDragHandler(depObject, QueryContinueDragHandler);
         }
 
         /// <summary>
@@ -253,8 +304,6 @@ namespace CNHashiWpf.ViewModels
             {
                 throw new ArgumentNullException(nameof(e));
             }
-
-            mouseDownPosition = e.GetPosition(null);
 
             isDragging = false;
             IslandColor = Brushes.LightGreen;
@@ -281,25 +330,20 @@ namespace CNHashiWpf.ViewModels
         }
 
         /// <summary>
-        /// Handles the give feedback event during drag-and-drop operation.
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The event args.</param>
-        private void GiveFeedbackHandler(object sender, GiveFeedbackEventArgs e)
-        {
-            // Handle feedback during drag-and-drop operation
-        }
-
-        /// <summary>
         /// Handles the query continue drag event.
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The event args.</param>
         private void QueryContinueDragHandler(object sender, QueryContinueDragEventArgs e)
         {
+            var currentPosition = CursorHelper.GetCurrentCursorPosition(((IViewBoxControl)Application.Current.MainWindow).ViewBoxControl);
+            CurrentDragLineX2 = currentPosition.X;
+            CurrentDragLineY2 = currentPosition.Y;
+
             if (e.KeyStates != DragDropKeyStates.None) return;
             isDragging = false;
             WeakReferenceMessenger.Default.Send(new UpdateAllIslandColorsMessage(Brushes.LightBlue));
+            WeakReferenceMessenger.Default.Send(new CurrentSourceIslandChangedMessage(null));
         }
 
         /// <summary>
@@ -308,13 +352,5 @@ namespace CNHashiWpf.ViewModels
         /// <param name="islandToConnectWith">The island to connect with.</param>
         /// <returns>a boolean value if drop target is valid.</returns>
         private bool IsValidDropTarget(IslandViewModel islandToConnectWith) => !MaxConnectionsReached && !islandToConnectWith.MaxConnectionsReached && GetConnectionType(islandToConnectWith) != ConnectionTypeEnum.Diagonal;
-
-        protected void NotifyBridgeConnections()
-        {
-            OnPropertyChanged(nameof(BridgesLeft));
-            OnPropertyChanged(nameof(BridgesRight));
-            OnPropertyChanged(nameof(BridgesUp));
-            OnPropertyChanged(nameof(BridgesDown));
-        }
     }
 }

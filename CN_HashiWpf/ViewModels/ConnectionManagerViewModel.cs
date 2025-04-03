@@ -252,6 +252,7 @@ namespace CNHashiWpf.ViewModels
                     island.BridgesUp.Count > 0 || island.BridgesDown.Count > 0),
                 ConnectionTypeEnum.Vertical => islands.Any(island =>
                     island.BridgesLeft.Count > 0 || island.BridgesRight.Count > 0),
+                ConnectionTypeEnum.Diagonal => throw new InvalidOperationException("Invalid connection type. Diagonal connections are not allowed here."),
                 _ => true
             };
         }
