@@ -1,10 +1,13 @@
-﻿using CNHashiWpf.Messages;
+﻿using CNHashiWpf.Enums;
+using CNHashiWpf.Messages;
 using CommunityToolkit.Mvvm.Messaging;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 
 namespace CNHashiWpf.ViewModels
 {
+    [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
     public class ConnectionManagerViewModel : BaseViewModel
     {
         /// <summary>
@@ -37,28 +40,31 @@ namespace CNHashiWpf.ViewModels
         {
             if (targetIsland == null)
             {
+                // Clears all source island connections
                 foreach (var target in sourceIsland.AllConnections.Distinct().Select(GetIslandByCoordinates).ToList())
                 {
-                    ManageConnections(sourceIsland, target, (island, coordinates) => island.RemoveAllConnections(coordinates));
+                    ManageConnections(sourceIsland, target, (island, coordinates) => island.RemoveAllConnectionsMatchingCoordinates(coordinates));
                 }
 
                 return;
             }
 
-            ManageConnections(sourceIsland, targetIsland, (island, coordinates) => island.RemoveAllConnections(coordinates));
+            ManageConnections(sourceIsland, targetIsland, (island, coordinates) => island.RemoveAllConnectionsMatchingCoordinates(coordinates));
         }
 
-        private bool AreAllConnectionsSet()
-        {
-            return Islands.All(row => row.All(island => island.MaxConnections == 0 || island.MaxConnectionsReached));
-        }
+        private bool AreAllConnectionsSet() => Islands.All(row => row.All(island => island.MaxConnections == 0 || island.MaxConnectionsReached));
 
-        private void ManageConnections(IslandViewModel sourceIsland, IslandViewModel targetIsland, Action<IslandViewModel, Point> connectionAction)
+        private void ManageConnections(IslandViewModel source, IslandViewModel target, Action<IslandViewModel, Point> connectionAction)
         {
-            var sourceCoordinates = sourceIsland.Coordinates;
-            var targetCoordinates = targetIsland.Coordinates;
+            if (source.GetConnectionType(target) == ConnectionTypeEnum.Diagonal)
+            {
+                throw new InvalidOperationException("Diagonal connections are not allowed.");
+            }
 
-            var islandsToConnect = GetIslandsBetween(sourceIsland, targetIsland);
+            var sourceCoordinates = source.Coordinates;
+            var targetCoordinates = target.Coordinates;
+
+            var islandsToConnect = GetAllIslandsInvolvedInConnection(source, target);
 
             foreach (var island in islandsToConnect)
             {
@@ -68,140 +74,186 @@ namespace CNHashiWpf.ViewModels
                     connectionAction(island, targetCoordinates);
                 }
 
-                if (island == sourceIsland)
+                if (island == source)
                 {
                     connectionAction(island, targetCoordinates);
                 }
 
-                if (island == targetIsland)
+                if (island == target)
                 {
                     connectionAction(island, sourceCoordinates);
                 }
             }
         }
 
-        private IEnumerable<IslandViewModel> GetIslandsBetween(IslandViewModel source, IslandViewModel target)
+        private IEnumerable<IslandViewModel> GetAllIslandsInvolvedInConnection(IslandViewModel source, IslandViewModel target)
         {
             var islandsBetween = new List<IslandViewModel>();
+            var connectionType = source.GetConnectionType(target);
 
-            if (source.Coordinates.X == target.Coordinates.X)
+            switch (connectionType)
             {
-                var minY = (int)Math.Min(source.Coordinates.Y, target.Coordinates.Y);
-                var maxY = (int)Math.Max(source.Coordinates.Y, target.Coordinates.Y);
-                for (var y = minY; y <= maxY; y++)
-                {
-                    var island = Islands[y][(int)source.Coordinates.X];
-                    islandsBetween.Add(island);
-                }
-            }
-            else if (source.Coordinates.Y == target.Coordinates.Y)
-            {
-                var minX = (int)Math.Min(source.Coordinates.X, target.Coordinates.X);
-                var maxX = (int)Math.Max(source.Coordinates.X, target.Coordinates.X);
-                for (var x = minX; x <= maxX; x++)
-                {
-                    var island = Islands[(int)source.Coordinates.Y][x];
-                    islandsBetween.Add(island);
-                }
+                case ConnectionTypeEnum.Vertical:
+                    {
+                        var minY = (int)Math.Min(source.Coordinates.Y, target.Coordinates.Y);
+                        var maxY = (int)Math.Max(source.Coordinates.Y, target.Coordinates.Y);
+                        for (var y = minY; y <= maxY; y++)
+                        {
+                            var island = Islands[y][(int)source.Coordinates.X];
+                            islandsBetween.Add(island);
+                        }
+
+                        break;
+                    }
+                case ConnectionTypeEnum.Horizontal:
+                    {
+                        var minX = (int)Math.Min(source.Coordinates.X, target.Coordinates.X);
+                        var maxX = (int)Math.Max(source.Coordinates.X, target.Coordinates.X);
+                        for (var x = minX; x <= maxX; x++)
+                        {
+                            var island = Islands[(int)source.Coordinates.Y][x];
+                            islandsBetween.Add(island);
+                        }
+
+                        break;
+                    }
+                case ConnectionTypeEnum.Diagonal:
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             return islandsBetween;
         }
 
-        private bool IsIslandInBetweenSourceAndTarget(IslandViewModel source, IslandViewModel target)
-        {
-            var sourceCoordinates = source.Coordinates;
-            var targetCoordinates = target.Coordinates;
-
-            if (sourceCoordinates.X == targetCoordinates.X)
-            {
-                var minY = (int)Math.Min(sourceCoordinates.Y, targetCoordinates.Y);
-                var maxY = (int)Math.Max(sourceCoordinates.Y, targetCoordinates.Y);
-                for (var y = minY + 1; y < maxY; y++)
-                {
-                    if (Islands[y][(int)sourceCoordinates.X].MaxConnections > 0)
-                    {
-                        return true;
-                    }
-                }
-            }
-            else if (sourceCoordinates.Y == targetCoordinates.Y)
-            {
-                var minX = (int)Math.Min(sourceCoordinates.X, targetCoordinates.X);
-                var maxX = (int)Math.Max(sourceCoordinates.X, targetCoordinates.X);
-                for (var x = minX + 1; x < maxX; x++)
-                {
-                    if (Islands[(int)sourceCoordinates.Y][x].MaxConnections > 0)
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
+        /// <summary>
+        /// Checks if the maximum number of bridges has been reached between the source or target islands.
+        /// </summary>
+        /// <param name="source">The source Island.</param>
+        /// <param name="target">The target island.</param>
+        /// <returns>a boolean value indicating if max bridges have been reached.</returns>
         private bool MaxBridgesReachedBetweenSourceAndTarget(IslandViewModel source, IslandViewModel target)
         {
-            // Check if source island already has two connections to the target island
-            var sourceToTargetConnections = source.AllConnections.Count(c => c == target.Coordinates);
-
-            // Check if target island already has two connections to the source island
-            var targetToSourceConnections = target.AllConnections.Count(c => c == source.Coordinates);
-
-            // If either island has two connections to the other, the max bridges are reached
-            return sourceToTargetConnections >= 2 || targetToSourceConnections >= 2;
+            return source.AllConnections.Count(c => c == target.Coordinates) >= 2 || target.AllConnections.Count(c => c == source.Coordinates) >= 2;
         }
 
+        /// <summary>
+        /// Gets an island by coordinates.
+        /// </summary>
+        /// <param name="coordinates">The island coordinates.</param>
+        /// <returns>an island.</returns>
         private IslandViewModel GetIslandByCoordinates(Point coordinates)
         {
             return Islands[(int)coordinates.Y][(int)coordinates.X];
         }
 
-        private bool IsValidConnection(IslandViewModel sourceIsland, IslandViewModel targetIsland)
+        /// <summary>
+        /// Checks if the potential connection between the source and target islands is valid.
+        /// </summary>
+        /// <param name="source">The source island.</param>
+        /// <param name="target">The target island.</param>
+        /// <returns></returns>
+        private bool IsValidConnection(IslandViewModel source, IslandViewModel target)
         {
             // Check if the source and target coordinates are the same -> invalid
-            if (sourceIsland == targetIsland)
+            if (source == target)
             {
                 return false;
             }
 
             // Check if the source and target coordinates are not on the same axis -> invalid
-            if (!sourceIsland.IsIslandOnSameAxis(targetIsland))
+            if (source.GetConnectionType(target) == ConnectionTypeEnum.Diagonal)
             {
                 return false;
             }
 
             // Check if an island is in between the source and target coordinates -> invalid
-            if (IsIslandInBetweenSourceAndTarget(sourceIsland, targetIsland))
+            if (IsIslandInBetweenSourceAndTarget(source, target))
             {
                 return false;
             }
-
-            // Check if the potential connection already exists -> invalid //ToDO
-            //if (DoesConnectionExist(sourceCoordinates, targetCoordinates))
-            //{
-            //    return false;
-            //}
 
             // Check if the source or target island has reached its maximum connections -> invalid
-            if (sourceIsland.MaxConnectionsReached || targetIsland.MaxConnectionsReached)
+            if (source.MaxConnectionsReached || target.MaxConnectionsReached)
             {
                 return false;
             }
 
-            //// Check if the connections are crossed horizontally -> invalid
-            //if (AreConnectionsCrossedHorizontally(sourceCoordinates, targetCoordinates))
-            //{
-            //    return false;
-            //}
-
-            //// Check if the connections are crossed vertically -> invalid
-            //if (AreConnectionsCrossedVertically(sourceCoordinates, targetCoordinates))
-            //{
-            //    return false;
-            //}
+            // Check if potential connection would collide with existing connections
+            if (WouldConnectionCollide(source, target))
+            {
+                return false;
+            }
 
             return true;
+        }
+
+        /// <summary>
+        /// Checks if an island with MaxConnections > 0 is in between the source and target coordinates.
+        /// </summary>
+        /// <param name="source">The source island.</param>
+        /// <param name="target">The target island.</param>
+        /// <returns>a boolean value indicating if if an island with MaxConnections > 0 is in between the source and target coordinates.</returns>
+        private bool IsIslandInBetweenSourceAndTarget(IslandViewModel source, IslandViewModel target)
+        {
+            var connectionType = source.GetConnectionType(target);
+
+            switch (connectionType)
+            {
+                case ConnectionTypeEnum.Vertical:
+                    {
+                        var minY = (int)Math.Min(source.Coordinates.Y, target.Coordinates.Y);
+                        var maxY = (int)Math.Max(source.Coordinates.Y, target.Coordinates.Y);
+                        for (var y = minY + 1; y < maxY; y++)
+                        {
+                            if (Islands[y][(int)source.Coordinates.X].MaxConnections > 0)
+                            {
+                                return true;
+                            }
+                        }
+
+                        break;
+                    }
+                case ConnectionTypeEnum.Horizontal:
+                    {
+                        var minX = (int)Math.Min(source.Coordinates.X, target.Coordinates.X);
+                        var maxX = (int)Math.Max(source.Coordinates.X, target.Coordinates.X);
+                        for (var x = minX + 1; x < maxX; x++)
+                        {
+                            if (Islands[(int)source.Coordinates.Y][x].MaxConnections > 0)
+                            {
+                                return true;
+                            }
+                        }
+
+                        break;
+                    }
+                case ConnectionTypeEnum.Diagonal:
+                default:
+                    throw new InvalidOperationException("Invalid connection type. Diagonal connections are not allowed here.");
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Checks if the potential connection between the source and target islands would collide with existing connections.
+        /// </summary>
+        /// <param name="source">The source island.</param>
+        /// <param name="target">The target island.</param>
+        /// <returns>a boolean value indicating if the connection would collide.</returns>
+        private bool WouldConnectionCollide(IslandViewModel source, IslandViewModel target)
+        {
+            var connectionType = source.GetConnectionType(target);
+            var islands = GetAllIslandsInvolvedInConnection(source, target).Where(x => x.MaxConnections == 0);
+
+            return connectionType switch
+            {
+                ConnectionTypeEnum.Horizontal => islands.Any(island =>
+                    island.BridgesUp.Count > 0 || island.BridgesDown.Count > 0),
+                ConnectionTypeEnum.Vertical => islands.Any(island =>
+                    island.BridgesLeft.Count > 0 || island.BridgesRight.Count > 0),
+                _ => true
+            };
         }
     }
 }

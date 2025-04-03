@@ -39,10 +39,10 @@ namespace CNHashiWpf.ViewModels
         }
 
         /// <summary>
-        /// Removes a connection.
+        /// Removes all connections matching the given connection.
         /// </summary>
         /// <param name="connection">The connection to remove.</param>
-        public void RemoveAllConnections(Point connection)
+        public void RemoveAllConnectionsMatchingCoordinates(Point connection)
         {
             AllConnections.RemoveAll(x => x == connection);
             NotifyBridgeConnections();

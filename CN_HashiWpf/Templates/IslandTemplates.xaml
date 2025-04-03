@@ -12,7 +12,7 @@
         <Setter Property="StrokeThickness" Value="2"/>
     </Style>
 
-    <DataTemplate x:Key="DataTemplateLevel2" DataType="{x:Type viewModels:IslandViewModel}">
+    <DataTemplate x:Key="DataTemplateIsland" DataType="{x:Type viewModels:IslandViewModel}">
         <Border BorderThickness="1">
             <Grid>
                 <!--Double Lines horizontal right-->
@@ -59,7 +59,7 @@
         </Border>
     </DataTemplate>
     <DataTemplate x:Key="DataTemplateLevel1">
-        <ItemsControl ItemsSource="{Binding}" ItemTemplate="{DynamicResource DataTemplateLevel2}" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <ItemsControl ItemsSource="{Binding}" ItemTemplate="{DynamicResource DataTemplateIsland}" HorizontalAlignment="Center" VerticalAlignment="Center">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal"/>
