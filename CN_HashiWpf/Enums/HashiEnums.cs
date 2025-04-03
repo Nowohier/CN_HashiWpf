@@ -3,6 +3,7 @@
     public enum BridgeOperationType
     {
         Add,
-        Remove
+        Remove,
+        RemoveAll
     }
 }

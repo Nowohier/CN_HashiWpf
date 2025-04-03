@@ -7,7 +7,7 @@ namespace CNHashiWpf
         public HashiMainView()
         {
             var main = new MainViewModel();
-            main.CreateNewGame(2);
+            main.CreateNewGame();
             DataContext = main;
             InitializeComponent();
         }

@@ -15,7 +15,7 @@ namespace CNHashiWpf.Messages.MessageContainers
         /// <param name="sourceIsland">The source island.</param>
         /// <param name="targetIsland">The target island.</param>
         /// <param name="bridgeOperationType">The bridge operation type.</param>
-        public BridgeConnectionInformationContainer(IslandViewModel sourceIsland, IslandViewModel targetIsland, BridgeOperationType bridgeOperationType)
+        public BridgeConnectionInformationContainer(IslandViewModel sourceIsland, IslandViewModel? targetIsland, BridgeOperationType bridgeOperationType)
         {
             SourceIsland = sourceIsland;
             TargetIsland = targetIsland;
@@ -30,7 +30,7 @@ namespace CNHashiWpf.Messages.MessageContainers
         /// <summary>
         /// Gets the target island.
         /// </summary>
-        public IslandViewModel TargetIsland { get; }
+        public IslandViewModel? TargetIsland { get; }
 
         /// <summary>
         /// Gets the bridge operation type.
