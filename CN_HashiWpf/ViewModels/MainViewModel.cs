@@ -12,16 +12,19 @@ using System.Windows.Media;
 namespace CNHashiWpf.ViewModels
 {
     [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
-    public class MainViewModel : BaseViewModel, IRecipient<BridgeConnectionChangedMessage>, IRecipient<UpdateAllIslandColorsMessage>, IRecipient<AllConnectionsSetMessage>
+    public class MainViewModel : BaseViewModel, IRecipient<BridgeConnectionChangedMessage>, IRecipient<UpdateAllIslandColorsMessage>, IRecipient<AllConnectionsSetMessage>, IRecipient<CurrentSourceIslandChangedMessage>
     {
         private readonly HashiGenerator hashiGenerator = new();
+        private IslandViewModel? currentSourceIsland;
 
         public MainViewModel()
         {
             WeakReferenceMessenger.Default.Register<BridgeConnectionChangedMessage>(this);
             WeakReferenceMessenger.Default.Register<UpdateAllIslandColorsMessage>(this);
             WeakReferenceMessenger.Default.Register<AllConnectionsSetMessage>(this);
+            WeakReferenceMessenger.Default.Register<CurrentSourceIslandChangedMessage>(this);
             CreateNewGameCommand = new RelayCommand(CreateNewGame);
+            RemoveAllBridgesCommand = new RelayCommand(RemoveAllBridgesExecute);
         }
 
         public ConnectionManagerViewModel ConnectionManager { get; } = new();
@@ -39,12 +42,40 @@ namespace CNHashiWpf.ViewModels
         public ICommand CreateNewGameCommand { get; }
 
         /// <summary>
+        /// Command to remove all bridges.
+        /// </summary>
+        public ICommand RemoveAllBridgesCommand { get; }
+
+        public IslandViewModel? CurrentSourceIsland
+        {
+            get => currentSourceIsland;
+            set => Set(ref currentSourceIsland, value);
+        }
+
+        /// <summary>
         /// Creates a new game.
         /// </summary>
         public void CreateNewGame()
         {
             var result = hashiGenerator.GenerateHash(SelectedDifficulty);
             DrawGame(result);
+        }
+
+        /// <summary>
+        /// Creates a new game.
+        /// </summary>
+        public void RemoveAllBridgesExecute()
+        {
+            foreach (var row in ConnectionManager.Islands)
+            {
+                foreach (var island in row)
+                {
+                    island.AllConnections.Clear();
+                    island.NotifyBridgeConnections();
+                }
+            }
+
+            WeakReferenceMessenger.Default.Send(new UpdateAllIslandColorsMessage(Brushes.LightBlue));
         }
 
         /// <summary>
@@ -108,6 +139,11 @@ namespace CNHashiWpf.ViewModels
             //ToDo: Check if all islands are connected
 
             CreateNewGame();
+        }
+
+        public void Receive(CurrentSourceIslandChangedMessage message)
+        {
+            CurrentSourceIsland = message.Value;
         }
     }
 }

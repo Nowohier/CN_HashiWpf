@@ -53,7 +53,8 @@
                     DropCommand="{Binding DropCommand}"
                     MouseMoveCommand="{Binding MouseMoveCommand}" 
                     MouseLeftButtonDownCommand="{Binding MouseLeftButtonDownCommand}"
-                    MouseLeftButtonUpCommand="{Binding MouseLeftButtonUpCommand}"/>
+                    MouseLeftButtonUpCommand="{Binding MouseLeftButtonUpCommand}"
+                    ConnectedViewBox="{Binding RelativeSource={RelativeSource AncestorType=Viewbox, Mode=FindAncestor}}"/>
                 </b:Interaction.Behaviors>
             </Grid>
         </Border>
