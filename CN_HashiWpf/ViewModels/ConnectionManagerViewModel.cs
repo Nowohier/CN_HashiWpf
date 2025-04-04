@@ -54,51 +54,64 @@ namespace CNHashiWpf.ViewModels
 
         public IslandViewModel? GetPotentialTargetIsland(IslandViewModel source, IslandViewModel target)
         {
-            //ToDo Fix this
             var connectionType = source.GetConnectionType(target);
 
             switch (connectionType)
             {
                 case ConnectionTypeEnum.Vertical:
                     {
-                        // Suche nach der nächsten gültigen Insel in vertikaler Richtung
-                        for (int y = (int)source.Coordinates.Y + 1; y < Islands.Count; y++)
+                        if (target.Coordinates.Y > source.Coordinates.Y)
                         {
-                            var potentialTarget = Islands[y][(int)source.Coordinates.X];
-                            if (IsValidConnection(source, potentialTarget))
+                            for (var y = (int)source.Coordinates.Y + 1; y < Islands.Count; y++)
                             {
-                                return potentialTarget;
+                                var potentialTarget = Islands[y][(int)source.Coordinates.X];
+                                if (IsValidConnection(source, potentialTarget))
+                                {
+                                    return potentialTarget;
+                                }
                             }
                         }
-                        for (int y = (int)source.Coordinates.Y - 1; y >= 0; y--)
+
+                        if (target.Coordinates.Y < source.Coordinates.Y)
                         {
-                            var potentialTarget = Islands[y][(int)source.Coordinates.X];
-                            if (IsValidConnection(source, potentialTarget))
+                            for (var y = (int)source.Coordinates.Y - 1; y >= 0; y--)
                             {
-                                return potentialTarget;
+                                var potentialTarget = Islands[y][(int)source.Coordinates.X];
+                                if (IsValidConnection(source, potentialTarget))
+                                {
+                                    return potentialTarget;
+                                }
                             }
                         }
+
                         return null;
                     }
                 case ConnectionTypeEnum.Horizontal:
                     {
-                        // Suche nach der nächsten gültigen Insel in horizontaler Richtung
-                        for (int x = (int)source.Coordinates.X + 1; x < Islands[(int)source.Coordinates.Y].Count; x++)
+                        if (target.Coordinates.X > source.Coordinates.X)
                         {
-                            var potentialTarget = Islands[(int)source.Coordinates.Y][x];
-                            if (IsValidConnection(source, potentialTarget))
+                            for (var x = (int)source.Coordinates.X + 1; x < Islands[(int)source.Coordinates.Y].Count; x++)
                             {
-                                return potentialTarget;
+                                var potentialTarget = Islands[(int)source.Coordinates.Y][x];
+                                if (IsValidConnection(source, potentialTarget))
+                                {
+                                    return potentialTarget;
+                                }
                             }
                         }
-                        for (int x = (int)source.Coordinates.X - 1; x >= 0; x--)
+
+                        if (target.Coordinates.X < source.Coordinates.X)
                         {
-                            var potentialTarget = Islands[(int)source.Coordinates.Y][x];
-                            if (IsValidConnection(source, potentialTarget))
+                            for (var x = (int)source.Coordinates.X - 1; x >= 0; x--)
                             {
-                                return potentialTarget;
+                                var potentialTarget = Islands[(int)source.Coordinates.Y][x];
+                                if (IsValidConnection(source, potentialTarget))
+                                {
+                                    return potentialTarget;
+                                }
                             }
                         }
+
                         return null;
                     }
                 case ConnectionTypeEnum.Diagonal:
