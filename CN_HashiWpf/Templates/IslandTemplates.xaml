@@ -9,17 +9,20 @@
     <converters:SingleLineVisibilityConverter x:Key="SingleLineVisibilityConverter"/>
     <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     <Style x:Key="BridgeStyle" TargetType="Line">
-        <Setter Property="Stroke" Value="Black"/>
-        <Setter Property="StrokeThickness" Value="2"/>
+        <Setter Property="Stroke" Value="{StaticResource BasicBrush}"/>
+        <Setter Property="StrokeThickness" Value="1.5"/>
+    </Style>
+    <Style x:Key="PotentialConnectionStyle" TargetType="Rectangle">
+        <Setter Property="Fill" Value="{StaticResource PotentialConnectionBrush}"/>
     </Style>
 
     <DataTemplate x:Key="DataTemplateIsland" DataType="{x:Type viewModels:IslandViewModel}">
         <Border BorderThickness="0">
             <Grid>
-                <Rectangle Width="33" Height="20" Fill="Yellow" Margin="0,0,-2,0" HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="{Binding IsHighlightHorizontalRight, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                <Rectangle Width="33" Height="20" Fill="Yellow" Margin="-2,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Visibility="{Binding IsHighlightHorizontalLeft, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                <Rectangle Width="20" Height="33" Fill="Yellow" Margin="0,-1,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Visibility="{Binding IsHighlightVerticalTop, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                <Rectangle Width="20" Height="33" Fill="Yellow" Margin="0,0,0,-1" HorizontalAlignment="Center" VerticalAlignment="Bottom" Visibility="{Binding IsHighlightVerticalBottom, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                <Rectangle Width="33" Height="15" Style="{StaticResource PotentialConnectionStyle}" Margin="0,0,-2,0" HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="{Binding IsHighlightHorizontalRight, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                <Rectangle Width="33" Height="15" Style="{StaticResource PotentialConnectionStyle}" Margin="-2,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Visibility="{Binding IsHighlightHorizontalLeft, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                <Rectangle Width="15" Height="33" Style="{StaticResource PotentialConnectionStyle}" Margin="0,-1,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Visibility="{Binding IsHighlightVerticalTop, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                <Rectangle Width="15" Height="33" Style="{StaticResource PotentialConnectionStyle}" Margin="0,0,0,-1" HorizontalAlignment="Center" VerticalAlignment="Bottom" Visibility="{Binding IsHighlightVerticalBottom, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
                 <!--Double Lines horizontal right-->
                 <Line Style="{StaticResource BridgeStyle}" X1="30" Y1="-2" X2="62" Y2="-2" HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="{Binding BridgesRight, Converter={StaticResource DoubleLineVisibilityConverter}}"/>
@@ -50,7 +53,7 @@
                 <Line Style="{StaticResource BridgeStyle}" X1="0" Y1="30" X2="0" Y2="62" HorizontalAlignment="Center" VerticalAlignment="Bottom" Visibility="{Binding BridgesDown, Converter={StaticResource SingleLineVisibilityConverter}}"/>
 
                 <Ellipse Width="40" Height="40" Fill="{Binding IslandColor}" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding MaxConnections, Converter={StaticResource IslandVisibilityConverter}}" IsHitTestVisible="True" AllowDrop="True"/>
-                <TextBlock Text="{Binding MaxConnections}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Visibility="{Binding MaxConnections, Converter={StaticResource IslandVisibilityConverter}}" IsHitTestVisible="True" AllowDrop="True"/>
+                <TextBlock Text="{Binding MaxConnections}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Foreground="{StaticResource BasicBrush}" FontWeight="Bold" Visibility="{Binding MaxConnections, Converter={StaticResource IslandVisibilityConverter}}" IsHitTestVisible="True" AllowDrop="True"/>
                 <b:Interaction.Behaviors>
                     <behaviors:IslandDragDropBehavior
                     DragEnterCommand="{Binding DragEnterCommand}"

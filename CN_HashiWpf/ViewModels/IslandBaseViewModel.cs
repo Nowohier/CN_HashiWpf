@@ -165,7 +165,7 @@ namespace CNHashiWpf.ViewModels
                 throw new ArgumentNullException(nameof(e));
             }
 
-            IslandColor = Brushes.LightGreen;
+            IslandColor = HashiColors.GreenIslandBrush;
         }
 
         /// <summary>
@@ -199,7 +199,7 @@ namespace CNHashiWpf.ViewModels
                 return;
             }
 
-            IslandColor = MaxConnectionsReached ? Brushes.Red : Brushes.LightBlue;
+            IslandColor = MaxConnectionsReached ? HashiColors.MaxBridgesReachedBrush : HashiColors.BasicIslandBrush;
         }
 
         /// <summary>
@@ -217,7 +217,7 @@ namespace CNHashiWpf.ViewModels
             if (!e.Data.GetDataPresent(typeof(IslandViewModel)) ||
                 e.Data.GetData(typeof(IslandViewModel)) is not IslandViewModel islandToConnectWith || islandToConnectWith == this) return;
 
-            WeakReferenceMessenger.Default.Send(new UpdateAllIslandColorsMessage(Brushes.LightBlue));
+            WeakReferenceMessenger.Default.Send(new UpdateAllIslandColorsMessage(HashiColors.BasicIslandBrush));
         }
 
         /// <summary>
@@ -255,7 +255,7 @@ namespace CNHashiWpf.ViewModels
         protected virtual void MouseLeftButtonDownCommandExecute(MouseButtonEventArgs? e)
         {
             isDragging = false;
-            IslandColor = Brushes.LightGreen;
+            IslandColor = HashiColors.GreenIslandBrush;
         }
 
         /// <summary>
@@ -270,7 +270,7 @@ namespace CNHashiWpf.ViewModels
                 WeakReferenceMessenger.Default.Send(new BridgeConnectionChangedMessage(new BridgeConnectionInformationContainer((IslandViewModel)this, BridgeOperationType.RemoveAll)));
             }
 
-            WeakReferenceMessenger.Default.Send(new UpdateAllIslandColorsMessage(Brushes.LightBlue));
+            WeakReferenceMessenger.Default.Send(new UpdateAllIslandColorsMessage(HashiColors.BasicIslandBrush));
         }
 
         /// <summary>
