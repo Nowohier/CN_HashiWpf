@@ -1,5 +1,4 @@
 ﻿using CNHashiWpf.Interfaces;
-using CNHashiWpf.ViewModels;
 using System.Windows;
 
 namespace CNHashiWpf
@@ -11,9 +10,6 @@ namespace CNHashiWpf
         /// </summary>
         public HashiMainView()
         {
-            var main = new MainViewModel();
-            main.CreateNewGame();
-            DataContext = main;
             InitializeComponent();
             ViewBoxControl = HashiViewBox;
         }
@@ -22,5 +18,19 @@ namespace CNHashiWpf
         /// Gets the view box control.
         /// </summary>
         public FrameworkElement ViewBoxControl { get; }
+
+        /// <summary>
+        /// Handles the Loaded event of the window.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The EventArgs.</param>
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            var scaledWidth = (int)SystemParameters.PrimaryScreenWidth * 0.9;
+            var scaledHeight = (int)SystemParameters.PrimaryScreenHeight * 0.9;
+
+            MaxWidth = scaledWidth;
+            MaxHeight = scaledHeight;
+        }
     }
 }

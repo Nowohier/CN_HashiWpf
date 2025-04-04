@@ -6,6 +6,7 @@
     <SolidColorBrush x:Key="BasicBrush" Color="#FF444446"/>
     <SolidColorBrush x:Key="BasicIslandBrush" Color="#add8e6"/>
     <SolidColorBrush x:Key="GreenIslandBrush" Color="#ade6bb"/>
+    <SolidColorBrush x:Key="IntenseGreenBrush" Color="#3abf5b"/>
     <SolidColorBrush x:Key="MaxBridgesReachedBrush" Color="#e6bbad"/>
     <SolidColorBrush x:Key="PotentialConnectionBrush" Color="AliceBlue"/>
 </ResourceDictionary>
