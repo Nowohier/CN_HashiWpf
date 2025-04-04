@@ -2,11 +2,11 @@
 using CNHashiWpf.Enums;
 using CNHashiWpf.Helpers;
 using CNHashiWpf.Messages;
+using CNHashiWpf.Views;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -143,7 +143,7 @@ namespace CNHashiWpf.ViewModels
         /// <param name="message">The <see cref="AllConnectionsSetMessage"/>.</param>
         public void Receive(AllConnectionsSetMessage message)
         {
-            MessageBox.Show("All connections are set!", "Game Over", MessageBoxButton.OK, MessageBoxImage.Information);
+            Dialog.Show("Game Over", "All connections are set!", DialogButton.Ok, DialogImage.Success);
 
             //ToDo: Check if all islands are connected
 
