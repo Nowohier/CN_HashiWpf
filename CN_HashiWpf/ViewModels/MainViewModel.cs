@@ -4,7 +4,6 @@ using CNHashiWpf.Messages;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Input;
@@ -153,7 +152,6 @@ namespace CNHashiWpf.ViewModels
 
         public void Receive(CurrentSourceIslandChangedMessage message)
         {
-            Debug.WriteLine("ChangeSourceIsland Called");
             CurrentSourceIsland = message.Value;
         }
 
@@ -185,7 +183,6 @@ namespace CNHashiWpf.ViewModels
             target.IslandColor = Brushes.LightGreen;
             PotentialTargetIsland = target;
 
-            Debug.WriteLine("Highlight called");
             ConnectionManager.RemoveAllHighlights();
             ConnectionManager.HighlightPathToTargetIsland(CurrentSourceIsland, PotentialTargetIsland);
         }
