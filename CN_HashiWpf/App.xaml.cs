@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using CNHashiWpf.ViewModels;
+using System.Windows;
 
 namespace CNHashiWpf;
 
@@ -7,6 +8,8 @@ namespace CNHashiWpf;
 /// </summary>
 public partial class App : Application
 {
+    private readonly MainViewModel mainViewModel = new();
+
     /// <summary>
     /// Initializes a new instance of the <see cref="App"/> class.
     /// </summary>
@@ -22,7 +25,20 @@ public partial class App : Application
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
-        new HashiMainView().Show();
+
+        mainViewModel.CreateNewGame();
+
+        new HashiMainView { DataContext = mainViewModel }.Show();
+    }
+
+    /// <summary>
+    /// Handles the exit event of the application.
+    /// </summary>
+    protected override void OnExit(ExitEventArgs e)
+    {
+        base.OnExit(e);
+
+        mainViewModel.SaveSettings();
     }
 }
 
