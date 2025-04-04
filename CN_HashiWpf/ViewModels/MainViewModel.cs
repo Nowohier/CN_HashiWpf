@@ -120,6 +120,8 @@ namespace CNHashiWpf.ViewModels
                 }
             }
 
+            if (Timer.IsRunning) Timer.Restart();
+
             WeakReferenceMessenger.Default.Send(new UpdateAllIslandColorsMessage(Brushes.LightBlue));
         }
 
