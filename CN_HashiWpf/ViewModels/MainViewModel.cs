@@ -177,6 +177,7 @@ namespace CNHashiWpf.ViewModels
             if (target == null)
             {
                 ConnectionManager.RemoveAllHighlights();
+                ConnectionManager.RemoveAllPotentialIslandCoordinates();
                 PotentialTargetIsland = null;
                 return;
             }
