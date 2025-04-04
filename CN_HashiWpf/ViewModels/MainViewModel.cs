@@ -6,9 +6,11 @@ using CNHashiWpf.Views;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace CNHashiWpf.ViewModels
 {
@@ -18,6 +20,8 @@ namespace CNHashiWpf.ViewModels
         private readonly HashiGenerator hashiGenerator = new();
         private IslandViewModel? currentSourceIsland;
         private IslandViewModel? potentialTargetIsland;
+        private readonly DispatcherTimer dispatcherTimer;
+        private bool isTimerRunning;
 
         public MainViewModel()
         {
@@ -28,6 +32,20 @@ namespace CNHashiWpf.ViewModels
             WeakReferenceMessenger.Default.Register<PotentialTargetIslandChangedMessage>(this);
             CreateNewGameCommand = new RelayCommand(CreateNewGame);
             RemoveAllBridgesCommand = new RelayCommand(RemoveAllBridgesExecute);
+
+            dispatcherTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+            dispatcherTimer.Tick += (_, _) => OnPropertyChanged(nameof(Timer));
+
+            //ToDo: Read Json Settings File
+        }
+
+        /// <summary>
+        /// Determines if the timer is running.
+        /// </summary>
+        public bool IsTimerRunning
+        {
+            get => isTimerRunning;
+            set => Set(ref isTimerRunning, value);
         }
 
         /// <summary>
@@ -60,6 +78,11 @@ namespace CNHashiWpf.ViewModels
         }
 
         /// <summary>
+        /// The current source island.
+        /// </summary>
+        public Stopwatch Timer { get; } = new();
+
+        /// <summary>
         /// Gets or sets the potential target island.
         /// </summary>
         public IslandViewModel? PotentialTargetIsland
@@ -75,6 +98,12 @@ namespace CNHashiWpf.ViewModels
         {
             var result = hashiGenerator.GenerateHash((int)SelectedDifficulty);
             DrawGame(result);
+
+            // Stop timers
+            Timer.Reset();
+            IsTimerRunning = false;
+            dispatcherTimer.Stop();
+            OnPropertyChanged(nameof(Timer));
         }
 
         /// <summary>
@@ -112,7 +141,18 @@ namespace CNHashiWpf.ViewModels
 
             Action bridgeAction = bridgeOperationType switch
             {
-                BridgeOperationType.Add => () => ConnectionManager.AddConnection(CurrentSourceIsland, PotentialTargetIsland),
+                BridgeOperationType.Add => () =>
+                {
+                    if (!Timer.IsRunning)
+                    {
+                        // Start timers
+                        dispatcherTimer.Start();
+                        Timer.Start();
+                        IsTimerRunning = true;
+                    }
+                    ConnectionManager.AddConnection(CurrentSourceIsland, PotentialTargetIsland);
+                }
+                ,
                 BridgeOperationType.RemoveAll => () => ConnectionManager.RemoveAllConnections(sourceIsland, null),
                 _ => throw new ArgumentOutOfRangeException()
             };
@@ -143,9 +183,12 @@ namespace CNHashiWpf.ViewModels
         /// <param name="message">The <see cref="AllConnectionsSetMessage"/>.</param>
         public void Receive(AllConnectionsSetMessage message)
         {
+            Timer.Stop();
             Dialog.Show("Game Over", "All connections are set!", DialogButton.Ok, DialogImage.Success);
 
             //ToDo: Check if all islands are connected
+
+            //ToDo: Check if Highscore - if yes, write highscore to json and show message
 
             CreateNewGame();
         }
