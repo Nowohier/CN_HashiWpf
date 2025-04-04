@@ -18,6 +18,16 @@
                 <x:Type TypeName="enums:DifficultyEnum" />
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
+        <Style TargetType="TextBlock" x:Key="TimerTextBlockStyle">
+            <Setter Property="Foreground" Value="{StaticResource BasicBrush}" />
+            <Setter Property="FontWeight" Value="Normal" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsTimerRunning, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                    <Setter Property="Foreground" Value="Red" />
+                    <Setter Property="FontWeight" Value="Bold" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -57,8 +67,8 @@
                         <StackPanel Orientation="Horizontal">
                             <iconPacks:PackIconMaterial Kind="Timer" VerticalAlignment="Center"
                                                         Foreground="{StaticResource BasicBrush}" Height="20" Width="20" />
-                            <TextBlock Text="00:00:00" Margin="10,0,0,0" FontSize="16" FontWeight="Normal"
-                                       Foreground="{StaticResource BasicBrush}" VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding Timer.Elapsed, StringFormat={}{0:hh\\:mm\\:ss}}" Margin="10,0,0,0" FontSize="16"
+                                       Style="{StaticResource TimerTextBlockStyle}" VerticalAlignment="Center" />
                             <iconPacks:PackIconMaterial Kind="Crown" Margin="30,0,0,0" VerticalAlignment="Center"
                                                         Foreground="{StaticResource BasicBrush}" Height="20" Width="20" />
                             <TextBlock Text="00:00:00" Margin="10,0,0,0" FontSize="16" FontWeight="Normal"
