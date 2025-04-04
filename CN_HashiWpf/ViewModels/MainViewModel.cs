@@ -1,5 +1,6 @@
 ﻿using CNHashiGenerator;
 using CNHashiWpf.Enums;
+using CNHashiWpf.Helpers;
 using CNHashiWpf.Messages;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -29,14 +30,15 @@ namespace CNHashiWpf.ViewModels
             RemoveAllBridgesCommand = new RelayCommand(RemoveAllBridgesExecute);
         }
 
+        /// <summary>
+        /// The connection manager for managing island connections.
+        /// </summary>
         public ConnectionManagerViewModel ConnectionManager { get; } = new();
 
-        public int SelectedDifficulty { get; set; } = 2;
-
         /// <summary>
-        /// List of difficulty settings.
+        /// The selected difficulty level.
         /// </summary>
-        public List<int> DifficultySettings { get; } = new() { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+        public DifficultyEnum SelectedDifficulty { get; set; } = DifficultyEnum.Easy3;
 
         /// <summary>
         /// Command to create a new game.
@@ -48,6 +50,9 @@ namespace CNHashiWpf.ViewModels
         /// </summary>
         public ICommand RemoveAllBridgesCommand { get; }
 
+        /// <summary>
+        /// The current source island.
+        /// </summary>
         public IslandViewModel? CurrentSourceIsland
         {
             get => currentSourceIsland;
@@ -68,7 +73,7 @@ namespace CNHashiWpf.ViewModels
         /// </summary>
         public void CreateNewGame()
         {
-            var result = hashiGenerator.GenerateHash(SelectedDifficulty);
+            var result = hashiGenerator.GenerateHash((int)SelectedDifficulty);
             DrawGame(result);
         }
 
@@ -90,23 +95,10 @@ namespace CNHashiWpf.ViewModels
         }
 
         /// <summary>
-        /// Draws the game.
+        /// Handles the message when a bridge connection is changed.
         /// </summary>
-        /// <param name="mainArray"></param>
-        private void DrawGame(IReadOnlyList<int[]> mainArray)
-        {
-            ConnectionManager.Islands.Clear();
-            for (var row = 0; row < mainArray.Count; row++)
-            {
-                var rowCollection = new ObservableCollection<IslandViewModel>();
-                for (var column = 0; column < mainArray[0].Length; column++)
-                {
-                    rowCollection.Add(new IslandViewModel(column, row, mainArray[row][column]));
-                }
-                ConnectionManager.Islands.Add(rowCollection);
-            }
-        }
-
+        /// <param name="message"></param>
+        /// <exception cref="ArgumentOutOfRangeException">The <see cref="BridgeConnectionChangedMessage"/>.</exception>
         public void Receive(BridgeConnectionChangedMessage message)
         {
             var bridgeOperationType = message.Value.BridgeOperationType;
@@ -128,6 +120,10 @@ namespace CNHashiWpf.ViewModels
             bridgeAction();
         }
 
+        /// <summary>
+        /// Updates the color of all islands.
+        /// </summary>
+        /// <param name="message">The <see cref="UpdateAllIslandColorsMessage"/>.</param>
         public void Receive(UpdateAllIslandColorsMessage message)
         {
             var color = message.Value;
@@ -136,11 +132,15 @@ namespace CNHashiWpf.ViewModels
             {
                 foreach (var island in row)
                 {
-                    island.IslandColor = island.MaxConnectionsReached ? Brushes.LightCoral : color;
+                    island.IslandColor = island.MaxConnectionsReached ? HashiColors.MaxBridgesReachedBrush : color;
                 }
             }
         }
 
+        /// <summary>
+        /// Handles the message when all connections are set.
+        /// </summary>
+        /// <param name="message">The <see cref="AllConnectionsSetMessage"/>.</param>
         public void Receive(AllConnectionsSetMessage message)
         {
             MessageBox.Show("All connections are set!", "Game Over", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -150,11 +150,19 @@ namespace CNHashiWpf.ViewModels
             CreateNewGame();
         }
 
+        /// <summary>
+        /// Handles the message when the current source island is changed.
+        /// </summary>
+        /// <param name="message">The <see cref="CurrentSourceIslandChangedMessage"/>.</param>
         public void Receive(CurrentSourceIslandChangedMessage message)
         {
             CurrentSourceIsland = message.Value;
         }
 
+        /// <summary>
+        /// Handles the message when the potential target island is changed.
+        /// </summary>
+        /// <param name="islandChangedMessage">The <see cref="PotentialTargetIslandChangedMessage"/>.</param>
         public void Receive(PotentialTargetIslandChangedMessage islandChangedMessage)
         {
             if (CurrentSourceIsland == null)
@@ -180,11 +188,25 @@ namespace CNHashiWpf.ViewModels
                 return;
             }
 
-            target.IslandColor = Brushes.LightGreen;
+            target.IslandColor = HashiColors.GreenIslandBrush;
             PotentialTargetIsland = target;
 
             ConnectionManager.RemoveAllHighlights();
             ConnectionManager.HighlightPathToTargetIsland(CurrentSourceIsland, PotentialTargetIsland);
+        }
+
+        private void DrawGame(IReadOnlyList<int[]> mainArray)
+        {
+            ConnectionManager.Islands.Clear();
+            for (var row = 0; row < mainArray.Count; row++)
+            {
+                var rowCollection = new ObservableCollection<IslandViewModel>();
+                for (var column = 0; column < mainArray[0].Length; column++)
+                {
+                    rowCollection.Add(new IslandViewModel(column, row, mainArray[row][column]));
+                }
+                ConnectionManager.Islands.Add(rowCollection);
+            }
         }
     }
 }

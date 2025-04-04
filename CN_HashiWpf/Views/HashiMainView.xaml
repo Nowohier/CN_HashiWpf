@@ -1,43 +1,81 @@
-﻿<Window x:Class="CNHashiWpf.HashiMainView"
+﻿<mah:MetroWindow x:Class="CNHashiWpf.HashiMainView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:CNHashiWpf.ViewModels"
-        xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        xmlns:enums="clr-namespace:CNHashiWpf.Enums"
+        xmlns:System="clr-namespace:System;assembly=System.Runtime"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance {x:Type viewModels:MainViewModel}, IsDesignTimeCreatable=False}"
-        Title="Hashiwokakero" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" MaxHeight="1200" AllowDrop="True">
+        Title="Hashiwokakero" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" MaxHeight="1200" AllowDrop="True" WindowTitleBrush="{StaticResource BasicBrush}">
+    <Window.Resources>
+        <ObjectDataProvider x:Key="DifficultyEnums" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="enums:DifficultyEnum"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </Window.Resources>
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-
         <Grid Grid.Row="0" >
-            <GroupBox Header="Game Options" Padding="5" BorderThickness="0,2,0,2" Background="White">
-                <StackPanel Orientation="Horizontal">
-                    <GroupBox Header="Create new Game" Padding="5">
-                        <DockPanel>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Border Grid.Row="0" BorderThickness="0,0,0,0" BorderBrush="{StaticResource BasicBrush}" Margin="0,0,0,0">
+                <DockPanel LastChildFill="True">
+                    <GroupBox Header="CREATE NEW GAME" Padding="5" Style="{x:Null}" DockPanel.Dock="Left" BorderThickness="0,1,0,0" Margin="0,0,0,0" BorderBrush="{StaticResource BasicBrush}" Background="{StaticResource MenuBackgroundBrush}">
+                        <DockPanel LastChildFill="False">
                             <TextBlock Text="Difficulty:" VerticalAlignment="Center" Margin="0,0,5,0" DockPanel.Dock="Left"/>
-                            <ComboBox BorderBrush="#FFD5DFE5" Background="AliceBlue" SelectedItem="{Binding SelectedDifficulty}" ItemsSource="{Binding DifficultySettings}" Margin="0,0,5,0" DockPanel.Dock="Left"/>
-                            <Button Content="Create new Game" Height="22" Padding="5,0,5,0" HorizontalAlignment="Left" Command="{Binding CreateNewGameCommand}" DockPanel.Dock="Left"/>
+                            <ComboBox BorderBrush="#FFD5DFE5" Focusable="False" Width="85" SelectedItem="{Binding SelectedDifficulty}" DisplayMemberPath="" ItemsSource="{Binding Source={StaticResource DifficultyEnums}}" DockPanel.Dock="Left"/>
+                            <Button Focusable="False" FontWeight="Normal" Height="22" Padding="5,0,5,0" Background="White" HorizontalAlignment="Left" Command="{Binding CreateNewGameCommand}" Margin="10,0,0,0" DockPanel.Dock="Left">
+                                <StackPanel Orientation="Horizontal">
+                                    <iconPacks:Material Kind="StarPlusOutline" Width="14" Height="14"/>
+                                    <TextBlock Text="CREATE NEW GAME" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
                         </DockPanel>
                     </GroupBox>
-                    <GroupBox Header="Remove Bridges" Padding="5">
-                        <Button Content="Remove all Bridges" Height="22" Padding="5,0,5,0" HorizontalAlignment="Left" Command="{Binding RemoveAllBridgesCommand}" DockPanel.Dock="Left"/>
+                    <GroupBox Header="TIMES" Margin="10,0,0,0" Padding="5" Style="{x:Null}" DockPanel.Dock="Right" BorderThickness="0,1,0,0" BorderBrush="{StaticResource BasicBrush}" Background="{StaticResource MenuBackgroundBrush}">
+                        <StackPanel Orientation="Horizontal">
+                            <iconPacks:PackIconMaterial Kind="Timer" VerticalAlignment="Center" Foreground="{StaticResource BasicBrush}" Height="20" Width="20"/>
+                            <TextBlock Text="00:00:00" Margin="10,0,0,0" FontSize="16" FontWeight="Normal" Foreground="{StaticResource BasicBrush}" VerticalAlignment="Center"/>
+                            <iconPacks:PackIconMaterial Kind="Crown" Margin="30,0,0,0" VerticalAlignment="Center" Foreground="{StaticResource BasicBrush}" Height="20" Width="20"/>
+                            <TextBlock Text="00:00:00" Margin="10,0,0,0" FontSize="16" FontWeight="Normal" Foreground="{StaticResource BasicBrush}" VerticalAlignment="Center"/>
+                        </StackPanel>
                     </GroupBox>
-                    <GroupBox Header="Help" Margin="5,0,0,0" Padding="5" DockPanel.Dock="Left">
-                        <Button Content="Show Hint" Height="22" Padding="5,0,5,0" HorizontalAlignment="Left"/>
+                    <GroupBox Header="OTHER" Padding="5" Style="{x:Null}" Margin="10,0,0,0" BorderThickness="0,1,0,0" BorderBrush="{StaticResource BasicBrush}" Background="{StaticResource MenuBackgroundBrush}">
+                        <StackPanel Orientation="Horizontal">
+                            <Button Focusable="False" FontWeight="Normal" Height="22" Padding="5,0,5,0" Background="White" HorizontalAlignment="Left" Command="{Binding RemoveAllBridgesCommand}">
+                                <StackPanel Orientation="Horizontal">
+                                    <iconPacks:Material Kind="SortVariantRemove" Width="14" Height="14"/>
+                                    <TextBlock Text="REMOVE ALL BRIDGES" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Focusable="False" FontWeight="Normal" Height="22" Padding="5,0,5,0" Background="White" Margin="10,0,0,0" HorizontalAlignment="Left">
+                                <StackPanel Orientation="Horizontal">
+                                    <iconPacks:Material Kind="LightbulbOnOutline" Width="14" Height="14"/>
+                                    <TextBlock Text="SHOW HINT" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
                     </GroupBox>
-                </StackPanel>
-            </GroupBox>
+                </DockPanel>
+            </Border>
         </Grid>
 
         <Grid Grid.Row="1" Margin="0,10,0,0">
-            <Viewbox x:Name="HashiViewBox" Stretch="Uniform">
-                <ItemsControl Margin="10" IsHitTestVisible="True" ItemTemplate="{StaticResource DataTemplateLevel1}" ItemsSource="{Binding ConnectionManager.Islands}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-            </Viewbox>
+            <Border BorderThickness="0" BorderBrush="{StaticResource BasicIslandBrush}" CornerRadius="2" Background="{StaticResource BackgroundBrush}">
+                <Viewbox x:Name="HashiViewBox" Stretch="Uniform">
+                    <ItemsControl Margin="10" IsHitTestVisible="True" ItemTemplate="{StaticResource DataTemplateLevel1}" ItemsSource="{Binding ConnectionManager.Islands}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                </Viewbox>
+            </Border>
         </Grid>
     </Grid>
-</Window>
+</mah:MetroWindow>
