@@ -54,7 +54,7 @@
                 <Line Style="{StaticResource BridgeStyle}" X1="-2" Y1="0" X2="30" Y2="0" HorizontalAlignment="Left" VerticalAlignment="Center" Visibility="{Binding BridgesLeft, Converter={StaticResource SingleLineVisibilityConverter}}"/>
 
                 <!--Single line vertical top-->
-                <Line Style="{StaticResource BridgeStyle}" X1="0" Y1="-1" X2="0" Y2="30" HorizontalAlignment="Center" VerticalAlignment="Top" Visibility="{Binding BridgesUp, Converter={StaticResource SingleLineVisibilityConverter}}"/>
+                <Line Style="{StaticResource BridgeStyle}" X1="0" Y1="-2" X2="0" Y2="30" HorizontalAlignment="Center" VerticalAlignment="Top" Visibility="{Binding BridgesUp, Converter={StaticResource SingleLineVisibilityConverter}}"/>
 
                 <!--Single line vertical bottom-->
                 <Line Style="{StaticResource BridgeStyle}" X1="0" Y1="30" X2="0" Y2="62" HorizontalAlignment="Center" VerticalAlignment="Bottom" Visibility="{Binding BridgesDown, Converter={StaticResource SingleLineVisibilityConverter}}"/>
@@ -76,7 +76,7 @@
         </Border>
     </DataTemplate>
     <DataTemplate x:Key="DataTemplateLevel1">
-        <ItemsControl ItemsSource="{Binding}" ItemTemplate="{DynamicResource DataTemplateIsland}" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <ItemsControl ItemsSource="{Binding}" ItemTemplate="{DynamicResource DataTemplateIsland}" HorizontalAlignment="Center" VerticalAlignment="Center" BorderThickness="0">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal"/>
