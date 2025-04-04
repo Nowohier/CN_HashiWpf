@@ -4,6 +4,7 @@ using CNHashiWpf.Messages;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Input;
@@ -12,10 +13,11 @@ using System.Windows.Media;
 namespace CNHashiWpf.ViewModels
 {
     [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
-    public class MainViewModel : BaseViewModel, IRecipient<BridgeConnectionChangedMessage>, IRecipient<UpdateAllIslandColorsMessage>, IRecipient<AllConnectionsSetMessage>, IRecipient<CurrentSourceIslandChangedMessage>
+    public class MainViewModel : BaseViewModel, IRecipient<BridgeConnectionChangedMessage>, IRecipient<UpdateAllIslandColorsMessage>, IRecipient<AllConnectionsSetMessage>, IRecipient<CurrentSourceIslandChangedMessage>, IRecipient<PotentialTargetIslandChangedMessage>
     {
         private readonly HashiGenerator hashiGenerator = new();
         private IslandViewModel? currentSourceIsland;
+        private IslandViewModel? potentialTargetIsland;
 
         public MainViewModel()
         {
@@ -23,6 +25,7 @@ namespace CNHashiWpf.ViewModels
             WeakReferenceMessenger.Default.Register<UpdateAllIslandColorsMessage>(this);
             WeakReferenceMessenger.Default.Register<AllConnectionsSetMessage>(this);
             WeakReferenceMessenger.Default.Register<CurrentSourceIslandChangedMessage>(this);
+            WeakReferenceMessenger.Default.Register<PotentialTargetIslandChangedMessage>(this);
             CreateNewGameCommand = new RelayCommand(CreateNewGame);
             RemoveAllBridgesCommand = new RelayCommand(RemoveAllBridgesExecute);
         }
@@ -50,6 +53,15 @@ namespace CNHashiWpf.ViewModels
         {
             get => currentSourceIsland;
             set => Set(ref currentSourceIsland, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the potential target island.
+        /// </summary>
+        public IslandViewModel? PotentialTargetIsland
+        {
+            get => potentialTargetIsland;
+            set => Set(ref potentialTargetIsland, value);
         }
 
         /// <summary>
@@ -98,21 +110,19 @@ namespace CNHashiWpf.ViewModels
 
         public void Receive(BridgeConnectionChangedMessage message)
         {
-            var connectionInfos = message.Value;
+            var bridgeOperationType = message.Value.BridgeOperationType;
+            var sourceIsland = message.Value.SourceIsland;
 
-            if (connectionInfos.BridgeOperationType != BridgeOperationType.RemoveAll && connectionInfos.IsDiagonalConnection)
+            if (bridgeOperationType == BridgeOperationType.Add &&
+                !ConnectionManager.IsValidDropTarget(CurrentSourceIsland, PotentialTargetIsland))
             {
                 return;
             }
 
-            var sourceIsland = connectionInfos.SourceIsland;
-            var targetIsland = connectionInfos.TargetIsland;
-
-            Action bridgeAction = connectionInfos.BridgeOperationType switch
+            Action bridgeAction = bridgeOperationType switch
             {
-                BridgeOperationType.Add => () => ConnectionManager.AddConnection(sourceIsland, targetIsland),
-                BridgeOperationType.Remove => () => ConnectionManager.RemoveConnection(sourceIsland, targetIsland),
-                BridgeOperationType.RemoveAll => () => ConnectionManager.RemoveAllConnections(sourceIsland, targetIsland),
+                BridgeOperationType.Add => () => ConnectionManager.AddConnection(CurrentSourceIsland, PotentialTargetIsland),
+                BridgeOperationType.RemoveAll => () => ConnectionManager.RemoveAllConnections(sourceIsland, null),
                 _ => throw new ArgumentOutOfRangeException()
             };
 
@@ -143,7 +153,40 @@ namespace CNHashiWpf.ViewModels
 
         public void Receive(CurrentSourceIslandChangedMessage message)
         {
+            Debug.WriteLine("ChangeSourceIsland Called");
             CurrentSourceIsland = message.Value;
+        }
+
+        public void Receive(PotentialTargetIslandChangedMessage islandChangedMessage)
+        {
+            if (CurrentSourceIsland == null)
+            {
+                return;
+            }
+
+            if (islandChangedMessage.Value == null)
+            {
+                ConnectionManager.RemoveAllHighlights();
+                ConnectionManager.RemoveAllPotentialIslandCoordinates();
+                PotentialTargetIsland = null;
+                return;
+            }
+
+            var target = ConnectionManager.GetPotentialTargetIsland(CurrentSourceIsland, islandChangedMessage.Value);
+
+            if (target == null)
+            {
+                ConnectionManager.RemoveAllHighlights();
+                PotentialTargetIsland = null;
+                return;
+            }
+
+            target.IslandColor = Brushes.LightGreen;
+            PotentialTargetIsland = target;
+
+            Debug.WriteLine("Highlight called");
+            ConnectionManager.RemoveAllHighlights();
+            ConnectionManager.HighlightPathToTargetIsland(CurrentSourceIsland, PotentialTargetIsland);
         }
     }
 }
