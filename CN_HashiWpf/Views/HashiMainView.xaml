@@ -35,14 +35,6 @@
         </Grid>
 
         <Grid Grid.Row="1" Margin="0,10,0,0">
-            <Canvas>
-                <Line X1="{Binding CurrentSourceIsland.CurrentDragLineX1, FallbackValue=0}" 
-                      Y1="{Binding CurrentSourceIsland.CurrentDragLineY1, FallbackValue=0}" 
-                      X2="{Binding CurrentSourceIsland.CurrentDragLineX2, FallbackValue=0}" 
-                      Y2="{Binding CurrentSourceIsland.CurrentDragLineY2, FallbackValue=0}" 
-                      Stroke="Black" 
-                      StrokeThickness="2"/>
-            </Canvas>
             <Viewbox x:Name="HashiViewBox" Stretch="Uniform">
                 <ItemsControl Margin="10" IsHitTestVisible="True" ItemTemplate="{StaticResource DataTemplateLevel1}" ItemsSource="{Binding ConnectionManager.Islands}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
             </Viewbox>

@@ -15,10 +15,10 @@ namespace CNHashiWpf.ViewModels
         /// </summary>
         public ObservableCollection<ObservableCollection<IslandViewModel>> Islands { get; } = new();
 
-        public void AddConnection(IslandViewModel sourceIsland, IslandViewModel targetIsland)
+        public void AddConnection(IslandViewModel? sourceIsland, IslandViewModel? targetIsland)
         {
             if (!IsValidConnection(sourceIsland, targetIsland)) return;
-            if (MaxBridgesReachedBetweenSourceAndTarget(sourceIsland, targetIsland))
+            if (MaxBridgesReachedBetweenSourceAndTarget(sourceIsland, targetIsland) is true)
             {
                 RemoveAllConnections(sourceIsland, targetIsland);
                 return;
@@ -31,13 +31,13 @@ namespace CNHashiWpf.ViewModels
             }
         }
 
-        public void RemoveConnection(IslandViewModel sourceIsland, IslandViewModel targetIsland)
+        public void RemoveAllConnections(IslandViewModel? sourceIsland, IslandViewModel? targetIsland)
         {
-            ManageConnections(sourceIsland, targetIsland, (island, coordinates) => island.RemoveConnection(coordinates));
-        }
+            if (sourceIsland == null)
+            {
+                throw new ArgumentNullException(nameof(sourceIsland), "Source island cannot be null.");
+            }
 
-        public void RemoveAllConnections(IslandViewModel sourceIsland, IslandViewModel targetIsland)
-        {
             if (targetIsland == null)
             {
                 // Clears all source island connections
@@ -52,41 +52,124 @@ namespace CNHashiWpf.ViewModels
             ManageConnections(sourceIsland, targetIsland, (island, coordinates) => island.RemoveAllConnectionsMatchingCoordinates(coordinates));
         }
 
-        private bool AreAllConnectionsSet() => Islands.All(row => row.All(island => island.MaxConnections == 0 || island.MaxConnectionsReached));
-
-        private void ManageConnections(IslandViewModel source, IslandViewModel target, Action<IslandViewModel, Point> connectionAction)
+        public IslandViewModel? GetPotentialTargetIsland(IslandViewModel source, IslandViewModel target)
         {
-            if (source.GetConnectionType(target) == ConnectionTypeEnum.Diagonal)
+            //ToDo Fix this
+            var connectionType = source.GetConnectionType(target);
+
+            switch (connectionType)
             {
-                throw new InvalidOperationException("Diagonal connections are not allowed.");
+                case ConnectionTypeEnum.Vertical:
+                    {
+                        // Suche nach der nächsten gültigen Insel in vertikaler Richtung
+                        for (int y = (int)source.Coordinates.Y + 1; y < Islands.Count; y++)
+                        {
+                            var potentialTarget = Islands[y][(int)source.Coordinates.X];
+                            if (IsValidConnection(source, potentialTarget))
+                            {
+                                return potentialTarget;
+                            }
+                        }
+                        for (int y = (int)source.Coordinates.Y - 1; y >= 0; y--)
+                        {
+                            var potentialTarget = Islands[y][(int)source.Coordinates.X];
+                            if (IsValidConnection(source, potentialTarget))
+                            {
+                                return potentialTarget;
+                            }
+                        }
+                        return null;
+                    }
+                case ConnectionTypeEnum.Horizontal:
+                    {
+                        // Suche nach der nächsten gültigen Insel in horizontaler Richtung
+                        for (int x = (int)source.Coordinates.X + 1; x < Islands[(int)source.Coordinates.Y].Count; x++)
+                        {
+                            var potentialTarget = Islands[(int)source.Coordinates.Y][x];
+                            if (IsValidConnection(source, potentialTarget))
+                            {
+                                return potentialTarget;
+                            }
+                        }
+                        for (int x = (int)source.Coordinates.X - 1; x >= 0; x--)
+                        {
+                            var potentialTarget = Islands[(int)source.Coordinates.Y][x];
+                            if (IsValidConnection(source, potentialTarget))
+                            {
+                                return potentialTarget;
+                            }
+                        }
+                        return null;
+                    }
+                case ConnectionTypeEnum.Diagonal:
+                default:
+                    return null;
             }
+        }
 
-            var sourceCoordinates = source.Coordinates;
-            var targetCoordinates = target.Coordinates;
-
-            var islandsToConnect = GetAllIslandsInvolvedInConnection(source, target);
-
-            foreach (var island in islandsToConnect)
+        /// <summary>
+        /// Highlights the path to the target island.
+        /// </summary>
+        /// <param name="source">The source island.</param>
+        /// <param name="target">The target island.</param>
+        public void HighlightPathToTargetIsland(IslandViewModel source, IslandViewModel target)
+        {
+            var islands = GetAllIslandsInvolvedInConnection(source, target);
+            var connectionType = source.GetConnectionType(target);
+            foreach (var island in islands)
             {
                 if (island.MaxConnections == 0)
                 {
-                    connectionAction(island, sourceCoordinates);
-                    connectionAction(island, targetCoordinates);
+                    island.IsHighlightHorizontalLeft = connectionType == ConnectionTypeEnum.Horizontal;
+                    island.IsHighlightHorizontalRight = connectionType == ConnectionTypeEnum.Horizontal;
+                    island.IsHighlightVerticalTop = connectionType == ConnectionTypeEnum.Vertical;
+                    island.IsHighlightVerticalBottom = connectionType == ConnectionTypeEnum.Vertical;
                 }
 
                 if (island == source)
                 {
-                    connectionAction(island, targetCoordinates);
+                    island.IsHighlightHorizontalLeft = connectionType == ConnectionTypeEnum.Horizontal && target.Coordinates.X < source.Coordinates.X;
+                    island.IsHighlightHorizontalRight = connectionType == ConnectionTypeEnum.Horizontal && target.Coordinates.X > source.Coordinates.X;
+                    island.IsHighlightVerticalTop = connectionType == ConnectionTypeEnum.Vertical && target.Coordinates.Y < source.Coordinates.Y;
+                    island.IsHighlightVerticalBottom = connectionType == ConnectionTypeEnum.Vertical && target.Coordinates.Y > source.Coordinates.Y;
                 }
 
                 if (island == target)
                 {
-                    connectionAction(island, sourceCoordinates);
+                    island.IsHighlightHorizontalLeft = connectionType == ConnectionTypeEnum.Horizontal && source.Coordinates.X < target.Coordinates.X;
+                    island.IsHighlightHorizontalRight = connectionType == ConnectionTypeEnum.Horizontal && source.Coordinates.X > target.Coordinates.X;
+                    island.IsHighlightVerticalTop = connectionType == ConnectionTypeEnum.Vertical && source.Coordinates.Y < target.Coordinates.Y;
+                    island.IsHighlightVerticalBottom = connectionType == ConnectionTypeEnum.Vertical && source.Coordinates.Y > target.Coordinates.Y;
                 }
             }
         }
 
-        private IEnumerable<IslandViewModel> GetAllIslandsInvolvedInConnection(IslandViewModel source, IslandViewModel target)
+        public void RemoveAllHighlights()
+        {
+            foreach (var row in Islands)
+            {
+                foreach (var island in row)
+                {
+                    island.IsHighlightHorizontalLeft = false;
+                    island.IsHighlightHorizontalRight = false;
+                    island.IsHighlightVerticalTop = false;
+                    island.IsHighlightVerticalBottom = false;
+                }
+            }
+        }
+
+        public void RemoveAllPotentialIslandCoordinates()
+        {
+            foreach (var row in Islands)
+            {
+                foreach (var island in row)
+                {
+                    island.PotentialTargetIslandCoordinates = null;
+                }
+            }
+        }
+
+        public IEnumerable<IslandViewModel> GetAllIslandsInvolvedInConnection(IslandViewModel source, IslandViewModel target)
         {
             var islandsBetween = new List<IslandViewModel>();
             var connectionType = source.GetConnectionType(target);
@@ -126,14 +209,66 @@ namespace CNHashiWpf.ViewModels
         }
 
         /// <summary>
+        /// Checks if the drop target is valid.
+        /// </summary>
+        /// <param name="source">The source island.</param>
+        /// <param name="target">The target island.</param>
+        /// <returns>a boolean value if drop target is valid.</returns>
+        public bool IsValidDropTarget(IslandViewModel? source, IslandViewModel? target) => source != null && target != null && !source.MaxConnectionsReached && !target.MaxConnectionsReached && source.GetConnectionType(target) != ConnectionTypeEnum.Diagonal;
+
+        private bool AreAllConnectionsSet() => Islands.All(row => row.All(island => island.MaxConnections == 0 || island.MaxConnectionsReached));
+
+        private void ManageConnections(IslandViewModel? source, IslandViewModel? target, Action<IslandViewModel, Point> connectionAction)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source), "Source island cannot be null.");
+            }
+
+            if (target == null)
+            {
+                throw new ArgumentNullException(nameof(target), "Target island cannot be null.");
+            }
+
+            if (source.GetConnectionType(target) == ConnectionTypeEnum.Diagonal)
+            {
+                throw new InvalidOperationException("Diagonal connections are not allowed.");
+            }
+
+            var sourceCoordinates = source.Coordinates;
+            var targetCoordinates = target.Coordinates;
+
+            var islandsToConnect = GetAllIslandsInvolvedInConnection(source, target);
+
+            foreach (var island in islandsToConnect)
+            {
+                if (island.MaxConnections == 0)
+                {
+                    connectionAction(island, sourceCoordinates);
+                    connectionAction(island, targetCoordinates);
+                }
+
+                if (island == source)
+                {
+                    connectionAction(island, targetCoordinates);
+                }
+
+                if (island == target)
+                {
+                    connectionAction(island, sourceCoordinates);
+                }
+            }
+        }
+
+        /// <summary>
         /// Checks if the maximum number of bridges has been reached between the source or target islands.
         /// </summary>
         /// <param name="source">The source Island.</param>
         /// <param name="target">The target island.</param>
         /// <returns>a boolean value indicating if max bridges have been reached.</returns>
-        private bool MaxBridgesReachedBetweenSourceAndTarget(IslandViewModel source, IslandViewModel target)
+        private bool? MaxBridgesReachedBetweenSourceAndTarget(IslandViewModel? source, IslandViewModel? target)
         {
-            return source.AllConnections.Count(c => c == target.Coordinates) >= 2 || target.AllConnections.Count(c => c == source.Coordinates) >= 2;
+            return source == null || target == null ? null : source.AllConnections.Count(c => c == target.Coordinates) >= 2 || target.AllConnections.Count(c => c == source.Coordinates) >= 2;
         }
 
         /// <summary>
@@ -152,8 +287,14 @@ namespace CNHashiWpf.ViewModels
         /// <param name="source">The source island.</param>
         /// <param name="target">The target island.</param>
         /// <returns></returns>
-        private bool IsValidConnection(IslandViewModel source, IslandViewModel target)
+        private bool IsValidConnection(IslandViewModel? source, IslandViewModel? target)
         {
+            // Check if the source and/or target islands are null -> invalid
+            if (source == null || target == null)
+            {
+                return false;
+            }
+
             // Check if the source and target coordinates are the same -> invalid
             if (source == target)
             {
