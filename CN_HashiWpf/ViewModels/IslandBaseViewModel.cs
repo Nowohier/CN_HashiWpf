@@ -15,7 +15,7 @@ using System.Windows.Media;
 namespace CNHashiWpf.ViewModels
 {
     [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
-    public abstract class IslandBaseViewModel : BaseViewModel
+    public abstract class IslandBaseViewModel : BaseViewModel, IIslandBaseViewModel
     {
         private Point mouseDownPosition;
         private bool isDragging;
@@ -47,131 +47,87 @@ namespace CNHashiWpf.ViewModels
             set => Set(ref potentialTargetIslandCoordinates, value);
         }
 
-        /// <summary>
-        /// A list of all set connections for this island.
-        /// </summary>
+        /// <inheritdoc/>
         public List<Point> AllConnections { get; } = new();
 
-        /// <summary>
-        /// Determines if the max connections have been reached
-        /// </summary>
+        /// <inheritdoc/>
         public bool MaxConnectionsReached => AllConnections.Count >= MaxConnections;
 
-        /// <summary>
-        /// Gets the bridges on the left side.
-        /// </summary>
+        /// <inheritdoc/>
         public List<Point> BridgesLeft => AllConnections.Where(x => x.X < Coordinates.X && x.Y == Coordinates.Y).ToList();
 
-        /// <summary>
-        /// Gets the bridges on the right side.
-        /// </summary>
+        /// <inheritdoc/>
         public List<Point> BridgesRight => AllConnections.Where(x => x.X > Coordinates.X && x.Y == Coordinates.Y).ToList();
 
-        /// <summary>
-        /// Gets the bridges on the bottom side.
-        /// </summary>
+        /// <inheritdoc/>
         public List<Point> BridgesUp => AllConnections.Where(x => x.X == Coordinates.X && x.Y < Coordinates.Y).ToList();
 
-        /// <summary>
-        /// Gets the bridges on the top side.
-        /// </summary>
+        /// <inheritdoc/>
         public List<Point> BridgesDown => AllConnections.Where(x => x.X == Coordinates.X && x.Y > Coordinates.Y).ToList();
 
-        /// <summary>
-        /// Gets or sets the color of the island.
-        /// </summary>
+        /// <inheritdoc/>
         public Brush IslandColor
         {
             get => islandColor;
             set => Set(ref islandColor, value);
         }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether the path to the island is highlighted left horizontally.
-        /// </summary>
+        /// <inheritdoc/>
         public bool IsHighlightHorizontalLeft
         {
             get => isHighlightHorizontalLeft;
             set => Set(ref isHighlightHorizontalLeft, value);
         }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether the path to the island is highlighted right horizontally.
-        /// </summary>
+        /// <inheritdoc/>
         public bool IsHighlightHorizontalRight
         {
             get => isHighlightHorizontalRight;
             set => Set(ref isHighlightHorizontalRight, value);
         }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether the path to the island is highlighted vertically top.
-        /// </summary>
+        /// <inheritdoc/>
         public bool IsHighlightVerticalTop
         {
             get => isHighlightVerticalTop;
             set => Set(ref isHighlightVerticalTop, value);
         }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether the path to the island is highlighted vertically bottom.
-        /// </summary>
+        /// <inheritdoc/>
         public bool IsHighlightVerticalBottom
         {
             get => isHighlightVerticalBottom;
             set => Set(ref isHighlightVerticalBottom, value);
         }
 
-        /// <summary>
-        /// Gets the maximum number of connections for this island.
-        /// </summary>
+        /// <inheritdoc/>
         public int MaxConnections { get; }
 
-        /// <summary>
-        /// Gets the coordinates of the island.
-        /// </summary>
+        /// <inheritdoc/>
         public Point Coordinates { get; }
 
-        /// <summary>
-        /// Gets the command for the left mouse button down event.
-        /// </summary>
+        /// <inheritdoc/>
         public ICommand MouseLeftButtonDownCommand { get; }
 
-        /// <summary>
-        /// Gets the command for the left mouse button up event.
-        /// </summary>
+        /// <inheritdoc/>
         public ICommand MouseLeftButtonUpCommand { get; }
 
-        /// <summary>
-        /// Gets the command for the drag enter event.
-        /// </summary>
+        /// <inheritdoc/>
         public ICommand DragEnterCommand { get; }
 
-        /// <summary>
-        /// Gets the command for the drag over event.
-        /// </summary>
+        /// <inheritdoc/>
         public ICommand DragOverCommand { get; }
 
-        /// <summary>
-        /// Gets the command for the drag leave event.
-        /// </summary>
+        /// <inheritdoc/>
         public ICommand DragLeaveCommand { get; }
 
-        /// <summary>
-        /// Gets the command for the drop event.
-        /// </summary>
+        /// <inheritdoc/>
         public ICommand DropCommand { get; }
 
-        /// <summary>
-        /// Gets the command for the mouse move event.
-        /// </summary>
+        /// <inheritdoc/>
         public ICommand MouseMoveCommand { get; }
 
-        /// <summary>
-        /// Gets the connection type between two islands.
-        /// </summary>
-        /// <param name="targetIsland">The island to perform the check on.</param>
-        /// <returns>a <see cref="ConnectionTypeEnum"/>.</returns>
+        /// <inheritdoc/>
         public ConnectionTypeEnum GetConnectionType(IslandViewModel targetIsland)
         {
             if (Coordinates.X == targetIsland.Coordinates.X)
@@ -188,9 +144,7 @@ namespace CNHashiWpf.ViewModels
             }
         }
 
-        /// <summary>
-        /// Notifies the bridge connections.
-        /// </summary>
+        /// <inheritdoc/>
         public void NotifyBridgeConnections()
         {
             OnPropertyChanged(nameof(BridgesLeft));
@@ -263,11 +217,6 @@ namespace CNHashiWpf.ViewModels
             if (!e.Data.GetDataPresent(typeof(IslandViewModel)) ||
                 e.Data.GetData(typeof(IslandViewModel)) is not IslandViewModel islandToConnectWith || islandToConnectWith == this) return;
 
-            //if (IsValidDropTarget(islandToConnectWith))
-            //{
-            //    WeakReferenceMessenger.Default.Send(new BridgeConnectionChangedMessage(new BridgeConnectionInformationContainer(islandToConnectWith, (IslandViewModel)this, BridgeOperationType.Add)));
-            //}
-
             WeakReferenceMessenger.Default.Send(new UpdateAllIslandColorsMessage(Brushes.LightBlue));
         }
 
@@ -277,12 +226,7 @@ namespace CNHashiWpf.ViewModels
         /// <param name="e">The <see cref="MouseEventArgs"/>.</param>
         protected virtual void MouseMoveCommandExecute(MouseEventArgsWithCorrectViewBoxPosition? e)
         {
-            if (e == null)
-            {
-                throw new ArgumentNullException(nameof(e));
-            }
-
-            if (e.MouseEventArgs is not { LeftButton: MouseButtonState.Pressed }) return;
+            if (e is not { MouseEventArgs.LeftButton: MouseButtonState.Pressed }) return;
 
             // Check if mouse is being dragged
             var currentPosition = e.MouseEventArgs.GetPosition(null);
@@ -310,11 +254,6 @@ namespace CNHashiWpf.ViewModels
         /// <exception cref="ArgumentNullException">Throws an exception if e is null.</exception>
         protected virtual void MouseLeftButtonDownCommandExecute(MouseButtonEventArgs? e)
         {
-            if (e == null)
-            {
-                throw new ArgumentNullException(nameof(e));
-            }
-
             isDragging = false;
             IslandColor = Brushes.LightGreen;
         }
@@ -326,11 +265,6 @@ namespace CNHashiWpf.ViewModels
         /// <exception cref="ArgumentNullException">Throws an exception if e is null.</exception>
         protected virtual void MouseLeftButtonUpCommandExecute(MouseButtonEventArgs? e)
         {
-            if (e == null)
-            {
-                throw new ArgumentNullException(nameof(e));
-            }
-
             if (!isDragging)
             {
                 WeakReferenceMessenger.Default.Send(new BridgeConnectionChangedMessage(new BridgeConnectionInformationContainer((IslandViewModel)this, BridgeOperationType.RemoveAll)));
@@ -346,10 +280,17 @@ namespace CNHashiWpf.ViewModels
         /// <param name="e">The event args.</param>
         private void QueryContinueDragHandler(object sender, QueryContinueDragEventArgs e)
         {
-            var currentPosition = CursorHelper.GetCurrentCursorPosition(((IViewBoxControl)Application.Current.MainWindow).ViewBoxControl);
-            var hitTestResult = VisualTreeHelper.HitTest(((IViewBoxControl)Application.Current.MainWindow).ViewBoxControl, currentPosition);
+            var window = Application.Current.MainWindow as IViewBoxControl;
+            var viewBox = window?.ViewBoxControl;
 
-            if (hitTestResult?.VisualHit is FrameworkElement element)
+            if (viewBox == null)
+            {
+                throw new InvalidOperationException("ViewBoxControl is not available.");
+            }
+
+            var currentPosition = CursorHelper.GetCurrentCursorPosition(viewBox);
+
+            if (VisualTreeHelper.HitTest(viewBox, currentPosition)?.VisualHit is FrameworkElement element)
             {
                 if (element.DataContext != this && element.DataContext is IslandViewModel potentialIsland && potentialIsland.Coordinates != PotentialTargetIslandCoordinates)
                 {
@@ -360,8 +301,8 @@ namespace CNHashiWpf.ViewModels
             }
 
             if (e.KeyStates != DragDropKeyStates.None) return;
-            isDragging = false;
 
+            isDragging = false;
             WeakReferenceMessenger.Default.Send(new BridgeConnectionChangedMessage(new BridgeConnectionInformationContainer((IslandViewModel)this, BridgeOperationType.Add)));
             WeakReferenceMessenger.Default.Send(new PotentialTargetIslandChangedMessage(null));
             WeakReferenceMessenger.Default.Send(new CurrentSourceIslandChangedMessage(null));
