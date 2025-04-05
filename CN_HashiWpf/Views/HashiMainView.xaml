@@ -13,6 +13,13 @@
                  d:DataContext="{d:DesignInstance {x:Type viewModels:MainViewModel}, IsDesignTimeCreatable=False}"
                  Title="Hashiwokakero" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen"
                  AllowDrop="True" WindowTitleBrush="{StaticResource BasicBrush}">
+    <mah:MetroWindow.IconTemplate>
+        <DataTemplate>
+            <Grid>
+                <iconPacks:PackIconVaadinIcons Kind="Cluster" Style="{StaticResource WindowIconStyle}" Margin="5,0,0,0"/>
+            </Grid>
+        </DataTemplate>
+    </mah:MetroWindow.IconTemplate>
     <Window.Resources>
         <ObjectDataProvider x:Key="DifficultyEnums" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
             <ObjectDataProvider.MethodParameters>
