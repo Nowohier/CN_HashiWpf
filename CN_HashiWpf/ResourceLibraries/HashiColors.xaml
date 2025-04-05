@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <SolidColorBrush x:Key="BackgroundBrush" Color="White"/>
-    <SolidColorBrush x:Key="MenuBackgroundBrush" Color="#f2ebd4"/>
+    <SolidColorBrush x:Key="MenuBackgroundBrush" Color="AliceBlue"/>
     <SolidColorBrush x:Key="BasicBrush" Color="#FF444446"/>
     <SolidColorBrush x:Key="BasicIslandBrush" Color="#add8e6"/>
     <SolidColorBrush x:Key="GreenIslandBrush" Color="#ade6bb"/>
