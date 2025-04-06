@@ -4,7 +4,7 @@ using System.Windows.Input;
 
 namespace Hashi.Gui.Interfaces.ViewModels
 {
-    public interface IIslandViewModel
+    public interface IIslandViewModel : IBaseViewModel
     {
         /// <summary>
         /// Gets or sets the color of the island.

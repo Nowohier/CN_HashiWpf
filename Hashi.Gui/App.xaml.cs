@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using Hashi.Gui.AutoFac;
-using Hashi.Gui.ViewModels;
-using Hashi.Gui.Views;
+using Hashi.Gui.Interfaces.ViewModels;
+using Hashi.Gui.Interfaces.Views;
 using System.Windows;
 
 namespace Hashi.Gui;
@@ -11,7 +11,7 @@ namespace Hashi.Gui;
 /// </summary>
 public partial class App : Application
 {
-    private readonly MainViewModel mainViewModel = new();
+    private IMainViewModel mainViewModel;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="App"/> class.
@@ -34,10 +34,12 @@ public partial class App : Application
         var container = builder.Build();
 
         using var scope = container.BeginLifetimeScope();
-
+        mainViewModel = scope.Resolve<IMainViewModel>();
         mainViewModel.CreateNewGame();
 
-        new HashiMainView { DataContext = mainViewModel }.Show();
+        var gui = scope.Resolve<IHashiMainView>();
+        gui.DataContext = mainViewModel;
+        gui.Show();
     }
 
     /// <summary>

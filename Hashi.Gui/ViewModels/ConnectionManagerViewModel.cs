@@ -8,14 +8,18 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Hashi.Gui.ViewModels
 {
+
+
+    /// <inheritdoc cref="IConnectionManagerViewModel"/>
     [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
-    public class ConnectionManagerViewModel : BaseViewModel
+    public class ConnectionManagerViewModel : BaseViewModel, IConnectionManagerViewModel
     {
         /// <summary>
         /// Gets the islands.
         /// </summary>
-        public ObservableCollection<ObservableCollection<IslandViewModel>> Islands { get; } = new();
+        public ObservableCollection<ObservableCollection<IIslandViewModel>> Islands { get; } = new();
 
+        /// <inheritdoc />
         public void AddConnection(IIslandViewModel? sourceIsland, IIslandViewModel? targetIsland)
         {
             if (!IsValidConnection(sourceIsland, targetIsland)) return;
@@ -32,6 +36,7 @@ namespace Hashi.Gui.ViewModels
             }
         }
 
+        /// <inheritdoc />
         public void RemoveAllConnections(IIslandViewModel? sourceIsland, IIslandViewModel? targetIsland)
         {
             if (sourceIsland == null)
@@ -53,6 +58,7 @@ namespace Hashi.Gui.ViewModels
             ManageConnections(sourceIsland, targetIsland, (island, coordinates) => island.RemoveAllConnectionsMatchingCoordinates(coordinates));
         }
 
+        /// <inheritdoc />
         public IIslandViewModel? GetPotentialTargetIsland(IIslandViewModel source, IIslandViewModel target)
         {
             var connectionType = source.GetConnectionType(target);
@@ -121,11 +127,7 @@ namespace Hashi.Gui.ViewModels
             }
         }
 
-        /// <summary>
-        /// Highlights the path to the target island.
-        /// </summary>
-        /// <param name="source">The source island.</param>
-        /// <param name="target">The target island.</param>
+        /// <inheritdoc />
         public void HighlightPathToTargetIsland(IIslandViewModel source, IIslandViewModel target)
         {
             var islands = GetAllIslandsInvolvedInConnection(source, target);
@@ -158,6 +160,7 @@ namespace Hashi.Gui.ViewModels
             }
         }
 
+        /// <inheritdoc />
         public void RemoveAllHighlights()
         {
             foreach (var row in Islands)
@@ -172,6 +175,7 @@ namespace Hashi.Gui.ViewModels
             }
         }
 
+        /// <inheritdoc />
         public void RemoveAllPotentialIslandCoordinates()
         {
             foreach (var row in Islands)
@@ -183,9 +187,10 @@ namespace Hashi.Gui.ViewModels
             }
         }
 
+        /// <inheritdoc />
         public IEnumerable<IIslandViewModel> GetAllIslandsInvolvedInConnection(IIslandViewModel source, IIslandViewModel target)
         {
-            var islandsBetween = new List<IslandViewModel>();
+            var islandsBetween = new List<IIslandViewModel>();
             var connectionType = source.GetConnectionType(target);
 
             switch (connectionType)
@@ -222,13 +227,9 @@ namespace Hashi.Gui.ViewModels
             return islandsBetween;
         }
 
-        /// <summary>
-        /// Checks if the drop target is valid.
-        /// </summary>
-        /// <param name="source">The source island.</param>
-        /// <param name="target">The target island.</param>
-        /// <returns>a boolean value if drop target is valid.</returns>
+        /// <inheritdoc />
         public bool IsValidDropTarget(IIslandViewModel? source, IIslandViewModel? target) => source != null && target != null && !source.MaxConnectionsReached && !target.MaxConnectionsReached && source.GetConnectionType(target) != ConnectionTypeEnum.Diagonal;
+
 
         private bool AreAllConnectionsSet() => Islands.All(row => row.All(island => island.MaxConnections == 0 || island.MaxConnectionsReached));
 

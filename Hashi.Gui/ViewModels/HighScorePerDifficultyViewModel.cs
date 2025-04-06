@@ -1,4 +1,5 @@
 ﻿using Hashi.Gui.Enums;
+using Hashi.Gui.Interfaces.ViewModels;
 using Newtonsoft.Json;
 
 namespace Hashi.Gui.ViewModels
@@ -7,7 +8,7 @@ namespace Hashi.Gui.ViewModels
     /// Represents a view model for displaying high scores per difficulty level.
     /// </summary>
     [JsonObject(MemberSerialization.OptIn)]
-    public class HighScorePerDifficultyViewModel : BaseViewModel
+    public class HighScorePerDifficultyViewModel : BaseViewModel, IHighScorePerDifficultyViewModel
     {
         private TimeSpan? highScoreTime;
 
@@ -20,9 +21,7 @@ namespace Hashi.Gui.ViewModels
             Difficulty = difficulty;
         }
 
-        /// <summary>
-        /// Gets or sets the high score time for the specified difficulty level.
-        /// </summary>
+        /// <inheritdoc />
         [JsonProperty(nameof(HighScoreTime))]
         public TimeSpan? HighScoreTime
         {
@@ -30,9 +29,7 @@ namespace Hashi.Gui.ViewModels
             set => Set(ref highScoreTime, value);
         }
 
-        /// <summary>
-        /// Gets the difficulty level associated with this high score.
-        /// </summary>
+        /// <inheritdoc />
         [JsonProperty(nameof(Difficulty))]
         public DifficultyEnum Difficulty { get; }
 
