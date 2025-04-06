@@ -1,15 +1,16 @@
-﻿namespace Hashi.LinearSolver.Models
+﻿using Hashi.LinearSolver.Interfaces.Models;
+
+namespace Hashi.LinearSolver.Models
 {
     // y = y-Koordinate; x = x-Koordinate; value = Wert des Knotens; up = obere Nachbarknoten; down = untere Nachbarknoten
     // right = rechter Nachbarknoten; left = linke Nachbarknoten
     // remain = ist der Rest vom Wert des Knotens abgezogen der vorhandenen Knoten
     // upedges, downedges, leftedges, rightedges = Anzahl an Kanten nach oben, unten, links und rechts
 
-
     /// <summary>
     /// Represents an island.
     /// </summary>
-    public class Island
+    public class Island : IIsland
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Island"/> class.
@@ -23,76 +24,59 @@
             Y = y;
             X = x;
             Value = value;
-            UpEdges = 0;
-            DownEdges = 0;
-            LeftEdges = 0;
-            RightEdges = 0;
+            UpBridges = 0;
+            DownBridges = 0;
+            LeftBridges = 0;
+            RightBridges = 0;
             Number = number;
-            LowerNeighbors = new List<Island>();
-            UpNeighbors = new List<Island>();
+            LowerNeighbors = new List<IIsland>();
+            UpNeighbors = new List<IIsland>();
         }
 
-        /// <summary>
-        /// Gets the y coordinate.
-        /// </summary>
+        /// <inheritdoc />
         public int Y { get; }
 
-        /// <summary>
-        /// Gets the x coordinate.
-        /// </summary>
+        /// <inheritdoc />
         public int X { get; }
 
-        /// <summary>
-        /// Gets the actual value of the island.
-        /// </summary>
+        /// <inheritdoc />
         public int Value { get; set; }
 
-        /// <summary>
-        /// Gets the upper neighbor.
-        /// </summary>
-        public Island Up { get; private set; }
+        /// <inheritdoc />
+        public IIsland? Up { get; private set; }
 
-        /// <summary>
-        /// Gets the lower neighbor.
-        /// </summary>
-        public Island Down { get; private set; }
+        /// <inheritdoc />
+        public IIsland? Down { get; private set; }
 
-        /// <summary>
-        /// Gets the right neighbor.
-        /// </summary>
-        public Island Right { get; private set; }
+        /// <inheritdoc />
+        public IIsland? Right { get; private set; }
 
-        /// <summary>
-        /// Gets the left neighbor.
-        /// </summary>
-        public Island Left { get; private set; }
+        /// <inheritdoc />
+        public IIsland? Left { get; private set; }
 
-        /// <summary>
-        /// Gets the island number.
-        /// </summary>
+        /// <inheritdoc />
         public int Number { get; }
 
-        public int UpEdges { get; private set; }
-        public int DownEdges { get; private set; }
-        public int LeftEdges { get; private set; }
-        public int RightEdges { get; private set; }
+        /// <inheritdoc />
+        public int UpBridges { get; }
 
-        /// <summary>
-        /// Gets the lower neighbors.
-        /// </summary>
-        public List<Island> LowerNeighbors { get; }
+        /// <inheritdoc />
+        public int DownBridges { get; }
 
-        /// <summary>
-        /// Gets the upper neighbors.
-        /// </summary>
-        public List<Island> UpNeighbors { get; }
+        /// <inheritdoc />
+        public int LeftBridges { get; }
 
-        /// <summary>
-        /// Adds an edge to the island.
-        /// </summary>
-        /// <param name="field">The array of fields.</param>
-        /// <param name="islands">The list of islands.</param>
-        public void SetAllNeighbors(int[][] field, List<Island> islands)
+        /// <inheritdoc />
+        public int RightBridges { get; }
+
+        /// <inheritdoc />
+        public List<IIsland> LowerNeighbors { get; }
+
+        /// <inheritdoc />
+        public List<IIsland> UpNeighbors { get; }
+
+        /// <inheritdoc />
+        public void SetAllNeighbors(int[][] field, List<IIsland> islands)
         {
             for (var u = Y - 1; u >= 0; u--)
             {
@@ -128,14 +112,10 @@
             }
         }
 
-        /// <summary>
-        /// Returns all islands between this island and the lower neighbor.
-        /// </summary>
-        /// <param name="island">A list of all islands.</param>
-        /// <returns>all islands between this island and the lower neighbor.</returns>
-        public List<Island> DownBlocked(List<Island> island)
+        /// <inheritdoc />
+        public List<IIsland> DownBlocked(List<IIsland> island)
         {
-            var islandsBlocking = new List<Island>();
+            var islandsBlocking = new List<IIsland>();
             if (Down == null) return islandsBlocking;
             for (var row = Down.Y - 1; row > Y; row--)
             {
@@ -147,14 +127,10 @@
             return islandsBlocking;
         }
 
-        /// <summary>
-        /// Returns all islands between this island and the right neighbor.
-        /// </summary>
-        /// <param name="island">A list of all islands.</param>
-        /// <returns>all islands between this island and the right neighbor.</returns>
-        public List<Island> RightBlocked(List<Island> island)
+        /// <inheritdoc />
+        public List<IIsland> RightBlocked(List<IIsland> island)
         {
-            var islandsBlocking = new List<Island>();
+            var islandsBlocking = new List<IIsland>();
             if (Right == null) return islandsBlocking;
             for (var column = Right.X - 1; column > X; column--)
             {

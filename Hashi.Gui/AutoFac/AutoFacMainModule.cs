@@ -1,9 +1,11 @@
 ﻿using Autofac;
+using Hashi.Generator;
 using Hashi.Gui.Messages;
 using Hashi.Gui.Models;
 using Hashi.Gui.ViewModels;
 using Hashi.Gui.Views;
 using Hashi.Gui.Wrappers;
+using Hashi.LinearSolver;
 
 namespace Hashi.Gui.AutoFac
 {
@@ -14,11 +16,14 @@ namespace Hashi.Gui.AutoFac
         protected override void Load(ContainerBuilder builder)
         {
             // Register your modules here
+            builder.RegisterModule<AutoFacGeneratorModule>();
+
             builder.RegisterModule<AutoFacViewModelsModule>();
             builder.RegisterModule<AutoFacViewsModule>();
             builder.RegisterModule<AutoFacMessagesModule>();
             builder.RegisterModule<AutoFacModelsModule>();
             builder.RegisterModule<AutoFacWrapperModule>();
+            builder.RegisterModule<AutoFacLinearSolverModule>();
         }
     }
 }

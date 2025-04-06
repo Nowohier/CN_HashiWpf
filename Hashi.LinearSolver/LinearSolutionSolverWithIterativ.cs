@@ -1,21 +1,45 @@
 ﻿using Google.OrTools.Sat;
-using Hashi.LinearSolver.Models;
+using Hashi.Gui.Enums;
+using Hashi.LinearSolver.Interfaces;
+using Hashi.LinearSolver.Interfaces.Models;
 using System.Diagnostics;
 
 namespace Hashi.LinearSolver
 {
-    /// <summary>
-    /// Represents a linear solution solver with iterative approach.
-    /// </summary>
-    public class LinearSolutionSolverWithIterativ
+    /// <inheritdoc cref="ILinearSolutionSolverWithIterativ"/>
+    public class LinearSolutionSolverWithIterativ : ILinearSolutionSolverWithIterativ
     {
-        private char[][] fieldChars;
+        private readonly Func<IIsland, IIsland, IBridge> bridgeFactory;
+        private readonly Func<int, int, int, int, IBridgePair> bridgePairFactory;
+        private readonly Func<int, int, int, int, IIsland> islandFactory;
+        private readonly Func<IList<int>, IList<int>, IHelper> helperFactory;
+        private char[][] fieldChars = new char[][] { };
 
-        public CpSolverStatus Solve(int[][] mainField)
+        /// <summary>
+        /// Constructor for the LinearSolutionSolverWithIterativ class.
+        /// </summary>
+        /// <param name="bridgeFactory">The bridges factory.</param>
+        /// <param name="bridgePairFactory">The bridge pair factory.</param>
+        /// <param name="islandFactory">The island factory.</param>
+        /// <param name="helperFactory">The helper factory.</param>
+        public LinearSolutionSolverWithIterativ(
+            Func<IIsland, IIsland, IBridge> bridgeFactory,
+            Func<int, int, int, int, IBridgePair> bridgePairFactory,
+            Func<int, int, int, int, IIsland> islandFactory,
+            Func<IList<int>, IList<int>, IHelper> helperFactory)
         {
-            var islands = new List<Island>();
-            var bridges = new List<Bridge>();
-            var delta = new List<BridgePair>();
+            this.bridgeFactory = bridgeFactory;
+            this.bridgePairFactory = bridgePairFactory;
+            this.islandFactory = islandFactory;
+            this.helperFactory = helperFactory;
+        }
+
+        /// <inheritdoc />
+        public SolverStatusEnum Solve(int[][] mainField)
+        {
+            var islands = new List<IIsland>();
+            var bridges = new List<IBridge>();
+            var delta = new List<IBridgePair>();
 
             var solver = new CpSolver();
             var model = new CpModel();
@@ -28,7 +52,7 @@ namespace Hashi.LinearSolver
                 {
                     if (mainField[row][col] == 0) continue;
                     numberOfNodes++;
-                    islands.Add(new Island(mainField[row][col], row, col, numberOfNodes - 1));
+                    islands.Add(islandFactory.Invoke(mainField[row][col], row, col, numberOfNodes - 1));
                 }
             }
 
@@ -65,7 +89,7 @@ namespace Hashi.LinearSolver
                 foreach (var islandLow in island.LowerNeighbors)
                 {
                     var checker = false;
-                    var bridgeAdd = new Bridge(island, islandLow);
+                    var bridgeAdd = bridgeFactory.Invoke(island, islandLow);
                     foreach (var bridge in bridges)
                     {
                         if (bridge.Island1.X == bridgeAdd.Island1.X && bridge.Island1.Y == bridgeAdd.Island1.Y && bridge.Island2.X == bridgeAdd.Island2.X && bridge.Island2.Y == bridgeAdd.Island2.Y)
@@ -82,7 +106,7 @@ namespace Hashi.LinearSolver
                 foreach (var islandUp in island.UpNeighbors)
                 {
                     var checker = false;
-                    var bridgeAdd = new Bridge(island, islandUp);
+                    var bridgeAdd = bridgeFactory.Invoke(island, islandUp);
                     foreach (var bridge in bridges)
                     {
                         if (bridge.Island1.X == bridgeAdd.Island1.X && bridge.Island1.Y == bridgeAdd.Island1.Y && bridge.Island2.X == bridgeAdd.Island2.X && bridge.Island2.Y == bridgeAdd.Island2.Y)
@@ -120,7 +144,7 @@ namespace Hashi.LinearSolver
                         }
                         if (!checkDown)
                         {
-                            delta.Add(new BridgePair(island.Number, island.Down.Number, islandDown.Number, islandDown.Right.Number));
+                            delta.Add(bridgePairFactory.Invoke(island.Number, island.Down.Number, islandDown.Number, islandDown.Right.Number));
                         }
                     }
                 }
@@ -143,7 +167,7 @@ namespace Hashi.LinearSolver
                         }
                         if (!checkRight)
                         {
-                            delta.Add(new BridgePair(island.Number, island.Right.Number, islandRight.Number, islandRight.Down.Number));
+                            delta.Add(bridgePairFactory.Invoke(island.Number, island.Right.Number, islandRight.Number, islandRight.Down.Number));
                         }
                     }
                 }
@@ -245,7 +269,7 @@ namespace Hashi.LinearSolver
             var status = solver.Solve(model);
             if (!status.Equals(CpSolverStatus.Optimal))
             {
-                return status;
+                return (SolverStatusEnum)(int)status;
             }
 
             var solution = solver.Response.Solution;
@@ -276,7 +300,7 @@ namespace Hashi.LinearSolver
                 status = solver.Solve(model);
                 if (!status.Equals(CpSolverStatus.Optimal))
                 {
-                    return status;
+                    return (SolverStatusEnum)(int)status;
                 }
 
                 solution = solver.Response.Solution;
@@ -317,27 +341,21 @@ namespace Hashi.LinearSolver
             }
             Debug.WriteLine(string.Join("\n", fieldChars.Select(row => "{" + string.Join(", ", row) + "}")));
 
-            return status;
+            return (SolverStatusEnum)(int)status;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="bridges"></param>
-        /// <param name="amountIslands"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public List<Helper> FindComponents(List<Bridge> bridges, int amountIslands, long[] value)
+        /// <inheritdoc />
+        public List<IHelper> FindComponents(List<IBridge> bridges, int amountIslands, long[] value)
         {
-            var components = new List<Helper>();
+            var components = new List<IHelper>();
             var checkedIslands = new bool[amountIslands];
 
             // Erstelle den Graphen in einer Liste wobei gespeichert wird,
             // zu welcher Insel eine Bridge existiert für die jeweilige Insel
-            var graph = new List<Helper>();
+            var graph = new List<IHelper>();
             for (var i = 0; i < amountIslands; i++)
             {
-                graph.Add(new Helper(new List<int>(), new List<int>()));
+                graph.Add(helperFactory.Invoke(new List<int>(), new List<int>()));
             }
 
             for (var i = 0; i < bridges.Count; i++)
@@ -351,7 +369,7 @@ namespace Hashi.LinearSolver
             for (var islandIndex = 0; islandIndex < amountIslands; islandIndex++)
             {
                 if (checkedIslands[islandIndex]) continue;
-                var component = new Helper(new List<int>(), new List<int>());
+                var component = helperFactory.Invoke(new List<int>(), new List<int>());
                 FindConnectedComponents(graph, islandIndex, checkedIslands, component);
                 components.Add(component);
             }
@@ -365,7 +383,7 @@ namespace Hashi.LinearSolver
         /// <param name="islandIndex">The current island index.</param>
         /// <param name="checkedIslands">A list containing values if islands have been checked already or not.</param>
         /// <param name="component">The actual helper component.</param>
-        private void FindConnectedComponents(IReadOnlyList<Helper> graph, int islandIndex, IList<bool> checkedIslands, Helper component)
+        private void FindConnectedComponents(IReadOnlyList<IHelper> graph, int islandIndex, IList<bool> checkedIslands, IHelper component)
         {
             checkedIslands[islandIndex] = true;
             component.Islands.Add(islandIndex);
@@ -380,12 +398,8 @@ namespace Hashi.LinearSolver
             }
         }
 
-        /// <summary>
-        /// Prints the bridges on the field.
-        /// </summary>
-        /// <param name="bridge"></param>
-        /// <param name="edgeNumber"></param>
-        public void PrintBridges(Bridge bridge, long edgeNumber)
+        /// <inheritdoc />
+        public void PrintBridges(IBridge bridge, long edgeNumber)
         {
             if (bridge.Island1.X < bridge.Island2.X)
             {
@@ -435,18 +449,6 @@ namespace Hashi.LinearSolver
                     };
                 }
             }
-        }
-    }
-
-    public class Helper
-    {
-        public List<int> Islands { get; }
-        public List<int> Bridges { get; }
-
-        public Helper(List<int> islands, List<int> bridges)
-        {
-            Islands = islands;
-            Bridges = bridges;
         }
     }
 }

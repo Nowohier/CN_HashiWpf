@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Hashi.Generator.Interfaces\Hashi.Generator.Interfaces.csproj" />
     <ProjectReference Include="..\Hashi.LinearSolver\Hashi.LinearSolver.csproj" />
   </ItemGroup>
 

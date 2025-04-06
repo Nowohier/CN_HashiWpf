@@ -1,6 +1,7 @@
-﻿using Google.OrTools.Sat;
-using Hashi.Generator.Models;
-using Hashi.LinearSolver;
+﻿using Hashi.Generator.Interfaces;
+using Hashi.Generator.Interfaces.Models;
+using Hashi.Gui.Enums;
+using Hashi.LinearSolver.Interfaces;
 using System.Diagnostics;
 using System.Drawing;
 
@@ -9,85 +10,95 @@ namespace Hashi.Generator
     /// <summary>
     /// Generates a Hashi field.
     /// </summary>
-    public class HashiGenerator
+    public class HashiGenerator : IHashiGenerator
     {
-        private readonly List<Island> islands = new();
-        private readonly List<Bridge> bridges = new();
+        private readonly Random random = new Random();
+        private readonly Func<int, int, int, IIsland> islandFactory;
+        private readonly Func<IIsland, IIsland, int, IBridge> bridgeFactory;
+        private readonly ILinearSolutionSolverWithIterativ linearSolutionSolverWithIterativ;
+        private readonly List<IIsland> islands = new();
+        private readonly List<IBridge> bridges = new();
+
+        public HashiGenerator(Func<int, int, int, IIsland> islandFactory, Func<IIsland, IIsland, int, IBridge> bridgeFactory, ILinearSolutionSolverWithIterativ linearSolutionSolverWithIterativ)
+        {
+            this.islandFactory = islandFactory;
+            this.bridgeFactory = bridgeFactory;
+            this.linearSolutionSolverWithIterativ = linearSolutionSolverWithIterativ;
+        }
 
         public int[][] GenerateHash(int difficulty = -1, int amountNodes = 10, int width = 0, int length = 0, int alpha = 0, int beta = 0)
         {
             // ToDo: remove
-            var rdm = new Random();
 
             if (difficulty >= 0)
             {
                 if (difficulty == 0)
                 {
-                    var sizeLength = rdm.Next(5, 10);
-                    var sizeWidth = rdm.Next(5, 10);
+                    var sizeLength = random.Next(5, 10);
+                    var sizeWidth = random.Next(5, 10);
                     var n = (int)Math.Round(sizeWidth * sizeLength / 4.0);
                     return GenerateHash(n, sizeLength, sizeWidth, 0, 0, false);
                 }
                 if (difficulty == 1)
                 {
-                    var sizeLength = rdm.Next(14, 16);
-                    var sizeWidth = rdm.Next(14, 16);
+                    var sizeLength = random.Next(14, 16);
+                    var sizeWidth = random.Next(14, 16);
                     var n = (int)Math.Round(sizeWidth * sizeLength / 4.0);
                     return GenerateHash(n, sizeLength, sizeWidth, 1, 0, false);
                 }
                 if (difficulty == 2)
                 {
-                    var sizeLength = rdm.Next(10, 16);
-                    var sizeWidth = rdm.Next(10, 16);
+                    var sizeLength = random.Next(10, 16);
+                    var sizeWidth = random.Next(10, 16);
                     var n = (int)Math.Round(sizeWidth * sizeLength / 3.0);
                     return GenerateHash(n, sizeLength, sizeWidth, 2, 0, false);
                 }
                 if (difficulty == 3)
                 {
-                    var sizeLength = rdm.Next(11, 18);
-                    var sizeWidth = rdm.Next(11, 18);
+                    var sizeLength = random.Next(11, 18);
+                    var sizeWidth = random.Next(11, 18);
                     var n = (int)Math.Round(sizeWidth * sizeLength / 3.0);
                     return GenerateHash(n, sizeLength, sizeWidth, 3, 0, false);
                 }
                 if (difficulty == 4)
                 {
-                    var sizeLength = rdm.Next(10, 18);
-                    var sizeWidth = rdm.Next(10, 18);
+                    var sizeLength = random.Next(10, 18);
+                    var sizeWidth = random.Next(10, 18);
                     var n = (int)Math.Round(sizeWidth * sizeLength / 3.0);
                     return GenerateHash(n, sizeLength, sizeWidth, 4, 0, false);
                 }
                 if (difficulty == 5)
                 {
-                    var sizeLength = rdm.Next(13, 18);
-                    var sizeWidth = rdm.Next(13, 18);
+                    var sizeLength = random.Next(13, 18);
+                    var sizeWidth = random.Next(13, 18);
                     var n = (int)Math.Round(sizeWidth * sizeLength / 3.0);
                     return GenerateHash(n, sizeLength, sizeWidth, 5, 0, false);
                 }
                 if (difficulty == 6)
                 {
-                    var sizeLength = rdm.Next(15, 20);
-                    var sizeWidth = rdm.Next(15, 20);
+                    var sizeLength = random.Next(15, 20);
+                    var sizeWidth = random.Next(15, 20);
                     var n = (int)Math.Round(sizeWidth * sizeLength / 3.0);
                     return GenerateHash(n, sizeLength, sizeWidth, 6, 0, false);
                 }
                 if (difficulty == 7)
                 {
-                    var sizeLength = rdm.Next(14, 20);
-                    var sizeWidth = rdm.Next(14, 20);
+                    var sizeLength = random.Next(14, 20);
+                    var sizeWidth = random.Next(14, 20);
                     var n = (int)Math.Round(sizeWidth * sizeLength / 3.0);
                     return GenerateHash(n, sizeLength, sizeWidth, 7, 0, false);
                 }
                 if (difficulty == 8)
                 {
-                    var sizeLength = rdm.Next(16, 31);
-                    var sizeWidth = rdm.Next(16, 31);
+                    var sizeLength = random.Next(16, 31);
+                    var sizeWidth = random.Next(16, 31);
                     var n = (int)Math.Round(sizeWidth * sizeLength / 3.0);
                     return GenerateHash(n, sizeLength, sizeWidth, 8, 0, false);
                 }
                 if (difficulty == 9)
                 {
-                    var sizeLength = rdm.Next(20, 31);
-                    var sizeWidth = rdm.Next(20, 31);
+                    var sizeLength = random.Next(20, 31);
+                    var sizeWidth = random.Next(20, 31);
                     var n = (int)Math.Round(sizeWidth * sizeLength / 3.0);
                     return GenerateHash(n, sizeLength, sizeWidth, 9, 0, false);
                 }
@@ -98,6 +109,24 @@ namespace Hashi.Generator
             {
                 return GenerateHash(amountNodes, length, width, alpha, beta, true);
             }
+        }
+
+        /// <summary>
+        /// Gets the bridges of the Hashi field.
+        /// </summary>
+        /// <returns>a list of bridge models.</returns>
+        public List<IBridge> GetBridges()
+        {
+            return bridges;
+        }
+
+        /// <summary>
+        /// Gets the islands of the Hashi field.
+        /// </summary>
+        /// <returns>a list of island models.</returns>
+        public List<IIsland> GetIslands()
+        {
+            return islands;
         }
 
         /// <summary>
@@ -113,8 +142,8 @@ namespace Hashi.Generator
         private int[][] GenerateHash(int numberOfIslands, int sizeLength, int sizeWidth, int difficulty, int beta, bool checkDifficulty)
         {
             var field = CreateHash(numberOfIslands, sizeLength, sizeWidth, difficulty, beta, checkDifficulty);
-            var linear = new LinearSolutionSolverWithIterativ();
-            while (linear.Solve(field) == CpSolverStatus.Infeasible)
+
+            while (linearSolutionSolverWithIterativ.Solve(field) == SolverStatusEnum.Infeasible)
             {
                 field = CreateHash(numberOfIslands, sizeLength, sizeWidth, difficulty, beta, checkDifficulty);
             }
@@ -136,10 +165,9 @@ namespace Hashi.Generator
                 mainField[i] = new int[sizeWidth];
             }
 
-            var rand = new Random();
-            var row = rand.Next(sizeLength);
-            var col = rand.Next(sizeWidth);
-            islands.Add(new Island(0, row, col));
+            var row = random.Next(sizeLength);
+            var col = random.Next(sizeWidth);
+            islands.Add(islandFactory.Invoke(0, row, col));
             var edgeCount = 0;
 
             while (true)
@@ -207,7 +235,7 @@ namespace Hashi.Generator
             return mainField;
         }
 
-        public int[][] CreateNewBridges(int[][] mainField, int alpha)
+        private int[][] CreateNewBridges(int[][] mainField, int alpha)
         {
             var i = 0;
             var j = 0;
@@ -219,7 +247,7 @@ namespace Hashi.Generator
                 {
                     if (island.AmountBridgesConnectable + 1 <= 7 && island.IslandDown.AmountBridgesConnectable + 1 <= 7)
                     {
-                        var v3Edge = new Bridge(island, island.IslandDown, 1);
+                        var v3Edge = bridgeFactory.Invoke(island, island.IslandDown, 1);
                         bridges.Add(v3Edge);
                         bridges.Add(v3Edge.AddOtherSide());
                         island.AmountBridgesConnectable += 1;
@@ -237,7 +265,7 @@ namespace Hashi.Generator
                 {
                     if (island.AmountBridgesConnectable + 1 <= 7 && island.IslandRight.AmountBridgesConnectable + 1 <= 7)
                     {
-                        var v3Edge = new Bridge(island, island.IslandRight, 1);
+                        var v3Edge = bridgeFactory.Invoke(island, island.IslandRight, 1);
                         bridges.Add(v3Edge);
                         bridges.Add(v3Edge.AddOtherSide());
                         island.AmountBridgesConnectable += 1;
@@ -257,9 +285,8 @@ namespace Hashi.Generator
             return mainField;
         }
 
-        private int[][] CreateIsland(int[][] mainField, Island island)
+        private int[][] CreateIsland(int[][] mainField, IIsland island)
         {
-            var random = new Random();
             var possiblePositions = new List<Point>();
             var range = random.Next(2, 6);
 
@@ -362,10 +389,10 @@ namespace Hashi.Generator
             if (possiblePositions.Count > 0)
             {
                 var randomPosition = random.Next(possiblePositions.Count);
-                var newIsland = new Island(0, Convert.ToInt32(possiblePositions[randomPosition].Y), Convert.ToInt32(possiblePositions[randomPosition].X));
+                var newIsland = islandFactory.Invoke(0, Convert.ToInt32(possiblePositions[randomPosition].Y), Convert.ToInt32(possiblePositions[randomPosition].X));
                 islands.Add(newIsland);
                 var amountBridges = 1;
-                var newBridge = new Bridge(island, newIsland, amountBridges);
+                var newBridge = bridgeFactory.Invoke(island, newIsland, amountBridges);
                 bridges.Add(newBridge);
                 bridges.Add(newBridge.AddOtherSide());
                 island.AmountBridgesConnectable += amountBridges;
@@ -377,7 +404,7 @@ namespace Hashi.Generator
             return mainField;
         }
 
-        public bool CheckSurroundingFields(int row, int col, int[][] mainField)
+        private bool CheckSurroundingFields(int row, int col, int[][] mainField)
         {
             var numRows = mainField.Length;
             var numCols = mainField[0].Length;
@@ -397,7 +424,7 @@ namespace Hashi.Generator
             return col + 1 < numCols && mainField[row][col + 1] != 0;
         }
 
-        public int UpBlocked(Island mainIsland, int[][] mainField)
+        private int UpBlocked(IIsland mainIsland, int[][] mainField)
         {
             for (var row = mainIsland.Y - 1; row > 0; row--)
             {
@@ -413,7 +440,7 @@ namespace Hashi.Generator
             return -1;
         }
 
-        public int DownBlocked(Island mainIsland, int[][] mainField)
+        private int DownBlocked(IIsland mainIsland, int[][] mainField)
         {
             for (var row = mainIsland.Y + 1; row < mainField.Length; row++)
             {
@@ -429,7 +456,7 @@ namespace Hashi.Generator
             return -1;
         }
 
-        public int RightBlocked(Island mainIsland, int[][] mainField)
+        private int RightBlocked(IIsland mainIsland, int[][] mainField)
         {
             for (var col = mainIsland.X + 1; col < mainField[mainIsland.Y].Length; col++)
             {
@@ -445,7 +472,7 @@ namespace Hashi.Generator
             return -1;
         }
 
-        public int LeftBlocked(Island mainIsland, int[][] mainField)
+        private int LeftBlocked(IIsland mainIsland, int[][] mainField)
         {
             for (var col = mainIsland.X - 1; col > 0; col--)
             {
@@ -461,7 +488,7 @@ namespace Hashi.Generator
             return -1;
         }
 
-        public int DownBlockedd(Island mainIsland, int[][] mainField)
+        private int DownBlockedd(IIsland mainIsland, int[][] mainField)
         {
             for (var row = mainIsland.IslandDown.Y - 1; row > mainIsland.Y; row--)
             {
@@ -477,7 +504,7 @@ namespace Hashi.Generator
             return -1;
         }
 
-        public int RightBlockedd(Island mainIsland, int[][] mainField)
+        private int RightBlockedd(IIsland mainIsland, int[][] mainField)
         {
             for (var col = mainIsland.IslandRight.X - 1; col > mainIsland.X; col--)
             {
@@ -493,27 +520,15 @@ namespace Hashi.Generator
             return -1;
         }
 
-        public void SetBeta(int[][] mainField, int beta)
+        private void SetBeta(int[][] mainField, int beta)
         {
-            var rdm = new Random();
             for (var i = bridges.Count - 1; i > 0; i -= 2)
             {
-                var random = rdm.Next(100);
-                if (random <= beta - 1)
+                if (random.Next(100) <= beta - 1)
                 {
                     bridges[i].AddBridge(mainField);
                 }
             }
-        }
-
-        public List<Bridge> GetBridges()
-        {
-            return bridges;
-        }
-
-        public List<Island> GetIslands()
-        {
-            return islands;
         }
     }
 }

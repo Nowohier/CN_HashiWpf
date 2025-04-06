@@ -1,9 +1,9 @@
-﻿namespace Hashi.Generator.Models
+﻿using Hashi.Generator.Interfaces.Models;
+
+namespace Hashi.Generator.Models
 {
-    /// <summary>
-    /// Represents a node in the V3 game.
-    /// </summary>
-    public class Island
+    /// <inheritdoc cref="IIsland"/>
+    public class Island : IIsland
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Island"/> class.
@@ -22,67 +22,41 @@
             AmountBridgesRight = 0;
         }
 
-        /// <summary>
-        /// Gets the y coordinate.
-        /// </summary>
+        /// <inheritdoc />
         public int Y { get; }
 
-        /// <summary>
-        /// Gets the x coordinate.
-        /// </summary>
+        /// <inheritdoc />
         public int X { get; }
 
-        /// <summary>
-        /// Gets the amount of bridges connectable.
-        /// </summary>
+        /// <inheritdoc />
         public int AmountBridgesConnectable { get; set; }
 
-        /// <summary>
-        /// Gets the amount of bridges up.
-        /// </summary>
+        /// <inheritdoc />
         public int AmountBridgesUp { get; set; }
 
-        /// <summary>
-        /// Gets the amount of bridges down.
-        /// </summary>
+        /// <inheritdoc />
         public int AmountBridgesDown { get; set; }
 
-        /// <summary>
-        /// Gets the amount of bridges left.
-        /// </summary>
+        /// <inheritdoc />
         public int AmountBridgesLeft { get; set; }
 
-        /// <summary>
-        /// Gets the amount of bridges right.
-        /// </summary>
+        /// <inheritdoc />
         public int AmountBridgesRight { get; set; }
 
-        /// <summary>
-        /// Gets the upper neighbor.
-        /// </summary>
-        public Island? IslandUp { get; private set; }
+        /// <inheritdoc />
+        public IIsland? IslandUp { get; private set; }
 
-        /// <summary>
-        /// Gets the lower neighbor.
-        /// </summary>
-        public Island? IslandDown { get; private set; }
+        /// <inheritdoc />
+        public IIsland? IslandDown { get; private set; }
 
-        /// <summary>
-        /// Gets the left neighbor.
-        /// </summary>
-        public Island? IslandLeft { get; private set; }
+        /// <inheritdoc />
+        public IIsland? IslandLeft { get; private set; }
 
-        /// <summary>
-        /// Gets the right neighbor.
-        /// </summary>
-        public Island? IslandRight { get; private set; }
+        /// <inheritdoc />
+        public IIsland? IslandRight { get; private set; }
 
-        /// <summary>
-        /// Set all neighbors of the island.
-        /// </summary>
-        /// <param name="field">The field array.</param>
-        /// <param name="islands">The list of islands.</param>
-        public void SetAllNeighbors(int[][] field, List<Island> islands)
+        /// <inheritdoc />
+        public void SetAllNeighbors(int[][] field, List<IIsland> islands)
         {
             for (var u = Y - 1; u >= 0; u--)
             {
