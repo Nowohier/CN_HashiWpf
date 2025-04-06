@@ -1,4 +1,6 @@
 ﻿using Hashi.Gui.Enums;
+using Hashi.Gui.Interfaces.Messages.MessageContainers;
+using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.ViewModels;
 
 // ReSharper disable CompareOfFloatsByEqualityOperator
@@ -8,14 +10,14 @@ namespace Hashi.Gui.Messages.MessageContainers
     /// <summary>
     /// Represents the container for the bridge connection.
     /// </summary>
-    public class BridgeConnectionInformationContainer
+    public class BridgeConnectionInformationContainer : IBridgeConnectionInformationContainer
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="BridgeConnectionInformationContainer"/> class.
         /// </summary>
         /// <param name="sourceIsland">The source island.</param>
         /// <param name="bridgeOperationType">The bridge operation type.</param>
-        public BridgeConnectionInformationContainer(IslandViewModel sourceIsland, BridgeOperationType bridgeOperationType)
+        public BridgeConnectionInformationContainer(IslandViewModel sourceIsland, BridgeOperationTypeEnum bridgeOperationType)
         {
             SourceIsland = sourceIsland;
 
@@ -25,11 +27,11 @@ namespace Hashi.Gui.Messages.MessageContainers
         /// <summary>
         /// Gets the source island.
         /// </summary>
-        public IslandViewModel SourceIsland { get; }
+        public IIslandViewModel SourceIsland { get; }
 
         /// <summary>
         /// Gets the bridge operation type.
         /// </summary>
-        public BridgeOperationType BridgeOperationType { get; }
+        public BridgeOperationTypeEnum BridgeOperationType { get; }
     }
 }

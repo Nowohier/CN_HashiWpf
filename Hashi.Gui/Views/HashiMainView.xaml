@@ -7,7 +7,7 @@
                  xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                  xmlns:System="clr-namespace:System;assembly=System.Runtime"
                  xmlns:viewModels="clr-namespace:Hashi.Gui.ViewModels"
-                 xmlns:enums="clr-namespace:Hashi.Gui.Enums"
+                 xmlns:enums="clr-namespace:Hashi.Gui.Enums;assembly=Hashi.Enums"
                  mc:Ignorable="d"
                  Loaded="Window_Loaded"
                  d:DataContext="{d:DesignInstance {x:Type viewModels:MainViewModel}, IsDesignTimeCreatable=False}"

@@ -70,7 +70,7 @@
                 <!--Single line vertical bottom-->
                 <Line Style="{StaticResource BridgeStyle}" X1="0" Y1="30" X2="0" Y2="62" HorizontalAlignment="Center" VerticalAlignment="Bottom" Visibility="{Binding BridgesDown, Converter={StaticResource SingleLineVisibilityConverter}}"/>
 
-                <Ellipse Width="40" Height="40" Fill="{Binding IslandColor}" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding MaxConnections, Converter={StaticResource IslandVisibilityConverter}}" IsHitTestVisible="True" AllowDrop="True"/>
+                <Ellipse Width="40" Height="40" Fill="{Binding IslandColor.Brush}" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding MaxConnections, Converter={StaticResource IslandVisibilityConverter}}" IsHitTestVisible="True" AllowDrop="True"/>
                 <TextBlock Text="{Binding MaxConnections}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Foreground="{StaticResource BasicBrush}" FontWeight="Bold" Visibility="{Binding MaxConnections, Converter={StaticResource IslandVisibilityConverter}}" IsHitTestVisible="True" AllowDrop="True"/>
                 <b:Interaction.Behaviors>
                     <behaviors:IslandDragDropBehavior

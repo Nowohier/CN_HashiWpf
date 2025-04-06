@@ -1,9 +1,10 @@
-﻿using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Windows;
-using CommunityToolkit.Mvvm.Messaging;
+﻿using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Gui.Enums;
+using Hashi.Gui.Interfaces.Models;
+using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Messages;
+using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Hashi.Gui.ViewModels
 {
@@ -15,7 +16,7 @@ namespace Hashi.Gui.ViewModels
         /// </summary>
         public ObservableCollection<ObservableCollection<IslandViewModel>> Islands { get; } = new();
 
-        public void AddConnection(IslandViewModel? sourceIsland, IslandViewModel? targetIsland)
+        public void AddConnection(IIslandViewModel? sourceIsland, IIslandViewModel? targetIsland)
         {
             if (!IsValidConnection(sourceIsland, targetIsland)) return;
             if (MaxBridgesReachedBetweenSourceAndTarget(sourceIsland, targetIsland) is true)
@@ -31,7 +32,7 @@ namespace Hashi.Gui.ViewModels
             }
         }
 
-        public void RemoveAllConnections(IslandViewModel? sourceIsland, IslandViewModel? targetIsland)
+        public void RemoveAllConnections(IIslandViewModel? sourceIsland, IIslandViewModel? targetIsland)
         {
             if (sourceIsland == null)
             {
@@ -52,7 +53,7 @@ namespace Hashi.Gui.ViewModels
             ManageConnections(sourceIsland, targetIsland, (island, coordinates) => island.RemoveAllConnectionsMatchingCoordinates(coordinates));
         }
 
-        public IslandViewModel? GetPotentialTargetIsland(IslandViewModel source, IslandViewModel target)
+        public IIslandViewModel? GetPotentialTargetIsland(IIslandViewModel source, IIslandViewModel target)
         {
             var connectionType = source.GetConnectionType(target);
 
@@ -125,7 +126,7 @@ namespace Hashi.Gui.ViewModels
         /// </summary>
         /// <param name="source">The source island.</param>
         /// <param name="target">The target island.</param>
-        public void HighlightPathToTargetIsland(IslandViewModel source, IslandViewModel target)
+        public void HighlightPathToTargetIsland(IIslandViewModel source, IIslandViewModel target)
         {
             var islands = GetAllIslandsInvolvedInConnection(source, target);
             var connectionType = source.GetConnectionType(target);
@@ -182,7 +183,7 @@ namespace Hashi.Gui.ViewModels
             }
         }
 
-        public IEnumerable<IslandViewModel> GetAllIslandsInvolvedInConnection(IslandViewModel source, IslandViewModel target)
+        public IEnumerable<IIslandViewModel> GetAllIslandsInvolvedInConnection(IIslandViewModel source, IIslandViewModel target)
         {
             var islandsBetween = new List<IslandViewModel>();
             var connectionType = source.GetConnectionType(target);
@@ -227,11 +228,11 @@ namespace Hashi.Gui.ViewModels
         /// <param name="source">The source island.</param>
         /// <param name="target">The target island.</param>
         /// <returns>a boolean value if drop target is valid.</returns>
-        public bool IsValidDropTarget(IslandViewModel? source, IslandViewModel? target) => source != null && target != null && !source.MaxConnectionsReached && !target.MaxConnectionsReached && source.GetConnectionType(target) != ConnectionTypeEnum.Diagonal;
+        public bool IsValidDropTarget(IIslandViewModel? source, IIslandViewModel? target) => source != null && target != null && !source.MaxConnectionsReached && !target.MaxConnectionsReached && source.GetConnectionType(target) != ConnectionTypeEnum.Diagonal;
 
         private bool AreAllConnectionsSet() => Islands.All(row => row.All(island => island.MaxConnections == 0 || island.MaxConnectionsReached));
 
-        private void ManageConnections(IslandViewModel? source, IslandViewModel? target, Action<IslandViewModel, Point> connectionAction)
+        private void ManageConnections(IIslandViewModel? source, IIslandViewModel? target, Action<IIslandViewModel, IHashiPoint> connectionAction)
         {
             if (source == null)
             {
@@ -279,7 +280,7 @@ namespace Hashi.Gui.ViewModels
         /// <param name="source">The source Island.</param>
         /// <param name="target">The target island.</param>
         /// <returns>a boolean value indicating if max bridges have been reached.</returns>
-        private bool? MaxBridgesReachedBetweenSourceAndTarget(IslandViewModel? source, IslandViewModel? target)
+        private bool? MaxBridgesReachedBetweenSourceAndTarget(IIslandViewModel? source, IIslandViewModel? target)
         {
             return source == null || target == null ? null : source.AllConnections.Count(c => c == target.Coordinates) >= 2 || target.AllConnections.Count(c => c == source.Coordinates) >= 2;
         }
@@ -289,7 +290,7 @@ namespace Hashi.Gui.ViewModels
         /// </summary>
         /// <param name="coordinates">The island coordinates.</param>
         /// <returns>an island.</returns>
-        private IslandViewModel GetIslandByCoordinates(Point coordinates)
+        private IIslandViewModel GetIslandByCoordinates(IHashiPoint coordinates)
         {
             return Islands[(int)coordinates.Y][(int)coordinates.X];
         }
@@ -300,7 +301,7 @@ namespace Hashi.Gui.ViewModels
         /// <param name="source">The source island.</param>
         /// <param name="target">The target island.</param>
         /// <returns></returns>
-        private bool IsValidConnection(IslandViewModel? source, IslandViewModel? target)
+        private bool IsValidConnection(IIslandViewModel? source, IIslandViewModel? target)
         {
             // Check if the source and/or target islands are null -> invalid
             if (source == null || target == null)
@@ -347,7 +348,7 @@ namespace Hashi.Gui.ViewModels
         /// <param name="source">The source island.</param>
         /// <param name="target">The target island.</param>
         /// <returns>a boolean value indicating if if an island with MaxConnections > 0 is in between the source and target coordinates.</returns>
-        private bool IsIslandInBetweenSourceAndTarget(IslandViewModel source, IslandViewModel target)
+        private bool IsIslandInBetweenSourceAndTarget(IIslandViewModel source, IIslandViewModel target)
         {
             var connectionType = source.GetConnectionType(target);
 
@@ -395,7 +396,7 @@ namespace Hashi.Gui.ViewModels
         /// <param name="source">The source island.</param>
         /// <param name="target">The target island.</param>
         /// <returns>a boolean value indicating if the connection would collide.</returns>
-        private bool WouldConnectionCollide(IslandViewModel source, IslandViewModel target)
+        private bool WouldConnectionCollide(IIslandViewModel source, IIslandViewModel target)
         {
             var connectionType = source.GetConnectionType(target);
             var islands = GetAllIslandsInvolvedInConnection(source, target).Where(x => x.MaxConnections == 0);

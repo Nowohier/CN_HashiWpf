@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hashi.LinearSolver", "Hashi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hashi.SolvedPuzzles", "Hashi.SolvedPuzzles\Hashi.SolvedPuzzles.csproj", "{99E1562C-4D9E-4313-A87D-2D7BED690008}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hashi.Gui.Interfaces", "Hashi.Gui.Interfaces\Hashi.Gui.Interfaces.csproj", "{0C07F4E6-3E1E-4EAA-A646-406E2E15D2F8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hashi.Enums", "Hashi.Enums\Hashi.Enums.csproj", "{C64A9C52-8169-41AA-9753-2BC014E5AF11}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{99E1562C-4D9E-4313-A87D-2D7BED690008}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99E1562C-4D9E-4313-A87D-2D7BED690008}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99E1562C-4D9E-4313-A87D-2D7BED690008}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C07F4E6-3E1E-4EAA-A646-406E2E15D2F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C07F4E6-3E1E-4EAA-A646-406E2E15D2F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C07F4E6-3E1E-4EAA-A646-406E2E15D2F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C07F4E6-3E1E-4EAA-A646-406E2E15D2F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C64A9C52-8169-41AA-9753-2BC014E5AF11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C64A9C52-8169-41AA-9753-2BC014E5AF11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C64A9C52-8169-41AA-9753-2BC014E5AF11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C64A9C52-8169-41AA-9753-2BC014E5AF11}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

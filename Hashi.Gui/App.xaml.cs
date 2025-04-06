@@ -1,8 +1,8 @@
-﻿using System.Windows;
-using Autofac;
+﻿using Autofac;
 using Hashi.Gui.AutoFac;
 using Hashi.Gui.ViewModels;
 using Hashi.Gui.Views;
+using System.Windows;
 
 namespace Hashi.Gui;
 
@@ -11,7 +11,6 @@ namespace Hashi.Gui;
 /// </summary>
 public partial class App : Application
 {
-    private static IContainer Container { get; set; }
     private readonly MainViewModel mainViewModel = new();
 
     /// <summary>
@@ -32,7 +31,9 @@ public partial class App : Application
 
         var builder = new ContainerBuilder();
         builder.RegisterModule<AutoFacMainModule>();
-        Container = builder.Build();
+        var container = builder.Build();
+
+        using var scope = container.BeginLifetimeScope();
 
         mainViewModel.CreateNewGame();
 

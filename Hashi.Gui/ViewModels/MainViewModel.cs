@@ -4,7 +4,10 @@ using Hashi.Generator;
 using Hashi.Gui.Enums;
 using Hashi.Gui.Extensions;
 using Hashi.Gui.Helpers;
+using Hashi.Gui.Interfaces.Messages;
+using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Messages;
+using Hashi.Gui.Models;
 using Hashi.Gui.Views;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
@@ -12,19 +15,18 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace Hashi.Gui.ViewModels
 {
     [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
-    public class MainViewModel : BaseViewModel, IRecipient<BridgeConnectionChangedMessage>, IRecipient<UpdateAllIslandColorsMessage>, IRecipient<AllConnectionsSetMessage>, IRecipient<CurrentSourceIslandChangedMessage>, IRecipient<PotentialTargetIslandChangedMessage>
+    public class MainViewModel : BaseViewModel, IRecipient<IBridgeConnectionChangedMessage>, IRecipient<IUpdateAllIslandColorsMessage>, IRecipient<IAllConnectionsSetMessage>, IRecipient<ICurrentSourceIslandChangedMessage>, IRecipient<IPotentialTargetIslandChangedMessage>
     {
         internal readonly string HashiSettingsFileName = "HashiSettings.json";
         internal readonly string SaveFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"CN_Hashi\Settings");
         private readonly HashiGenerator hashiGenerator = new();
-        private IslandViewModel? currentSourceIsland;
-        private IslandViewModel? potentialTargetIsland;
+        private IIslandViewModel? currentSourceIsland;
+        private IIslandViewModel? potentialTargetIsland;
         private readonly DispatcherTimer dispatcherTimer = new() { Interval = TimeSpan.FromSeconds(1) };
         private bool isTimerRunning;
         private DifficultyEnum selectedDifficulty = DifficultyEnum.Easy3;
@@ -98,7 +100,7 @@ namespace Hashi.Gui.ViewModels
         /// <summary>
         /// The current source island.
         /// </summary>
-        public IslandViewModel? CurrentSourceIsland
+        public IIslandViewModel? CurrentSourceIsland
         {
             get => currentSourceIsland;
             set => Set(ref currentSourceIsland, value);
@@ -112,7 +114,7 @@ namespace Hashi.Gui.ViewModels
         /// <summary>
         /// Gets or sets the potential target island.
         /// </summary>
-        public IslandViewModel? PotentialTargetIsland
+        public IIslandViewModel? PotentialTargetIsland
         {
             get => potentialTargetIsland;
             set => Set(ref potentialTargetIsland, value);
@@ -207,20 +209,20 @@ namespace Hashi.Gui.ViewModels
                 IsTimerRunning = false;
             }
 
-            WeakReferenceMessenger.Default.Send(new UpdateAllIslandColorsMessage(Brushes.LightBlue));
+            WeakReferenceMessenger.Default.Send(new UpdateAllIslandColorsMessage());
         }
 
         /// <summary>
         /// Handles the message when a bridge connection is changed.
         /// </summary>
         /// <param name="message"></param>
-        /// <exception cref="ArgumentOutOfRangeException">The <see cref="BridgeConnectionChangedMessage"/>.</exception>
-        public void Receive(BridgeConnectionChangedMessage message)
+        /// <exception cref="ArgumentOutOfRangeException">The <see cref="IBridgeConnectionChangedMessage"/>.</exception>
+        public void Receive(IBridgeConnectionChangedMessage message)
         {
             var bridgeOperationType = message.Value.BridgeOperationType;
             var sourceIsland = message.Value.SourceIsland;
 
-            if (bridgeOperationType == BridgeOperationType.Add &&
+            if (bridgeOperationType == BridgeOperationTypeEnum.Add &&
                 !ConnectionManager.IsValidDropTarget(CurrentSourceIsland, PotentialTargetIsland))
             {
                 return;
@@ -228,7 +230,7 @@ namespace Hashi.Gui.ViewModels
 
             Action bridgeAction = bridgeOperationType switch
             {
-                BridgeOperationType.Add => () =>
+                BridgeOperationTypeEnum.Add => () =>
                 {
                     if (!Timer.IsRunning)
                     {
@@ -240,7 +242,7 @@ namespace Hashi.Gui.ViewModels
                     ConnectionManager.AddConnection(CurrentSourceIsland, PotentialTargetIsland);
                 }
                 ,
-                BridgeOperationType.RemoveAll => () => ConnectionManager.RemoveAllConnections(sourceIsland, null),
+                BridgeOperationTypeEnum.RemoveAll => () => ConnectionManager.RemoveAllConnections(sourceIsland, null),
                 _ => throw new ArgumentOutOfRangeException()
             };
 
@@ -250,8 +252,8 @@ namespace Hashi.Gui.ViewModels
         /// <summary>
         /// Updates the color of all islands.
         /// </summary>
-        /// <param name="message">The <see cref="UpdateAllIslandColorsMessage"/>.</param>
-        public void Receive(UpdateAllIslandColorsMessage message)
+        /// <param name="message">The <see cref="IUpdateAllIslandColorsMessage"/>.</param>
+        public void Receive(IUpdateAllIslandColorsMessage message)
         {
             var color = message.Value;
 
@@ -259,7 +261,7 @@ namespace Hashi.Gui.ViewModels
             {
                 foreach (var island in row)
                 {
-                    island.IslandColor = island.MaxConnectionsReached ? HashiColors.MaxBridgesReachedBrush : color;
+                    island.IslandColor = island.MaxConnectionsReached ? new HashiBrush(HashiColors.MaxBridgesReachedBrush) : new HashiBrush(HashiColors.BasicIslandBrush);
                 }
             }
         }
@@ -268,7 +270,7 @@ namespace Hashi.Gui.ViewModels
         /// Handles the message when all connections are set.
         /// </summary>
         /// <param name="message">The <see cref="AllConnectionsSetMessage"/>.</param>
-        public void Receive(AllConnectionsSetMessage message)
+        public void Receive(IAllConnectionsSetMessage message)
         {
             Timer.Stop();
             var caption = "Game Over";
@@ -299,8 +301,8 @@ namespace Hashi.Gui.ViewModels
         /// <summary>
         /// Handles the message when the current source island is changed.
         /// </summary>
-        /// <param name="message">The <see cref="CurrentSourceIslandChangedMessage"/>.</param>
-        public void Receive(CurrentSourceIslandChangedMessage message)
+        /// <param name="message">The <see cref="ICurrentSourceIslandChangedMessage"/>.</param>
+        public void Receive(ICurrentSourceIslandChangedMessage message)
         {
             CurrentSourceIsland = message.Value;
         }
@@ -308,8 +310,8 @@ namespace Hashi.Gui.ViewModels
         /// <summary>
         /// Handles the message when the potential target island is changed.
         /// </summary>
-        /// <param name="islandChangedMessage">The <see cref="PotentialTargetIslandChangedMessage"/>.</param>
-        public void Receive(PotentialTargetIslandChangedMessage islandChangedMessage)
+        /// <param name="islandChangedMessage">The <see cref="IPotentialTargetIslandChangedMessage"/>.</param>
+        public void Receive(IPotentialTargetIslandChangedMessage islandChangedMessage)
         {
             if (CurrentSourceIsland == null)
             {
@@ -334,7 +336,7 @@ namespace Hashi.Gui.ViewModels
                 return;
             }
 
-            target.IslandColor = HashiColors.GreenIslandBrush;
+            target.IslandColor = new HashiBrush(HashiColors.GreenIslandBrush);
             PotentialTargetIsland = target;
 
             ConnectionManager.RemoveAllHighlights();

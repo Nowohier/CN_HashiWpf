@@ -1,11 +1,16 @@
-﻿using System.Windows.Media;
-using CommunityToolkit.Mvvm.Messaging.Messages;
+﻿using CommunityToolkit.Mvvm.Messaging.Messages;
+using Hashi.Gui.Interfaces.Messages;
 
 namespace Hashi.Gui.Messages
 {
-    public class UpdateAllIslandColorsMessage : ValueChangedMessage<Brush>
+    /// <inheritdoc cref="IUpdateAllIslandColorsMessage"/>
+    public class UpdateAllIslandColorsMessage : ValueChangedMessage<bool?>, IUpdateAllIslandColorsMessage
     {
-        public UpdateAllIslandColorsMessage(Brush value) : base(value)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UpdateAllIslandColorsMessage"/> class.
+        /// </summary>
+        /// <param name="value">The color brush.</param>
+        public UpdateAllIslandColorsMessage(bool? value = null) : base(value)
         {
         }
     }

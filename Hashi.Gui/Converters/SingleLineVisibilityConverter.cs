@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using Hashi.Gui.Interfaces.Models;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
@@ -12,7 +13,7 @@ namespace Hashi.Gui.Converters
         /// <inheritdoc/>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is not List<Point> list)
+            if (value is not List<IHashiPoint> list)
             {
                 return Visibility.Hidden;
             }
