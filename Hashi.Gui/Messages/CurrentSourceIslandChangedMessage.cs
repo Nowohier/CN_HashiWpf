@@ -1,11 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.Messaging.Messages;
-using Hashi.Gui.ViewModels;
+using Hashi.Gui.Interfaces.Messages;
+using Hashi.Gui.Interfaces.ViewModels;
 
 namespace Hashi.Gui.Messages
 {
-    public class CurrentSourceIslandChangedMessage : ValueChangedMessage<IslandViewModel?>
+    /// <inheritdoc cref="ICurrentSourceIslandChangedMessage"/>
+    public class CurrentSourceIslandChangedMessage : ValueChangedMessage<IIslandViewModel?>, ICurrentSourceIslandChangedMessage
     {
-        public CurrentSourceIslandChangedMessage(IslandViewModel? value) : base(value)
+        public CurrentSourceIslandChangedMessage(IIslandViewModel? value) : base(value)
         {
         }
     }

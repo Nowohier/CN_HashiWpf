@@ -1,18 +1,17 @@
 ﻿using CommunityToolkit.Mvvm.Messaging.Messages;
-using Hashi.Gui.Messages.MessageContainers;
+using Hashi.Gui.Interfaces.Messages;
+using Hashi.Gui.Interfaces.Messages.MessageContainers;
 
 namespace Hashi.Gui.Messages
 {
-    /// <summary>
-    /// Represents the message for the bridge connection changed.
-    /// </summary>
-    public class BridgeConnectionChangedMessage : ValueChangedMessage<BridgeConnectionInformationContainer>
+    /// <inheritdoc cref="IBridgeConnectionChangedMessage"/>
+    public class BridgeConnectionChangedMessage : ValueChangedMessage<IBridgeConnectionInformationContainer>, IBridgeConnectionChangedMessage
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="BridgeConnectionChangedMessage"/> class.
         /// </summary>
         /// <param name="islandInfos">The information about the islands to be connected.</param>
-        public BridgeConnectionChangedMessage(BridgeConnectionInformationContainer islandInfos) : base(islandInfos)
+        public BridgeConnectionChangedMessage(IBridgeConnectionInformationContainer islandInfos) : base(islandInfos)
         {
         }
     }

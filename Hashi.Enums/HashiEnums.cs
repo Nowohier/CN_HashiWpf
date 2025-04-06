@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents the type of operation for the bridge.
     /// </summary>
-    public enum BridgeOperationType
+    public enum BridgeOperationTypeEnum
     {
         Add,
         RemoveAll

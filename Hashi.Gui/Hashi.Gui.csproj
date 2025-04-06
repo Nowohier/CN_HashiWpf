@@ -29,7 +29,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Hashi.Enums\Hashi.Enums.csproj" />
     <ProjectReference Include="..\Hashi.Generator\Hashi.Generator.csproj" />
+    <ProjectReference Include="..\Hashi.Gui.Interfaces\Hashi.Gui.Interfaces.csproj" />
   </ItemGroup>
 
 </Project>

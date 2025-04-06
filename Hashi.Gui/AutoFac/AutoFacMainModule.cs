@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Hashi.Gui.Messages;
 using Hashi.Gui.ViewModels;
 using Hashi.Gui.Views;
 
@@ -12,6 +13,7 @@ namespace Hashi.Gui.AutoFac
         {
             builder.RegisterModule<AutoFacViewModelsModule>();
             builder.RegisterModule<AutoFacViewsModule>();
+            builder.RegisterModule<AutoFacMessagesModule>();
         }
     }
 }
