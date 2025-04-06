@@ -11,12 +11,6 @@ namespace Hashi.Gui.Views
         {
             // Register your views here
             builder.RegisterType<HashiMainView>().As<IHashiMainView>().SingleInstance();
-
-            //builder.Register<Func<IMainViewModel, IHashiMainView>>(context =>
-            //{
-            //    var c = context.Resolve<IComponentContext>();
-            //    return (mainViewModel) => c.Resolve<IHashiMainView>(new NamedParameter("mainViewModel", mainViewModel));
-            //});
         }
     }
 }

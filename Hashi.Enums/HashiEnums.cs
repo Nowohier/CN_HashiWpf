@@ -32,4 +32,13 @@
         Hard3 = 8,
         Expert = 9
     }
+
+    public enum SolverStatusEnum
+    {
+        Unknown = 0,
+        ModelInvalid = 1,
+        Feasible = 2,
+        Infeasible = 3,
+        Optimal = 4
+    }
 }

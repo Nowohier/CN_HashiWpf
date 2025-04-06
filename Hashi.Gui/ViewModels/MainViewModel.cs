@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using Hashi.Generator;
+using Hashi.Generator.Interfaces;
 using Hashi.Gui.Enums;
 using Hashi.Gui.Extensions;
 using Hashi.Gui.Helpers;
@@ -22,7 +22,13 @@ namespace Hashi.Gui.ViewModels
 {
     /// <inheritdoc cref="IMainViewModel"/>
     [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
-    public class MainViewModel : BaseViewModel, IRecipient<IBridgeConnectionChangedMessage>, IRecipient<IUpdateAllIslandColorsMessage>, IRecipient<IAllConnectionsSetMessage>, IRecipient<ICurrentSourceIslandChangedMessage>, IRecipient<IPotentialTargetIslandChangedMessage>, IMainViewModel
+    public class MainViewModel : BaseViewModel,
+        IMainViewModel,
+        IRecipient<IBridgeConnectionChangedMessage>,
+        IRecipient<IUpdateAllIslandColorsMessage>,
+        IRecipient<IAllConnectionsSetMessage>,
+        IRecipient<ICurrentSourceIslandChangedMessage>,
+        IRecipient<IPotentialTargetIslandChangedMessage>
     {
         private readonly Func<int, int, int, IIslandViewModel> islandFactory;
         private readonly Func<SolidColorBrush, IHashiBrush> brushFactory;
@@ -32,7 +38,7 @@ namespace Hashi.Gui.ViewModels
         private readonly IJsonWrapper jsonWrapper;
         internal readonly string HashiSettingsFileName = "HashiSettings.json";
         internal readonly string SaveFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"CN_Hashi\Settings");
-        private readonly HashiGenerator hashiGenerator = new();
+        private readonly IHashiGenerator hashiGenerator;
         private IIslandViewModel? currentSourceIsland;
         private IIslandViewModel? potentialTargetIsland;
         private readonly DispatcherTimer dispatcherTimer = new() { Interval = TimeSpan.FromSeconds(1) };
@@ -42,13 +48,14 @@ namespace Hashi.Gui.ViewModels
         /// <summary>
         /// Initializes a new instance of the <see cref="MainViewModel"/> class.
         /// </summary>
-        /// <param name="islandFactory"></param>
-        /// <param name="brushFactory"></param>
-        /// <param name="settingsFactory"></param>
-        /// <param name="highScorePerDifficultyFactory"></param>
-        /// <param name="connectionManager"></param>
-        /// <param name="dialogWrapper"></param>
-        /// <param name="jsonWrapper"></param>
+        /// <param name="islandFactory">The island factory.</param>
+        /// <param name="brushFactory">The solid color brush factory.</param>
+        /// <param name="settingsFactory">The settings factory.</param>
+        /// <param name="highScorePerDifficultyFactory">The highscore per difficulty factory.</param>
+        /// <param name="connectionManager">The connection manager.</param>
+        /// <param name="dialogWrapper">The dialog wrapper.</param>
+        /// <param name="jsonWrapper">The json wrapper.</param>
+        /// <param name="hashiGenerator">The hashi generator.</param>
         public MainViewModel(
             Func<int, int, int, IIslandViewModel> islandFactory,
             Func<SolidColorBrush, IHashiBrush> brushFactory,
@@ -56,7 +63,8 @@ namespace Hashi.Gui.ViewModels
             Func<DifficultyEnum, IHighScorePerDifficultyViewModel> highScorePerDifficultyFactory,
             IConnectionManagerViewModel connectionManager,
             IDialogWrapper dialogWrapper,
-            IJsonWrapper jsonWrapper)
+            IJsonWrapper jsonWrapper,
+            IHashiGenerator hashiGenerator)
         {
             this.islandFactory = islandFactory;
             this.brushFactory = brushFactory;
@@ -65,6 +73,7 @@ namespace Hashi.Gui.ViewModels
             ConnectionManager = connectionManager;
             this.dialogWrapper = dialogWrapper;
             this.jsonWrapper = jsonWrapper;
+            this.hashiGenerator = hashiGenerator;
 
             WeakReferenceMessenger.Default.Register<BridgeConnectionChangedMessage>(this);
             WeakReferenceMessenger.Default.Register<UpdateAllIslandColorsMessage>(this);

@@ -12,4 +12,8 @@
     <PackageReference Include="Google.OrTools" Version="9.12.4544" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Hashi.LinearSolver.Interfaces\Hashi.LinearSolver.Interfaces.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,9 +1,11 @@
-﻿namespace Hashi.Generator.Models
+﻿using Hashi.Generator.Interfaces.Models;
+
+namespace Hashi.Generator.Models
 {
     /// <summary>
     /// Represents an edge between two nodes.
     /// </summary>
-    public class Bridge
+    public class Bridge : IBridge
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Bridge"/> class.
@@ -11,22 +13,33 @@
         /// <param name="island1">The first island.</param>
         /// <param name="island2">The second island.</param>
         /// <param name="amountBridgesSet">The amount of bridges set between two the two islands.</param>
-        public Bridge(Island island1, Island island2, int amountBridgesSet)
+        public Bridge(IIsland island1, IIsland island2, int amountBridgesSet)
         {
             Island1 = island1;
             Island2 = island2;
             AmountBridgesSet = amountBridgesSet;
         }
 
-        public Island Island1 { get; }
-        public Island Island2 { get; }
+        /// <summary>
+        /// Gets the first island of the bridge.
+        /// </summary>
+        public IIsland Island1 { get; }
+
+        /// <summary>
+        /// Gets the second island of the bridge.
+        /// </summary>
+        public IIsland Island2 { get; }
+
+        /// <summary>
+        /// Gets the amount of bridges set between the two islands.
+        /// </summary>
         public int AmountBridgesSet { get; private set; }
 
         /// <summary>
         /// Adds the other side of the bridge.
         /// </summary>
         /// <returns>the added bridge.</returns>
-        public Bridge AddOtherSide()
+        public IBridge AddOtherSide()
         {
             var otherSideBridge = new Bridge(Island2, Island1, AmountBridgesSet);
             if (Island1.X == Island2.X && Island1.Y > Island2.Y)
