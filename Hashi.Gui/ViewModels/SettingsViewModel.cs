@@ -1,19 +1,16 @@
-﻿using System.Collections.ObjectModel;
+﻿using Hashi.Gui.Interfaces.ViewModels;
 using Newtonsoft.Json;
+using System.Collections.ObjectModel;
 
 namespace Hashi.Gui.ViewModels
 {
-    /// <summary>
-    /// Represents the view model for the settings, including high scores for different difficulty levels.
-    /// </summary>
+    /// <inheritdoc cref="ISettingsViewModel"/>
     [JsonObject(MemberSerialization.OptIn)]
-    public class SettingsViewModel : BaseViewModel
+    public class SettingsViewModel : BaseViewModel, ISettingsViewModel
     {
         private bool areGridLinesEnabled;
 
-        /// <summary>
-        /// Determines whether the grid lines are enabled in the game view.
-        /// </summary>
+        /// <inheritdoc />
         [JsonProperty(nameof(AreGridLinesEnabled))]
         public bool AreGridLinesEnabled
         {
@@ -21,11 +18,9 @@ namespace Hashi.Gui.ViewModels
             set => Set(ref areGridLinesEnabled, value);
         }
 
-        /// <summary>
-        /// Gets the collection of high scores for different difficulty levels.
-        /// </summary>
+        /// <inheritdoc />
         [JsonProperty(nameof(HighScores))]
-        public ObservableCollection<HighScorePerDifficultyViewModel> HighScores { get; } = new();
+        public ObservableCollection<IHighScorePerDifficultyViewModel> HighScores { get; } = new();
 
         /// <inheritdoc />
         public override string ToString()

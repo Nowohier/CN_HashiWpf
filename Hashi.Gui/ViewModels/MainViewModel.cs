@@ -5,23 +5,31 @@ using Hashi.Gui.Enums;
 using Hashi.Gui.Extensions;
 using Hashi.Gui.Helpers;
 using Hashi.Gui.Interfaces.Messages;
+using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.ViewModels;
+using Hashi.Gui.Interfaces.Wrappers;
 using Hashi.Gui.Messages;
-using Hashi.Gui.Models;
-using Hashi.Gui.Views;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace Hashi.Gui.ViewModels
 {
+    /// <inheritdoc cref="IMainViewModel"/>
     [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
-    public class MainViewModel : BaseViewModel, IRecipient<IBridgeConnectionChangedMessage>, IRecipient<IUpdateAllIslandColorsMessage>, IRecipient<IAllConnectionsSetMessage>, IRecipient<ICurrentSourceIslandChangedMessage>, IRecipient<IPotentialTargetIslandChangedMessage>
+    public class MainViewModel : BaseViewModel, IRecipient<IBridgeConnectionChangedMessage>, IRecipient<IUpdateAllIslandColorsMessage>, IRecipient<IAllConnectionsSetMessage>, IRecipient<ICurrentSourceIslandChangedMessage>, IRecipient<IPotentialTargetIslandChangedMessage>, IMainViewModel
     {
+        private readonly Func<int, int, int, IIslandViewModel> islandFactory;
+        private readonly Func<SolidColorBrush, IHashiBrush> brushFactory;
+        private readonly Func<ISettingsViewModel> settingsFactory;
+        private readonly Func<DifficultyEnum, IHighScorePerDifficultyViewModel> highScorePerDifficultyFactory;
+        private readonly IDialogWrapper dialogWrapper;
+        private readonly IJsonWrapper jsonWrapper;
         internal readonly string HashiSettingsFileName = "HashiSettings.json";
         internal readonly string SaveFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"CN_Hashi\Settings");
         private readonly HashiGenerator hashiGenerator = new();
@@ -34,8 +42,30 @@ namespace Hashi.Gui.ViewModels
         /// <summary>
         /// Initializes a new instance of the <see cref="MainViewModel"/> class.
         /// </summary>
-        public MainViewModel()
+        /// <param name="islandFactory"></param>
+        /// <param name="brushFactory"></param>
+        /// <param name="settingsFactory"></param>
+        /// <param name="highScorePerDifficultyFactory"></param>
+        /// <param name="connectionManager"></param>
+        /// <param name="dialogWrapper"></param>
+        /// <param name="jsonWrapper"></param>
+        public MainViewModel(
+            Func<int, int, int, IIslandViewModel> islandFactory,
+            Func<SolidColorBrush, IHashiBrush> brushFactory,
+            Func<ISettingsViewModel> settingsFactory,
+            Func<DifficultyEnum, IHighScorePerDifficultyViewModel> highScorePerDifficultyFactory,
+            IConnectionManagerViewModel connectionManager,
+            IDialogWrapper dialogWrapper,
+            IJsonWrapper jsonWrapper)
         {
+            this.islandFactory = islandFactory;
+            this.brushFactory = brushFactory;
+            this.settingsFactory = settingsFactory;
+            this.highScorePerDifficultyFactory = highScorePerDifficultyFactory;
+            ConnectionManager = connectionManager;
+            this.dialogWrapper = dialogWrapper;
+            this.jsonWrapper = jsonWrapper;
+
             WeakReferenceMessenger.Default.Register<BridgeConnectionChangedMessage>(this);
             WeakReferenceMessenger.Default.Register<UpdateAllIslandColorsMessage>(this);
             WeakReferenceMessenger.Default.Register<AllConnectionsSetMessage>(this);
@@ -48,33 +78,23 @@ namespace Hashi.Gui.ViewModels
             Settings = LoadSettings();
         }
 
-        /// <summary>
-        /// The Hashi settings.
-        /// </summary>
-        public SettingsViewModel Settings { get; }
+        /// <inheritdoc />
+        public IConnectionManagerViewModel ConnectionManager { get; }
 
-        /// <summary>
-        /// The highscore for the selected difficulty level.
-        /// </summary>
+        /// <inheritdoc />
+        public ISettingsViewModel Settings { get; }
+
+        /// <inheritdoc />
         public TimeSpan? HighscoreForSelectedDifficulty => Settings.HighScores.FirstOrDefault(x => x.Difficulty.Equals(SelectedDifficulty))?.HighScoreTime;
 
-        /// <summary>
-        /// Determines if the timer is running.
-        /// </summary>
+        /// <inheritdoc />
         public bool IsTimerRunning
         {
             get => isTimerRunning;
             set => Set(ref isTimerRunning, value);
         }
 
-        /// <summary>
-        /// The connection manager for managing island connections.
-        /// </summary>
-        public ConnectionManagerViewModel ConnectionManager { get; } = new();
-
-        /// <summary>
-        /// The selected difficulty level.
-        /// </summary>
+        /// <inheritdoc />
         public DifficultyEnum SelectedDifficulty
         {
             get => selectedDifficulty;
@@ -87,53 +107,40 @@ namespace Hashi.Gui.ViewModels
             }
         }
 
-        /// <summary>
-        /// Command to create a new game.
-        /// </summary>
+        /// <inheritdoc />
         public ICommand CreateNewGameCommand { get; }
 
-        /// <summary>
-        /// Command to remove all bridges.
-        /// </summary>
+        /// <inheritdoc />
         public ICommand RemoveAllBridgesCommand { get; }
 
-        /// <summary>
-        /// The current source island.
-        /// </summary>
+        /// <inheritdoc />
         public IIslandViewModel? CurrentSourceIsland
         {
             get => currentSourceIsland;
             set => Set(ref currentSourceIsland, value);
         }
 
-        /// <summary>
-        /// The current source island.
-        /// </summary>
+        /// <inheritdoc />
         public Stopwatch Timer { get; } = new();
 
-        /// <summary>
-        /// Gets or sets the potential target island.
-        /// </summary>
+        /// <inheritdoc />
         public IIslandViewModel? PotentialTargetIsland
         {
             get => potentialTargetIsland;
             set => Set(ref potentialTargetIsland, value);
         }
 
-        /// <summary>
-        /// Loads the settings from the JSON file.
-        /// </summary>
-        public SettingsViewModel LoadSettings()
+        /// <inheritdoc />
+        public ISettingsViewModel LoadSettings()
         {
-            SettingsViewModel loadedSettings;
+            ISettingsViewModel loadedSettings;
             try
             {
                 var path = Path.Combine(SaveFilePath, HashiSettingsFileName);
                 if (File.Exists(path))
                 {
                     using StreamReader file = File.OpenText(path);
-                    var serializer = new JsonSerializer();
-                    loadedSettings = (SettingsViewModel)serializer.Deserialize(file, typeof(SettingsViewModel))!;
+                    loadedSettings = (ISettingsViewModel)jsonWrapper.Deserialize(file, typeof(SettingsViewModel))!;
                     OnPropertyChanged(nameof(HighscoreForSelectedDifficulty));
                     return loadedSettings;
                 }
@@ -143,12 +150,13 @@ namespace Hashi.Gui.ViewModels
                 Debug.WriteLine(ex.StackTrace);
             }
 
-            loadedSettings = new SettingsViewModel();
-            loadedSettings.HighScores.AddRange(Enum.GetValues<DifficultyEnum>().Select(x => new HighScorePerDifficultyViewModel(x)));
+            loadedSettings = settingsFactory.Invoke();
+            loadedSettings.HighScores.AddRange(Enum.GetValues<DifficultyEnum>().Select(x => highScorePerDifficultyFactory.Invoke(x)));
             OnPropertyChanged(nameof(HighscoreForSelectedDifficulty));
             return loadedSettings;
         }
 
+        /// <inheritdoc />
         public void SaveSettings()
         {
             if (Settings == null)
@@ -156,7 +164,7 @@ namespace Hashi.Gui.ViewModels
                 throw new InvalidOperationException("Settings cannot be null.");
             }
 
-            var jsonArray = JsonConvert.SerializeObject(Settings, Formatting.Indented);
+            var jsonArray = jsonWrapper.SerializeObject(Settings, Formatting.Indented);
             var path = Path.Combine(SaveFilePath, HashiSettingsFileName);
 
             try
@@ -174,9 +182,7 @@ namespace Hashi.Gui.ViewModels
             }
         }
 
-        /// <summary>
-        /// Creates a new game.
-        /// </summary>
+        /// <inheritdoc />
         public void CreateNewGame()
         {
             var result = hashiGenerator.GenerateHash((int)SelectedDifficulty);
@@ -189,9 +195,7 @@ namespace Hashi.Gui.ViewModels
             OnPropertyChanged(nameof(Timer));
         }
 
-        /// <summary>
-        /// Creates a new game.
-        /// </summary>
+        /// <inheritdoc />
         public void RemoveAllBridgesExecute()
         {
             foreach (var row in ConnectionManager.Islands)
@@ -212,11 +216,7 @@ namespace Hashi.Gui.ViewModels
             WeakReferenceMessenger.Default.Send(new UpdateAllIslandColorsMessage());
         }
 
-        /// <summary>
-        /// Handles the message when a bridge connection is changed.
-        /// </summary>
-        /// <param name="message"></param>
-        /// <exception cref="ArgumentOutOfRangeException">The <see cref="IBridgeConnectionChangedMessage"/>.</exception>
+        /// <inheritdoc cref="IMainViewModel.Receive(IBridgeConnectionChangedMessage)"/>
         public void Receive(IBridgeConnectionChangedMessage message)
         {
             var bridgeOperationType = message.Value.BridgeOperationType;
@@ -249,27 +249,19 @@ namespace Hashi.Gui.ViewModels
             bridgeAction();
         }
 
-        /// <summary>
-        /// Updates the color of all islands.
-        /// </summary>
-        /// <param name="message">The <see cref="IUpdateAllIslandColorsMessage"/>.</param>
+        /// <inheritdoc cref="IMainViewModel.Receive(IUpdateAllIslandColorsMessage)"/>
         public void Receive(IUpdateAllIslandColorsMessage message)
         {
-            var color = message.Value;
-
             foreach (var row in ConnectionManager.Islands)
             {
                 foreach (var island in row)
                 {
-                    island.IslandColor = island.MaxConnectionsReached ? new HashiBrush(HashiColors.MaxBridgesReachedBrush) : new HashiBrush(HashiColors.BasicIslandBrush);
+                    island.IslandColor = island.MaxConnectionsReached ? brushFactory.Invoke(HashiColors.MaxBridgesReachedBrush) : brushFactory.Invoke(HashiColors.BasicIslandBrush);
                 }
             }
         }
 
-        /// <summary>
-        /// Handles the message when all connections are set.
-        /// </summary>
-        /// <param name="message">The <see cref="AllConnectionsSetMessage"/>.</param>
+        /// <inheritdoc cref="IMainViewModel.Receive(IAllConnectionsSetMessage)"/>
         public void Receive(IAllConnectionsSetMessage message)
         {
             Timer.Stop();
@@ -291,26 +283,21 @@ namespace Hashi.Gui.ViewModels
                 currentSettingForSetDifficulty.HighScoreTime = actualScore;
                 SaveSettings();
                 OnPropertyChanged(nameof(HighscoreForSelectedDifficulty));
+                OnPropertyChanged(nameof(HighscoreForSelectedDifficulty));
             }
 
-            Dialog.Show(caption, dialogMessage, DialogButton.Ok, DialogImage.Success);
+            dialogWrapper.Show(caption, dialogMessage, DialogButton.Ok, DialogImage.Success);
 
             CreateNewGame();
         }
 
-        /// <summary>
-        /// Handles the message when the current source island is changed.
-        /// </summary>
-        /// <param name="message">The <see cref="ICurrentSourceIslandChangedMessage"/>.</param>
+        /// <inheritdoc cref="IMainViewModel.Receive(ICurrentSourceIslandChangedMessage)"/>
         public void Receive(ICurrentSourceIslandChangedMessage message)
         {
             CurrentSourceIsland = message.Value;
         }
 
-        /// <summary>
-        /// Handles the message when the potential target island is changed.
-        /// </summary>
-        /// <param name="islandChangedMessage">The <see cref="IPotentialTargetIslandChangedMessage"/>.</param>
+        /// <inheritdoc cref="IMainViewModel.Receive(IPotentialTargetIslandChangedMessage)"/>
         public void Receive(IPotentialTargetIslandChangedMessage islandChangedMessage)
         {
             if (CurrentSourceIsland == null)
@@ -336,7 +323,7 @@ namespace Hashi.Gui.ViewModels
                 return;
             }
 
-            target.IslandColor = new HashiBrush(HashiColors.GreenIslandBrush);
+            target.IslandColor = brushFactory.Invoke(HashiColors.GreenIslandBrush);
             PotentialTargetIsland = target;
 
             ConnectionManager.RemoveAllHighlights();
@@ -348,10 +335,10 @@ namespace Hashi.Gui.ViewModels
             ConnectionManager.Islands.Clear();
             for (var row = 0; row < mainArray.Count; row++)
             {
-                var rowCollection = new ObservableCollection<IslandViewModel>();
+                var rowCollection = new ObservableCollection<IIslandViewModel>();
                 for (var column = 0; column < mainArray[0].Length; column++)
                 {
-                    rowCollection.Add(new IslandViewModel(column, row, mainArray[row][column]));
+                    rowCollection.Add(islandFactory.Invoke(column, row, mainArray[row][column]));
                 }
                 ConnectionManager.Islands.Add(rowCollection);
             }

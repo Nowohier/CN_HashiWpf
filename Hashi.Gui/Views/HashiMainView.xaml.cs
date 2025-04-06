@@ -1,15 +1,17 @@
-﻿using System.Windows;
-using Hashi.Gui.Interfaces;
+﻿using Hashi.Gui.Interfaces.ViewModels;
+using Hashi.Gui.Interfaces.Views;
+using System.Windows;
 
 namespace Hashi.Gui.Views
 {
-    public partial class HashiMainView : IViewBoxControl
+    public partial class HashiMainView : IHashiMainView
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="HashiMainView"/> class.
         /// </summary>
-        public HashiMainView()
+        public HashiMainView(IMainViewModel mainViewModel)
         {
+            DataContext = mainViewModel;
             InitializeComponent();
             ViewBoxControl = HashiViewBox;
         }
@@ -17,7 +19,7 @@ namespace Hashi.Gui.Views
         /// <summary>
         /// Gets the view box control.
         /// </summary>
-        public FrameworkElement ViewBoxControl { get; }
+        public object ViewBoxControl { get; }
 
         /// <summary>
         /// Handles the Loaded event of the window.

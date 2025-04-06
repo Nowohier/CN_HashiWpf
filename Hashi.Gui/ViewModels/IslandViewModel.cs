@@ -3,9 +3,9 @@ using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Gui.Enums;
 using Hashi.Gui.EventArgs;
 using Hashi.Gui.Helpers;
-using Hashi.Gui.Interfaces;
 using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.ViewModels;
+using Hashi.Gui.Interfaces.Views;
 using Hashi.Gui.Messages;
 using Hashi.Gui.Messages.MessageContainers;
 using Hashi.Gui.Models;
@@ -290,9 +290,8 @@ namespace Hashi.Gui.ViewModels
         private void QueryContinueDragHandler(object sender, QueryContinueDragEventArgs e)
         {
             var window = Application.Current.MainWindow as IViewBoxControl;
-            var viewBox = window?.ViewBoxControl;
 
-            if (viewBox == null)
+            if (window?.ViewBoxControl is not FrameworkElement viewBox)
             {
                 throw new InvalidOperationException("ViewBoxControl is not available.");
             }

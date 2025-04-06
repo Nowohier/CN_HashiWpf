@@ -7,6 +7,7 @@ namespace Hashi.Gui.Views
 {
     public partial class Dialog : ICloseable, IDialogResult
     {
+
         public static DialogResult Show(string caption, string message, DialogButton button = DialogButton.Ok, DialogImage image = DialogImage.None)
         {
             var res = DialogResult.Cancel;

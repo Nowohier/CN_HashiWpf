@@ -9,11 +9,12 @@ namespace Hashi.Gui.Messages
         /// <inheritdoc />
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<AllConnectionsSetMessage>().As<IAllConnectionsSetMessage>();
-            builder.RegisterType<BridgeConnectionChangedMessage>().As<IBridgeConnectionChangedMessage>();
-            builder.RegisterType<CurrentSourceIslandChangedMessage>().As<ICurrentSourceIslandChangedMessage>();
-            builder.RegisterType<PotentialTargetIslandChangedMessage>().As<IPotentialTargetIslandChangedMessage>();
-            builder.RegisterType<UpdateAllIslandColorsMessage>().As<IUpdateAllIslandColorsMessage>();
+            // Register your messages here
+            builder.RegisterType<AllConnectionsSetMessage>().As<IAllConnectionsSetMessage>().InstancePerDependency();
+            builder.RegisterType<BridgeConnectionChangedMessage>().As<IBridgeConnectionChangedMessage>().InstancePerDependency();
+            builder.RegisterType<CurrentSourceIslandChangedMessage>().As<ICurrentSourceIslandChangedMessage>().InstancePerDependency();
+            builder.RegisterType<PotentialTargetIslandChangedMessage>().As<IPotentialTargetIslandChangedMessage>().InstancePerDependency();
+            builder.RegisterType<UpdateAllIslandColorsMessage>().As<IUpdateAllIslandColorsMessage>().InstancePerDependency();
         }
     }
 }
