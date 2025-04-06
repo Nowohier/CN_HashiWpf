@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35828.75
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CN_HashiWpf", "CN_HashiWpf\CN_HashiWpf.csproj", "{E261B679-C699-4924-84CC-C378F28B343B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hashi.Gui", "Hashi.Gui\Hashi.Gui.csproj", "{E261B679-C699-4924-84CC-C378F28B343B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CN_HashiWpf.Test", "CN_HashiWpf.Test\CN_HashiWpf.Test.csproj", "{2502E7E1-41CE-45B0-BD0A-9616DCDE26DB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hashi.Gui.Test", "Hashi.Gui.Test\Hashi.Gui.Test.csproj", "{2502E7E1-41CE-45B0-BD0A-9616DCDE26DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CN_Hashi_Generator", "CN_Hashi_Generator\CN_Hashi_Generator.csproj", "{7A045235-E054-452A-BD97-30F822BDD7C2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hashi.Generator", "Hashi.Generator\Hashi.Generator.csproj", "{7A045235-E054-452A-BD97-30F822BDD7C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CN_Hashi_LinearSolver", "CN_Hashi_LinearSolver\CN_Hashi_LinearSolver.csproj", "{825D7380-046A-4681-9735-7F2EA738CD51}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hashi.LinearSolver", "Hashi.LinearSolver\Hashi.LinearSolver.csproj", "{825D7380-046A-4681-9735-7F2EA738CD51}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CN_Hashi_SolvedPuzzles", "CN_Hashi_SolvedPuzzles\CN_Hashi_SolvedPuzzles.csproj", "{99E1562C-4D9E-4313-A87D-2D7BED690008}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hashi.SolvedPuzzles", "Hashi.SolvedPuzzles\Hashi.SolvedPuzzles.csproj", "{99E1562C-4D9E-4313-A87D-2D7BED690008}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
