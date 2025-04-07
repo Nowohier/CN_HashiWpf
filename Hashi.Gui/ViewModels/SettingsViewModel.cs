@@ -1,12 +1,13 @@
-﻿using System.Collections.ObjectModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Hashi.Gui.Interfaces.ViewModels;
 using Newtonsoft.Json;
+using System.Collections.ObjectModel;
 
 namespace Hashi.Gui.ViewModels;
 
 /// <inheritdoc cref="ISettingsViewModel" />
 [JsonObject(MemberSerialization.OptIn)]
-public class SettingsViewModel : BaseViewModel, ISettingsViewModel
+public class SettingsViewModel : ObservableRecipient, ISettingsViewModel
 {
     private bool areGridLinesEnabled;
 
@@ -15,7 +16,7 @@ public class SettingsViewModel : BaseViewModel, ISettingsViewModel
     public bool AreGridLinesEnabled
     {
         get => areGridLinesEnabled;
-        set => Set(ref areGridLinesEnabled, value);
+        set => SetProperty(ref areGridLinesEnabled, value);
     }
 
     /// <inheritdoc />

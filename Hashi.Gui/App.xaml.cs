@@ -46,7 +46,7 @@ public partial class App
         dialogWrapper = scope.Resolve<IDialogWrapper>();
 
         mainViewModel = scope.Resolve<IMainViewModel>();
-        mainViewModel.CreateNewGame();
+        mainViewModel.CreateNewGameAsync();
 
         var gui = scope.Resolve<IHashiMainView>();
         gui.DataContext = mainViewModel;

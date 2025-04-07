@@ -1,5 +1,7 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Gui.Enums;
+using Hashi.Gui.Extensions;
 using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Messages;
@@ -10,7 +12,7 @@ namespace Hashi.Gui.ViewModels;
 
 /// <inheritdoc cref="IConnectionManagerViewModel" />
 [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
-public class ConnectionManagerViewModel : BaseViewModel, IConnectionManagerViewModel
+public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerViewModel
 {
     /// <summary>
     ///     Gets the islands.
@@ -28,7 +30,7 @@ public class ConnectionManagerViewModel : BaseViewModel, IConnectionManagerViewM
         }
 
         ManageConnections(sourceIsland, targetIsland, (island, coordinates) => island.AddConnection(coordinates));
-        if (AreAllConnectionsSet()) WeakReferenceMessenger.Default.Send(new AllConnectionsSetMessage());
+        if (AreAllConnectionsSet()) WeakReferenceMessenger.Default.SendAsync(new AllConnectionsSetMessage());
     }
 
     /// <inheritdoc />
