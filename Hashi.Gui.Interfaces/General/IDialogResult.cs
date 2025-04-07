@@ -1,6 +1,6 @@
 ﻿using Hashi.Gui.Enums;
 
-namespace Hashi.Gui.Interfaces;
+namespace Hashi.Gui.Interfaces.General;
 
 public interface IDialogResult
 {

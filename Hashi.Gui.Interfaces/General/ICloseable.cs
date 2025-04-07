@@ -1,4 +1,4 @@
-﻿namespace Hashi.Gui.Interfaces;
+﻿namespace Hashi.Gui.Interfaces.General;
 
 public interface ICloseable
 {

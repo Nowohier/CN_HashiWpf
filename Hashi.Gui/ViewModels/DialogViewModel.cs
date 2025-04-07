@@ -1,7 +1,7 @@
-﻿using System.Windows.Input;
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 using Hashi.Gui.Enums;
-using Hashi.Gui.Interfaces;
+using Hashi.Gui.Interfaces.General;
+using System.Windows.Input;
 
 namespace Hashi.Gui.ViewModels;
 
