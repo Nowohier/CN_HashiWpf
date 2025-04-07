@@ -1,9 +1,8 @@
 ﻿using Hashi.Gui.Enums;
 
-namespace Hashi.Gui.Interfaces
+namespace Hashi.Gui.Interfaces;
+
+public interface IDialogResult
 {
-    public interface IDialogResult
-    {
-        DialogResult DialogResult { get; set; }
-    }
+    DialogResult DialogResult { get; set; }
 }

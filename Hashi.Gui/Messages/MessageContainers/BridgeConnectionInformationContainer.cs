@@ -5,33 +5,33 @@ using Hashi.Gui.ViewModels;
 
 // ReSharper disable CompareOfFloatsByEqualityOperator
 
-namespace Hashi.Gui.Messages.MessageContainers
+namespace Hashi.Gui.Messages.MessageContainers;
+
+/// <summary>
+///     Represents the container for the bridge connection.
+/// </summary>
+public class BridgeConnectionInformationContainer : IBridgeConnectionInformationContainer
 {
     /// <summary>
-    /// Represents the container for the bridge connection.
+    ///     Initializes a new instance of the <see cref="BridgeConnectionInformationContainer" /> class.
     /// </summary>
-    public class BridgeConnectionInformationContainer : IBridgeConnectionInformationContainer
+    /// <param name="sourceIsland">The source island.</param>
+    /// <param name="bridgeOperationType">The bridge operation type.</param>
+    public BridgeConnectionInformationContainer(IslandViewModel sourceIsland,
+        BridgeOperationTypeEnum bridgeOperationType)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="BridgeConnectionInformationContainer"/> class.
-        /// </summary>
-        /// <param name="sourceIsland">The source island.</param>
-        /// <param name="bridgeOperationType">The bridge operation type.</param>
-        public BridgeConnectionInformationContainer(IslandViewModel sourceIsland, BridgeOperationTypeEnum bridgeOperationType)
-        {
-            SourceIsland = sourceIsland;
+        SourceIsland = sourceIsland;
 
-            BridgeOperationType = bridgeOperationType;
-        }
-
-        /// <summary>
-        /// Gets the source island.
-        /// </summary>
-        public IIslandViewModel SourceIsland { get; }
-
-        /// <summary>
-        /// Gets the bridge operation type.
-        /// </summary>
-        public BridgeOperationTypeEnum BridgeOperationType { get; }
+        BridgeOperationType = bridgeOperationType;
     }
+
+    /// <summary>
+    ///     Gets the source island.
+    /// </summary>
+    public IIslandViewModel SourceIsland { get; }
+
+    /// <summary>
+    ///     Gets the bridge operation type.
+    /// </summary>
+    public BridgeOperationTypeEnum BridgeOperationType { get; }
 }

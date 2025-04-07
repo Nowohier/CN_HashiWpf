@@ -1,18 +1,17 @@
-﻿namespace Hashi.LinearSolver.Interfaces.Models
+﻿namespace Hashi.LinearSolver.Interfaces.Models;
+
+/// <summary>
+///     Interface for a bridge pair.
+/// </summary>
+public interface IBridgePair
 {
     /// <summary>
-    /// Interface for a bridge pair.
+    ///     The first bridge.
     /// </summary>
-    public interface IBridgePair
-    {
-        /// <summary>
-        /// The first bridge.
-        /// </summary>
-        int[] Bridge1 { get; }
+    int[] Bridge1 { get; }
 
-        /// <summary>
-        /// The second bridge.
-        /// </summary>
-        int[] Bridge2 { get; }
-    }
+    /// <summary>
+    ///     The second bridge.
+    /// </summary>
+    int[] Bridge2 { get; }
 }

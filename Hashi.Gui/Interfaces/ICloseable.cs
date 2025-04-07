@@ -1,7 +1,6 @@
-﻿namespace Hashi.Gui.Interfaces
+﻿namespace Hashi.Gui.Interfaces;
+
+public interface ICloseable
 {
-    public interface ICloseable
-    {
-        void Close();
-    }
+    void Close();
 }

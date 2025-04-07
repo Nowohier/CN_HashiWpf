@@ -1,17 +1,16 @@
-﻿using Hashi.Gui.Interfaces.Models;
-using System.Windows.Media;
+﻿using System.Windows.Media;
+using Hashi.Gui.Interfaces.Models;
 
-namespace Hashi.Gui.Models
+namespace Hashi.Gui.Models;
+
+/// <inheritdoc cref="IHashiBrush" />
+/// >
+public class HashiBrush : IHashiBrush
 {
-    /// <inheritdoc cref="IHashiBrush"/>>
-    public class HashiBrush : IHashiBrush
+    public HashiBrush(SolidColorBrush brush)
     {
-
-        public HashiBrush(SolidColorBrush brush)
-        {
-            Brush = brush;
-        }
-
-        public object Brush { get; }
+        Brush = brush;
     }
+
+    public object Brush { get; }
 }

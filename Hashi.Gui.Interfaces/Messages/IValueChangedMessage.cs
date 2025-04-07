@@ -1,14 +1,13 @@
-﻿namespace Hashi.Gui.Interfaces.Messages
+﻿namespace Hashi.Gui.Interfaces.Messages;
+
+/// <summary>
+///     Represents a message that contains a value of type <typeparamref name="T" />.
+/// </summary>
+/// <typeparam name="T">The value of value of type <typeparamref name="T" /></typeparam>
+public interface IValueChangedMessage<out T>
 {
     /// <summary>
-    /// Represents a message that contains a value of type <typeparamref name="T"/>.
+    ///     Gets the value of the message.
     /// </summary>
-    /// <typeparam name="T">The value of value of type <typeparamref name="T"/></typeparam>
-    public interface IValueChangedMessage<out T>
-    {
-        /// <summary>
-        /// Gets the value of the message.
-        /// </summary>
-        public T Value { get; }
-    }
+    public T Value { get; }
 }

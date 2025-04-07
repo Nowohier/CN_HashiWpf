@@ -16,7 +16,7 @@
     <mah:MetroWindow.IconTemplate>
         <DataTemplate>
             <Grid>
-                <iconPacks:PackIconVaadinIcons Kind="Cluster" Style="{StaticResource WindowIconStyle}" Margin="5,0,0,0"/>
+                <iconPacks:PackIconVaadinIcons Kind="Cluster" Style="{StaticResource WindowIconStyle}" Margin="5,0,0,0" />
             </Grid>
         </DataTemplate>
     </mah:MetroWindow.IconTemplate>
@@ -26,16 +26,6 @@
                 <x:Type TypeName="enums:DifficultyEnum" />
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
-        <Style TargetType="TextBlock" x:Key="TimerTextBlockStyle">
-            <Setter Property="Foreground" Value="{StaticResource BasicBrush}" />
-            <Setter Property="FontWeight" Value="Normal" />
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding IsTimerRunning, UpdateSourceTrigger=PropertyChanged}" Value="True">
-                    <Setter Property="Foreground" Value="Red" />
-                    <Setter Property="FontWeight" Value="Bold" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
     </Window.Resources>
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -75,12 +65,16 @@
                         <StackPanel Orientation="Horizontal">
                             <iconPacks:PackIconMaterial Kind="Timer" VerticalAlignment="Center"
                                                         Foreground="Red" Height="20" Width="20" />
-                            <TextBlock Text="{Binding Timer.Elapsed, StringFormat={}{0:hh\\:mm\\:ss}}" Margin="10,0,0,0" FontSize="16"
+                            <TextBlock Text="{Binding Timer.Elapsed, StringFormat={}{0:hh\\:mm\\:ss}}"
+                                       Margin="10,0,0,0" FontSize="16"
                                        Foreground="Red" FontWeight="Bold" VerticalAlignment="Center" />
                             <iconPacks:PackIconMaterial Kind="Crown" Margin="30,0,0,0" VerticalAlignment="Center"
-                                                        Foreground="{StaticResource IntenseGreenBrush}" Height="20" Width="20" />
-                            <TextBlock Text="{Binding HighscoreForSelectedDifficulty, StringFormat={}{0:hh\\:mm\\:ss}, TargetNullValue='00:00:00'}" Margin="10,0,0,0" FontSize="16" FontWeight="Bold"
-                                       Foreground="{StaticResource IntenseGreenBrush}" VerticalAlignment="Center" />
+                                                        Foreground="{StaticResource IntenseGreenBrush}" Height="20"
+                                                        Width="20" />
+                            <TextBlock
+                                Text="{Binding HighscoreForSelectedDifficulty, StringFormat={}{0:hh\\:mm\\:ss}, TargetNullValue='00:00:00'}"
+                                Margin="10,0,0,0" FontSize="16" FontWeight="Bold"
+                                Foreground="{StaticResource IntenseGreenBrush}" VerticalAlignment="Center" />
                         </StackPanel>
                     </GroupBox>
                     <GroupBox Header="OTHER" Padding="5" Style="{x:Null}" Margin="10,0,0,0" BorderThickness="0,1,0,0"
