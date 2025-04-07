@@ -1,4 +1,5 @@
-﻿using Hashi.Gui.Enums;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Hashi.Gui.Enums;
 using Hashi.Gui.Interfaces.ViewModels;
 using Newtonsoft.Json;
 
@@ -8,7 +9,7 @@ namespace Hashi.Gui.ViewModels;
 ///     Represents a view model for displaying high scores per difficulty level.
 /// </summary>
 [JsonObject(MemberSerialization.OptIn)]
-public class HighScorePerDifficultyViewModel : BaseViewModel, IHighScorePerDifficultyViewModel
+public class HighScorePerDifficultyViewModel : ObservableRecipient, IHighScorePerDifficultyViewModel
 {
     private TimeSpan? highScoreTime;
 
@@ -26,7 +27,7 @@ public class HighScorePerDifficultyViewModel : BaseViewModel, IHighScorePerDiffi
     public TimeSpan? HighScoreTime
     {
         get => highScoreTime;
-        set => Set(ref highScoreTime, value);
+        set => SetProperty(ref highScoreTime, value);
     }
 
     /// <inheritdoc />

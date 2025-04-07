@@ -49,8 +49,8 @@
                                       SelectedItem="{Binding SelectedDifficulty}" DisplayMemberPath=""
                                       ItemsSource="{Binding Source={StaticResource DifficultyEnums}}"
                                       DockPanel.Dock="Left" />
-                            <Button Focusable="False" FontWeight="Normal" Height="22" Padding="5,0,5,0"
-                                    Background="White" HorizontalAlignment="Left"
+                            <Button Style="{StaticResource MenuButtonStyle}" Padding="5,0,5,0"
+                                    HorizontalAlignment="Left"
                                     Command="{Binding CreateNewGameCommand}" Margin="10,0,0,0" DockPanel.Dock="Left">
                                 <StackPanel Orientation="Horizontal">
                                     <iconPacks:Material Kind="StarPlusOutline" Width="14" Height="14" />
@@ -66,14 +66,14 @@
                             <iconPacks:PackIconMaterial Kind="Timer" VerticalAlignment="Center"
                                                         Foreground="Red" Height="20" Width="20" />
                             <TextBlock Text="{Binding Timer.Elapsed, StringFormat={}{0:hh\\:mm\\:ss}}"
-                                       Margin="10,0,0,0" FontSize="16"
-                                       Foreground="Red" FontWeight="Bold" VerticalAlignment="Center" />
+                                       Margin="10,0,0,0" FontSize="20"
+                                       Foreground="Red" VerticalAlignment="Center" />
                             <iconPacks:PackIconMaterial Kind="Crown" Margin="30,0,0,0" VerticalAlignment="Center"
                                                         Foreground="{StaticResource IntenseGreenBrush}" Height="20"
                                                         Width="20" />
                             <TextBlock
                                 Text="{Binding HighscoreForSelectedDifficulty, StringFormat={}{0:hh\\:mm\\:ss}, TargetNullValue='00:00:00'}"
-                                Margin="10,0,0,0" FontSize="16" FontWeight="Bold"
+                                Margin="10,0,0,0" FontSize="20"
                                 Foreground="{StaticResource IntenseGreenBrush}" VerticalAlignment="Center" />
                         </StackPanel>
                     </GroupBox>
@@ -81,24 +81,24 @@
                               BorderBrush="{StaticResource BasicBrush}"
                               Background="{StaticResource MenuBackgroundBrush}">
                         <StackPanel Orientation="Horizontal">
-                            <Button Focusable="False" FontWeight="Normal" Height="22" Padding="5,0,5,0"
-                                    Background="White" HorizontalAlignment="Left"
+                            <Button Style="{StaticResource MenuButtonStyle}" Padding="5,0,5,0"
+                                    HorizontalAlignment="Left"
                                     Command="{Binding RemoveAllBridgesCommand}">
                                 <StackPanel Orientation="Horizontal">
                                     <iconPacks:Material Kind="SortVariantRemove" Width="14" Height="14" />
                                     <TextBlock Text="REMOVE ALL BRIDGES" Margin="5,0,0,0" VerticalAlignment="Center" />
                                 </StackPanel>
                             </Button>
-                            <ToggleButton Focusable="False" FontWeight="Normal" Height="22" Padding="5,0,5,0"
-                                          IsChecked="{Binding Settings.AreGridLinesEnabled}"
-                                          Background="White" Margin="10,0,0,0" HorizontalAlignment="Left">
+                            <ToggleButton Style="{StaticResource MenuToggleButtonStyle}" Padding="5,0,5,0"
+                                          IsChecked="{Binding Settings.AreGridLinesEnabled}" Margin="10,0,0,0"
+                                          HorizontalAlignment="Left">
                                 <StackPanel Orientation="Horizontal">
                                     <iconPacks:Material Kind="Grid" Width="14" Height="14" />
                                     <TextBlock Text="TOGGLE GRIDLINES" Margin="5,0,0,0" VerticalAlignment="Center" />
                                 </StackPanel>
                             </ToggleButton>
-                            <Button Focusable="False" FontWeight="Normal" Height="22" Padding="5,0,5,0"
-                                    Background="White" Margin="10,0,0,0" HorizontalAlignment="Left">
+                            <Button Style="{StaticResource MenuButtonStyle}" Padding="5,0,5,0" Margin="10,0,0,0"
+                                    HorizontalAlignment="Left">
                                 <StackPanel Orientation="Horizontal">
                                     <iconPacks:Material Kind="LightbulbOnOutline" Width="14" Height="14" />
                                     <TextBlock Text="SHOW HINT" Margin="5,0,0,0" VerticalAlignment="Center" />
@@ -121,5 +121,17 @@
                 </Viewbox>
             </Border>
         </Grid>
+
+        <Grid Grid.Row="1"
+              Visibility="{Binding IsGeneratingHashiPuzzle, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Hidden}">
+            <Border Background="White" Opacity="0.5" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Margin="0,5,0,0">
+                <iconPacks:PackIconVaadinIcons Kind="Cluster" Width="32" Height="32" Spin="True" Margin="0,0,20,0"
+                                               VerticalAlignment="Center" />
+                <TextBlock Text="Please wait - generating Hashi puzzle..." FontSize="20" />
+            </StackPanel>
+        </Grid>
+
     </Grid>
 </mah:MetroWindow>

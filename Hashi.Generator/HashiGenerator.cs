@@ -1,9 +1,9 @@
-﻿using System.Diagnostics;
-using System.Drawing;
-using Hashi.Generator.Interfaces;
+﻿using Hashi.Generator.Interfaces;
 using Hashi.Generator.Interfaces.Models;
 using Hashi.Gui.Enums;
 using Hashi.LinearSolver.Interfaces;
+using System.Diagnostics;
+using System.Drawing;
 
 namespace Hashi.Generator;
 
@@ -28,7 +28,7 @@ public class HashiGenerator : IHashiGenerator
         this.linearSolutionSolverWithIterativ = linearSolutionSolverWithIterativ;
     }
 
-    public int[][] GenerateHash(int difficulty = -1, int amountNodes = 10, int width = 0, int length = 0, int alpha = 0,
+    public async Task<int[][]> GenerateHashAsync(int difficulty = -1, int amountNodes = 10, int width = 0, int length = 0, int alpha = 0,
         int beta = 0)
     {
         // ToDo: remove
@@ -40,7 +40,7 @@ public class HashiGenerator : IHashiGenerator
                 var sizeLength = random.Next(5, 10);
                 var sizeWidth = random.Next(5, 10);
                 var n = (int)Math.Round(sizeWidth * sizeLength / 4.0);
-                return GenerateHash(n, sizeLength, sizeWidth, 0, 0, false);
+                return await GenerateHashAsync(n, sizeLength, sizeWidth, 0, 0, false);
             }
 
             if (difficulty == 1)
@@ -48,7 +48,7 @@ public class HashiGenerator : IHashiGenerator
                 var sizeLength = random.Next(14, 16);
                 var sizeWidth = random.Next(14, 16);
                 var n = (int)Math.Round(sizeWidth * sizeLength / 4.0);
-                return GenerateHash(n, sizeLength, sizeWidth, 1, 0, false);
+                return await GenerateHashAsync(n, sizeLength, sizeWidth, 1, 0, false);
             }
 
             if (difficulty == 2)
@@ -56,7 +56,7 @@ public class HashiGenerator : IHashiGenerator
                 var sizeLength = random.Next(10, 16);
                 var sizeWidth = random.Next(10, 16);
                 var n = (int)Math.Round(sizeWidth * sizeLength / 3.0);
-                return GenerateHash(n, sizeLength, sizeWidth, 2, 0, false);
+                return await GenerateHashAsync(n, sizeLength, sizeWidth, 2, 0, false);
             }
 
             if (difficulty == 3)
@@ -64,7 +64,7 @@ public class HashiGenerator : IHashiGenerator
                 var sizeLength = random.Next(11, 18);
                 var sizeWidth = random.Next(11, 18);
                 var n = (int)Math.Round(sizeWidth * sizeLength / 3.0);
-                return GenerateHash(n, sizeLength, sizeWidth, 3, 0, false);
+                return await GenerateHashAsync(n, sizeLength, sizeWidth, 3, 0, false);
             }
 
             if (difficulty == 4)
@@ -72,7 +72,7 @@ public class HashiGenerator : IHashiGenerator
                 var sizeLength = random.Next(10, 18);
                 var sizeWidth = random.Next(10, 18);
                 var n = (int)Math.Round(sizeWidth * sizeLength / 3.0);
-                return GenerateHash(n, sizeLength, sizeWidth, 4, 0, false);
+                return await GenerateHashAsync(n, sizeLength, sizeWidth, 4, 0, false);
             }
 
             if (difficulty == 5)
@@ -80,7 +80,7 @@ public class HashiGenerator : IHashiGenerator
                 var sizeLength = random.Next(13, 18);
                 var sizeWidth = random.Next(13, 18);
                 var n = (int)Math.Round(sizeWidth * sizeLength / 3.0);
-                return GenerateHash(n, sizeLength, sizeWidth, 5, 0, false);
+                return await GenerateHashAsync(n, sizeLength, sizeWidth, 5, 0, false);
             }
 
             if (difficulty == 6)
@@ -88,7 +88,7 @@ public class HashiGenerator : IHashiGenerator
                 var sizeLength = random.Next(15, 20);
                 var sizeWidth = random.Next(15, 20);
                 var n = (int)Math.Round(sizeWidth * sizeLength / 3.0);
-                return GenerateHash(n, sizeLength, sizeWidth, 6, 0, false);
+                return await GenerateHashAsync(n, sizeLength, sizeWidth, 6, 0, false);
             }
 
             if (difficulty == 7)
@@ -96,7 +96,7 @@ public class HashiGenerator : IHashiGenerator
                 var sizeLength = random.Next(14, 20);
                 var sizeWidth = random.Next(14, 20);
                 var n = (int)Math.Round(sizeWidth * sizeLength / 3.0);
-                return GenerateHash(n, sizeLength, sizeWidth, 7, 0, false);
+                return await GenerateHashAsync(n, sizeLength, sizeWidth, 7, 0, false);
             }
 
             if (difficulty == 8)
@@ -104,7 +104,7 @@ public class HashiGenerator : IHashiGenerator
                 var sizeLength = random.Next(16, 31);
                 var sizeWidth = random.Next(16, 31);
                 var n = (int)Math.Round(sizeWidth * sizeLength / 3.0);
-                return GenerateHash(n, sizeLength, sizeWidth, 8, 0, false);
+                return await GenerateHashAsync(n, sizeLength, sizeWidth, 8, 0, false);
             }
 
             if (difficulty == 9)
@@ -112,13 +112,13 @@ public class HashiGenerator : IHashiGenerator
                 var sizeLength = random.Next(20, 31);
                 var sizeWidth = random.Next(20, 31);
                 var n = (int)Math.Round(sizeWidth * sizeLength / 3.0);
-                return GenerateHash(n, sizeLength, sizeWidth, 9, 0, false);
+                return await GenerateHashAsync(n, sizeLength, sizeWidth, 9, 0, false);
             }
 
             throw new ArgumentException("Invalid difficulty level.");
         }
 
-        return GenerateHash(amountNodes, length, width, alpha, beta, true);
+        return await GenerateHashAsync(amountNodes, length, width, alpha, beta, true);
     }
 
     /// <summary>
@@ -149,13 +149,13 @@ public class HashiGenerator : IHashiGenerator
     /// <param name="beta">The beta value.</param>
     /// <param name="checkDifficulty">Determines if the difficulty should be checked.</param>
     /// <returns>a valid hashi field array with one possible solution.</returns>
-    private int[][] GenerateHash(int numberOfIslands, int sizeLength, int sizeWidth, int difficulty, int beta,
+    private async Task<int[][]> GenerateHashAsync(int numberOfIslands, int sizeLength, int sizeWidth, int difficulty, int beta,
         bool checkDifficulty)
     {
-        var field = CreateHash(numberOfIslands, sizeLength, sizeWidth, difficulty, beta, checkDifficulty);
+        var field = await CreateHashAsync(numberOfIslands, sizeLength, sizeWidth, difficulty, beta, checkDifficulty);
 
-        while (linearSolutionSolverWithIterativ.Solve(field) == SolverStatusEnum.Infeasible)
-            field = CreateHash(numberOfIslands, sizeLength, sizeWidth, difficulty, beta, checkDifficulty);
+        while (await linearSolutionSolverWithIterativ.SolveAsync(field) == SolverStatusEnum.Infeasible)
+            field = await CreateHashAsync(numberOfIslands, sizeLength, sizeWidth, difficulty, beta, checkDifficulty);
 
         Debug.WriteLine(string.Empty);
         Debug.WriteLine(string.Join("\nNumberOfIslands", field.Select(row => $"{{{string.Join(", ", row)}}}")));
@@ -163,75 +163,80 @@ public class HashiGenerator : IHashiGenerator
         return field;
     }
 
-    private int[][] CreateHash(int numberOfIslands, int sizeLength, int sizeWidth, int difficulty, int beta,
+    private async Task<int[][]> CreateHashAsync(int numberOfIslands, int sizeLength, int sizeWidth, int difficulty, int beta,
         bool checkDifficulty)
     {
-        bridges.Clear();
-        islands.Clear();
-
-        var mainField = new int[sizeLength][];
-        for (var i = 0; i < sizeLength; i++) mainField[i] = new int[sizeWidth];
-
-        var row = random.Next(sizeLength);
-        var col = random.Next(sizeWidth);
-        islands.Add(islandFactory.Invoke(0, row, col));
-        var edgeCount = 0;
-
-        while (true)
+        var task = Task.Run(() =>
         {
-            var size = islands.Count;
-            for (var i = 0; i < size; i++)
+            bridges.Clear();
+            islands.Clear();
+
+            var mainField = new int[sizeLength][];
+            for (var i = 0; i < sizeLength; i++) mainField[i] = new int[sizeWidth];
+
+            var row = random.Next(sizeLength);
+            var col = random.Next(sizeWidth);
+            islands.Add(islandFactory.Invoke(0, row, col));
+            var edgeCount = 0;
+
+            while (true)
             {
-                mainField = CreateIsland(mainField, islands[i]);
-                if (islands.Count == numberOfIslands) break;
+                var size = islands.Count;
+                for (var i = 0; i < size; i++)
+                {
+                    mainField = CreateIsland(mainField, islands[i]);
+                    if (islands.Count == numberOfIslands) break;
+                }
+
+                if (edgeCount == bridges.Count || islands.Count == numberOfIslands) break;
+                edgeCount = bridges.Count;
             }
 
-            if (edgeCount == bridges.Count || islands.Count == numberOfIslands) break;
-            edgeCount = bridges.Count;
-        }
+            foreach (var node in islands) node.SetAllNeighbors(mainField, islands);
 
-        foreach (var node in islands) node.SetAllNeighbors(mainField, islands);
-
-        if (!checkDifficulty)
-        {
-            mainField = difficulty switch
+            if (!checkDifficulty)
             {
-                0 => CreateNewBridges(mainField, 25),
-                3 => CreateNewBridges(mainField, 25),
-                6 => CreateNewBridges(mainField, 25),
-                1 => CreateNewBridges(mainField, 50),
-                4 => CreateNewBridges(mainField, 50),
-                7 => CreateNewBridges(mainField, 50),
-                2 => CreateNewBridges(mainField, 75),
-                5 => CreateNewBridges(mainField, 75),
-                8 => CreateNewBridges(mainField, 75),
-                9 => CreateNewBridges(mainField, 100),
-                _ => mainField
-            };
+                mainField = difficulty switch
+                {
+                    0 => CreateNewBridges(mainField, 25),
+                    3 => CreateNewBridges(mainField, 25),
+                    6 => CreateNewBridges(mainField, 25),
+                    1 => CreateNewBridges(mainField, 50),
+                    4 => CreateNewBridges(mainField, 50),
+                    7 => CreateNewBridges(mainField, 50),
+                    2 => CreateNewBridges(mainField, 75),
+                    5 => CreateNewBridges(mainField, 75),
+                    8 => CreateNewBridges(mainField, 75),
+                    9 => CreateNewBridges(mainField, 100),
+                    _ => mainField
+                };
 
-            switch (difficulty)
-            {
-                case >= 0 and <= 2:
-                    SetBeta(mainField, 20);
-                    break;
-                case >= 3 and <= 5:
-                    SetBeta(mainField, 15);
-                    break;
-                case >= 6 and <= 8:
-                    SetBeta(mainField, 10);
-                    break;
-                case 9:
-                    SetBeta(mainField, 0);
-                    break;
+                switch (difficulty)
+                {
+                    case >= 0 and <= 2:
+                        SetBeta(mainField, 20);
+                        break;
+                    case >= 3 and <= 5:
+                        SetBeta(mainField, 15);
+                        break;
+                    case >= 6 and <= 8:
+                        SetBeta(mainField, 10);
+                        break;
+                    case 9:
+                        SetBeta(mainField, 0);
+                        break;
+                }
             }
-        }
-        else
-        {
-            mainField = CreateNewBridges(mainField, difficulty);
-            SetBeta(mainField, beta);
-        }
+            else
+            {
+                mainField = CreateNewBridges(mainField, difficulty);
+                SetBeta(mainField, beta);
+            }
 
-        return mainField;
+            return mainField;
+        });
+
+        return await task;
     }
 
     private int[][] CreateNewBridges(int[][] mainField, int alpha)
@@ -385,13 +390,13 @@ public class HashiGenerator : IHashiGenerator
     private int UpBlocked(IIsland mainIsland, int[][] mainField)
     {
         for (var row = mainIsland.Y - 1; row > 0; row--)
-        for (var checkLeft = mainIsland.X - 1; checkLeft >= 0; checkLeft--)
-        {
-            if (bridges.Count <= 0 || mainField[row][checkLeft] == 0) continue;
-            if (bridges.Any(bridge =>
-                    bridge.Island1.Y == row && bridge.Island1.X == checkLeft && bridge.Island2.X > mainIsland.X))
-                return row;
-        }
+            for (var checkLeft = mainIsland.X - 1; checkLeft >= 0; checkLeft--)
+            {
+                if (bridges.Count <= 0 || mainField[row][checkLeft] == 0) continue;
+                if (bridges.Any(bridge =>
+                        bridge.Island1.Y == row && bridge.Island1.X == checkLeft && bridge.Island2.X > mainIsland.X))
+                    return row;
+            }
 
         return -1;
     }
@@ -399,13 +404,13 @@ public class HashiGenerator : IHashiGenerator
     private int DownBlocked(IIsland mainIsland, int[][] mainField)
     {
         for (var row = mainIsland.Y + 1; row < mainField.Length; row++)
-        for (var checkLeft = mainIsland.X - 1; checkLeft >= 0; checkLeft--)
-        {
-            if (bridges.Count <= 0 || mainField[row][checkLeft] == 0) continue;
-            if (bridges.Any(bridge =>
-                    bridge.Island1.Y == row && bridge.Island1.X == checkLeft && bridge.Island2.X > mainIsland.X))
-                return row;
-        }
+            for (var checkLeft = mainIsland.X - 1; checkLeft >= 0; checkLeft--)
+            {
+                if (bridges.Count <= 0 || mainField[row][checkLeft] == 0) continue;
+                if (bridges.Any(bridge =>
+                        bridge.Island1.Y == row && bridge.Island1.X == checkLeft && bridge.Island2.X > mainIsland.X))
+                    return row;
+            }
 
         return -1;
     }
@@ -413,13 +418,13 @@ public class HashiGenerator : IHashiGenerator
     private int RightBlocked(IIsland mainIsland, int[][] mainField)
     {
         for (var col = mainIsland.X + 1; col < mainField[mainIsland.Y].Length; col++)
-        for (var checkLeft = mainIsland.Y - 1; checkLeft >= 0; checkLeft--)
-        {
-            if (bridges.Count <= 0 || mainField[checkLeft][col] == 0) continue;
-            if (bridges.Any(bridge =>
-                    bridge.Island1.Y == checkLeft && bridge.Island1.X == col && bridge.Island2.Y > mainIsland.Y))
-                return col;
-        }
+            for (var checkLeft = mainIsland.Y - 1; checkLeft >= 0; checkLeft--)
+            {
+                if (bridges.Count <= 0 || mainField[checkLeft][col] == 0) continue;
+                if (bridges.Any(bridge =>
+                        bridge.Island1.Y == checkLeft && bridge.Island1.X == col && bridge.Island2.Y > mainIsland.Y))
+                    return col;
+            }
 
         return -1;
     }
@@ -427,13 +432,13 @@ public class HashiGenerator : IHashiGenerator
     private int LeftBlocked(IIsland mainIsland, int[][] mainField)
     {
         for (var col = mainIsland.X - 1; col > 0; col--)
-        for (var checkLeft = mainIsland.Y - 1; checkLeft >= 0; checkLeft--)
-        {
-            if (bridges.Count <= 0 || mainField[checkLeft][col] == 0) continue;
-            if (bridges.Any(bridge =>
-                    bridge.Island1.Y == checkLeft && bridge.Island1.X == col && bridge.Island2.Y > mainIsland.Y))
-                return col;
-        }
+            for (var checkLeft = mainIsland.Y - 1; checkLeft >= 0; checkLeft--)
+            {
+                if (bridges.Count <= 0 || mainField[checkLeft][col] == 0) continue;
+                if (bridges.Any(bridge =>
+                        bridge.Island1.Y == checkLeft && bridge.Island1.X == col && bridge.Island2.Y > mainIsland.Y))
+                    return col;
+            }
 
         return -1;
     }
@@ -441,13 +446,13 @@ public class HashiGenerator : IHashiGenerator
     private int DownBlockedd(IIsland mainIsland, int[][] mainField)
     {
         for (var row = mainIsland.IslandDown.Y - 1; row > mainIsland.Y; row--)
-        for (var checkLeft = mainIsland.X - 1; checkLeft >= 0; checkLeft--)
-        {
-            if (mainField[row][checkLeft] == 0) continue;
-            if (bridges.Any(bridge =>
-                    bridge.Island1.Y == row && bridge.Island1.X == checkLeft && bridge.Island2.X > mainIsland.X))
-                return row;
-        }
+            for (var checkLeft = mainIsland.X - 1; checkLeft >= 0; checkLeft--)
+            {
+                if (mainField[row][checkLeft] == 0) continue;
+                if (bridges.Any(bridge =>
+                        bridge.Island1.Y == row && bridge.Island1.X == checkLeft && bridge.Island2.X > mainIsland.X))
+                    return row;
+            }
 
         return -1;
     }
@@ -455,13 +460,13 @@ public class HashiGenerator : IHashiGenerator
     private int RightBlockedd(IIsland mainIsland, int[][] mainField)
     {
         for (var col = mainIsland.IslandRight.X - 1; col > mainIsland.X; col--)
-        for (var checkLeft = mainIsland.Y - 1; checkLeft >= 0; checkLeft--)
-        {
-            if (mainField[checkLeft][col] == 0) continue;
-            if (bridges.Any(bridge =>
-                    bridge.Island1.Y == checkLeft && bridge.Island1.X == col && bridge.Island2.Y > mainIsland.Y))
-                return col;
-        }
+            for (var checkLeft = mainIsland.Y - 1; checkLeft >= 0; checkLeft--)
+            {
+                if (mainField[checkLeft][col] == 0) continue;
+                if (bridges.Any(bridge =>
+                        bridge.Island1.Y == checkLeft && bridge.Island1.X == col && bridge.Island2.Y > mainIsland.Y))
+                    return col;
+            }
 
         return -1;
     }

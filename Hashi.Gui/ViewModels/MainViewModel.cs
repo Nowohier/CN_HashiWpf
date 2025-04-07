@@ -9,6 +9,7 @@ using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Wrappers;
 using Hashi.Gui.Messages;
+using Hashi.Gui.Messaging;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -21,11 +22,11 @@ namespace Hashi.Gui.ViewModels;
 
 /// <inheritdoc cref="IMainViewModel" />
 [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
-public class MainViewModel : BaseViewModel,
+public class MainViewModel : AsyncObservableRecipient,
     IMainViewModel,
     IRecipient<IBridgeConnectionChangedMessage>,
     IRecipient<IUpdateAllIslandColorsMessage>,
-    IRecipient<IAllConnectionsSetMessage>,
+    IAsyncRecipient<IAllConnectionsSetMessage>,
     IRecipient<ICurrentSourceIslandChangedMessage>,
     IRecipient<IPotentialTargetIslandChangedMessage>
 {
@@ -44,6 +45,7 @@ public class MainViewModel : BaseViewModel,
     private readonly Func<ISettingsViewModel> settingsFactory;
     private IIslandViewModel? currentSourceIsland;
     private bool isTimerRunning;
+    private bool isGeneratingHashiPuzzle;
     private IIslandViewModel? potentialTargetIsland;
     private DifficultyEnum selectedDifficulty = DifficultyEnum.Easy3;
 
@@ -82,7 +84,7 @@ public class MainViewModel : BaseViewModel,
         WeakReferenceMessenger.Default.Register<AllConnectionsSetMessage>(this);
         WeakReferenceMessenger.Default.Register<CurrentSourceIslandChangedMessage>(this);
         WeakReferenceMessenger.Default.Register<PotentialTargetIslandChangedMessage>(this);
-        CreateNewGameCommand = new RelayCommand(CreateNewGame);
+        CreateNewGameCommand = new AsyncRelayCommand(CreateNewGameAsync);
         RemoveAllBridgesCommand = new RelayCommand(RemoveAllBridgesExecute);
 
         dispatcherTimer.Tick += (_, _) => OnPropertyChanged(nameof(Timer));
@@ -103,7 +105,14 @@ public class MainViewModel : BaseViewModel,
     public bool IsTimerRunning
     {
         get => isTimerRunning;
-        set => Set(ref isTimerRunning, value);
+        set => SetProperty(ref isTimerRunning, value);
+    }
+
+    /// <inheritdoc />
+    public bool IsGeneratingHashiPuzzle
+    {
+        get => isGeneratingHashiPuzzle;
+        set => SetProperty(ref isGeneratingHashiPuzzle, value);
     }
 
     /// <inheritdoc />
@@ -112,7 +121,7 @@ public class MainViewModel : BaseViewModel,
         get => selectedDifficulty;
         set
         {
-            if (Set(ref selectedDifficulty, value)) OnPropertyChanged(nameof(HighscoreForSelectedDifficulty));
+            if (SetProperty(ref selectedDifficulty, value)) OnPropertyChanged(nameof(HighscoreForSelectedDifficulty));
         }
     }
 
@@ -126,7 +135,7 @@ public class MainViewModel : BaseViewModel,
     public IIslandViewModel? CurrentSourceIsland
     {
         get => currentSourceIsland;
-        set => Set(ref currentSourceIsland, value);
+        set => SetProperty(ref currentSourceIsland, value);
     }
 
     /// <inheritdoc />
@@ -136,7 +145,7 @@ public class MainViewModel : BaseViewModel,
     public IIslandViewModel? PotentialTargetIsland
     {
         get => potentialTargetIsland;
-        set => Set(ref potentialTargetIsland, value);
+        set => SetProperty(ref potentialTargetIsland, value);
     }
 
     /// <inheritdoc />
@@ -186,9 +195,10 @@ public class MainViewModel : BaseViewModel,
     }
 
     /// <inheritdoc />
-    public void CreateNewGame()
+    public async Task CreateNewGameAsync()
     {
-        var result = hashiGenerator.GenerateHash((int)SelectedDifficulty);
+        IsGeneratingHashiPuzzle = true;
+        var result = await hashiGenerator.GenerateHashAsync((int)SelectedDifficulty);
         DrawGame(result);
 
         // Stop timers
@@ -196,6 +206,7 @@ public class MainViewModel : BaseViewModel,
         IsTimerRunning = false;
         dispatcherTimer.Stop();
         OnPropertyChanged(nameof(Timer));
+        IsGeneratingHashiPuzzle = false;
     }
 
     /// <inheritdoc />
@@ -259,8 +270,8 @@ public class MainViewModel : BaseViewModel,
                     : brushFactory.Invoke(HashiColors.BasicIslandBrush);
     }
 
-    /// <inheritdoc cref="IMainViewModel.Receive(IAllConnectionsSetMessage)" />
-    public void Receive(IAllConnectionsSetMessage message)
+    /// <inheritdoc cref="IMainViewModel.ReceiveAsync(IAllConnectionsSetMessage,CancellationToken)" />
+    public async Task ReceiveAsync(IAllConnectionsSetMessage message, CancellationToken cancellationToken)
     {
         Timer.Stop();
         var caption = "Game Over";
@@ -287,7 +298,7 @@ public class MainViewModel : BaseViewModel,
 
         dialogWrapper.Show(caption, dialogMessage, DialogButton.Ok, DialogImage.Success);
 
-        CreateNewGame();
+        await CreateNewGameAsync();
     }
 
     /// <inheritdoc cref="IMainViewModel.Receive(ICurrentSourceIslandChangedMessage)" />
