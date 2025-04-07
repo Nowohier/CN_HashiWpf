@@ -1,6 +1,7 @@
-﻿using System.Windows.Input;
-using Hashi.Gui.Enums;
+﻿using Hashi.Gui.Enums;
 using Hashi.Gui.Interfaces.Models;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace Hashi.Gui.Interfaces.ViewModels;
 
@@ -36,7 +37,7 @@ public interface IIslandViewModel : IBaseViewModel
     /// <summary>
     ///     A list of all set connections for this island.
     /// </summary>
-    public List<IHashiPoint> AllConnections { get; }
+    public ObservableCollection<IHashiPoint> AllConnections { get; }
 
     /// <summary>
     ///     Determines if the max connections have been reached

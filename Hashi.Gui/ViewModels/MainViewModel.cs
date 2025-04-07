@@ -1,11 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Threading;
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Generator.Interfaces;
 using Hashi.Gui.Enums;
@@ -17,6 +10,13 @@ using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Wrappers;
 using Hashi.Gui.Messages;
 using Newtonsoft.Json;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace Hashi.Gui.ViewModels;
 
@@ -204,11 +204,11 @@ public class MainViewModel : BaseViewModel,
     public void RemoveAllBridgesExecute()
     {
         foreach (var row in ConnectionManager.Islands)
-        foreach (var island in row)
-        {
-            island.AllConnections.Clear();
-            island.NotifyBridgeConnections();
-        }
+            foreach (var island in row)
+            {
+                island.AllConnections.Clear();
+                island.NotifyBridgeConnections();
+            }
 
         if (Timer.IsRunning)
         {
@@ -242,7 +242,8 @@ public class MainViewModel : BaseViewModel,
                 }
 
                 ConnectionManager.AddConnection(CurrentSourceIsland, PotentialTargetIsland);
-            },
+            }
+            ,
             BridgeOperationTypeEnum.RemoveAll => () => ConnectionManager.RemoveAllConnections(sourceIsland, null),
             _ => throw new ArgumentOutOfRangeException()
         };
@@ -254,10 +255,10 @@ public class MainViewModel : BaseViewModel,
     public void Receive(IUpdateAllIslandColorsMessage message)
     {
         foreach (var row in ConnectionManager.Islands)
-        foreach (var island in row)
-            island.IslandColor = island.MaxConnectionsReached
-                ? brushFactory.Invoke(HashiColors.MaxBridgesReachedBrush)
-                : brushFactory.Invoke(HashiColors.BasicIslandBrush);
+            foreach (var island in row)
+                island.IslandColor = island.MaxConnectionsReached
+                    ? brushFactory.Invoke(HashiColors.MaxBridgesReachedBrush)
+                    : brushFactory.Invoke(HashiColors.BasicIslandBrush);
     }
 
     /// <inheritdoc cref="IMainViewModel.Receive(IAllConnectionsSetMessage)" />

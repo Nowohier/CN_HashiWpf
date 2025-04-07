@@ -1,5 +1,5 @@
-﻿using System.Windows;
-using Hashi.Gui.Interfaces.Models;
+﻿using Hashi.Gui.Interfaces.Models;
+using System.Windows;
 
 namespace Hashi.Gui.Models;
 
@@ -11,17 +11,17 @@ public class HashiPoint : IHashiPoint
     /// </summary>
     /// <param name="x">The x coordinate.</param>
     /// <param name="y">The y coordinate.</param>
-    public HashiPoint(double x, double y)
+    public HashiPoint(int x, int y)
     {
         X = x;
         Y = y;
     }
 
     /// <inheritdoc />
-    public double X { get; }
+    public int X { get; }
 
     /// <inheritdoc />
-    public double Y { get; }
+    public int Y { get; }
 
     /// <summary>
     ///     Converts a <see cref="HashiPoint" /> to a <see cref="Point" />.
@@ -38,6 +38,6 @@ public class HashiPoint : IHashiPoint
     /// <param name="point"></param>
     public static implicit operator HashiPoint(Point point)
     {
-        return new HashiPoint(point.X, point.Y);
+        return new HashiPoint((int)point.X, (int)point.Y);
     }
 }

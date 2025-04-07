@@ -20,4 +20,23 @@ public static class ObservableCollectionExtensions
 
         foreach (var item in items) collection.Add(item);
     }
+
+    /// <summary>
+    ///    Removes all items that match the predicate from the ObservableCollection.
+    /// </summary>
+    /// <typeparam name="T">The type of object to handle.</typeparam>
+    /// <param name="collection">The collection to add the range to.</param>
+    /// <param name="predicate">The predicate to use.</param>
+    /// <exception cref="ArgumentNullException">Throws an exception if collection or items are null.</exception>
+    public static void RemoveAll<T>(this ObservableCollection<T> collection, Func<T, bool> predicate)
+    {
+        if (collection == null) throw new ArgumentNullException(nameof(collection));
+        if (predicate == null) throw new ArgumentNullException(nameof(predicate));
+
+        var itemsToRemove = collection.Where(predicate).ToList();
+        foreach (var item in itemsToRemove)
+        {
+            collection.Remove(item);
+        }
+    }
 }
