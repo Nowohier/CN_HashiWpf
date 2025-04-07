@@ -1,57 +1,51 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace CNHashiSolvedPuzzles
+namespace CNHashiSolvedPuzzles;
+
+/// <summary>
+///     Loads a puzzle from a file.
+/// </summary>
+[SuppressMessage("ReSharper", "InconsistentNaming")]
+[SuppressMessage("ReSharper", "IdentifierTypo")]
+[SuppressMessage("ReSharper", "StringLiteralTypo")]
+[SuppressMessage("ReSharper", "CommentTypo")]
+public class HashiPuzzleLoader
 {
+    private static readonly string PuzzleDirectoryName = "Hashi_Puzzles";
+
+    private static readonly string PuzzleBasePath =
+        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PuzzleDirectoryName);
+
     /// <summary>
-    /// Loads a puzzle from a file.
+    ///     Loads a puzzle from a file depending on the given enum.
     /// </summary>
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
-    [SuppressMessage("ReSharper", "IdentifierTypo")]
-    [SuppressMessage("ReSharper", "StringLiteralTypo")]
-    [SuppressMessage("ReSharper", "CommentTypo")]
-    public class HashiPuzzleLoader
+    /// <param name="hashiFileEnum">The hashi file enum.</param>
+    /// <returns></returns>
+    /// <exception cref="FileNotFoundException" />
+    /// <exception cref="Exception" />
+    public int[][] LoadPuzzle(HashiFileEnum hashiFileEnum)
     {
-        private static readonly string PuzzleDirectoryName = "Hashi_Puzzles";
-        private static readonly string PuzzleBasePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PuzzleDirectoryName);
+        var fileName = GetHashiFileName(hashiFileEnum);
 
-        /// <summary>
-        /// Loads a puzzle from a file depending on the given enum.
-        /// </summary>
-        /// <param name="hashiFileEnum">The hashi file enum.</param>
-        /// <returns></returns>
-        /// <exception cref="FileNotFoundException" />
-        /// <exception cref="Exception" />
-        public int[][] LoadPuzzle(HashiFileEnum hashiFileEnum)
-        {
-            var fileName = GetHashiFileName(hashiFileEnum);
+        if (!File.Exists(fileName)) throw new FileNotFoundException($"File {fileName} not found.");
 
-            if (!File.Exists(fileName))
-            {
-                throw new FileNotFoundException($"File {fileName} not found.");
-            }
+        var fileContent = File.ReadAllText(fileName).Replace("{", "[").Replace("}", "]");
 
-            var fileContent = File.ReadAllText(fileName).Replace("{", "[").Replace("}", "]");
+        // Deserialize the JSON string to an int[][]
+        var puzzle = JsonSerializer.Deserialize<int[][]>(fileContent);
 
-            // Deserialize the JSON string to an int[][]
-            var puzzle = JsonSerializer.Deserialize<int[][]>(fileContent);
+        if (puzzle == null) throw new Exception($"Failed to deserialize the puzzle from file {fileName}.");
 
-            if (puzzle == null)
-            {
-                throw new Exception($"Failed to deserialize the puzzle from file {fileName}.");
-            }
+        return puzzle;
+    }
 
-            return puzzle;
-        }
+    private string GetHashiFileName(HashiFileEnum hashiFileEnum)
+    {
+        var hashiId = hashiFileEnum.ToString();
+        var folderName = hashiId.Substring(6, 3);
+        var hashiName = $"{hashiId}.has";
 
-        private string GetHashiFileName(HashiFileEnum hashiFileEnum)
-        {
-            var hashiId = hashiFileEnum.ToString();
-            var folderName = hashiId.Substring(6, 3);
-            var hashiName = $"{hashiId}.has";
-
-            return Path.Combine(Path.Combine(PuzzleBasePath, folderName), hashiName);
-        }
-
+        return Path.Combine(Path.Combine(PuzzleBasePath, folderName), hashiName);
     }
 }

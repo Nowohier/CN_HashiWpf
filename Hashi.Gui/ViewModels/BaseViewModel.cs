@@ -1,29 +1,28 @@
-﻿using Hashi.Gui.Interfaces.ViewModels;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using Hashi.Gui.Interfaces.ViewModels;
 
-namespace Hashi.Gui.ViewModels
+namespace Hashi.Gui.ViewModels;
+
+/// <summary>
+///     Base class for all view models.
+/// </summary>
+public class BaseViewModel : IBaseViewModel
 {
-    /// <summary>
-    /// Base class for all view models.
-    /// </summary>
-    public class BaseViewModel : IBaseViewModel
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    public void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
 
-        public void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        public virtual bool Set<T>(ref T storage, T value, [CallerMemberName] string propertyName = "")
-        {
-            if (EqualityComparer<T>.Default.Equals(storage, value)) return false;
-            storage = value;
-            OnPropertyChanged(propertyName);
-            CommandManager.InvalidateRequerySuggested();
-            return true;
-        }
+    public virtual bool Set<T>(ref T storage, T value, [CallerMemberName] string propertyName = "")
+    {
+        if (EqualityComparer<T>.Default.Equals(storage, value)) return false;
+        storage = value;
+        OnPropertyChanged(propertyName);
+        CommandManager.InvalidateRequerySuggested();
+        return true;
     }
 }

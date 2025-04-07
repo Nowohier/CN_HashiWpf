@@ -1,12 +1,12 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <SolidColorBrush x:Key="BackgroundBrush" Color="White"/>
-    <SolidColorBrush x:Key="MenuBackgroundBrush" Color="AliceBlue"/>
-    <SolidColorBrush x:Key="BasicBrush" Color="#FF444446"/>
-    <SolidColorBrush x:Key="BasicIslandBrush" Color="#add8e6"/>
-    <SolidColorBrush x:Key="GreenIslandBrush" Color="#ade6bb"/>
-    <SolidColorBrush x:Key="IntenseGreenBrush" Color="#3abf5b"/>
-    <SolidColorBrush x:Key="MaxBridgesReachedBrush" Color="#e6bbad"/>
-    <SolidColorBrush x:Key="PotentialConnectionBrush" Color="AliceBlue"/>
+    <SolidColorBrush x:Key="BackgroundBrush" Color="White" />
+    <SolidColorBrush x:Key="MenuBackgroundBrush" Color="AliceBlue" />
+    <SolidColorBrush x:Key="BasicBrush" Color="#FF444446" />
+    <SolidColorBrush x:Key="BasicIslandBrush" Color="#add8e6" />
+    <SolidColorBrush x:Key="GreenIslandBrush" Color="#ade6bb" />
+    <SolidColorBrush x:Key="IntenseGreenBrush" Color="#3abf5b" />
+    <SolidColorBrush x:Key="MaxBridgesReachedBrush" Color="#e6bbad" />
+    <SolidColorBrush x:Key="PotentialConnectionBrush" Color="AliceBlue" />
 </ResourceDictionary>

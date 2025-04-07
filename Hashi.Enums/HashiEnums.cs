@@ -1,44 +1,43 @@
-﻿namespace Hashi.Gui.Enums
+﻿namespace Hashi.Gui.Enums;
+
+/// <summary>
+///     Represents the type of operation for the bridge.
+/// </summary>
+public enum BridgeOperationTypeEnum
 {
-    /// <summary>
-    /// Represents the type of operation for the bridge.
-    /// </summary>
-    public enum BridgeOperationTypeEnum
-    {
-        Add,
-        RemoveAll
-    }
+    Add,
+    RemoveAll
+}
 
-    /// <summary>
-    /// Represents the type of connection for the bridge.
-    /// </summary>
-    public enum ConnectionTypeEnum
-    {
-        Horizontal,
-        Vertical,
-        Diagonal
-    }
+/// <summary>
+///     Represents the type of connection for the bridge.
+/// </summary>
+public enum ConnectionTypeEnum
+{
+    Horizontal,
+    Vertical,
+    Diagonal
+}
 
-    public enum DifficultyEnum
-    {
-        Easy1 = 0,
-        Easy2 = 1,
-        Easy3 = 2,
-        Medium1 = 3,
-        Medium2 = 4,
-        Medium3 = 5,
-        Hard1 = 6,
-        Hard2 = 7,
-        Hard3 = 8,
-        Expert = 9
-    }
+public enum DifficultyEnum
+{
+    Easy1 = 0,
+    Easy2 = 1,
+    Easy3 = 2,
+    Medium1 = 3,
+    Medium2 = 4,
+    Medium3 = 5,
+    Hard1 = 6,
+    Hard2 = 7,
+    Hard3 = 8,
+    Expert = 9
+}
 
-    public enum SolverStatusEnum
-    {
-        Unknown = 0,
-        ModelInvalid = 1,
-        Feasible = 2,
-        Infeasible = 3,
-        Optimal = 4
-    }
+public enum SolverStatusEnum
+{
+    Unknown = 0,
+    ModelInvalid = 1,
+    Feasible = 2,
+    Infeasible = 3,
+    Optimal = 4
 }

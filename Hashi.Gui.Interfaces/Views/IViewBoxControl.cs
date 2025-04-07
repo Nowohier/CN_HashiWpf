@@ -1,7 +1,6 @@
-﻿namespace Hashi.Gui.Interfaces.Views
+﻿namespace Hashi.Gui.Interfaces.Views;
+
+public interface IViewBoxControl
 {
-    public interface IViewBoxControl
-    {
-        object ViewBoxControl { get; }
-    }
+    object ViewBoxControl { get; }
 }

@@ -3,29 +3,31 @@ using Hashi.Generator.Interfaces;
 using Hashi.Generator.Interfaces.Models;
 using Hashi.Generator.Models;
 
-namespace Hashi.Generator
+namespace Hashi.Generator;
+
+/// <inheritdoc />
+public class AutoFacGeneratorModule : Module
 {
     /// <inheritdoc />
-    public class AutoFacGeneratorModule : Module
+    protected override void Load(ContainerBuilder builder)
     {
-        /// <inheritdoc />
-        protected override void Load(ContainerBuilder builder)
+        builder.RegisterType<HashiGenerator>().As<IHashiGenerator>().SingleInstance();
+        builder.RegisterType<Island>().As<IIsland>().InstancePerDependency();
+        builder.RegisterType<Bridge>().As<IBridge>().InstancePerDependency();
+
+        builder.Register<Func<int, int, int, IIsland>>(context =>
         {
-            builder.RegisterType<HashiGenerator>().As<IHashiGenerator>().SingleInstance();
-            builder.RegisterType<Island>().As<IIsland>().InstancePerDependency();
-            builder.RegisterType<Bridge>().As<IBridge>().InstancePerDependency();
+            var c = context.Resolve<IComponentContext>();
+            return (amountBridgesConnectable, row, column) => c.Resolve<IIsland>(
+                new NamedParameter("amountBridgesConnectable", amountBridgesConnectable), new NamedParameter("y", row),
+                new NamedParameter("x", column));
+        });
 
-            builder.Register<Func<int, int, int, IIsland>>(context =>
-            {
-                var c = context.Resolve<IComponentContext>();
-                return (amountBridgesConnectable, row, column) => c.Resolve<IIsland>(new NamedParameter("amountBridgesConnectable", amountBridgesConnectable), new NamedParameter("y", row), new NamedParameter("x", column));
-            });
-
-            builder.Register<Func<IIsland, IIsland, int, IBridge>>(context =>
-            {
-                var c = context.Resolve<IComponentContext>();
-                return (island1, island2, amountBridgesSet) => c.Resolve<IBridge>(new NamedParameter("island1", island1), new NamedParameter("island2", island2), new NamedParameter("amountBridgesSet", amountBridgesSet));
-            });
-        }
+        builder.Register<Func<IIsland, IIsland, int, IBridge>>(context =>
+        {
+            var c = context.Resolve<IComponentContext>();
+            return (island1, island2, amountBridgesSet) => c.Resolve<IBridge>(new NamedParameter("island1", island1),
+                new NamedParameter("island2", island2), new NamedParameter("amountBridgesSet", amountBridgesSet));
+        });
     }
 }

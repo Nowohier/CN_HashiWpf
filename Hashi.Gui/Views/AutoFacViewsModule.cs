@@ -1,16 +1,15 @@
 ﻿using Autofac;
 using Hashi.Gui.Interfaces.Views;
 
-namespace Hashi.Gui.Views
+namespace Hashi.Gui.Views;
+
+/// <inheritdoc />
+public class AutoFacViewsModule : Module
 {
     /// <inheritdoc />
-    public class AutoFacViewsModule : Module
+    protected override void Load(ContainerBuilder builder)
     {
-        /// <inheritdoc />
-        protected override void Load(ContainerBuilder builder)
-        {
-            // Register your views here
-            builder.RegisterType<HashiMainView>().As<IHashiMainView>().SingleInstance();
-        }
+        // Register your views here
+        builder.RegisterType<HashiMainView>().As<IHashiMainView>().SingleInstance();
     }
 }

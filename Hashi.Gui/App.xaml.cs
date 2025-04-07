@@ -1,20 +1,20 @@
-﻿using Autofac;
+﻿using System.Windows;
+using Autofac;
 using Hashi.Gui.AutoFac;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Views;
-using System.Windows;
 
 namespace Hashi.Gui;
 
 /// <summary>
-/// Interaction logic for App.xaml
+///     Interaction logic for App.xaml
 /// </summary>
 public partial class App : Application
 {
     private IMainViewModel mainViewModel;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="App"/> class.
+    ///     Initializes a new instance of the <see cref="App" /> class.
     /// </summary>
     public App()
     {
@@ -23,7 +23,7 @@ public partial class App : Application
     }
 
     /// <summary>
-    /// Handles the startup event of the application.
+    ///     Handles the startup event of the application.
     /// </summary>
     protected override void OnStartup(StartupEventArgs e)
     {
@@ -43,7 +43,7 @@ public partial class App : Application
     }
 
     /// <summary>
-    /// Handles the exit event of the application.
+    ///     Handles the exit event of the application.
     /// </summary>
     protected override void OnExit(ExitEventArgs e)
     {
@@ -52,4 +52,3 @@ public partial class App : Application
         mainViewModel.SaveSettings();
     }
 }
-
