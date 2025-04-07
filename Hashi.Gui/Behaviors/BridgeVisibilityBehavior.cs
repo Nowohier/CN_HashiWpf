@@ -107,34 +107,25 @@ namespace Hashi.Gui.Behaviors
         /// </summary>
         private void UpdateVisibility()
         {
-            if (AssociatedObject is not { } line || AssociatedObject.DataContext is not IIslandViewModel island || island.MaxConnections < 0) return;
+            if (AssociatedObject is not { } line || AssociatedObject.DataContext is not IIslandViewModel island) return;
 
-            if (island.MaxConnections == 0)
+            line.Visibility = BridgeType switch
             {
-                line.Visibility = BridgeType switch
-                {
-                    BridgeTypeEnum.Horizontal => island.BridgesLeft.Count == 1 && island.BridgesRight.Count == 1 ? Visibility.Visible : Visibility.Hidden,
-                    BridgeTypeEnum.HorizontalDouble => island.BridgesLeft.Count == 2 && island.BridgesRight.Count == 2 ? Visibility.Visible : Visibility.Hidden,
-                    BridgeTypeEnum.Vertical => island.BridgesUp.Count == 1 && island.BridgesDown.Count == 1 ? Visibility.Visible : Visibility.Hidden,
-                    BridgeTypeEnum.VerticalDouble => island.BridgesUp.Count == 2 && island.BridgesDown.Count == 2 ? Visibility.Visible : Visibility.Hidden,
-                    _ => Visibility.Hidden
-                };
-            }
-            else
-            {
-                line.Visibility = BridgeType switch
-                {
-                    BridgeTypeEnum.HorizontalLeft => island.BridgesLeft.Count == 1 ? Visibility.Visible : Visibility.Hidden,
-                    BridgeTypeEnum.HorizontalDoubleLeft => island.BridgesLeft.Count == 2 ? Visibility.Visible : Visibility.Hidden,
-                    BridgeTypeEnum.HorizontalRight => island.BridgesRight.Count == 1 ? Visibility.Visible : Visibility.Hidden,
-                    BridgeTypeEnum.HorizontalDoubleRight => island.BridgesRight.Count == 2 ? Visibility.Visible : Visibility.Hidden,
-                    BridgeTypeEnum.VerticalUp => island.BridgesUp.Count == 1 ? Visibility.Visible : Visibility.Hidden,
-                    BridgeTypeEnum.VerticalDoubleUp => island.BridgesUp.Count == 2 ? Visibility.Visible : Visibility.Hidden,
-                    BridgeTypeEnum.VerticalDown => island.BridgesDown.Count == 1 ? Visibility.Visible : Visibility.Hidden,
-                    BridgeTypeEnum.VerticalDoubleDown => island.BridgesDown.Count == 2 ? Visibility.Visible : Visibility.Hidden,
-                    _ => Visibility.Hidden
-                };
-            }
+                BridgeTypeEnum.Horizontal => island.BridgesLeft.Count == 1 && island.BridgesRight.Count == 1 ? Visibility.Visible : Visibility.Hidden,
+                BridgeTypeEnum.HorizontalDouble => island.BridgesLeft.Count == 2 && island.BridgesRight.Count == 2 ? Visibility.Visible : Visibility.Hidden,
+                BridgeTypeEnum.Vertical => island.BridgesUp.Count == 1 && island.BridgesDown.Count == 1 ? Visibility.Visible : Visibility.Hidden,
+                BridgeTypeEnum.VerticalDouble => island.BridgesUp.Count == 2 && island.BridgesDown.Count == 2 ? Visibility.Visible : Visibility.Hidden,
+
+                BridgeTypeEnum.HorizontalLeft => island.BridgesLeft.Count == 1 ? Visibility.Visible : Visibility.Hidden,
+                BridgeTypeEnum.HorizontalDoubleLeft => island.BridgesLeft.Count == 2 ? Visibility.Visible : Visibility.Hidden,
+                BridgeTypeEnum.HorizontalRight => island.BridgesRight.Count == 1 ? Visibility.Visible : Visibility.Hidden,
+                BridgeTypeEnum.HorizontalDoubleRight => island.BridgesRight.Count == 2 ? Visibility.Visible : Visibility.Hidden,
+                BridgeTypeEnum.VerticalUp => island.BridgesUp.Count == 1 ? Visibility.Visible : Visibility.Hidden,
+                BridgeTypeEnum.VerticalDoubleUp => island.BridgesUp.Count == 2 ? Visibility.Visible : Visibility.Hidden,
+                BridgeTypeEnum.VerticalDown => island.BridgesDown.Count == 1 ? Visibility.Visible : Visibility.Hidden,
+                BridgeTypeEnum.VerticalDoubleDown => island.BridgesDown.Count == 2 ? Visibility.Visible : Visibility.Hidden,
+                _ => Visibility.Hidden
+            };
         }
     }
 }
