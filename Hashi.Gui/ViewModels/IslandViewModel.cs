@@ -1,11 +1,8 @@
-﻿using System.Diagnostics;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Media;
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Gui.Enums;
 using Hashi.Gui.EventArgs;
+using Hashi.Gui.Extensions;
 using Hashi.Gui.Helpers;
 using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.ViewModels;
@@ -13,6 +10,11 @@ using Hashi.Gui.Interfaces.Views;
 using Hashi.Gui.Messages;
 using Hashi.Gui.Messages.MessageContainers;
 using Hashi.Gui.Models;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media;
 
 // ReSharper disable CompareOfFloatsByEqualityOperator
 
@@ -57,7 +59,7 @@ public class IslandViewModel : BaseViewModel, IIslandViewModel
     }
 
     /// <inheritdoc />
-    public List<IHashiPoint> AllConnections { get; } = new();
+    public ObservableCollection<IHashiPoint> AllConnections { get; } = new();
 
     /// <inheritdoc />
     public bool MaxConnectionsReached => AllConnections.Count >= MaxConnections;

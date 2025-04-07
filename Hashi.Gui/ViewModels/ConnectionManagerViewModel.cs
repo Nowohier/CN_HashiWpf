@@ -1,10 +1,10 @@
-﻿using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
-using CommunityToolkit.Mvvm.Messaging;
+﻿using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Gui.Enums;
 using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Messages;
+using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Hashi.Gui.ViewModels;
 
@@ -59,41 +59,41 @@ public class ConnectionManagerViewModel : BaseViewModel, IConnectionManagerViewM
         switch (connectionType)
         {
             case ConnectionTypeEnum.Vertical:
-            {
-                if (target.Coordinates.Y > source.Coordinates.Y)
-                    for (var y = (int)source.Coordinates.Y + 1; y < Islands.Count; y++)
-                    {
-                        var potentialTarget = Islands[y][(int)source.Coordinates.X];
-                        if (IsValidConnection(source, potentialTarget)) return potentialTarget;
-                    }
+                {
+                    if (target.Coordinates.Y > source.Coordinates.Y)
+                        for (var y = (int)source.Coordinates.Y + 1; y < Islands.Count; y++)
+                        {
+                            var potentialTarget = Islands[y][(int)source.Coordinates.X];
+                            if (IsValidConnection(source, potentialTarget)) return potentialTarget;
+                        }
 
-                if (target.Coordinates.Y < source.Coordinates.Y)
-                    for (var y = (int)source.Coordinates.Y - 1; y >= 0; y--)
-                    {
-                        var potentialTarget = Islands[y][(int)source.Coordinates.X];
-                        if (IsValidConnection(source, potentialTarget)) return potentialTarget;
-                    }
+                    if (target.Coordinates.Y < source.Coordinates.Y)
+                        for (var y = (int)source.Coordinates.Y - 1; y >= 0; y--)
+                        {
+                            var potentialTarget = Islands[y][(int)source.Coordinates.X];
+                            if (IsValidConnection(source, potentialTarget)) return potentialTarget;
+                        }
 
-                return null;
-            }
+                    return null;
+                }
             case ConnectionTypeEnum.Horizontal:
-            {
-                if (target.Coordinates.X > source.Coordinates.X)
-                    for (var x = (int)source.Coordinates.X + 1; x < Islands[(int)source.Coordinates.Y].Count; x++)
-                    {
-                        var potentialTarget = Islands[(int)source.Coordinates.Y][x];
-                        if (IsValidConnection(source, potentialTarget)) return potentialTarget;
-                    }
+                {
+                    if (target.Coordinates.X > source.Coordinates.X)
+                        for (var x = (int)source.Coordinates.X + 1; x < Islands[(int)source.Coordinates.Y].Count; x++)
+                        {
+                            var potentialTarget = Islands[(int)source.Coordinates.Y][x];
+                            if (IsValidConnection(source, potentialTarget)) return potentialTarget;
+                        }
 
-                if (target.Coordinates.X < source.Coordinates.X)
-                    for (var x = (int)source.Coordinates.X - 1; x >= 0; x--)
-                    {
-                        var potentialTarget = Islands[(int)source.Coordinates.Y][x];
-                        if (IsValidConnection(source, potentialTarget)) return potentialTarget;
-                    }
+                    if (target.Coordinates.X < source.Coordinates.X)
+                        for (var x = (int)source.Coordinates.X - 1; x >= 0; x--)
+                        {
+                            var potentialTarget = Islands[(int)source.Coordinates.Y][x];
+                            if (IsValidConnection(source, potentialTarget)) return potentialTarget;
+                        }
 
-                return null;
-            }
+                    return null;
+                }
             case ConnectionTypeEnum.Diagonal:
             default:
                 return null;
@@ -145,21 +145,21 @@ public class ConnectionManagerViewModel : BaseViewModel, IConnectionManagerViewM
     public void RemoveAllHighlights()
     {
         foreach (var row in Islands)
-        foreach (var island in row)
-        {
-            island.IsHighlightHorizontalLeft = false;
-            island.IsHighlightHorizontalRight = false;
-            island.IsHighlightVerticalTop = false;
-            island.IsHighlightVerticalBottom = false;
-        }
+            foreach (var island in row)
+            {
+                island.IsHighlightHorizontalLeft = false;
+                island.IsHighlightHorizontalRight = false;
+                island.IsHighlightVerticalTop = false;
+                island.IsHighlightVerticalBottom = false;
+            }
     }
 
     /// <inheritdoc />
     public void RemoveAllPotentialIslandCoordinates()
     {
         foreach (var row in Islands)
-        foreach (var island in row)
-            island.PotentialTargetIslandCoordinates = null;
+            foreach (var island in row)
+                island.PotentialTargetIslandCoordinates = null;
     }
 
     /// <inheritdoc />
@@ -172,29 +172,29 @@ public class ConnectionManagerViewModel : BaseViewModel, IConnectionManagerViewM
         switch (connectionType)
         {
             case ConnectionTypeEnum.Vertical:
-            {
-                var minY = (int)Math.Min(source.Coordinates.Y, target.Coordinates.Y);
-                var maxY = (int)Math.Max(source.Coordinates.Y, target.Coordinates.Y);
-                for (var y = minY; y <= maxY; y++)
                 {
-                    var island = Islands[y][(int)source.Coordinates.X];
-                    islandsBetween.Add(island);
-                }
+                    var minY = (int)Math.Min(source.Coordinates.Y, target.Coordinates.Y);
+                    var maxY = (int)Math.Max(source.Coordinates.Y, target.Coordinates.Y);
+                    for (var y = minY; y <= maxY; y++)
+                    {
+                        var island = Islands[y][(int)source.Coordinates.X];
+                        islandsBetween.Add(island);
+                    }
 
-                break;
-            }
+                    break;
+                }
             case ConnectionTypeEnum.Horizontal:
-            {
-                var minX = (int)Math.Min(source.Coordinates.X, target.Coordinates.X);
-                var maxX = (int)Math.Max(source.Coordinates.X, target.Coordinates.X);
-                for (var x = minX; x <= maxX; x++)
                 {
-                    var island = Islands[(int)source.Coordinates.Y][x];
-                    islandsBetween.Add(island);
-                }
+                    var minX = (int)Math.Min(source.Coordinates.X, target.Coordinates.X);
+                    var maxX = (int)Math.Max(source.Coordinates.X, target.Coordinates.X);
+                    for (var x = minX; x <= maxX; x++)
+                    {
+                        var island = Islands[(int)source.Coordinates.Y][x];
+                        islandsBetween.Add(island);
+                    }
 
-                break;
-            }
+                    break;
+                }
             case ConnectionTypeEnum.Diagonal:
             default:
                 throw new ArgumentOutOfRangeException();
@@ -229,7 +229,7 @@ public class ConnectionManagerViewModel : BaseViewModel, IConnectionManagerViewM
         var sourceCoordinates = source.Coordinates;
         var targetCoordinates = target.Coordinates;
 
-        var islandsToConnect = GetAllIslandsInvolvedInConnection(source, target);
+        var islandsToConnect = GetAllIslandsInvolvedInConnection(source, target).ToList();
 
         foreach (var island in islandsToConnect)
         {
@@ -314,25 +314,25 @@ public class ConnectionManagerViewModel : BaseViewModel, IConnectionManagerViewM
         switch (connectionType)
         {
             case ConnectionTypeEnum.Vertical:
-            {
-                var minY = (int)Math.Min(source.Coordinates.Y, target.Coordinates.Y);
-                var maxY = (int)Math.Max(source.Coordinates.Y, target.Coordinates.Y);
-                for (var y = minY + 1; y < maxY; y++)
-                    if (Islands[y][(int)source.Coordinates.X].MaxConnections > 0)
-                        return true;
+                {
+                    var minY = (int)Math.Min(source.Coordinates.Y, target.Coordinates.Y);
+                    var maxY = (int)Math.Max(source.Coordinates.Y, target.Coordinates.Y);
+                    for (var y = minY + 1; y < maxY; y++)
+                        if (Islands[y][(int)source.Coordinates.X].MaxConnections > 0)
+                            return true;
 
-                break;
-            }
+                    break;
+                }
             case ConnectionTypeEnum.Horizontal:
-            {
-                var minX = (int)Math.Min(source.Coordinates.X, target.Coordinates.X);
-                var maxX = (int)Math.Max(source.Coordinates.X, target.Coordinates.X);
-                for (var x = minX + 1; x < maxX; x++)
-                    if (Islands[(int)source.Coordinates.Y][x].MaxConnections > 0)
-                        return true;
+                {
+                    var minX = (int)Math.Min(source.Coordinates.X, target.Coordinates.X);
+                    var maxX = (int)Math.Max(source.Coordinates.X, target.Coordinates.X);
+                    for (var x = minX + 1; x < maxX; x++)
+                        if (Islands[(int)source.Coordinates.Y][x].MaxConnections > 0)
+                            return true;
 
-                break;
-            }
+                    break;
+                }
             case ConnectionTypeEnum.Diagonal:
             default:
                 throw new InvalidOperationException(

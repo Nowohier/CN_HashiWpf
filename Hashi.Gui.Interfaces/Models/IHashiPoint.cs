@@ -8,10 +8,10 @@ public interface IHashiPoint
     /// <summary>
     ///     Gets the x coordinate of the point.
     /// </summary>
-    public double X { get; }
+    public int X { get; }
 
     /// <summary>
     ///     Gets the y coordinate of the point.
     /// </summary>
-    public double Y { get; }
+    public int Y { get; }
 }
