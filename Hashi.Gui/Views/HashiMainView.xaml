@@ -89,13 +89,9 @@
                                     <TextBlock Text="REMOVE ALL BRIDGES" Margin="5,0,0,0" VerticalAlignment="Center" />
                                 </StackPanel>
                             </Button>
-                            <ToggleButton Style="{StaticResource MenuToggleButtonStyle}" Padding="5,0,5,0"
+                            <ToggleButton Style="{StaticResource MenuGridToggleButtonStyle}" Padding="5,0,5,0"
                                           IsChecked="{Binding Settings.AreGridLinesEnabled}" Margin="10,0,0,0"
                                           HorizontalAlignment="Left">
-                                <StackPanel Orientation="Horizontal">
-                                    <iconPacks:Material Kind="Grid" Width="14" Height="14" />
-                                    <TextBlock Text="TOGGLE GRIDLINES" Margin="5,0,0,0" VerticalAlignment="Center" />
-                                </StackPanel>
                             </ToggleButton>
                             <Button Style="{StaticResource MenuButtonStyle}" Padding="5,0,5,0" Margin="10,0,0,0"
                                     HorizontalAlignment="Left">
@@ -123,7 +119,7 @@
         </Grid>
 
         <Grid Grid.Row="1"
-              Visibility="{Binding IsGeneratingHashiPuzzle, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Hidden}">
+              Visibility="{Binding IsGeneratingHashiPuzzle, Converter={StaticResource BoolToVisibilityConverter}}">
             <Border Background="White" Opacity="0.5" />
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center"
                         Margin="0,5,0,0">
