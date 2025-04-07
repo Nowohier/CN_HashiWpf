@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace CNHashiSolvedPuzzles;
+namespace Hashi.SolvedPuzzles.Interfaces;
 
 [SuppressMessage("ReSharper", "InconsistentNaming")]
 public enum HashiFileEnum

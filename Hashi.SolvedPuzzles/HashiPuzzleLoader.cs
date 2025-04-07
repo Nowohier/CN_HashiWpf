@@ -1,16 +1,12 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using Hashi.SolvedPuzzles.Interfaces;
 using System.Text.Json;
 
-namespace CNHashiSolvedPuzzles;
+namespace Hashi.SolvedPuzzles;
 
 /// <summary>
 ///     Loads a puzzle from a file.
 /// </summary>
-[SuppressMessage("ReSharper", "InconsistentNaming")]
-[SuppressMessage("ReSharper", "IdentifierTypo")]
-[SuppressMessage("ReSharper", "StringLiteralTypo")]
-[SuppressMessage("ReSharper", "CommentTypo")]
-public class HashiPuzzleLoader
+public class HashiPuzzleLoader : IHashiPuzzleLoader
 {
     private static readonly string PuzzleDirectoryName = "Hashi_Puzzles";
 
