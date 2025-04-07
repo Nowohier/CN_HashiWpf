@@ -9,7 +9,6 @@ using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Wrappers;
 using Hashi.Gui.Messages;
-using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -149,9 +148,8 @@ public class MainViewModel : BaseViewModel,
             var path = Path.Combine(SaveFilePath, HashiSettingsFileName);
             if (File.Exists(path))
             {
-                using var file = File.OpenText(path);
-                loadedSettings = (ISettingsViewModel)jsonWrapper.Deserialize(file, typeof(SettingsViewModel))!;
-                OnPropertyChanged(nameof(HighscoreForSelectedDifficulty));
+                loadedSettings = (SettingsViewModel)jsonWrapper.DeserializeObject(File.ReadAllText(path), typeof(SettingsViewModel))!;
+                OnPropertyChanged(nameof(ISettingsViewModel));
                 return loadedSettings;
             }
         }
@@ -172,7 +170,7 @@ public class MainViewModel : BaseViewModel,
     {
         if (Settings == null) throw new InvalidOperationException("Settings cannot be null.");
 
-        var jsonArray = jsonWrapper.SerializeObject(Settings, Formatting.Indented);
+        var jsonArray = jsonWrapper.SerializeObject(Settings);
         var path = Path.Combine(SaveFilePath, HashiSettingsFileName);
 
         try

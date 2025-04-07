@@ -115,7 +115,6 @@ namespace Hashi.Gui.Behaviors
                 BridgeTypeEnum.HorizontalDouble => island.BridgesLeft.Count == 2 && island.BridgesRight.Count == 2 ? Visibility.Visible : Visibility.Hidden,
                 BridgeTypeEnum.Vertical => island.BridgesUp.Count == 1 && island.BridgesDown.Count == 1 ? Visibility.Visible : Visibility.Hidden,
                 BridgeTypeEnum.VerticalDouble => island.BridgesUp.Count == 2 && island.BridgesDown.Count == 2 ? Visibility.Visible : Visibility.Hidden,
-
                 BridgeTypeEnum.HorizontalLeft => island.BridgesLeft.Count == 1 ? Visibility.Visible : Visibility.Hidden,
                 BridgeTypeEnum.HorizontalDoubleLeft => island.BridgesLeft.Count == 2 ? Visibility.Visible : Visibility.Hidden,
                 BridgeTypeEnum.HorizontalRight => island.BridgesRight.Count == 1 ? Visibility.Visible : Visibility.Hidden,
