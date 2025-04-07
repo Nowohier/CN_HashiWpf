@@ -6,8 +6,6 @@ namespace Hashi.Gui.ViewModels;
 /// <inheritdoc />
 public class AutoFacViewModelsModule : Module
 {
-    public delegate IIslandViewModel IslandFactory(int column, int row, int value);
-
     /// <inheritdoc />
     protected override void Load(ContainerBuilder builder)
     {
@@ -22,8 +20,10 @@ public class AutoFacViewModelsModule : Module
         builder.Register<Func<int, int, int, IIslandViewModel>>(context =>
         {
             var c = context.Resolve<IComponentContext>();
-            return (column, row, value) => c.Resolve<IIslandViewModel>(new NamedParameter("x", column),
-                new NamedParameter("y", row), new NamedParameter("maxConnections", value));
+            return (x, y, maxConnections) => c.Resolve<IIslandViewModel>(
+                new NamedParameter("x", x),
+                new NamedParameter("y", y),
+                new NamedParameter("maxConnections", maxConnections));
         });
     }
 }

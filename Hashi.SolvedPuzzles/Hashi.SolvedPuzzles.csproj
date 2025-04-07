@@ -12,6 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Hashi.SolvedPuzzles.Interfaces\Hashi.SolvedPuzzles.Interfaces.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Hashi_Puzzles\100\Hs_16_100_25_00_001.has">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

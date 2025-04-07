@@ -37,6 +37,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PuzzleLoader", "PuzzleLoade
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Enums", "Enums", "{BDBE28EA-9DEC-4849-B9FE-78845422D2E5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hashi.SolvedPuzzles.Interfaces", "Hashi.SolvedPuzzles.Interfaces\Hashi.SolvedPuzzles.Interfaces.csproj", "{71FC7AFF-7660-4D8C-869E-44B6B42D9977}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,6 +93,10 @@ Global
 		{05DD818A-5668-4DD3-9756-3CEA69A9B146}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05DD818A-5668-4DD3-9756-3CEA69A9B146}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{05DD818A-5668-4DD3-9756-3CEA69A9B146}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71FC7AFF-7660-4D8C-869E-44B6B42D9977}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71FC7AFF-7660-4D8C-869E-44B6B42D9977}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71FC7AFF-7660-4D8C-869E-44B6B42D9977}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71FC7AFF-7660-4D8C-869E-44B6B42D9977}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -108,6 +114,7 @@ Global
 		{2825EA8C-3D3B-4943-B121-1598EB4D1E98} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{8E355EBC-BAA1-4190-9257-1BB1BCBDA99B} = {A4970D87-F080-47AC-9650-8B40B25F6897}
 		{05DD818A-5668-4DD3-9756-3CEA69A9B146} = {5C707C29-0CBF-454F-A848-87EDDEC2F0AE}
+		{71FC7AFF-7660-4D8C-869E-44B6B42D9977} = {5C707C29-0CBF-454F-A848-87EDDEC2F0AE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {44AAC170-FFE4-48F9-AA74-BBE3AD5F8ECF}
