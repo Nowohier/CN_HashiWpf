@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Gui.Enums;
 using Hashi.Gui.EventArgs;
@@ -20,7 +21,7 @@ using System.Windows.Media;
 
 namespace Hashi.Gui.ViewModels;
 
-public class IslandViewModel : BaseViewModel, IIslandViewModel
+public class IslandViewModel : ObservableRecipient, IIslandViewModel
 {
     private readonly IHashiPoint mouseDownPosition = new HashiPoint(0, 0);
     private int count;
@@ -55,7 +56,7 @@ public class IslandViewModel : BaseViewModel, IIslandViewModel
     public IHashiPoint? PotentialTargetIslandCoordinates
     {
         get => potentialTargetIslandCoordinates;
-        set => Set(ref potentialTargetIslandCoordinates, value);
+        set => SetProperty(ref potentialTargetIslandCoordinates, value);
     }
 
     /// <inheritdoc />
@@ -84,35 +85,35 @@ public class IslandViewModel : BaseViewModel, IIslandViewModel
     public IHashiBrush IslandColor
     {
         get => islandColor;
-        set => Set(ref islandColor, value);
+        set => SetProperty(ref islandColor, value);
     }
 
     /// <inheritdoc />
     public bool IsHighlightHorizontalLeft
     {
         get => isHighlightHorizontalLeft;
-        set => Set(ref isHighlightHorizontalLeft, value);
+        set => SetProperty(ref isHighlightHorizontalLeft, value);
     }
 
     /// <inheritdoc />
     public bool IsHighlightHorizontalRight
     {
         get => isHighlightHorizontalRight;
-        set => Set(ref isHighlightHorizontalRight, value);
+        set => SetProperty(ref isHighlightHorizontalRight, value);
     }
 
     /// <inheritdoc />
     public bool IsHighlightVerticalTop
     {
         get => isHighlightVerticalTop;
-        set => Set(ref isHighlightVerticalTop, value);
+        set => SetProperty(ref isHighlightVerticalTop, value);
     }
 
     /// <inheritdoc />
     public bool IsHighlightVerticalBottom
     {
         get => isHighlightVerticalBottom;
-        set => Set(ref isHighlightVerticalBottom, value);
+        set => SetProperty(ref isHighlightVerticalBottom, value);
     }
 
     /// <inheritdoc />

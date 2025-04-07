@@ -5,7 +5,7 @@ namespace Hashi.Gui.Interfaces.ViewModels;
 /// <summary>
 ///     Represents the view model for the settings, including high scores for different difficulty levels.
 /// </summary>
-public interface ISettingsViewModel : IBaseViewModel
+public interface ISettingsViewModel
 {
     /// <summary>
     ///     Determines whether the grid lines are enabled in the game view.

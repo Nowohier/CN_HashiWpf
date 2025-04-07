@@ -5,7 +5,10 @@ using System.Windows.Input;
 
 namespace Hashi.Gui.Interfaces.ViewModels;
 
-public interface IIslandViewModel : IBaseViewModel
+/// <summary>
+///   Represents the view model for an island in the Hashi game.
+/// </summary>
+public interface IIslandViewModel
 {
     /// <summary>
     ///     Gets or sets the color of the island.

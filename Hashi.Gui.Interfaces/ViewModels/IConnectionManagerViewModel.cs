@@ -5,7 +5,7 @@ namespace Hashi.Gui.Interfaces.ViewModels;
 /// <summary>
 ///     Manages the connections between islands.
 /// </summary>
-public interface IConnectionManagerViewModel : IBaseViewModel
+public interface IConnectionManagerViewModel
 {
     /// <summary>
     ///     Gets the islands.

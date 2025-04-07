@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Hashi.Gui.Enums;
 using Hashi.Gui.Interfaces.General;
 using System.Windows.Input;
@@ -8,7 +9,7 @@ namespace Hashi.Gui.ViewModels;
 /// <summary>
 ///     This view model handles all dialogs that are displayed from within the program.
 /// </summary>
-public class DialogViewModel : BaseViewModel
+public class DialogViewModel : ObservableRecipient
 {
     private string? caption, message;
 
@@ -52,7 +53,7 @@ public class DialogViewModel : BaseViewModel
     public string? Caption
     {
         get => caption;
-        set => Set(ref caption, value);
+        set => SetProperty(ref caption, value);
     }
 
     /// <summary>
@@ -61,7 +62,7 @@ public class DialogViewModel : BaseViewModel
     public string? Message
     {
         get => message;
-        set => Set(ref message, value);
+        set => SetProperty(ref message, value);
     }
 
     /// <summary>
@@ -70,7 +71,7 @@ public class DialogViewModel : BaseViewModel
     public bool IsAsterisk
     {
         get => isAsterisk;
-        set => Set(ref isAsterisk, value);
+        set => SetProperty(ref isAsterisk, value);
     }
 
     /// <summary>
@@ -79,7 +80,7 @@ public class DialogViewModel : BaseViewModel
     public bool IsSuccess
     {
         get => isSuccess;
-        set => Set(ref isSuccess, value);
+        set => SetProperty(ref isSuccess, value);
     }
 
     /// <summary>
@@ -88,7 +89,7 @@ public class DialogViewModel : BaseViewModel
     public bool IsError
     {
         get => isError;
-        set => Set(ref isError, value);
+        set => SetProperty(ref isError, value);
     }
 
     /// <summary>
@@ -97,7 +98,7 @@ public class DialogViewModel : BaseViewModel
     public bool IsExclamation
     {
         get => isExclamation;
-        set => Set(ref isExclamation, value);
+        set => SetProperty(ref isExclamation, value);
     }
 
     /// <summary>
@@ -106,7 +107,7 @@ public class DialogViewModel : BaseViewModel
     public bool IsHand
     {
         get => isHand;
-        set => Set(ref isHand, value);
+        set => SetProperty(ref isHand, value);
     }
 
     /// <summary>
@@ -115,7 +116,7 @@ public class DialogViewModel : BaseViewModel
     public bool IsInformation
     {
         get => isInformation;
-        set => Set(ref isInformation, value);
+        set => SetProperty(ref isInformation, value);
     }
 
     /// <summary>
@@ -124,7 +125,7 @@ public class DialogViewModel : BaseViewModel
     public bool IsNone
     {
         get => isNone;
-        set => Set(ref isNone, value);
+        set => SetProperty(ref isNone, value);
     }
 
     /// <summary>
@@ -133,7 +134,7 @@ public class DialogViewModel : BaseViewModel
     public bool IsQuestion
     {
         get => isQuestion;
-        set => Set(ref isQuestion, value);
+        set => SetProperty(ref isQuestion, value);
     }
 
     /// <summary>
@@ -142,7 +143,7 @@ public class DialogViewModel : BaseViewModel
     public bool IsStop
     {
         get => isStop;
-        set => Set(ref isStop, value);
+        set => SetProperty(ref isStop, value);
     }
 
     /// <summary>
@@ -151,7 +152,7 @@ public class DialogViewModel : BaseViewModel
     public bool IsWarning
     {
         get => isWarning;
-        set => Set(ref isWarning, value);
+        set => SetProperty(ref isWarning, value);
     }
 
     /// <summary>
@@ -160,7 +161,7 @@ public class DialogViewModel : BaseViewModel
     public bool ShowOk
     {
         get => showOk;
-        set => Set(ref showOk, value);
+        set => SetProperty(ref showOk, value);
     }
 
     /// <summary>
@@ -169,7 +170,7 @@ public class DialogViewModel : BaseViewModel
     public bool ShowCancel
     {
         get => showCancel;
-        set => Set(ref showCancel, value);
+        set => SetProperty(ref showCancel, value);
     }
 
     /// <summary>
@@ -178,7 +179,7 @@ public class DialogViewModel : BaseViewModel
     public bool ShowYesNo
     {
         get => showYesNo;
-        set => Set(ref showYesNo, value);
+        set => SetProperty(ref showYesNo, value);
     }
 
     /// <summary>

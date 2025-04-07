@@ -23,6 +23,37 @@
         <Setter Property="Foreground" Value="White" />
     </Style>
 
+    <Style x:Key="MenuButtonStyle" TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Background" Value="White" />
+        <Setter Property="Height" Value="22" />
+        <Setter Property="IsEnabled" Value="True" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=DataContext.IsGeneratingHashiPuzzle, RelativeSource={RelativeSource AncestorType=mah:MetroWindow, Mode=FindAncestor}}" Value="True">
+                <Setter Property="IsEnabled" Value="False" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="MenuToggleButtonStyle" TargetType="ToggleButton" BasedOn="{StaticResource MahApps.Styles.ToggleButton}">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="Background" Value="White" />
+        <Setter Property="Foreground" Value="{StaticResource MahApps.Brushes.ThemeForeground}" />
+        <Setter Property="Height" Value="22" />
+        <Setter Property="IsEnabled" Value="True" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=DataContext.IsGeneratingHashiPuzzle, RelativeSource={RelativeSource AncestorType=mah:MetroWindow, Mode=FindAncestor}}" Value="True">
+                <Setter Property="IsEnabled" Value="False" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource Mode=Self}}" Value="True">
+                <Setter Property="Foreground" Value="White" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
     <Style x:Key="GridLinesStyle" TargetType="Line">
         <Setter Property="Stroke" Value="{StaticResource BasicBrush}" />
         <Setter Property="StrokeThickness" Value="1" />

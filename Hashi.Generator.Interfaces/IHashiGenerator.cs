@@ -17,7 +17,7 @@ public interface IHashiGenerator
     /// <param name="alpha">The alpha value.</param>
     /// <param name="beta">The beta value.</param>
     /// <returns>a hashi field array.</returns>
-    int[][] GenerateHash(int difficulty = -1, int amountNodes = 10, int width = 0, int length = 0, int alpha = 0,
+    Task<int[][]> GenerateHashAsync(int difficulty = -1, int amountNodes = 10, int width = 0, int length = 0, int alpha = 0,
         int beta = 0);
 
     /// <summary>

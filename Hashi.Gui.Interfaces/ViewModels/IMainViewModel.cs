@@ -1,11 +1,14 @@
-﻿using System.Diagnostics;
-using System.Windows.Input;
-using Hashi.Gui.Enums;
+﻿using Hashi.Gui.Enums;
 using Hashi.Gui.Interfaces.Messages;
+using System.Diagnostics;
+using System.Windows.Input;
 
 namespace Hashi.Gui.Interfaces.ViewModels;
 
-public interface IMainViewModel : IBaseViewModel
+/// <summary>
+///   The main view model for the Hashi game.
+/// </summary>
+public interface IMainViewModel
 {
     /// <summary>
     ///     The connection manager for managing the connections between islands.
@@ -21,6 +24,11 @@ public interface IMainViewModel : IBaseViewModel
     ///     Gets or sets the potential target island.
     /// </summary>
     IIslandViewModel? PotentialTargetIsland { get; set; }
+
+    /// <summary>
+    /// Determines if a hashi puzzle is being generated.
+    /// </summary>
+    bool IsGeneratingHashiPuzzle { get; set; }
 
     /// <summary>
     ///     Determines if the timer is running.
@@ -70,7 +78,7 @@ public interface IMainViewModel : IBaseViewModel
     /// <summary>
     ///     Creates a new game.
     /// </summary>
-    void CreateNewGame();
+    Task CreateNewGameAsync();
 
     /// <summary>
     ///     Creates a new game.
@@ -94,7 +102,8 @@ public interface IMainViewModel : IBaseViewModel
     ///     Handles the message when all connections are set.
     /// </summary>
     /// <param name="message">The <see cref="IAllConnectionsSetMessage" />.</param>
-    void Receive(IAllConnectionsSetMessage message);
+    /// <param name="cancellationToken">The cancellation token.</param>
+    Task ReceiveAsync(IAllConnectionsSetMessage message, CancellationToken cancellationToken);
 
     /// <summary>
     ///     Handles the message when the current source island is changed.
