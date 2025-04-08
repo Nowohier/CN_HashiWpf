@@ -16,6 +16,11 @@ public interface IConnectionManagerViewModel
     ObservableCollection<ObservableCollection<IIslandViewModel>> Islands { get; }
 
     /// <summary>
+    /// Determines if the rules are being applied.
+    /// </summary>
+    bool AreRulesBeingApplied { get; set; }
+
+    /// <summary>
     ///    Gets or sets the solution container.
     /// </summary>
     ISolutionContainer? Solution { get; }
