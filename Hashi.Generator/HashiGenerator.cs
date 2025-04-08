@@ -14,7 +14,6 @@ namespace Hashi.Generator;
 public class HashiGenerator : IHashiGenerator
 {
     private readonly Func<IIsland, IIsland, int, IBridge> bridgeFactory;
-    private readonly Func<Point, Point, int, IBridgeCoordinates> bridgeCoordinateFactory;
     private readonly Func<int[][], IList<IBridgeCoordinates>, ISolutionContainer> solutionContainerFactory;
     private readonly List<IBridge> bridges = new();
     private readonly Func<int, int, int, IIsland> islandFactory;
@@ -24,13 +23,11 @@ public class HashiGenerator : IHashiGenerator
 
     public HashiGenerator(Func<int, int, int, IIsland> islandFactory,
         Func<IIsland, IIsland, int, IBridge> bridgeFactory,
-        Func<Point, Point, int, IBridgeCoordinates> bridgeCoordinateFactory,
         Func<int[][], IList<IBridgeCoordinates>, ISolutionContainer> solutionContainerFactory,
         ILinearSolutionSolverWithIterativ linearSolutionSolverWithIterativ)
     {
         this.islandFactory = islandFactory;
         this.bridgeFactory = bridgeFactory;
-        this.bridgeCoordinateFactory = bridgeCoordinateFactory;
         this.solutionContainerFactory = solutionContainerFactory;
         this.linearSolutionSolverWithIterativ = linearSolutionSolverWithIterativ;
     }
@@ -225,10 +222,10 @@ public class HashiGenerator : IHashiGenerator
                     case >= 0 and <= 2:
                         SetBeta(mainField, 20);
                         break;
-                    case >= 3 and <= 5:
+                    case <= 5:
                         SetBeta(mainField, 15);
                         break;
-                    case >= 6 and <= 8:
+                    case <= 8:
                         SetBeta(mainField, 10);
                         break;
                     case 9:
@@ -454,6 +451,7 @@ public class HashiGenerator : IHashiGenerator
 
     private int DownBlockedd(IIsland mainIsland, int[][] mainField)
     {
+        if (mainIsland.IslandDown == null) return -1;
         for (var row = mainIsland.IslandDown.Y - 1; row > mainIsland.Y; row--)
             for (var checkLeft = mainIsland.X - 1; checkLeft >= 0; checkLeft--)
             {
@@ -468,6 +466,7 @@ public class HashiGenerator : IHashiGenerator
 
     private int RightBlockedd(IIsland mainIsland, int[][] mainField)
     {
+        if (mainIsland.IslandRight == null) return -1;
         for (var col = mainIsland.IslandRight.X - 1; col > mainIsland.X; col--)
             for (var checkLeft = mainIsland.Y - 1; checkLeft >= 0; checkLeft--)
             {

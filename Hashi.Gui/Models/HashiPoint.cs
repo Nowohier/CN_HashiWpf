@@ -4,7 +4,7 @@ using System.Windows;
 
 namespace Hashi.Gui.Models;
 
-/// <inheritdoc />
+/// <inheritdoc cref="IHashiPoint"/>
 public class HashiPoint : ObservableRecipient, IHashiPoint
 {
     private string hintMessage = string.Empty;
@@ -50,6 +50,30 @@ public class HashiPoint : ObservableRecipient, IHashiPoint
         };
         return clone;
     }
+
+    /// <inheritdoc />
+    public override bool Equals(object? obj)
+    {
+        if (obj is not IHashiPoint item)
+        {
+            return false;
+        }
+
+        return X.Equals(item.X) && Y.Equals(item.Y);
+    }
+
+    /// <inheritdoc />
+    public override int GetHashCode()
+    {
+        unchecked
+        {
+            var hash = 17;
+            hash = hash * 23 + X.GetHashCode();
+            hash = hash * 23 + Y.GetHashCode();
+            return hash;
+        }
+    }
+
 
     /// <summary>
     ///     Converts a <see cref="HashiPoint" /> to a <see cref="Point" />.

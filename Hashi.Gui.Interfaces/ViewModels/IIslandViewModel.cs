@@ -128,29 +128,24 @@ public interface IIslandViewModel
     ConnectionTypeEnum GetConnectionType(IIslandViewModel targetIsland);
 
     /// <summary>
-    /// Gets all neighbors with MaxConnections > 0.
+    /// Gets all neighbors with MaxConnections > 0 and no colliding connections.
     /// </summary>
-    /// <param name="islands">All islands.</param>
     /// <returns>a list of visible neighbor islands.</returns>
-    List<IIslandViewModel> GetAllVisibleNeighbors(ObservableCollection<ObservableCollection<IIslandViewModel>> islands);
+    List<IIslandViewModel> GetAllVisibleNeighbors();
 
     /// <summary>
     ///    Gets the visible neighbor of the current island in the given direction of potential target island.
     /// </summary>
-    /// <param name="islands">All islands.</param>
     /// <param name="potentialTargetIsland">The potential target island to give a hint in which direction to search.</param>
     /// <returns>the visible neighbor of the current island in the given direction of potential target island. Null if not found.</returns>
-    IIslandViewModel? GetVisibleNeighbor(ObservableCollection<ObservableCollection<IIslandViewModel>> islands,
-        IIslandViewModel potentialTargetIsland);
+    IIslandViewModel? GetVisibleNeighbor(IIslandViewModel potentialTargetIsland);
 
     /// <summary>
     ///    Gets the visible neighbor of the current island in the given direction.
     /// </summary>
     /// <param name="direction">The direction.</param>
-    /// <param name="islands">All islands.</param>
     /// <returns>the visible neighbor of the current island in the given direction. Null if not found.</returns>
-    IIslandViewModel? GetVisibleNeighbor(DirectionEnum direction,
-        ObservableCollection<ObservableCollection<IIslandViewModel>> islands);
+    IIslandViewModel? GetVisibleNeighbor(DirectionEnum direction);
 
     /// <summary>
     ///     Notifies the bridge connections.
