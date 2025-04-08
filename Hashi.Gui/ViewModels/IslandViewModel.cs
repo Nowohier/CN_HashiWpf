@@ -166,10 +166,8 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
     }
 
     /// <inheritdoc />
-    public IIslandViewModel? GetVisibleNeighbor(ObservableCollection<ObservableCollection<IIslandViewModel>> islands,
-        IIslandViewModel potentialTargetIsland)
+    public IIslandViewModel? GetVisibleNeighbor(IIslandViewModel potentialTargetIsland)
     {
-        ArgumentNullException.ThrowIfNull(islands);
         ArgumentNullException.ThrowIfNull(potentialTargetIsland);
 
         if (this == potentialTargetIsland)
@@ -178,48 +176,44 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
         }
 
         if (Coordinates.Y == potentialTargetIsland.Coordinates.Y && Coordinates.X > potentialTargetIsland.Coordinates.X)
-            return GetVisibleNeighbor(DirectionEnum.Left, islands);
+            return GetVisibleNeighbor(DirectionEnum.Left);
         if (Coordinates.Y == potentialTargetIsland.Coordinates.Y && Coordinates.X < potentialTargetIsland.Coordinates.X)
-            return GetVisibleNeighbor(DirectionEnum.Right, islands);
+            return GetVisibleNeighbor(DirectionEnum.Right);
         if (Coordinates.X == potentialTargetIsland.Coordinates.X && Coordinates.Y > potentialTargetIsland.Coordinates.Y)
-            return GetVisibleNeighbor(DirectionEnum.Up, islands);
+            return GetVisibleNeighbor(DirectionEnum.Up);
         if (Coordinates.X == potentialTargetIsland.Coordinates.X && Coordinates.Y < potentialTargetIsland.Coordinates.Y)
-            return GetVisibleNeighbor(DirectionEnum.Down, islands);
+            return GetVisibleNeighbor(DirectionEnum.Down);
         return null;
     }
 
     /// <inheritdoc />
-    public IIslandViewModel? GetVisibleNeighbor(DirectionEnum direction, ObservableCollection<ObservableCollection<IIslandViewModel>> islands)
+    public IIslandViewModel? GetVisibleNeighbor(DirectionEnum direction)
     {
-        ArgumentNullException.ThrowIfNull(islands);
-
         return direction switch
         {
-            DirectionEnum.Up => CheckDirection(0, -1, islands),
-            DirectionEnum.Down => CheckDirection(0, 1, islands),
-            DirectionEnum.Left => CheckDirection(-1, 0, islands),
-            DirectionEnum.Right => CheckDirection(1, 0, islands),
+            DirectionEnum.Up => CheckDirection(0, -1, ConnectionTypeEnum.Vertical),
+            DirectionEnum.Down => CheckDirection(0, 1, ConnectionTypeEnum.Vertical),
+            DirectionEnum.Left => CheckDirection(-1, 0, ConnectionTypeEnum.Horizontal),
+            DirectionEnum.Right => CheckDirection(1, 0, ConnectionTypeEnum.Horizontal),
             _ => null
         };
     }
 
     /// <inheritdoc />
-    public List<IIslandViewModel> GetAllVisibleNeighbors(ObservableCollection<ObservableCollection<IIslandViewModel>> islands)
+    public List<IIslandViewModel> GetAllVisibleNeighbors()
     {
-        ArgumentNullException.ThrowIfNull(islands);
-
         var neighbors = new List<IIslandViewModel>();
 
-        if (CheckDirection(0, -1, islands) is { } above)
+        if (CheckDirection(0, -1, ConnectionTypeEnum.Vertical) is { } above)
             neighbors.Add(above);
 
-        if (CheckDirection(0, 1, islands) is { } below)
+        if (CheckDirection(0, 1, ConnectionTypeEnum.Vertical) is { } below)
             neighbors.Add(below);
 
-        if (CheckDirection(-1, 0, islands) is { } left)
+        if (CheckDirection(-1, 0, ConnectionTypeEnum.Horizontal) is { } left)
             neighbors.Add(left);
 
-        if (CheckDirection(1, 0, islands) is { } right)
+        if (CheckDirection(1, 0, ConnectionTypeEnum.Horizontal) is { } right)
             neighbors.Add(right);
 
         return neighbors;
@@ -239,26 +233,10 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
             : new HashiBrush(HashiColorHelper.BasicIslandBrush);
     }
 
-    private IIslandViewModel? CheckDirection(int dx, int dy, ObservableCollection<ObservableCollection<IIslandViewModel>> islands)
+    /// <inheritdoc />
+    public override string ToString()
     {
-        ArgumentNullException.ThrowIfNull(islands);
-
-        var currentX = Coordinates.X + dx;
-        var currentY = Coordinates.Y + dy;
-
-        while (currentY >= 0 && currentY < islands.Count && currentX >= 0 && currentX < islands[currentY].Count)
-        {
-            var neighbor = islands[currentY][currentX];
-            if (neighbor.MaxConnections > 0)
-            {
-                return neighbor;
-            }
-
-            currentX += dx;
-            currentY += dy;
-        }
-
-        return null;
+        return $"Island, {Coordinates} | MaxConnections: {MaxConnections}, MaxConnectionsReached: {MaxConnectionsReached}, BridgesCount: (Up {BridgesUp.Count}, Down {BridgesDown.Count}, Left {BridgesLeft.Count}, Right {BridgesRight.Count}";
     }
 
     /// <summary>
@@ -396,10 +374,62 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
             return;
         }
 
-        var allIslands = WeakReferenceMessenger.Default.Send<AllIslandsRequestMessage>();
-        var potentialTarget = GetVisibleNeighbor(allIslands, dropTargetIsland);
+        var potentialTarget = GetVisibleNeighbor(dropTargetIsland);
 
         WeakReferenceMessenger.Default.Send(new BridgeConnectionChangedMessage(new BridgeConnectionInformationContainer(BridgeOperationTypeEnum.Add, this, potentialTarget)));
         WeakReferenceMessenger.Default.Send(new UpdateAllIslandColorsMessage());
+    }
+
+    private IIslandViewModel? CheckDirection(int dx, int dy, ConnectionTypeEnum connectionType)
+    {
+        ObservableCollection<ObservableCollection<IIslandViewModel>> islands = WeakReferenceMessenger.Default.Send<AllIslandsRequestMessage>();
+
+        if (connectionType == ConnectionTypeEnum.Diagonal)
+        {
+            return null;
+        }
+
+        var currentX = Coordinates.X + dx;
+        var currentY = Coordinates.Y + dy;
+
+        while (currentY >= 0 && currentY < islands.Count && currentX >= 0 && currentX < islands[currentY].Count)
+        {
+            var neighbor = islands[currentY][currentX];
+            if (IsCollidingConnection(neighbor, connectionType))
+            {
+                break;
+            }
+
+            if (neighbor.MaxConnections > 0)
+            {
+                return neighbor;
+            }
+
+            currentX += dx;
+            currentY += dy;
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    ///     Checks if the potential connection between the source and target islands would collide with existing connections.
+    /// </summary>
+    /// <param name="target">The target island.</param>
+    /// <param name="connectionType">The connection type.</param>
+    /// <returns>a boolean value indicating if the connection would collide.</returns>
+    private bool IsCollidingConnection(IIslandViewModel target, ConnectionTypeEnum connectionType)
+    {
+        if (target.MaxConnections > 0)
+        {
+            return false;
+        }
+
+        return connectionType switch
+        {
+            ConnectionTypeEnum.Vertical => target.BridgesLeft.Count > 0 || target.BridgesRight.Count > 0,
+            ConnectionTypeEnum.Horizontal => target.BridgesUp.Count > 0 || target.BridgesDown.Count > 0,
+            _ => throw new ArgumentOutOfRangeException(nameof(connectionType), connectionType, "Invalid connection type.")
+        };
     }
 }

@@ -54,6 +54,8 @@ namespace Hashi.Gui.Behaviors
 
             var behaviorCollection = Interaction.GetBehaviors(depObj);
             behaviorCollection.Clear();
+            if (newBehaviorCollection == null) return;
+
             foreach (Behavior behavior in newBehaviorCollection)
             {
                 // you need to make a copy of behavior in order to attach it to several controls

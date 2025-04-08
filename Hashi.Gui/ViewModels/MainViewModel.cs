@@ -290,7 +290,7 @@ public class MainViewModel : AsyncObservableRecipient,
     {
         if (islandChangedMessage.Value is not { SourceIsland: { } sourceIsland } ||
             islandChangedMessage.Value.TargetIsland is not { } dropTargetIsland ||
-            sourceIsland.GetVisibleNeighbor(ConnectionManager.Islands, dropTargetIsland) is not { } targetIsland)
+            sourceIsland.GetVisibleNeighbor(dropTargetIsland) is not { } targetIsland)
         {
             ConnectionManager.RemoveAllHighlights();
             ConnectionManager.ClearTemporaryDropTargets();
