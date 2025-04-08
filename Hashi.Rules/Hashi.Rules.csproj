@@ -7,7 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NRules" Version="1.0.2" />
+    <PackageReference Include="NRules.Fluent" Version="1.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Hashi.Gui.Interfaces\Hashi.Gui.Interfaces.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="TwoConnections\" />
   </ItemGroup>
 
 </Project>
