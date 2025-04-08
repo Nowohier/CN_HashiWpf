@@ -8,7 +8,11 @@ using Hashi.Gui.Interfaces.Helpers;
 using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Messages;
+using Hashi.Rules.OneConnection;
+using NRules;
+using NRules.Fluent;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Windows.Media;
 
@@ -20,6 +24,7 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
 {
     private readonly Func<int, int, int, IIslandViewModel> islandFactory;
     private readonly Func<SolidColorBrush, IHashiBrush> brushFactory;
+    private ISession? session;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ConnectionManagerViewModel" /> class.
@@ -40,6 +45,9 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
     public ObservableCollection<ObservableCollection<IIslandViewModel>> Islands { get; } = new();
 
     /// <inheritdoc />
+    public bool AreRulesBeingApplied { get; set; }
+
+    /// <inheritdoc />
     public ISolutionContainer? Solution { get; private set; }
 
     /// <inheritdoc />
@@ -50,6 +58,14 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
     {
         var hashiField = solutionContainer.HashiField;
         Islands.Clear();
+
+        if (session != null)
+        {
+            session.Events.RhsExpressionEvaluatedEvent -= OnRhsExpressionEvaluated;
+            session.Events.RuleFiredEvent -= OnRuleFired;
+            session = null;
+        }
+
         Solution = solutionContainer;
         for (var row = 0; row < hashiField.Count; row++)
         {
@@ -183,7 +199,44 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
     /// <inheritdoc />
     public void GenerateHint()
     {
-        SolutionHelper.GenerateHint(Solution!);
+        AreRulesBeingApplied = true;
+
+        if (session == null)
+        {
+            //Load rules
+            var repository = new RuleRepository();
+            repository.Load(x => x.From(typeof(OneConnectionRule1).Assembly));
+
+            //Compile rules
+            var factory = repository.Compile();
+
+            //Create rules session
+            session = factory.CreateSession();
+
+            session.Events.RuleFiredEvent += OnRuleFired;
+            session.Events.RhsExpressionEvaluatedEvent += OnRhsExpressionEvaluated;
+
+            session.InsertAll(Islands.SelectMany(x => x));
+            session.Insert(this);
+        }
+        else
+        {
+            session.UpdateAll(Islands.SelectMany(x => x));
+            session.Update(this);
+        }
+
+        session.Fire();
+        AreRulesBeingApplied = false;
+    }
+
+    private void OnRhsExpressionEvaluated(object? sender, NRules.Diagnostics.RhsExpressionEventArgs e)
+    {
+        AreRulesBeingApplied = false;
+    }
+
+    private void OnRuleFired(object? sender, NRules.Diagnostics.AgendaEventArgs e)
+    {
+        Debug.WriteLine($"Fired rule: {e.Rule.Name}");
     }
 
     private bool AreAllConnectionsSet()

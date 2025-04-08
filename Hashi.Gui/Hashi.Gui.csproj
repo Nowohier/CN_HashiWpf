@@ -26,12 +26,14 @@
     <PackageReference Include="MahApps.Metro.IconPacks.VaadinIcons" Version="5.1.0" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="NRules" Version="1.0.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Hashi.Enums\Hashi.Enums.csproj" />
     <ProjectReference Include="..\Hashi.Generator\Hashi.Generator.csproj" />
     <ProjectReference Include="..\Hashi.Gui.Interfaces\Hashi.Gui.Interfaces.csproj" />
+    <ProjectReference Include="..\Hashi.Rules\Hashi.Rules.csproj" />
   </ItemGroup>
 
 </Project>
