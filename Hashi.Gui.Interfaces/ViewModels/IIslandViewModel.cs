@@ -116,9 +116,9 @@ public interface IIslandViewModel
     void ResetDropTarget();
 
     /// <summary>
-    /// Checks the island color and sets it to the default color if it is not set.
+    /// Refreshes the island color and sets it to the default color if it is not set.
     /// </summary>
-    void CheckIslandColor();
+    void RefreshIslandColor();
 
     /// <summary>
     ///     Gets the connection type between two islands.
