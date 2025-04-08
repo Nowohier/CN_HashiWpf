@@ -1,4 +1,7 @@
-﻿using System.Collections.ObjectModel;
+﻿using Hashi.Generator.Interfaces.Models;
+using Hashi.Gui.Interfaces.Helpers;
+using Hashi.Gui.Interfaces.Models;
+using System.Collections.ObjectModel;
 
 namespace Hashi.Gui.Interfaces.ViewModels;
 
@@ -11,6 +14,22 @@ public interface IConnectionManagerViewModel
     ///     Gets the islands.
     /// </summary>
     ObservableCollection<ObservableCollection<IIslandViewModel>> Islands { get; }
+
+    /// <summary>
+    ///    Gets or sets the solution container.
+    /// </summary>
+    ISolutionContainer? Solution { get; }
+
+    /// <summary>
+    ///    Gets the solution helper.
+    /// </summary>
+    ISolutionHelper SolutionHelper { get; }
+
+    /// <summary>
+    ///    Rebuilds the island collection with a new solution container.
+    /// </summary>
+    /// <param name="solutionContainer"></param>
+    void InitializeNewSolution(ISolutionContainer solutionContainer);
 
     /// <summary>
     ///     Adds a connection between two islands.
@@ -27,14 +46,6 @@ public interface IConnectionManagerViewModel
     void RemoveAllConnections(IIslandViewModel? sourceIsland, IIslandViewModel? targetIsland);
 
     /// <summary>
-    ///     Finds the next island with max connections > 0 in the direction of the target island
-    /// </summary>
-    /// <param name="source">The source island.</param>
-    /// <param name="target">The target island.</param>
-    /// <returns></returns>
-    IIslandViewModel? GetPotentialTargetIsland(IIslandViewModel source, IIslandViewModel target);
-
-    /// <summary>
     ///     Highlights the path to the target island.
     /// </summary>
     /// <param name="source">The source island.</param>
@@ -49,15 +60,24 @@ public interface IConnectionManagerViewModel
     /// <summary>
     ///     Removes all potential island coordinates.
     /// </summary>
-    void RemoveAllPotentialIslandCoordinates();
+    void ClearTemporaryDropTargets();
 
     /// <summary>
-    ///     Gets all islands involved in a connection between two islands.
+    ///    Refreshes the island colors.
     /// </summary>
-    /// <param name="source">The source island.</param>
-    /// <param name="target">The target island.</param>
-    /// <returns></returns>
-    IEnumerable<IIslandViewModel> GetAllIslandsInvolvedInConnection(IIslandViewModel source, IIslandViewModel target);
+    void RefreshIslandColors();
+
+    /// <summary>
+    /// Generates a hint for the current solution container and islands.
+    /// </summary>
+    void GenerateHint();
+
+    /// <summary>
+    ///     Gets an island by coordinates.
+    /// </summary>
+    /// <param name="coordinates">The island coordinates.</param>
+    /// <returns>an island.</returns>
+    IIslandViewModel GetIslandByCoordinates(IHashiPoint coordinates);
 
     /// <summary>
     ///     Checks if the drop target is valid.

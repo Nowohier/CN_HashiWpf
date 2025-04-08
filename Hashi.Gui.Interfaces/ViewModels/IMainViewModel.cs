@@ -16,16 +16,6 @@ public interface IMainViewModel
     public IConnectionManagerViewModel ConnectionManager { get; }
 
     /// <summary>
-    ///     The current source island.
-    /// </summary>
-    IIslandViewModel? CurrentSourceIsland { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the potential target island.
-    /// </summary>
-    IIslandViewModel? PotentialTargetIsland { get; set; }
-
-    /// <summary>
     /// Determines if a hashi puzzle is being generated.
     /// </summary>
     bool IsGeneratingHashiPuzzle { get; set; }
@@ -59,6 +49,11 @@ public interface IMainViewModel
     ///     Command to remove all bridges.
     /// </summary>
     ICommand RemoveAllBridgesCommand { get; }
+
+    /// <summary>
+    ///    Command to generate a hint.
+    /// </summary>
+    ICommand GenerateHintCommand { get; }
 
     /// <summary>
     ///     The current source island.
@@ -106,14 +101,8 @@ public interface IMainViewModel
     Task ReceiveAsync(IAllConnectionsSetMessage message, CancellationToken cancellationToken);
 
     /// <summary>
-    ///     Handles the message when the current source island is changed.
-    /// </summary>
-    /// <param name="message">The <see cref="ICurrentSourceIslandChangedMessage" />.</param>
-    void Receive(ICurrentSourceIslandChangedMessage message);
-
-    /// <summary>
     ///     Handles the message when the potential target island is changed.
     /// </summary>
-    /// <param name="islandChangedMessage">The <see cref="IPotentialTargetIslandChangedMessage" />.</param>
-    void Receive(IPotentialTargetIslandChangedMessage islandChangedMessage);
+    /// <param name="islandChangedMessage">The <see cref="IDropTargetIslandChangedMessage" />.</param>
+    void Receive(IDropTargetIslandChangedMessage islandChangedMessage);
 }

@@ -1,12 +1,16 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
+using Hashi.Generator.Interfaces.Models;
 using Hashi.Gui.Enums;
 using Hashi.Gui.Extensions;
+using Hashi.Gui.Helpers;
+using Hashi.Gui.Interfaces.Helpers;
 using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Messages;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Windows.Media;
 
 namespace Hashi.Gui.ViewModels;
 
@@ -14,10 +18,47 @@ namespace Hashi.Gui.ViewModels;
 [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
 public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerViewModel
 {
+    private readonly Func<int, int, int, IIslandViewModel> islandFactory;
+    private readonly Func<SolidColorBrush, IHashiBrush> brushFactory;
+
     /// <summary>
-    ///     Gets the islands.
+    ///     Initializes a new instance of the <see cref="ConnectionManagerViewModel" /> class.
     /// </summary>
+    /// <param name="islandFactory">The island factory.</param>
+    /// <param name="solutionHelper">The solution helper.</param>
+    /// <param name="brushFactory">The brush factory.</param>
+    public ConnectionManagerViewModel(Func<int, int, int, IIslandViewModel> islandFactory, ISolutionHelper solutionHelper, Func<SolidColorBrush, IHashiBrush> brushFactory)
+    {
+        this.islandFactory = islandFactory;
+        this.brushFactory = brushFactory;
+        SolutionHelper = solutionHelper;
+
+        WeakReferenceMessenger.Default.Register<ConnectionManagerViewModel, AllIslandsRequestMessage>(this, (r, m) => { m.Reply(Islands); });
+    }
+
+    /// <inheritdoc />
     public ObservableCollection<ObservableCollection<IIslandViewModel>> Islands { get; } = new();
+
+    /// <inheritdoc />
+    public ISolutionContainer? Solution { get; private set; }
+
+    /// <inheritdoc />
+    public ISolutionHelper SolutionHelper { get; }
+
+    /// <inheritdoc />
+    public void InitializeNewSolution(ISolutionContainer solutionContainer)
+    {
+        var hashiField = solutionContainer.HashiField;
+        Islands.Clear();
+        Solution = solutionContainer;
+        for (var row = 0; row < hashiField.Count; row++)
+        {
+            var rowCollection = new ObservableCollection<IIslandViewModel>();
+            for (var column = 0; column < hashiField[0].Length; column++)
+                rowCollection.Add(islandFactory.Invoke(column, row, hashiField[row][column]));
+            Islands.Add(rowCollection);
+        }
+    }
 
     /// <inheritdoc />
     public void AddConnection(IIslandViewModel? sourceIsland, IIslandViewModel? targetIsland)
@@ -54,58 +95,9 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
     }
 
     /// <inheritdoc />
-    public IIslandViewModel? GetPotentialTargetIsland(IIslandViewModel source, IIslandViewModel target)
-    {
-        var connectionType = source.GetConnectionType(target);
-
-        switch (connectionType)
-        {
-            case ConnectionTypeEnum.Vertical:
-                {
-                    if (target.Coordinates.Y > source.Coordinates.Y)
-                        for (var y = (int)source.Coordinates.Y + 1; y < Islands.Count; y++)
-                        {
-                            var potentialTarget = Islands[y][(int)source.Coordinates.X];
-                            if (IsValidConnection(source, potentialTarget)) return potentialTarget;
-                        }
-
-                    if (target.Coordinates.Y < source.Coordinates.Y)
-                        for (var y = (int)source.Coordinates.Y - 1; y >= 0; y--)
-                        {
-                            var potentialTarget = Islands[y][(int)source.Coordinates.X];
-                            if (IsValidConnection(source, potentialTarget)) return potentialTarget;
-                        }
-
-                    return null;
-                }
-            case ConnectionTypeEnum.Horizontal:
-                {
-                    if (target.Coordinates.X > source.Coordinates.X)
-                        for (var x = (int)source.Coordinates.X + 1; x < Islands[(int)source.Coordinates.Y].Count; x++)
-                        {
-                            var potentialTarget = Islands[(int)source.Coordinates.Y][x];
-                            if (IsValidConnection(source, potentialTarget)) return potentialTarget;
-                        }
-
-                    if (target.Coordinates.X < source.Coordinates.X)
-                        for (var x = (int)source.Coordinates.X - 1; x >= 0; x--)
-                        {
-                            var potentialTarget = Islands[(int)source.Coordinates.Y][x];
-                            if (IsValidConnection(source, potentialTarget)) return potentialTarget;
-                        }
-
-                    return null;
-                }
-            case ConnectionTypeEnum.Diagonal:
-            default:
-                return null;
-        }
-    }
-
-    /// <inheritdoc />
     public void HighlightPathToTargetIsland(IIslandViewModel source, IIslandViewModel target)
     {
-        var islands = GetAllIslandsInvolvedInConnection(source, target);
+        var islands = SolutionHelper.GetAllIslandsInvolvedInConnection(source, target, Islands);
         var connectionType = source.GetConnectionType(target);
         foreach (var island in islands)
         {
@@ -157,61 +149,42 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
     }
 
     /// <inheritdoc />
-    public void RemoveAllPotentialIslandCoordinates()
+    public void RefreshIslandColors()
     {
         foreach (var row in Islands)
             foreach (var island in row)
-                island.PotentialTargetIslandCoordinates = null;
+                island.IslandColor = island.MaxConnectionsReached
+                    ? brushFactory.Invoke(HashiColorHelper.MaxBridgesReachedBrush)
+                    : brushFactory.Invoke(HashiColorHelper.BasicIslandBrush);
     }
 
     /// <inheritdoc />
-    public IEnumerable<IIslandViewModel> GetAllIslandsInvolvedInConnection(IIslandViewModel source,
-        IIslandViewModel target)
+    public void ClearTemporaryDropTargets()
     {
-        var islandsBetween = new List<IIslandViewModel>();
-        var connectionType = source.GetConnectionType(target);
-
-        switch (connectionType)
-        {
-            case ConnectionTypeEnum.Vertical:
-                {
-                    var minY = (int)Math.Min(source.Coordinates.Y, target.Coordinates.Y);
-                    var maxY = (int)Math.Max(source.Coordinates.Y, target.Coordinates.Y);
-                    for (var y = minY; y <= maxY; y++)
-                    {
-                        var island = Islands[y][(int)source.Coordinates.X];
-                        islandsBetween.Add(island);
-                    }
-
-                    break;
-                }
-            case ConnectionTypeEnum.Horizontal:
-                {
-                    var minX = (int)Math.Min(source.Coordinates.X, target.Coordinates.X);
-                    var maxX = (int)Math.Max(source.Coordinates.X, target.Coordinates.X);
-                    for (var x = minX; x <= maxX; x++)
-                    {
-                        var island = Islands[(int)source.Coordinates.Y][x];
-                        islandsBetween.Add(island);
-                    }
-
-                    break;
-                }
-            case ConnectionTypeEnum.Diagonal:
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
-
-        return islandsBetween;
+        foreach (var row in Islands)
+            foreach (var island in row)
+                island.ResetDropTarget();
     }
 
     /// <inheritdoc />
     public bool IsValidDropTarget(IIslandViewModel? source, IIslandViewModel? target)
     {
-        return source != null && target != null && !source.MaxConnectionsReached && !target.MaxConnectionsReached &&
+        return source != null && target != null && source.MaxConnections > 0 && target.MaxConnections > 0 &&
+               !source.MaxConnectionsReached && !target.MaxConnectionsReached &&
                source.GetConnectionType(target) != ConnectionTypeEnum.Diagonal;
     }
 
+    /// <inheritdoc />
+    public IIslandViewModel GetIslandByCoordinates(IHashiPoint coordinates)
+    {
+        return Islands[coordinates.Y][coordinates.X];
+    }
+
+    /// <inheritdoc />
+    public void GenerateHint()
+    {
+        SolutionHelper.GenerateHint(Solution!, Islands);
+    }
 
     private bool AreAllConnectionsSet()
     {
@@ -231,7 +204,7 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
         var sourceCoordinates = source.Coordinates;
         var targetCoordinates = target.Coordinates;
 
-        var islandsToConnect = GetAllIslandsInvolvedInConnection(source, target).ToList();
+        var islandsToConnect = SolutionHelper.GetAllIslandsInvolvedInConnection(source, target, Islands).ToList();
 
         foreach (var island in islandsToConnect)
         {
@@ -259,16 +232,6 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
             ? null
             : source.AllConnections.Count(c => c == target.Coordinates) >= 2 ||
               target.AllConnections.Count(c => c == source.Coordinates) >= 2;
-    }
-
-    /// <summary>
-    ///     Gets an island by coordinates.
-    /// </summary>
-    /// <param name="coordinates">The island coordinates.</param>
-    /// <returns>an island.</returns>
-    private IIslandViewModel GetIslandByCoordinates(IHashiPoint coordinates)
-    {
-        return Islands[(int)coordinates.Y][(int)coordinates.X];
     }
 
     /// <summary>
@@ -353,7 +316,7 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
     private bool WouldConnectionCollide(IIslandViewModel source, IIslandViewModel target)
     {
         var connectionType = source.GetConnectionType(target);
-        var islands = GetAllIslandsInvolvedInConnection(source, target).Where(x => x.MaxConnections == 0);
+        var islands = SolutionHelper.GetAllIslandsInvolvedInConnection(source, target, Islands).Where(x => x.MaxConnections == 0);
 
         return connectionType switch
         {

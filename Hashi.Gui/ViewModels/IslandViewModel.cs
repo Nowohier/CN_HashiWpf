@@ -12,7 +12,6 @@ using Hashi.Gui.Messages;
 using Hashi.Gui.Messages.MessageContainers;
 using Hashi.Gui.Models;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -24,14 +23,13 @@ namespace Hashi.Gui.ViewModels;
 public class IslandViewModel : ObservableRecipient, IIslandViewModel
 {
     private readonly IHashiPoint mouseDownPosition = new HashiPoint(0, 0);
-    private int count;
     private bool isDragging;
     private bool isHighlightHorizontalLeft;
     private bool isHighlightHorizontalRight;
     private bool isHighlightVerticalBottom;
     private bool isHighlightVerticalTop;
     private IHashiBrush islandColor = new HashiBrush(Brushes.LightBlue);
-    private IHashiPoint? potentialTargetIslandCoordinates;
+    private IIslandViewModel? dropTargetIsland;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="IslandViewModel" /> class.
@@ -51,12 +49,6 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
         MouseMoveCommand = new RelayCommand<MouseEventArgsWithCorrectViewBoxPosition>(MouseMoveCommandExecute);
         MouseLeftButtonDownCommand = new RelayCommand<MouseButtonEventArgs>(MouseLeftButtonDownCommandExecute);
         MouseLeftButtonUpCommand = new RelayCommand<MouseButtonEventArgs>(MouseLeftButtonUpCommandExecute);
-    }
-
-    public IHashiPoint? PotentialTargetIslandCoordinates
-    {
-        get => potentialTargetIslandCoordinates;
-        set => SetProperty(ref potentialTargetIslandCoordinates, value);
     }
 
     /// <inheritdoc />
@@ -146,11 +138,8 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
     /// <inheritdoc />
     public ConnectionTypeEnum GetConnectionType(IIslandViewModel targetIsland)
     {
-        if (Coordinates.X == targetIsland.Coordinates.X)
-            return ConnectionTypeEnum.Vertical;
-        if (Coordinates.Y == targetIsland.Coordinates.Y)
-            return ConnectionTypeEnum.Horizontal;
-        return ConnectionTypeEnum.Diagonal;
+        if (Coordinates.X == targetIsland.Coordinates.X) return ConnectionTypeEnum.Vertical;
+        return Coordinates.Y == targetIsland.Coordinates.Y ? ConnectionTypeEnum.Horizontal : ConnectionTypeEnum.Diagonal;
     }
 
     /// <inheritdoc />
@@ -176,6 +165,102 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
         NotifyBridgeConnections();
     }
 
+    /// <inheritdoc />
+    public IIslandViewModel? GetVisibleNeighbor(ObservableCollection<ObservableCollection<IIslandViewModel>> islands,
+        IIslandViewModel potentialTargetIsland)
+    {
+        ArgumentNullException.ThrowIfNull(islands);
+        ArgumentNullException.ThrowIfNull(potentialTargetIsland);
+
+        if (this == potentialTargetIsland)
+        {
+            throw new ArgumentException("Potential target island is identical to source.");
+        }
+
+        if (Coordinates.Y == potentialTargetIsland.Coordinates.Y && Coordinates.X > potentialTargetIsland.Coordinates.X)
+            return GetVisibleNeighbor(DirectionEnum.Left, islands);
+        if (Coordinates.Y == potentialTargetIsland.Coordinates.Y && Coordinates.X < potentialTargetIsland.Coordinates.X)
+            return GetVisibleNeighbor(DirectionEnum.Right, islands);
+        if (Coordinates.X == potentialTargetIsland.Coordinates.X && Coordinates.Y > potentialTargetIsland.Coordinates.Y)
+            return GetVisibleNeighbor(DirectionEnum.Up, islands);
+        if (Coordinates.X == potentialTargetIsland.Coordinates.X && Coordinates.Y < potentialTargetIsland.Coordinates.Y)
+            return GetVisibleNeighbor(DirectionEnum.Down, islands);
+        return null;
+    }
+
+    /// <inheritdoc />
+    public IIslandViewModel? GetVisibleNeighbor(DirectionEnum direction, ObservableCollection<ObservableCollection<IIslandViewModel>> islands)
+    {
+        ArgumentNullException.ThrowIfNull(islands);
+
+        return direction switch
+        {
+            DirectionEnum.Up => CheckDirection(0, -1, islands),
+            DirectionEnum.Down => CheckDirection(0, 1, islands),
+            DirectionEnum.Left => CheckDirection(-1, 0, islands),
+            DirectionEnum.Right => CheckDirection(1, 0, islands),
+            _ => null
+        };
+    }
+
+    /// <inheritdoc />
+    public List<IIslandViewModel> GetAllVisibleNeighbors(ObservableCollection<ObservableCollection<IIslandViewModel>> islands)
+    {
+        ArgumentNullException.ThrowIfNull(islands);
+
+        var neighbors = new List<IIslandViewModel>();
+
+        if (CheckDirection(0, -1, islands) is { } above)
+            neighbors.Add(above);
+
+        if (CheckDirection(0, 1, islands) is { } below)
+            neighbors.Add(below);
+
+        if (CheckDirection(-1, 0, islands) is { } left)
+            neighbors.Add(left);
+
+        if (CheckDirection(1, 0, islands) is { } right)
+            neighbors.Add(right);
+
+        return neighbors;
+    }
+
+    /// <inheritdoc />
+    public void ResetDropTarget()
+    {
+        dropTargetIsland = null;
+    }
+
+    /// <inheritdoc />
+    public void CheckIslandColor()
+    {
+        IslandColor = MaxConnectionsReached
+            ? new HashiBrush(HashiColorHelper.MaxBridgesReachedBrush)
+            : new HashiBrush(HashiColorHelper.BasicIslandBrush);
+    }
+
+    private IIslandViewModel? CheckDirection(int dx, int dy, ObservableCollection<ObservableCollection<IIslandViewModel>> islands)
+    {
+        ArgumentNullException.ThrowIfNull(islands);
+
+        var currentX = Coordinates.X + dx;
+        var currentY = Coordinates.Y + dy;
+
+        while (currentY >= 0 && currentY < islands.Count && currentX >= 0 && currentX < islands[currentY].Count)
+        {
+            var neighbor = islands[currentY][currentX];
+            if (neighbor.MaxConnections > 0)
+            {
+                return neighbor;
+            }
+
+            currentX += dx;
+            currentY += dy;
+        }
+
+        return null;
+    }
+
     /// <summary>
     ///     Handles the drag enter event during drag-and-drop operation.
     /// </summary>
@@ -185,7 +270,7 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
     {
         if (e == null) throw new ArgumentNullException(nameof(e));
 
-        IslandColor = new HashiBrush(HashiColors.GreenIslandBrush);
+        IslandColor = new HashiBrush(HashiColorHelper.GreenIslandBrush);
     }
 
     /// <summary>
@@ -212,9 +297,7 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
             islandToConnectWith == this)
             return;
 
-        IslandColor = MaxConnectionsReached
-            ? new HashiBrush(HashiColors.MaxBridgesReachedBrush)
-            : new HashiBrush(HashiColors.BasicIslandBrush);
+        CheckIslandColor();
     }
 
     /// <summary>
@@ -250,7 +333,6 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
         if (e.MouseEventArgs.OriginalSource is not DependencyObject depObject) return;
 
         isDragging = true;
-        WeakReferenceMessenger.Default.Send(new CurrentSourceIslandChangedMessage(this));
 
         DragDrop.AddQueryContinueDragHandler(depObject, QueryContinueDragHandler);
         DragDrop.DoDragDrop(depObject, this, DragDropEffects.Link);
@@ -265,7 +347,7 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
     protected virtual void MouseLeftButtonDownCommandExecute(MouseButtonEventArgs? e)
     {
         isDragging = false;
-        IslandColor = new HashiBrush(HashiColors.GreenIslandBrush);
+        IslandColor = new HashiBrush(HashiColorHelper.GreenIslandBrush);
     }
 
     /// <summary>
@@ -276,8 +358,9 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
     protected virtual void MouseLeftButtonUpCommandExecute(MouseButtonEventArgs? e)
     {
         if (!isDragging)
-            WeakReferenceMessenger.Default.Send(new BridgeConnectionChangedMessage(
-                new BridgeConnectionInformationContainer(this, BridgeOperationTypeEnum.RemoveAll)));
+        {
+            WeakReferenceMessenger.Default.Send(new BridgeConnectionChangedMessage(new BridgeConnectionInformationContainer(BridgeOperationTypeEnum.RemoveAll, this)));
+        }
 
         WeakReferenceMessenger.Default.Send(new UpdateAllIslandColorsMessage());
     }
@@ -298,21 +381,25 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
 
         if (VisualTreeHelper.HitTest(viewBox, currentPosition)?.VisualHit is FrameworkElement element)
             if (element.DataContext != this && element.DataContext is IslandViewModel potentialIsland &&
-                potentialIsland.Coordinates != PotentialTargetIslandCoordinates)
+                potentialIsland != dropTargetIsland)
             {
-                Debug.WriteLine(count++);
-                PotentialTargetIslandCoordinates = potentialIsland.Coordinates;
-                WeakReferenceMessenger.Default.Send(new PotentialTargetIslandChangedMessage(potentialIsland));
+                dropTargetIsland = potentialIsland;
+                WeakReferenceMessenger.Default.Send(new DropTargetIslandChangedMessage(new BridgeConnectionInformationContainer(BridgeOperationTypeEnum.None, this, dropTargetIsland)));
             }
 
         if (e.KeyStates != DragDropKeyStates.None) return;
 
         isDragging = false;
-        WeakReferenceMessenger.Default.Send(
-            new BridgeConnectionChangedMessage(
-                new BridgeConnectionInformationContainer(this, BridgeOperationTypeEnum.Add)));
-        WeakReferenceMessenger.Default.Send(new PotentialTargetIslandChangedMessage(null));
-        WeakReferenceMessenger.Default.Send(new CurrentSourceIslandChangedMessage(null));
+
+        if (dropTargetIsland == null)
+        {
+            return;
+        }
+
+        var allIslands = WeakReferenceMessenger.Default.Send<AllIslandsRequestMessage>();
+        var potentialTarget = GetVisibleNeighbor(allIslands, dropTargetIsland);
+
+        WeakReferenceMessenger.Default.Send(new BridgeConnectionChangedMessage(new BridgeConnectionInformationContainer(BridgeOperationTypeEnum.Add, this, potentialTarget)));
         WeakReferenceMessenger.Default.Send(new UpdateAllIslandColorsMessage());
     }
 }

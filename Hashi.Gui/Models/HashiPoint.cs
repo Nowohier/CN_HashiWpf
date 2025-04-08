@@ -1,20 +1,25 @@
-﻿using Hashi.Gui.Interfaces.Models;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Hashi.Gui.Interfaces.Models;
 using System.Windows;
 
 namespace Hashi.Gui.Models;
 
 /// <inheritdoc />
-public class HashiPoint : IHashiPoint
+public class HashiPoint : ObservableRecipient, IHashiPoint
 {
+    private string hintMessage = string.Empty;
+
     /// <summary>
     ///     Initializes a new instance of the <see cref="HashiPoint" /> class.
     /// </summary>
     /// <param name="x">The x coordinate.</param>
     /// <param name="y">The y coordinate.</param>
-    public HashiPoint(int x, int y)
+    /// <param name="isHint"></param>
+    public HashiPoint(int x, int y, bool isHint = false)
     {
         X = x;
         Y = y;
+        IsHint = isHint;
     }
 
     /// <inheritdoc />
@@ -22,6 +27,29 @@ public class HashiPoint : IHashiPoint
 
     /// <inheritdoc />
     public int Y { get; }
+
+    /// <inheritdoc />
+    public bool IsHint { get; set; }
+
+    /// <inheritdoc />
+    public string HintMessage => IsHint ? hintMessage : string.Empty;
+
+    /// <inheritdoc />
+    public void SetHintMessage(string message)
+    {
+        this.hintMessage = message;
+        OnPropertyChanged(nameof(HintMessage));
+    }
+
+    /// <inheritdoc />
+    public object Clone()
+    {
+        var clone = new HashiPoint(X, Y, IsHint)
+        {
+            hintMessage = this.hintMessage
+        };
+        return clone;
+    }
 
     /// <summary>
     ///     Converts a <see cref="HashiPoint" /> to a <see cref="Point" />.
@@ -39,5 +67,11 @@ public class HashiPoint : IHashiPoint
     public static implicit operator HashiPoint(Point point)
     {
         return new HashiPoint((int)point.X, (int)point.Y);
+    }
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"Coordinate (X = {X}, Y = {Y})";
     }
 }
