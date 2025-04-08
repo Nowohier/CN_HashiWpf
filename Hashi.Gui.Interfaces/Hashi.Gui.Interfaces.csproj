@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Hashi.Enums\Hashi.Enums.csproj" />
+    <ProjectReference Include="..\Hashi.Generator.Interfaces\Hashi.Generator.Interfaces.csproj" />
   </ItemGroup>
 
 </Project>

@@ -2,6 +2,7 @@
 using Hashi.Generator.Interfaces;
 using Hashi.Generator.Interfaces.Models;
 using Hashi.Generator.Models;
+using System.Drawing;
 
 namespace Hashi.Generator;
 
@@ -14,6 +15,8 @@ public class AutoFacGeneratorModule : Module
         builder.RegisterType<HashiGenerator>().As<IHashiGenerator>().SingleInstance();
         builder.RegisterType<Island>().As<IIsland>().InstancePerDependency();
         builder.RegisterType<Bridge>().As<IBridge>().InstancePerDependency();
+        builder.RegisterType<BridgeCoordinates>().As<IBridgeCoordinates>().InstancePerDependency();
+        builder.RegisterType<SolutionContainer>().As<ISolutionContainer>().InstancePerDependency();
 
         builder.Register<Func<int, int, int, IIsland>>(context =>
         {
@@ -21,6 +24,21 @@ public class AutoFacGeneratorModule : Module
             return (amountBridgesConnectable, row, column) => c.Resolve<IIsland>(
                 new NamedParameter("amountBridgesConnectable", amountBridgesConnectable), new NamedParameter("y", row),
                 new NamedParameter("x", column));
+        });
+
+        builder.Register<Func<Point, Point, int, IBridgeCoordinates>>(context =>
+        {
+            var c = context.Resolve<IComponentContext>();
+            return (location1, location2, amountBridges) => c.Resolve<IBridgeCoordinates>(
+                new NamedParameter("location1", location1), new NamedParameter("location2", location2),
+                new NamedParameter("amountBridges", amountBridges));
+        });
+
+        builder.Register<Func<int[][], IList<IBridgeCoordinates>, ISolutionContainer>>(context =>
+        {
+            var c = context.Resolve<IComponentContext>();
+            return (hashiField, bridgeCoordinates) => c.Resolve<ISolutionContainer>(
+                new NamedParameter("hashiField", hashiField), new NamedParameter("bridgeCoordinates", bridgeCoordinates));
         });
 
         builder.Register<Func<IIsland, IIsland, int, IBridge>>(context =>

@@ -3,7 +3,7 @@ using System.Windows.Media;
 
 namespace Hashi.Gui.Helpers;
 
-public static class HashiColors
+public static class HashiColorHelper
 {
     public static SolidColorBrush MenuBackgroundBrush =
         (SolidColorBrush)Application.Current.Resources[nameof(MenuBackgroundBrush)]!;

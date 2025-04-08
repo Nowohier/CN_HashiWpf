@@ -6,7 +6,8 @@
 public enum BridgeOperationTypeEnum
 {
     Add,
-    RemoveAll
+    RemoveAll,
+    None
 }
 
 /// <summary>
@@ -19,6 +20,20 @@ public enum ConnectionTypeEnum
     Diagonal
 }
 
+/// <summary>
+///      Represents the direction of the bridge.
+/// </summary>
+public enum DirectionEnum
+{
+    Up,
+    Down,
+    Left,
+    Right
+}
+
+/// <summary>
+///     Represents the difficulty level of the puzzle.
+/// </summary>
 public enum DifficultyEnum
 {
     Easy1 = 0,
@@ -33,6 +48,9 @@ public enum DifficultyEnum
     Expert = 9
 }
 
+/// <summary>
+///      Represents the status of the solver.
+/// </summary>
 public enum SolverStatusEnum
 {
     Unknown = 0,
@@ -42,6 +60,9 @@ public enum SolverStatusEnum
     Optimal = 4
 }
 
+/// <summary>
+///      Represents the type of bridge.
+/// </summary>
 public enum BridgeTypeEnum
 {
     Horizontal = 0,

@@ -16,8 +16,8 @@ public interface IHashiGenerator
     /// <param name="length">The length of the hashi field.</param>
     /// <param name="alpha">The alpha value.</param>
     /// <param name="beta">The beta value.</param>
-    /// <returns>a hashi field array.</returns>
-    Task<int[][]> GenerateHashAsync(int difficulty = -1, int amountNodes = 10, int width = 0, int length = 0, int alpha = 0,
+    /// <returns>a hashi field array and a list of bridges.</returns>
+    Task<ISolutionContainer> GenerateHashAsync(int difficulty = -1, int amountNodes = 10, int width = 0, int length = 0, int alpha = 0,
         int beta = 0);
 
     /// <summary>
