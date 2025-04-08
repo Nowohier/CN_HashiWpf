@@ -241,8 +241,8 @@ public class MainViewModel : AsyncObservableRecipient,
 
         bridgeAction();
 
-        sourceIsland.CheckIslandColor();
-        targetIsland?.CheckIslandColor();
+        sourceIsland.RefreshIslandColor();
+        targetIsland?.RefreshIslandColor();
 
         ConnectionManager.RemoveAllHighlights();
         ConnectionManager.ClearTemporaryDropTargets();

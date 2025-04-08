@@ -226,7 +226,7 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
     }
 
     /// <inheritdoc />
-    public void CheckIslandColor()
+    public void RefreshIslandColor()
     {
         IslandColor = MaxConnectionsReached
             ? new HashiBrush(HashiColorHelper.MaxBridgesReachedBrush)
@@ -275,7 +275,7 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
             islandToConnectWith == this)
             return;
 
-        CheckIslandColor();
+        RefreshIslandColor();
     }
 
     /// <summary>

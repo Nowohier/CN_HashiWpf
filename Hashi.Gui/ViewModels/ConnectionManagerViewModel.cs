@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Generator.Interfaces.Models;
 using Hashi.Gui.Enums;
 using Hashi.Gui.Extensions;
-using Hashi.Gui.Helpers;
 using Hashi.Gui.Interfaces.Helpers;
 using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.ViewModels;
@@ -169,9 +168,7 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
     {
         foreach (var row in Islands)
             foreach (var island in row)
-                island.IslandColor = island.MaxConnectionsReached
-                    ? brushFactory.Invoke(HashiColorHelper.MaxBridgesReachedBrush)
-                    : brushFactory.Invoke(HashiColorHelper.BasicIslandBrush);
+                island.RefreshIslandColor();
     }
 
     /// <inheritdoc />

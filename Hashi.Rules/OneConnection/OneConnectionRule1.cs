@@ -8,7 +8,7 @@ namespace Hashi.Rules.OneConnection
     ///   Is fired when
     ///     MaxConnection = 1
     ///     MaxConnectionsReached == false
-    ///     AllActiveNeighbors.Count == 1
+    ///     AllValidNeighbors Count == 1
     ///   Is not fired when
     ///     connectionManager.AreRulesBeingApplied == false
     /// </summary>
@@ -18,19 +18,19 @@ namespace Hashi.Rules.OneConnection
         public override void Define()
         {
             IIslandViewModel island = default!;
-            List<IIslandViewModel> allActiveNeighbors = default!;
+            List<IIslandViewModel> allValidNeighbors = default!;
             IConnectionManagerViewModel connectionManager = default!;
-            var activeNeighborsCount = 0;
+            var validNeighborsCount = 0;
 
             When()
                 .Match(() => island, x => x.MaxConnectionsReached == false && x.MaxConnections == 1)
                 .Query(() => connectionManager, q => q.Match<IConnectionManagerViewModel>())
-                .Let(() => allActiveNeighbors, () => island.GetAllVisibleNeighbors().Where(x => x.MaxConnections != 1).ToList())
-                .Let(() => activeNeighborsCount, () => allActiveNeighbors.Count)
-                .Having(() => activeNeighborsCount == 1);
+                .Let(() => allValidNeighbors, () => island.GetAllVisibleNeighbors().Where(x => x.MaxConnections != 1).ToList())
+                .Let(() => validNeighborsCount, () => allValidNeighbors.Count)
+                .Having(() => validNeighborsCount == 1);
 
             Then()
-                .Do(ctx => AddConnection(island, allActiveNeighbors.First(), connectionManager));
+                .Do(ctx => AddConnection(island, allValidNeighbors.First(), connectionManager));
         }
     }
 }

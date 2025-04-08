@@ -6,12 +6,13 @@ namespace Hashi.Rules
     public abstract class BaseRule : Rule
     {
         /// <summary>
-        /// Adds a connection to an island.
+        /// Adds a connection to an island and stops the rule execution of all rules.
         /// </summary>
         /// <param name="source">The source island.</param>
         /// <param name="target">The target island.</param>
         /// <param name="connectionManager">The connection manager.</param>
-        protected virtual void AddConnection(IIslandViewModel source, IIslandViewModel target, IConnectionManagerViewModel connectionManager)
+        protected virtual void AddConnection(IIslandViewModel source, IIslandViewModel target,
+            IConnectionManagerViewModel connectionManager)
         {
             if (connectionManager.AreRulesBeingApplied == false)
             {
@@ -20,6 +21,8 @@ namespace Hashi.Rules
 
             connectionManager.AreRulesBeingApplied = false;
             connectionManager.AddConnection(source, target);
+            source.RefreshIslandColor();
+            target.RefreshIslandColor();
         }
     }
 }
