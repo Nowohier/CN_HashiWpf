@@ -1,37 +1,31 @@
 ﻿using Hashi.Gui.Enums;
 using Hashi.Gui.Interfaces.Messages.MessageContainers;
 using Hashi.Gui.Interfaces.ViewModels;
-using Hashi.Gui.ViewModels;
-
-// ReSharper disable CompareOfFloatsByEqualityOperator
 
 namespace Hashi.Gui.Messages.MessageContainers;
 
-/// <summary>
-///     Represents the container for the bridge connection.
-/// </summary>
+/// <inheritdoc cref="IBridgeConnectionInformationContainer"/>
 public class BridgeConnectionInformationContainer : IBridgeConnectionInformationContainer
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="BridgeConnectionInformationContainer" /> class.
     /// </summary>
-    /// <param name="sourceIsland">The source island.</param>
     /// <param name="bridgeOperationType">The bridge operation type.</param>
-    public BridgeConnectionInformationContainer(IslandViewModel sourceIsland,
-        BridgeOperationTypeEnum bridgeOperationType)
+    /// <param name="sourceIsland">The source island.</param>
+    /// <param name="targetIsland">The target island.</param>
+    public BridgeConnectionInformationContainer(BridgeOperationTypeEnum bridgeOperationType, IIslandViewModel sourceIsland, IIslandViewModel? targetIsland = null)
     {
-        SourceIsland = sourceIsland;
-
         BridgeOperationType = bridgeOperationType;
+        SourceIsland = sourceIsland;
+        TargetIsland = targetIsland;
     }
 
-    /// <summary>
-    ///     Gets the source island.
-    /// </summary>
+    /// <inheritdoc />
     public IIslandViewModel SourceIsland { get; }
 
-    /// <summary>
-    ///     Gets the bridge operation type.
-    /// </summary>
+    /// <inheritdoc />
+    public IIslandViewModel? TargetIsland { get; }
+
+    /// <inheritdoc />
     public BridgeOperationTypeEnum BridgeOperationType { get; }
 }

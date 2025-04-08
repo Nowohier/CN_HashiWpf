@@ -13,126 +13,159 @@ public interface IIslandViewModel
     /// <summary>
     ///     Gets or sets the color of the island.
     /// </summary>
-    public IHashiBrush IslandColor { get; set; }
+    IHashiBrush IslandColor { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether the path to the island is highlighted left horizontally.
     /// </summary>
-    public bool IsHighlightHorizontalLeft { get; set; }
+    bool IsHighlightHorizontalLeft { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether the path to the island is highlighted right horizontally.
     /// </summary>
-    public bool IsHighlightHorizontalRight { get; set; }
+    bool IsHighlightHorizontalRight { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether the path to the island is highlighted vertically top.
     /// </summary>
-    public bool IsHighlightVerticalTop { get; set; }
+    bool IsHighlightVerticalTop { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether the path to the island is highlighted vertically bottom.
     /// </summary>
-    public bool IsHighlightVerticalBottom { get; set; }
-
-    public IHashiPoint? PotentialTargetIslandCoordinates { get; set; }
+    bool IsHighlightVerticalBottom { get; set; }
 
     /// <summary>
     ///     A list of all set connections for this island.
     /// </summary>
-    public ObservableCollection<IHashiPoint> AllConnections { get; }
+    ObservableCollection<IHashiPoint> AllConnections { get; }
 
     /// <summary>
     ///     Determines if the max connections have been reached
     /// </summary>
-    public bool MaxConnectionsReached { get; }
+    bool MaxConnectionsReached { get; }
 
     /// <summary>
     ///     Gets the bridges on the left side.
     /// </summary>
-    public List<IHashiPoint> BridgesLeft { get; }
+    List<IHashiPoint> BridgesLeft { get; }
 
     /// <summary>
     ///     Gets the bridges on the right side.
     /// </summary>
-    public List<IHashiPoint> BridgesRight { get; }
+    List<IHashiPoint> BridgesRight { get; }
 
     /// <summary>
     ///     Gets the bridges on the bottom side.
     /// </summary>
-    public List<IHashiPoint> BridgesUp { get; }
+    List<IHashiPoint> BridgesUp { get; }
 
     /// <summary>
     ///     Gets the bridges on the top side.
     /// </summary>
-    public List<IHashiPoint> BridgesDown { get; }
+    List<IHashiPoint> BridgesDown { get; }
 
     /// <summary>
     ///     Gets the maximum number of connections for this island.
     /// </summary>
-    public int MaxConnections { get; }
+    int MaxConnections { get; }
 
     /// <summary>
     ///     Gets the coordinates of the island.
     /// </summary>
-    public IHashiPoint Coordinates { get; }
+    IHashiPoint Coordinates { get; }
 
     /// <summary>
     ///     Gets the command for the left mouse button down event.
     /// </summary>
-    public ICommand MouseLeftButtonDownCommand { get; }
+    ICommand MouseLeftButtonDownCommand { get; }
 
     /// <summary>
     ///     Gets the command for the left mouse button up event.
     /// </summary>
-    public ICommand MouseLeftButtonUpCommand { get; }
+    ICommand MouseLeftButtonUpCommand { get; }
 
     /// <summary>
     ///     Gets the command for the drag enter event.
     /// </summary>
-    public ICommand DragEnterCommand { get; }
+    ICommand DragEnterCommand { get; }
 
     /// <summary>
     ///     Gets the command for the drag over event.
     /// </summary>
-    public ICommand DragOverCommand { get; }
+    ICommand DragOverCommand { get; }
 
     /// <summary>
     ///     Gets the command for the drag leave event.
     /// </summary>
-    public ICommand DragLeaveCommand { get; }
+    ICommand DragLeaveCommand { get; }
 
     /// <summary>
     ///     Gets the command for the drop event.
     /// </summary>
-    public ICommand DropCommand { get; }
+    ICommand DropCommand { get; }
 
     /// <summary>
     ///     Gets the command for the mouse move event.
     /// </summary>
-    public ICommand MouseMoveCommand { get; }
+    ICommand MouseMoveCommand { get; }
+
+    /// <summary>
+    /// Resets the drop target.
+    /// </summary>
+    void ResetDropTarget();
+
+    /// <summary>
+    /// Checks the island color and sets it to the default color if it is not set.
+    /// </summary>
+    void CheckIslandColor();
 
     /// <summary>
     ///     Gets the connection type between two islands.
     /// </summary>
     /// <param name="targetIsland">The island to perform the check on.</param>
     /// <returns>a <see cref="ConnectionTypeEnum" />.</returns>
-    public ConnectionTypeEnum GetConnectionType(IIslandViewModel targetIsland);
+    ConnectionTypeEnum GetConnectionType(IIslandViewModel targetIsland);
+
+    /// <summary>
+    /// Gets all neighbors with MaxConnections > 0.
+    /// </summary>
+    /// <param name="islands">All islands.</param>
+    /// <returns>a list of visible neighbor islands.</returns>
+    List<IIslandViewModel> GetAllVisibleNeighbors(ObservableCollection<ObservableCollection<IIslandViewModel>> islands);
+
+    /// <summary>
+    ///    Gets the visible neighbor of the current island in the given direction of potential target island.
+    /// </summary>
+    /// <param name="islands">All islands.</param>
+    /// <param name="potentialTargetIsland">The potential target island to give a hint in which direction to search.</param>
+    /// <returns>the visible neighbor of the current island in the given direction of potential target island. Null if not found.</returns>
+    IIslandViewModel? GetVisibleNeighbor(ObservableCollection<ObservableCollection<IIslandViewModel>> islands,
+        IIslandViewModel potentialTargetIsland);
+
+    /// <summary>
+    ///    Gets the visible neighbor of the current island in the given direction.
+    /// </summary>
+    /// <param name="direction">The direction.</param>
+    /// <param name="islands">All islands.</param>
+    /// <returns>the visible neighbor of the current island in the given direction. Null if not found.</returns>
+    IIslandViewModel? GetVisibleNeighbor(DirectionEnum direction,
+        ObservableCollection<ObservableCollection<IIslandViewModel>> islands);
 
     /// <summary>
     ///     Notifies the bridge connections.
     /// </summary>
-    public void NotifyBridgeConnections();
+    void NotifyBridgeConnections();
 
     /// <summary>
     ///     Adds a connection.
     /// </summary>
     /// <param name="connection">The connection to add.</param>
-    public void AddConnection(IHashiPoint connection);
+    void AddConnection(IHashiPoint connection);
 
     /// <summary>
     ///     Removes all connections matching the given connection.
     /// </summary>
     /// <param name="connection">The connection to remove.</param>
-    public void RemoveAllConnectionsMatchingCoordinates(IHashiPoint connection);
+    void RemoveAllConnectionsMatchingCoordinates(IHashiPoint connection);
 }

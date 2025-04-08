@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Hashi.Generator;
+using Hashi.Gui.Helpers;
 using Hashi.Gui.Messages;
 using Hashi.Gui.Models;
 using Hashi.Gui.ViewModels;
@@ -24,5 +25,6 @@ public class AutoFacMainModule : Module
         builder.RegisterModule<AutoFacModelsModule>();
         builder.RegisterModule<AutoFacWrapperModule>();
         builder.RegisterModule<AutoFacLinearSolverModule>();
+        builder.RegisterModule<AutoFacHelpersModule>();
     }
 }

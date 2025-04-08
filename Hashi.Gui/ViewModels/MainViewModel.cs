@@ -10,7 +10,6 @@ using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Wrappers;
 using Hashi.Gui.Messages;
 using Hashi.Gui.Messaging;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -27,8 +26,7 @@ public class MainViewModel : AsyncObservableRecipient,
     IRecipient<IBridgeConnectionChangedMessage>,
     IRecipient<IUpdateAllIslandColorsMessage>,
     IAsyncRecipient<IAllConnectionsSetMessage>,
-    IRecipient<ICurrentSourceIslandChangedMessage>,
-    IRecipient<IPotentialTargetIslandChangedMessage>
+    IRecipient<IDropTargetIslandChangedMessage>
 {
     private readonly Func<SolidColorBrush, IHashiBrush> brushFactory;
     private readonly IDialogWrapper dialogWrapper;
@@ -36,23 +34,19 @@ public class MainViewModel : AsyncObservableRecipient,
     private readonly IHashiGenerator hashiGenerator;
     internal readonly string HashiSettingsFileName = "HashiSettings.json";
     private readonly Func<DifficultyEnum, IHighScorePerDifficultyViewModel> highScorePerDifficultyFactory;
-    private readonly Func<int, int, int, IIslandViewModel> islandFactory;
     private readonly IJsonWrapper jsonWrapper;
 
     internal readonly string SaveFilePath =
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"CN_Hashi\Settings");
 
     private readonly Func<ISettingsViewModel> settingsFactory;
-    private IIslandViewModel? currentSourceIsland;
     private bool isTimerRunning;
     private bool isGeneratingHashiPuzzle;
-    private IIslandViewModel? potentialTargetIsland;
     private DifficultyEnum selectedDifficulty = DifficultyEnum.Easy3;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="MainViewModel" /> class.
     /// </summary>
-    /// <param name="islandFactory">The island factory.</param>
     /// <param name="brushFactory">The solid color brush factory.</param>
     /// <param name="settingsFactory">The settings factory.</param>
     /// <param name="highScorePerDifficultyFactory">The highscore per difficulty factory.</param>
@@ -61,7 +55,6 @@ public class MainViewModel : AsyncObservableRecipient,
     /// <param name="jsonWrapper">The json wrapper.</param>
     /// <param name="hashiGenerator">The hashi generator.</param>
     public MainViewModel(
-        Func<int, int, int, IIslandViewModel> islandFactory,
         Func<SolidColorBrush, IHashiBrush> brushFactory,
         Func<ISettingsViewModel> settingsFactory,
         Func<DifficultyEnum, IHighScorePerDifficultyViewModel> highScorePerDifficultyFactory,
@@ -70,7 +63,6 @@ public class MainViewModel : AsyncObservableRecipient,
         IJsonWrapper jsonWrapper,
         IHashiGenerator hashiGenerator)
     {
-        this.islandFactory = islandFactory;
         this.brushFactory = brushFactory;
         this.settingsFactory = settingsFactory;
         this.highScorePerDifficultyFactory = highScorePerDifficultyFactory;
@@ -82,10 +74,10 @@ public class MainViewModel : AsyncObservableRecipient,
         WeakReferenceMessenger.Default.Register<BridgeConnectionChangedMessage>(this);
         WeakReferenceMessenger.Default.Register<UpdateAllIslandColorsMessage>(this);
         WeakReferenceMessenger.Default.Register<AllConnectionsSetMessage>(this);
-        WeakReferenceMessenger.Default.Register<CurrentSourceIslandChangedMessage>(this);
-        WeakReferenceMessenger.Default.Register<PotentialTargetIslandChangedMessage>(this);
+        WeakReferenceMessenger.Default.Register<DropTargetIslandChangedMessage>(this);
         CreateNewGameCommand = new AsyncRelayCommand(CreateNewGameAsync);
         RemoveAllBridgesCommand = new RelayCommand(RemoveAllBridgesExecute);
+        GenerateHintCommand = new RelayCommand(() => ConnectionManager.GenerateHint());
 
         dispatcherTimer.Tick += (_, _) => OnPropertyChanged(nameof(Timer));
         Settings = LoadSettings();
@@ -132,21 +124,10 @@ public class MainViewModel : AsyncObservableRecipient,
     public ICommand RemoveAllBridgesCommand { get; }
 
     /// <inheritdoc />
-    public IIslandViewModel? CurrentSourceIsland
-    {
-        get => currentSourceIsland;
-        set => SetProperty(ref currentSourceIsland, value);
-    }
+    public ICommand GenerateHintCommand { get; }
 
     /// <inheritdoc />
     public Stopwatch Timer { get; } = new();
-
-    /// <inheritdoc />
-    public IIslandViewModel? PotentialTargetIsland
-    {
-        get => potentialTargetIsland;
-        set => SetProperty(ref potentialTargetIsland, value);
-    }
 
     /// <inheritdoc />
     public ISettingsViewModel LoadSettings()
@@ -198,8 +179,8 @@ public class MainViewModel : AsyncObservableRecipient,
     public async Task CreateNewGameAsync()
     {
         IsGeneratingHashiPuzzle = true;
-        var result = await hashiGenerator.GenerateHashAsync((int)SelectedDifficulty);
-        DrawGame(result);
+        var solutionContainer = await hashiGenerator.GenerateHashAsync((int)SelectedDifficulty);
+        ConnectionManager.InitializeNewSolution(solutionContainer);
 
         // Stop timers
         Timer.Reset();
@@ -233,9 +214,10 @@ public class MainViewModel : AsyncObservableRecipient,
     {
         var bridgeOperationType = message.Value.BridgeOperationType;
         var sourceIsland = message.Value.SourceIsland;
+        var targetIsland = message.Value.TargetIsland;
 
         if (bridgeOperationType == BridgeOperationTypeEnum.Add &&
-            !ConnectionManager.IsValidDropTarget(CurrentSourceIsland, PotentialTargetIsland))
+            !ConnectionManager.IsValidDropTarget(sourceIsland, targetIsland))
             return;
 
         Action bridgeAction = bridgeOperationType switch
@@ -250,7 +232,7 @@ public class MainViewModel : AsyncObservableRecipient,
                     IsTimerRunning = true;
                 }
 
-                ConnectionManager.AddConnection(CurrentSourceIsland, PotentialTargetIsland);
+                ConnectionManager.AddConnection(sourceIsland, targetIsland);
             }
             ,
             BridgeOperationTypeEnum.RemoveAll => () => ConnectionManager.RemoveAllConnections(sourceIsland, null),
@@ -258,16 +240,18 @@ public class MainViewModel : AsyncObservableRecipient,
         };
 
         bridgeAction();
+
+        sourceIsland.CheckIslandColor();
+        targetIsland?.CheckIslandColor();
+
+        ConnectionManager.RemoveAllHighlights();
+        ConnectionManager.ClearTemporaryDropTargets();
     }
 
     /// <inheritdoc cref="IMainViewModel.Receive(IUpdateAllIslandColorsMessage)" />
     public void Receive(IUpdateAllIslandColorsMessage message)
     {
-        foreach (var row in ConnectionManager.Islands)
-            foreach (var island in row)
-                island.IslandColor = island.MaxConnectionsReached
-                    ? brushFactory.Invoke(HashiColors.MaxBridgesReachedBrush)
-                    : brushFactory.Invoke(HashiColors.BasicIslandBrush);
+        ConnectionManager.RefreshIslandColors();
     }
 
     /// <inheritdoc cref="IMainViewModel.ReceiveAsync(IAllConnectionsSetMessage,CancellationToken)" />
@@ -301,51 +285,21 @@ public class MainViewModel : AsyncObservableRecipient,
         await CreateNewGameAsync();
     }
 
-    /// <inheritdoc cref="IMainViewModel.Receive(ICurrentSourceIslandChangedMessage)" />
-    public void Receive(ICurrentSourceIslandChangedMessage message)
+    /// <inheritdoc cref="IMainViewModel.Receive(IDropTargetIslandChangedMessage)" />
+    public void Receive(IDropTargetIslandChangedMessage islandChangedMessage)
     {
-        CurrentSourceIsland = message.Value;
-    }
-
-    /// <inheritdoc cref="IMainViewModel.Receive(IPotentialTargetIslandChangedMessage)" />
-    public void Receive(IPotentialTargetIslandChangedMessage islandChangedMessage)
-    {
-        if (CurrentSourceIsland == null) return;
-
-        if (islandChangedMessage.Value == null)
+        if (islandChangedMessage.Value is not { SourceIsland: { } sourceIsland } ||
+            islandChangedMessage.Value.TargetIsland is not { } dropTargetIsland ||
+            sourceIsland.GetVisibleNeighbor(ConnectionManager.Islands, dropTargetIsland) is not { } targetIsland)
         {
             ConnectionManager.RemoveAllHighlights();
-            ConnectionManager.RemoveAllPotentialIslandCoordinates();
-            PotentialTargetIsland = null;
+            ConnectionManager.ClearTemporaryDropTargets();
             return;
         }
 
-        var target = ConnectionManager.GetPotentialTargetIsland(CurrentSourceIsland, islandChangedMessage.Value);
-
-        if (target == null)
-        {
-            ConnectionManager.RemoveAllHighlights();
-            ConnectionManager.RemoveAllPotentialIslandCoordinates();
-            PotentialTargetIsland = null;
-            return;
-        }
-
-        target.IslandColor = brushFactory.Invoke(HashiColors.GreenIslandBrush);
-        PotentialTargetIsland = target;
+        targetIsland.IslandColor = brushFactory.Invoke(HashiColorHelper.GreenIslandBrush);
 
         ConnectionManager.RemoveAllHighlights();
-        ConnectionManager.HighlightPathToTargetIsland(CurrentSourceIsland, PotentialTargetIsland);
-    }
-
-    private void DrawGame(IReadOnlyList<int[]> mainArray)
-    {
-        ConnectionManager.Islands.Clear();
-        for (var row = 0; row < mainArray.Count; row++)
-        {
-            var rowCollection = new ObservableCollection<IIslandViewModel>();
-            for (var column = 0; column < mainArray[0].Length; column++)
-                rowCollection.Add(islandFactory.Invoke(column, row, mainArray[row][column]));
-            ConnectionManager.Islands.Add(rowCollection);
-        }
+        ConnectionManager.HighlightPathToTargetIsland(sourceIsland, targetIsland);
     }
 }
