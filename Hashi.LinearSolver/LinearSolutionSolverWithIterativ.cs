@@ -113,17 +113,23 @@ public class LinearSolutionSolverWithIterativ : ILinearSolutionSolverWithIterati
                     foreach (var islandDown in potentialBlockingIslandsDown)
                     {
                         foreach (var bridgePair in delta)
-                            if ((bridgePair.Bridge1[0] == island.Number && bridgePair.Bridge1[1] == island.Down.Number
-                                                                        && bridgePair.Bridge2[0] == islandDown.Number &&
-                                                                        bridgePair.Bridge2[1] == islandDown.Right.Number)
-                                || (bridgePair.Bridge2[0] == island.Number && bridgePair.Bridge2[1] == island.Down.Number
-                                                                           && bridgePair.Bridge1[0] == islandDown.Number &&
-                                                                           bridgePair.Bridge1[1] ==
-                                                                           islandDown.Right.Number))
+                            if (islandDown.Right != null &&
+                                ((bridgePair.Bridge1[0] == island.Number && bridgePair.Bridge1[1] == island.Down.Number
+                                                                         && bridgePair.Bridge2[0] ==
+                                                                         islandDown.Number &&
+                                                                         bridgePair.Bridge2[1] ==
+                                                                         islandDown.Right.Number)
+                                 || (bridgePair.Bridge2[0] == island.Number && bridgePair.Bridge2[1] ==
+                                                                            island.Down.Number
+                                                                            && bridgePair.Bridge1[0] ==
+                                                                            islandDown.Number &&
+                                                                            bridgePair.Bridge1[1] ==
+                                                                            islandDown.Right.Number)))
                                 checkDown = true;
                         if (!checkDown)
-                            delta.Add(bridgePairFactory.Invoke(island.Number, island.Down.Number, islandDown.Number,
-                                islandDown.Right.Number));
+                            if (islandDown.Right != null)
+                                delta.Add(bridgePairFactory.Invoke(island.Number, island.Down.Number, islandDown.Number,
+                                    islandDown.Right.Number));
                     }
                 }
 
@@ -135,17 +141,19 @@ public class LinearSolutionSolverWithIterativ : ILinearSolutionSolverWithIterati
                     foreach (var islandRight in potentialBlockingIslandsRight)
                     {
                         foreach (var bridgePair in delta)
-                            if ((bridgePair.Bridge1[0] == island.Number && bridgePair.Bridge1[1] == island.Right.Number
-                                                                        && bridgePair.Bridge2[0] == islandRight.Number &&
-                                                                        bridgePair.Bridge2[1] == islandRight.Down.Number)
-                                || (bridgePair.Bridge2[0] == island.Number && bridgePair.Bridge2[1] == island.Right.Number
-                                                                           && bridgePair.Bridge1[0] == islandRight.Number &&
-                                                                           bridgePair.Bridge1[1] ==
-                                                                           islandRight.Down.Number))
+                            if (islandRight.Down != null && ((bridgePair.Bridge1[0] == island.Number && bridgePair.Bridge1[1] == island.Right.Number
+                                                                 && bridgePair.Bridge2[0] == islandRight.Number &&
+                                                                 bridgePair.Bridge2[1] == islandRight.Down.Number)
+                                                             || (bridgePair.Bridge2[0] == island.Number && bridgePair.Bridge2[1] == island.Right.Number
+                                                                 && bridgePair.Bridge1[0] == islandRight.Number &&
+                                                                 bridgePair.Bridge1[1] ==
+                                                                 islandRight.Down.Number)))
                                 checkRight = true;
                         if (!checkRight)
-                            delta.Add(bridgePairFactory.Invoke(island.Number, island.Right.Number, islandRight.Number,
-                                islandRight.Down.Number));
+                            if (islandRight.Down != null)
+                                delta.Add(bridgePairFactory.Invoke(island.Number, island.Right.Number,
+                                    islandRight.Number,
+                                    islandRight.Down.Number));
                     }
                 }
             }

@@ -13,8 +13,7 @@ namespace Hashi.Gui.Interfaces.Helpers
         ///   Generates a hint for the given solution container and islands.
         /// </summary>
         /// <param name="solutionContainer">The solution container.</param>
-        /// <param name="islands">The islands.</param>
-        void GenerateHint(ISolutionContainer solutionContainer, ObservableCollection<ObservableCollection<IIslandViewModel>> islands);
+        void GenerateHint(ISolutionContainer solutionContainer);
 
         /// <summary>
         ///     Gets all islands involved in a connection between two islands.

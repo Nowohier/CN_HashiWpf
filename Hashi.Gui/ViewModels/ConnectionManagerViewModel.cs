@@ -183,7 +183,7 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
     /// <inheritdoc />
     public void GenerateHint()
     {
-        SolutionHelper.GenerateHint(Solution!, Islands);
+        SolutionHelper.GenerateHint(Solution!);
     }
 
     private bool AreAllConnectionsSet()
