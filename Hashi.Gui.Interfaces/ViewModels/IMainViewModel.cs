@@ -26,6 +26,11 @@ public interface IMainViewModel
     bool IsTimerRunning { get; set; }
 
     /// <summary>
+    /// Determines if the user has used hints or not.
+    /// </summary>
+    bool IsCheating { get; set; }
+
+    /// <summary>
     ///     The selected difficulty level.
     /// </summary>
     DifficultyEnum SelectedDifficulty { get; set; }

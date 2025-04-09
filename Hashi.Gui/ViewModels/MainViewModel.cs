@@ -42,6 +42,7 @@ public class MainViewModel : AsyncObservableRecipient,
     private readonly Func<ISettingsViewModel> settingsFactory;
     private bool isTimerRunning;
     private bool isGeneratingHashiPuzzle;
+    private bool isCheating;
     private DifficultyEnum selectedDifficulty = DifficultyEnum.Easy3;
 
     /// <summary>
@@ -77,7 +78,7 @@ public class MainViewModel : AsyncObservableRecipient,
         WeakReferenceMessenger.Default.Register<DropTargetIslandChangedMessage>(this);
         CreateNewGameCommand = new AsyncRelayCommand(CreateNewGameAsync);
         RemoveAllBridgesCommand = new RelayCommand(RemoveAllBridgesExecute);
-        GenerateHintCommand = new RelayCommand(() => ConnectionManager.GenerateHint());
+        GenerateHintCommand = new RelayCommand(GenerateHintExecute);
         WindowMouseClickedCommand = new RelayCommand(() => ConnectionManager.RuleMessage = string.Empty);
 
         dispatcherTimer.Tick += (_, _) => OnPropertyChanged(nameof(Timer));
@@ -99,6 +100,13 @@ public class MainViewModel : AsyncObservableRecipient,
     {
         get => isTimerRunning;
         set => SetProperty(ref isTimerRunning, value);
+    }
+
+    /// <inheritdoc />
+    public bool IsCheating
+    {
+        get => isCheating;
+        set => SetProperty(ref isCheating, value);
     }
 
     /// <inheritdoc />
@@ -183,14 +191,11 @@ public class MainViewModel : AsyncObservableRecipient,
     public async Task CreateNewGameAsync()
     {
         IsGeneratingHashiPuzzle = true;
+        IsCheating = false;
         var solutionContainer = await hashiGenerator.GenerateHashAsync((int)SelectedDifficulty);
         ConnectionManager.InitializeNewSolution(solutionContainer);
 
-        // Stop timers
-        Timer.Reset();
-        IsTimerRunning = false;
-        dispatcherTimer.Stop();
-        OnPropertyChanged(nameof(Timer));
+        StopTimer();
         IsGeneratingHashiPuzzle = false;
     }
 
@@ -210,6 +215,7 @@ public class MainViewModel : AsyncObservableRecipient,
             IsTimerRunning = false;
         }
 
+        IsCheating = false;
         WeakReferenceMessenger.Default.Send(new UpdateAllIslandColorsMessage());
     }
 
@@ -228,14 +234,7 @@ public class MainViewModel : AsyncObservableRecipient,
         {
             BridgeOperationTypeEnum.Add => () =>
             {
-                if (!Timer.IsRunning)
-                {
-                    // Start timers
-                    dispatcherTimer.Start();
-                    Timer.Start();
-                    IsTimerRunning = true;
-                }
-
+                StartTimer();
                 ConnectionManager.AddConnection(sourceIsland, targetIsland);
             }
             ,
@@ -261,11 +260,18 @@ public class MainViewModel : AsyncObservableRecipient,
     /// <inheritdoc cref="IMainViewModel.ReceiveAsync(IAllConnectionsSetMessage,CancellationToken)" />
     public async Task ReceiveAsync(IAllConnectionsSetMessage message, CancellationToken cancellationToken)
     {
-        Timer.Stop();
         var caption = "Game Over";
         var dialogMessage = "All connections are set!";
+        Timer.Stop();
 
         //ToDo: Check if all islands are connected
+
+        if (IsCheating)
+        {
+            dialogWrapper.Show(caption, dialogMessage, DialogButton.Ok, DialogImage.Success);
+            await CreateNewGameAsync();
+            return;
+        }
 
         //Check if highscore - if yes, write highscore to json and show message
         var actualScore = Timer.Elapsed;
@@ -305,5 +311,31 @@ public class MainViewModel : AsyncObservableRecipient,
 
         ConnectionManager.RemoveAllHighlights();
         ConnectionManager.HighlightPathToTargetIsland(sourceIsland, targetIsland);
+    }
+
+    private void GenerateHintExecute()
+    {
+        IsCheating = true;
+        StartTimer();
+        ConnectionManager.GenerateHint();
+    }
+
+    private void StartTimer()
+    {
+        if (Timer.IsRunning) return;
+
+        // Start timers
+        dispatcherTimer.Start();
+        Timer.Start();
+        IsTimerRunning = true;
+    }
+
+    private void StopTimer()
+    {
+        // Stop timers
+        Timer.Reset();
+        IsTimerRunning = false;
+        dispatcherTimer.Stop();
+        OnPropertyChanged(nameof(Timer));
     }
 }
