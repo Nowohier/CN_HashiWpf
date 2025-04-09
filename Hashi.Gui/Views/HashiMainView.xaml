@@ -8,6 +8,8 @@
                  xmlns:System="clr-namespace:System;assembly=System.Runtime"
                  xmlns:viewModels="clr-namespace:Hashi.Gui.ViewModels"
                  xmlns:enums="clr-namespace:Hashi.Gui.Enums;assembly=Hashi.Enums"
+                 xmlns:converters="clr-namespace:Hashi.Gui.Converters"
+                 xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
                  mc:Ignorable="d"
                  Loaded="Window_Loaded"
                  d:DataContext="{d:DesignInstance {x:Type viewModels:MainViewModel}, IsDesignTimeCreatable=False}"
@@ -26,6 +28,7 @@
                 <x:Type TypeName="enums:DifficultyEnum" />
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
+        <converters:EmptyStringToBoolConverter x:Key="EmptyStringToBoolConverter" />
     </Window.Resources>
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -106,7 +109,7 @@
             </Border>
         </Grid>
 
-        <Grid Grid.Row="1" Margin="0,10,0,0">
+        <Grid x:Name="HashiGrid" Grid.Row="1" Margin="0,10,0,0">
             <Border BorderThickness="1" BorderBrush="{StaticResource BasicBrush}" CornerRadius="2"
                     Background="{StaticResource BackgroundBrush}">
                 <Viewbox x:Name="HashiViewBox" Stretch="Uniform">
@@ -129,5 +132,28 @@
             </StackPanel>
         </Grid>
 
+
+        <Popup Grid.Row="0" 
+               Placement="Relative" 
+               PlacementTarget="{Binding ElementName=HashiGrid}" 
+               IsOpen="{Binding ConnectionManager.RuleMessage, Converter={StaticResource EmptyStringToBoolConverter}, Mode=OneWay}" 
+               StaysOpen="False" 
+               PopupAnimation="Slide" 
+               Width="{Binding ElementName=HashiGrid, Path=ActualWidth}"
+               Margin="-10,0,10,0"
+               AllowsTransparency="True">
+            <Border x:Name="PopupBorder" Opacity="0.8" CornerRadius="2" Background="{StaticResource GreenIslandBrush}" BorderThickness="1" BorderBrush="{StaticResource BasicBrush}">
+                <TextBlock FontSize="16" TextWrapping="WrapWithOverflow" Margin="15">
+                    <Run FontWeight="Bold"
+                         Text="Hint: " />
+                    <Run Text="{Binding ConnectionManager.RuleMessage, Mode=OneWay}" />
+                </TextBlock>
+            </Border>
+            <b:Interaction.Triggers>
+                <b:EventTrigger EventName="Closed">
+                    <b:InvokeCommandAction Command="{Binding HintPopUpClosedCommand}"/>
+                </b:EventTrigger>
+            </b:Interaction.Triggers>
+        </Popup>
     </Grid>
 </mah:MetroWindow>
