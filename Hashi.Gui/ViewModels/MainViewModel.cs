@@ -78,7 +78,7 @@ public class MainViewModel : AsyncObservableRecipient,
         CreateNewGameCommand = new AsyncRelayCommand(CreateNewGameAsync);
         RemoveAllBridgesCommand = new RelayCommand(RemoveAllBridgesExecute);
         GenerateHintCommand = new RelayCommand(() => ConnectionManager.GenerateHint());
-        HintPopUpClosedCommand = new RelayCommand(() => ConnectionManager.RuleMessage = string.Empty);
+        WindowMouseClickedCommand = new RelayCommand(() => ConnectionManager.RuleMessage = string.Empty);
 
         dispatcherTimer.Tick += (_, _) => OnPropertyChanged(nameof(Timer));
         Settings = LoadSettings();
@@ -128,7 +128,7 @@ public class MainViewModel : AsyncObservableRecipient,
     public ICommand GenerateHintCommand { get; }
 
     /// <inheritdoc />
-    public ICommand HintPopUpClosedCommand { get; }
+    public ICommand WindowMouseClickedCommand { get; }
 
     /// <inheritdoc />
     public Stopwatch Timer { get; } = new();
