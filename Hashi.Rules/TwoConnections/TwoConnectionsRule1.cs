@@ -21,7 +21,7 @@ namespace Hashi.Rules.TwoConnections
                 .Match(() => island, x => x.MaxConnectionsReached == false && x.MaxConnections == 2)
                 .Query(() => connectionManager, q => q.Match<IConnectionManagerViewModel>())
                 .Let(() => allNeighbors, () => island.GetAllVisibleNeighbors())
-                .Let(() => allValidNeighbors, () => island.GetAllVisibleNeighbors().Where(x => x.MaxConnections == 2).ToList())
+                .Let(() => allValidNeighbors, () => allNeighbors.Where(x => x.MaxConnections == 2).ToList())
                 .Let(() => allNeighborsCount, () => allNeighbors.Count)
                 .Let(() => validNeighborsCount, () => allValidNeighbors.Count)
                 .Having(() => allNeighborsCount == 2 && validNeighborsCount == 2);

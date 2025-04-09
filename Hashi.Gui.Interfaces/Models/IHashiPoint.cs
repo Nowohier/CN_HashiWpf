@@ -19,15 +19,4 @@ public interface IHashiPoint : ICloneable
     ///    Indicates whether the point is a hint.
     /// </summary>
     bool IsHint { get; set; }
-
-    /// <summary>
-    ///   Sets the hint message for the point.
-    /// </summary>
-    string HintMessage { get; }
-
-    /// <summary>
-    ///   Sets the hint message for the point.
-    /// </summary>
-    /// <param name="message">The message.</param>
-    void SetHintMessage(string message);
 }

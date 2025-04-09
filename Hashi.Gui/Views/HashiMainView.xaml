@@ -138,12 +138,12 @@
                PlacementTarget="{Binding ElementName=HashiGrid}" 
                IsOpen="{Binding ConnectionManager.RuleMessage, Converter={StaticResource EmptyStringToBoolConverter}, Mode=OneWay}" 
                StaysOpen="False" 
-               PopupAnimation="Slide" 
+               PopupAnimation="None" 
                Width="{Binding ElementName=HashiGrid, Path=ActualWidth}"
                Margin="-10,0,10,0"
                AllowsTransparency="True">
             <Border x:Name="PopupBorder" Opacity="0.8" CornerRadius="2" Background="{StaticResource GreenIslandBrush}" BorderThickness="1" BorderBrush="{StaticResource BasicBrush}">
-                <TextBlock FontSize="16" TextWrapping="WrapWithOverflow" Margin="10,5,10,5">
+                <TextBlock FontSize="16" TextWrapping="WrapWithOverflow" Margin="10">
                     <Run FontWeight="Bold"
                          Text="Hint: " />
                     <Run Text="{Binding ConnectionManager.RuleMessage, Mode=OneWay}" />

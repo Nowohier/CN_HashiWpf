@@ -8,6 +8,7 @@ namespace Hashi.Gui.Models;
 public class HashiPoint : ObservableRecipient, IHashiPoint
 {
     private string hintMessage = string.Empty;
+    private bool isHint;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="HashiPoint" /> class.
@@ -29,16 +30,10 @@ public class HashiPoint : ObservableRecipient, IHashiPoint
     public int Y { get; }
 
     /// <inheritdoc />
-    public bool IsHint { get; set; }
-
-    /// <inheritdoc />
-    public string HintMessage => IsHint ? hintMessage : string.Empty;
-
-    /// <inheritdoc />
-    public void SetHintMessage(string message)
+    public bool IsHint
     {
-        this.hintMessage = message;
-        OnPropertyChanged(nameof(HintMessage));
+        get => isHint;
+        set => SetProperty(ref isHint, value);
     }
 
     /// <inheritdoc />
@@ -96,6 +91,6 @@ public class HashiPoint : ObservableRecipient, IHashiPoint
     /// <inheritdoc />
     public override string ToString()
     {
-        return $"Coordinate (X = {X}, Y = {Y})";
+        return $"Coordinate (X = {X}, Y = {Y}), IsHint = {IsHint}";
     }
 }

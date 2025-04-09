@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Gui.Enums;
+using Hashi.Gui.Helpers;
 using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Messages;
@@ -29,7 +30,7 @@ namespace Hashi.Gui.Behaviors
 
         private readonly ColorAnimation fadeOutAnimation = new()
         {
-            From = (Color)ColorConverter.ConvertFromString("#3abf5b"),
+            From = HashiColorHelper.IntenseGreenBrush.Color,
             To = Colors.Black,
             Duration = TimeSpan.FromSeconds(0.5),
             EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut }
@@ -63,6 +64,117 @@ namespace Hashi.Gui.Behaviors
         {
             get => (BridgeTypeEnum)GetValue(BridgeTypeProperty);
             set => SetValue(BridgeTypeProperty, value);
+        }
+
+        /// <summary>
+        ///     Receives the <see cref="HintPopupClosedMessage"/>.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        public void Receive(HintPopupClosedMessage message)
+        {
+            if (AssociatedObject is not { Stroke: SolidColorBrush solidColorBrush } line)
+            {
+                return;
+            }
+
+            if (AssociatedObject.DataContext is not IIslandViewModel island)
+            {
+                throw new InvalidOperationException($"{nameof(BridgeVisibilityBehavior)}: DataContext must be of type IIslandViewModel.");
+            }
+
+            if (line.Effect == null)
+            {
+                return;
+            }
+
+            foreach (var connection in island.AllConnections)
+            {
+                connection.IsHint = false;
+            }
+
+            solidColorBrush.BeginAnimation(SolidColorBrush.ColorProperty, fadeOutAnimation);
+            line.Effect = null;
+            line.StrokeThickness = 1;
+        }
+
+        /// <inheritdoc />
+        protected override void OnAttached()
+        {
+            base.OnAttached();
+            WeakReferenceMessenger.Default.Register(this);
+            AssociatedObject.IsVisibleChanged += AssociatedObject_IsVisibleChanged;
+            UpdateVisibility();
+        }
+
+        /// <inheritdoc />
+        protected override void OnDetaching()
+        {
+            base.OnDetaching();
+            AssociatedObject.IsVisibleChanged -= AssociatedObject_IsVisibleChanged;
+            AllConnections.CollectionChanged -= OnCollectionChanged!;
+        }
+
+        /// <summary>
+        ///     Updates the visibility of the bridge based on the number of connections.
+        /// </summary>
+        private void UpdateVisibility()
+        {
+            if (AssociatedObject is not { } line || AssociatedObject.DataContext is not IIslandViewModel island) return;
+
+            line.Visibility = BridgeType switch
+            {
+                BridgeTypeEnum.Horizontal => island.BridgesLeft.Count == 1 && island.BridgesRight.Count == 1 ? Visibility.Visible : Visibility.Hidden,
+                BridgeTypeEnum.HorizontalDouble => island.BridgesLeft.Count == 2 && island.BridgesRight.Count == 2 ? Visibility.Visible : Visibility.Hidden,
+                BridgeTypeEnum.Vertical => island.BridgesUp.Count == 1 && island.BridgesDown.Count == 1 ? Visibility.Visible : Visibility.Hidden,
+                BridgeTypeEnum.VerticalDouble => island.BridgesUp.Count == 2 && island.BridgesDown.Count == 2 ? Visibility.Visible : Visibility.Hidden,
+                BridgeTypeEnum.HorizontalLeft => island.BridgesLeft.Count == 1 ? Visibility.Visible : Visibility.Hidden,
+                BridgeTypeEnum.HorizontalDoubleLeft => island.BridgesLeft.Count == 2 ? Visibility.Visible : Visibility.Hidden,
+                BridgeTypeEnum.HorizontalRight => island.BridgesRight.Count == 1 ? Visibility.Visible : Visibility.Hidden,
+                BridgeTypeEnum.HorizontalDoubleRight => island.BridgesRight.Count == 2 ? Visibility.Visible : Visibility.Hidden,
+                BridgeTypeEnum.VerticalUp => island.BridgesUp.Count == 1 ? Visibility.Visible : Visibility.Hidden,
+                BridgeTypeEnum.VerticalDoubleUp => island.BridgesUp.Count == 2 ? Visibility.Visible : Visibility.Hidden,
+                BridgeTypeEnum.VerticalDown => island.BridgesDown.Count == 1 ? Visibility.Visible : Visibility.Hidden,
+                BridgeTypeEnum.VerticalDoubleDown => island.BridgesDown.Count == 2 ? Visibility.Visible : Visibility.Hidden,
+                _ => Visibility.Hidden
+            };
+        }
+
+        private void AssociatedObject_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (AssociatedObject is not { Visibility: Visibility.Visible } line)
+            {
+                return;
+            }
+            if (AssociatedObject.DataContext is not IIslandViewModel island)
+            {
+                throw new InvalidOperationException($"{nameof(BridgeVisibilityBehavior)}: DataContext must be of type IIslandViewModel.");
+            }
+
+            var runFadeInAnimation = BridgeType switch
+            {
+                BridgeTypeEnum.Horizontal => island.BridgesLeft.Count == 1 && island.BridgesRight.Count == 1 && (island.BridgesLeft.First().IsHint || island.BridgesRight.First().IsHint),
+                BridgeTypeEnum.HorizontalDouble => island.BridgesLeft.Count == 2 && island.BridgesRight.Count == 2 && (island.BridgesLeft.Any(x => x.IsHint) || island.BridgesRight.Any(x => x.IsHint)),
+                BridgeTypeEnum.Vertical => island.BridgesUp.Count == 1 && island.BridgesDown.Count == 1 && (island.BridgesUp.First().IsHint || island.BridgesDown.First().IsHint),
+                BridgeTypeEnum.VerticalDouble => island.BridgesUp.Count == 2 && island.BridgesDown.Count == 2 && (island.BridgesUp.Any(x => x.IsHint) || island.BridgesDown.Any(x => x.IsHint)),
+                BridgeTypeEnum.HorizontalLeft => island.BridgesLeft.Count == 1 && island.BridgesLeft.First().IsHint,
+                BridgeTypeEnum.HorizontalDoubleLeft => island.BridgesLeft.Count == 2 && island.BridgesLeft.Any(x => x.IsHint),
+                BridgeTypeEnum.HorizontalRight => island.BridgesRight.Count == 1 && island.BridgesRight.First().IsHint,
+                BridgeTypeEnum.HorizontalDoubleRight => island.BridgesRight.Count == 2 && island.BridgesRight.Any(x => x.IsHint),
+                BridgeTypeEnum.VerticalUp => island.BridgesUp.Count == 1 && island.BridgesUp.First().IsHint,
+                BridgeTypeEnum.VerticalDoubleUp => island.BridgesUp.Count == 2 && island.BridgesUp.Any(x => x.IsHint),
+                BridgeTypeEnum.VerticalDown => island.BridgesDown.Count == 1 && island.BridgesDown.First().IsHint,
+                BridgeTypeEnum.VerticalDoubleDown => island.BridgesDown.Count == 2 && island.BridgesDown.Any(x => x.IsHint),
+                _ => false
+            };
+
+            if (!runFadeInAnimation)
+            {
+                return;
+            }
+
+            line.Stroke = (SolidColorBrush)new BrushConverter().ConvertFrom("#3abf5b")!;
+            line.Effect = new BlurEffect { Radius = 10 };
+            line.BeginAnimation(UIElement.OpacityProperty, fadeInAnimation);
         }
 
         /// <summary>
@@ -107,87 +219,10 @@ namespace Hashi.Gui.Behaviors
             {
                 behavior.UpdateVisibility();
             }
-        }
-
-        /// <inheritdoc />
-        protected override void OnAttached()
-        {
-            base.OnAttached();
-
-            AssociatedObject.IsVisibleChanged += AssociatedObject_IsVisibleChanged;
-            UpdateVisibility();
-
-            WeakReferenceMessenger.Default.Register(this);
-        }
-
-        /// <inheritdoc />
-        protected override void OnDetaching()
-        {
-            base.OnDetaching();
-            AssociatedObject.IsVisibleChanged -= AssociatedObject_IsVisibleChanged;
-            AllConnections.CollectionChanged -= OnCollectionChanged!;
-        }
-
-        /// <summary>
-        ///     Updates the visibility of the bridge based on the number of connections.
-        /// </summary>
-        private void UpdateVisibility()
-        {
-            if (AssociatedObject is not { } line || AssociatedObject.DataContext is not IIslandViewModel island) return;
-
-            line.Visibility = BridgeType switch
+            else
             {
-                BridgeTypeEnum.Horizontal => island.BridgesLeft.Count == 1 && island.BridgesRight.Count == 1 ? Visibility.Visible : Visibility.Hidden,
-                BridgeTypeEnum.HorizontalDouble => island.BridgesLeft.Count == 2 && island.BridgesRight.Count == 2 ? Visibility.Visible : Visibility.Hidden,
-                BridgeTypeEnum.Vertical => island.BridgesUp.Count == 1 && island.BridgesDown.Count == 1 ? Visibility.Visible : Visibility.Hidden,
-                BridgeTypeEnum.VerticalDouble => island.BridgesUp.Count == 2 && island.BridgesDown.Count == 2 ? Visibility.Visible : Visibility.Hidden,
-                BridgeTypeEnum.HorizontalLeft => island.BridgesLeft.Count == 1 ? Visibility.Visible : Visibility.Hidden,
-                BridgeTypeEnum.HorizontalDoubleLeft => island.BridgesLeft.Count == 2 ? Visibility.Visible : Visibility.Hidden,
-                BridgeTypeEnum.HorizontalRight => island.BridgesRight.Count == 1 ? Visibility.Visible : Visibility.Hidden,
-                BridgeTypeEnum.HorizontalDoubleRight => island.BridgesRight.Count == 2 ? Visibility.Visible : Visibility.Hidden,
-                BridgeTypeEnum.VerticalUp => island.BridgesUp.Count == 1 ? Visibility.Visible : Visibility.Hidden,
-                BridgeTypeEnum.VerticalDoubleUp => island.BridgesUp.Count == 2 ? Visibility.Visible : Visibility.Hidden,
-                BridgeTypeEnum.VerticalDown => island.BridgesDown.Count == 1 ? Visibility.Visible : Visibility.Hidden,
-                BridgeTypeEnum.VerticalDoubleDown => island.BridgesDown.Count == 2 ? Visibility.Visible : Visibility.Hidden,
-                _ => Visibility.Hidden
-            };
-        }
-
-        private void AssociatedObject_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (AssociatedObject is not { } line || AssociatedObject.DataContext is not IIslandViewModel island) return;
-
-            var runFadeInAnimation = BridgeType switch
-            {
-                BridgeTypeEnum.Horizontal => island.BridgesLeft.Count == 1 && island.BridgesRight.Count == 1 && (island.BridgesLeft.First().IsHint || island.BridgesRight.First().IsHint),
-                BridgeTypeEnum.HorizontalDouble => island.BridgesLeft.Count == 2 && island.BridgesRight.Count == 2,
-                BridgeTypeEnum.Vertical => island.BridgesUp.Count == 1 && island.BridgesDown.Count == 1 && (island.BridgesUp.First().IsHint || island.BridgesDown.First().IsHint),
-                BridgeTypeEnum.VerticalDouble => island.BridgesUp.Count == 2 && island.BridgesDown.Count == 2,
-                BridgeTypeEnum.HorizontalLeft => island.BridgesLeft.Count == 1 && island.BridgesLeft.First().IsHint,
-                BridgeTypeEnum.HorizontalDoubleLeft => island.BridgesLeft.Count == 2,
-                BridgeTypeEnum.HorizontalRight => island.BridgesRight.Count == 1 && island.BridgesRight.First().IsHint,
-                BridgeTypeEnum.HorizontalDoubleRight => island.BridgesRight.Count == 2,
-                BridgeTypeEnum.VerticalUp => island.BridgesUp.Count == 1 && island.BridgesUp.First().IsHint,
-                BridgeTypeEnum.VerticalDoubleUp => island.BridgesUp.Count == 2,
-                BridgeTypeEnum.VerticalDown => island.BridgesDown.Count == 1 && island.BridgesDown.First().IsHint,
-                BridgeTypeEnum.VerticalDoubleDown => island.BridgesDown.Count == 2,
-                _ => false
-            };
-
-            if (line.Visibility == Visibility.Visible && runFadeInAnimation)
-            {
-                line.Stroke = (SolidColorBrush)new BrushConverter().ConvertFrom("#3abf5b")!;
-                line.Effect = new BlurEffect { Radius = 10 };
-                line.BeginAnimation(UIElement.OpacityProperty, fadeInAnimation);
+                throw new InvalidOperationException($"DependencyObject is not a BridgeVisibilityBehavior.");
             }
-        }
-
-        public void Receive(HintPopupClosedMessage message)
-        {
-            if (AssociatedObject is not { Stroke: SolidColorBrush solidColorBrush } line || line.Effect == null) return;
-            solidColorBrush.BeginAnimation(SolidColorBrush.ColorProperty, fadeOutAnimation);
-            line.Effect = null;
-            line.StrokeThickness = 1;
         }
     }
 }

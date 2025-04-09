@@ -161,7 +161,7 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
     /// <inheritdoc />
     public void RemoveAllConnectionsMatchingCoordinates(IHashiPoint connection)
     {
-        AllConnections.RemoveAll(x => x == connection);
+        AllConnections.RemoveAll(x => x.Equals(connection));
         NotifyBridgeConnections();
     }
 
@@ -236,7 +236,7 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
     /// <inheritdoc />
     public override string ToString()
     {
-        return $"Island, {Coordinates} | MaxConnections: {MaxConnections}, MaxConnectionsReached: {MaxConnectionsReached}, BridgesCount: (Up {BridgesUp.Count}, Down {BridgesDown.Count}, Left {BridgesLeft.Count}, Right {BridgesRight.Count}";
+        return $"Island, Coordinate (X = {Coordinates.X}, Y = {Coordinates.Y}) | MaxConnections: {MaxConnections}, MaxReached: {MaxConnectionsReached}, BridgesCount: (Up {BridgesUp.Count}, Down {BridgesDown.Count}, Left {BridgesLeft.Count}, Right {BridgesRight.Count}";
     }
 
     /// <summary>
