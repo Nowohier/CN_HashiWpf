@@ -23,6 +23,7 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
 {
     private readonly Func<int, int, int, IIslandViewModel> islandFactory;
     private readonly Func<SolidColorBrush, IHashiBrush> brushFactory;
+    private string ruleMessage = string.Empty;
     private ISession? session;
 
     /// <summary>
@@ -45,6 +46,19 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
 
     /// <inheritdoc />
     public bool AreRulesBeingApplied { get; set; }
+
+    /// <inheritdoc />
+    public string RuleMessage
+    {
+        get => ruleMessage;
+        set
+        {
+            if (SetProperty(ref ruleMessage, value) && ruleMessage == string.Empty)
+            {
+                WeakReferenceMessenger.Default.Send(new HintPopupClosedMessage());
+            }
+        }
+    }
 
     /// <inheritdoc />
     public ISolutionContainer? Solution { get; private set; }
@@ -76,7 +90,7 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
     }
 
     /// <inheritdoc />
-    public void AddConnection(IIslandViewModel? sourceIsland, IIslandViewModel? targetIsland)
+    public void AddConnection(IIslandViewModel? sourceIsland, IIslandViewModel? targetIsland, bool isHint = false)
     {
         if (!IsValidConnection(sourceIsland, targetIsland)) return;
         if (MaxBridgesReachedBetweenSourceAndTarget(sourceIsland, targetIsland) is true)
@@ -85,7 +99,7 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
             return;
         }
 
-        ManageConnections(sourceIsland, targetIsland, (island, coordinates) => island.AddConnection(coordinates));
+        ManageConnections(sourceIsland, targetIsland, (island, coordinates) => island.AddConnection(coordinates), isHint);
         if (AreAllConnectionsSet()) WeakReferenceMessenger.Default.SendAsync(new AllConnectionsSetMessage());
     }
 
@@ -242,7 +256,7 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
     }
 
     private void ManageConnections(IIslandViewModel? source, IIslandViewModel? target,
-        Action<IIslandViewModel, IHashiPoint> connectionAction)
+        Action<IIslandViewModel, IHashiPoint> connectionAction, bool isHint = false)
     {
         if (source == null) throw new ArgumentNullException(nameof(source), "Source island cannot be null.");
 
@@ -251,8 +265,14 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
         if (source.GetConnectionType(target) == ConnectionTypeEnum.Diagonal)
             throw new InvalidOperationException("Diagonal connections are not allowed.");
 
-        var sourceCoordinates = source.Coordinates;
-        var targetCoordinates = target.Coordinates;
+        var sourceCoordinates = (IHashiPoint)source.Coordinates.Clone();
+        var targetCoordinates = (IHashiPoint)target.Coordinates.Clone();
+
+        if (isHint)
+        {
+            sourceCoordinates.IsHint = true;
+            targetCoordinates.IsHint = true;
+        }
 
         var islandsToConnect = SolutionHelper.GetAllIslandsInvolvedInConnection(source, target, Islands).ToList();
 

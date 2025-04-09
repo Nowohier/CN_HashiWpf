@@ -21,6 +21,11 @@ public interface IConnectionManagerViewModel
     bool AreRulesBeingApplied { get; set; }
 
     /// <summary>
+    ///   Gets the rule message.
+    /// </summary>
+    string RuleMessage { get; set; }
+
+    /// <summary>
     ///    Gets or sets the solution container.
     /// </summary>
     ISolutionContainer? Solution { get; }
@@ -41,7 +46,8 @@ public interface IConnectionManagerViewModel
     /// </summary>
     /// <param name="sourceIsland">The source island.</param>
     /// <param name="targetIsland">The target island.</param>
-    void AddConnection(IIslandViewModel? sourceIsland, IIslandViewModel? targetIsland);
+    /// <param name="isHint">Determines if the connection is a hint.</param>
+    void AddConnection(IIslandViewModel? sourceIsland, IIslandViewModel? targetIsland, bool isHint = false);
 
     /// <summary>
     ///     Removes a connection between two islands.
