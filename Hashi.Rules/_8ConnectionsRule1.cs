@@ -1,11 +1,11 @@
 ﻿using Hashi.Gui.Interfaces.ViewModels;
 using NRules.Fluent.Dsl;
 
-namespace Hashi.Rules.SixConnections
+namespace Hashi.Rules
 {
-    public class SixConnectionRule1 : BaseRule
+    public class _8ConnectionsRule1 : BaseRule
     {
-        protected override string RuleMessage => "If an island with a maximum of six connections has three neighbors then set all connections.";
+        protected override string RuleMessage => "If an island with a maximum of eight connections has four neighbors then set all connections.";
 
         public override void Define()
         {
@@ -16,10 +16,10 @@ namespace Hashi.Rules.SixConnections
 
             When()
                 .Query(() => connectionManager, q => q.Match<IConnectionManagerViewModel>())
-                .Match(() => island, x => x.MaxConnections == 6 && !x.MaxConnectionsReached)
+                .Match(() => island, x => x.MaxConnections == 8 && !x.MaxConnectionsReached)
                 .Let(() => allNeighbors, () => island.GetAllVisibleNeighbors())
                 .Let(() => allNeighborsCount, () => allNeighbors.Count)
-                .Having(() => allNeighborsCount == 3);
+                .Having(() => allNeighborsCount == 4);
 
             Then()
                 .Do(ctx => AddMultipleConnections(island, allNeighbors, connectionManager));

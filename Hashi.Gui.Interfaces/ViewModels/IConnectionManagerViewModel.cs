@@ -1,5 +1,4 @@
 ﻿using Hashi.Generator.Interfaces.Models;
-using Hashi.Gui.Interfaces.Helpers;
 using Hashi.Gui.Interfaces.Models;
 using System.Collections.ObjectModel;
 
@@ -31,11 +30,6 @@ public interface IConnectionManagerViewModel
     ISolutionContainer? Solution { get; }
 
     /// <summary>
-    ///    Gets the solution helper.
-    /// </summary>
-    ISolutionHelper SolutionHelper { get; }
-
-    /// <summary>
     ///    Rebuilds the island collection with a new solution container.
     /// </summary>
     /// <param name="solutionContainer"></param>
@@ -62,6 +56,14 @@ public interface IConnectionManagerViewModel
     /// <param name="source">The source island.</param>
     /// <param name="target">The target island.</param>
     void HighlightPathToTargetIsland(IIslandViewModel source, IIslandViewModel target);
+
+    /// <summary>
+    ///     Gets all islands involved in a connection between two islands.
+    /// </summary>
+    /// <param name="source">The source island.</param>
+    /// <param name="target">The target island.</param>
+    /// <returns>an IEnumerable of islands.</returns>
+    IEnumerable<IIslandViewModel> GetAllIslandsInvolvedInConnection(IIslandViewModel source, IIslandViewModel target);
 
     /// <summary>
     ///    Resets the hint connections.

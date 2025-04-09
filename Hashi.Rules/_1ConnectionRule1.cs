@@ -1,9 +1,9 @@
 ﻿using Hashi.Gui.Interfaces.ViewModels;
 using NRules.Fluent.Dsl;
 
-namespace Hashi.Rules.OneConnection
+namespace Hashi.Rules
 {
-    public class OneConnectionRule1 : BaseRule
+    public class _1ConnectionRule1 : BaseRule
     {
         protected override string RuleMessage => "Islands with a maximum of one bridge can set their connection if there is only one neighbor island accepting bridges. Neighbor islands with a maximum of one bridge cannot be connected to as both islands would be isolated then.";
 
