@@ -79,6 +79,8 @@ public class MainViewModel : AsyncObservableRecipient,
         CreateNewGameCommand = new AsyncRelayCommand(CreateNewGameAsync);
         RemoveAllBridgesCommand = new RelayCommand(RemoveAllBridgesExecute);
         GenerateHintCommand = new RelayCommand(GenerateHintExecute);
+        UndoCommand = new RelayCommand(UndoCommandExecute, UndoCommandCanExecute);
+        RedoCommand = new RelayCommand(RedoCommandExecute, RedoCommandCanExecute);
         WindowMouseClickedCommand = new RelayCommand(() => ConnectionManager.RuleMessage = string.Empty);
 
         dispatcherTimer.Tick += (_, _) => OnPropertyChanged(nameof(Timer));
@@ -137,6 +139,12 @@ public class MainViewModel : AsyncObservableRecipient,
 
     /// <inheritdoc />
     public ICommand WindowMouseClickedCommand { get; }
+
+    /// <inheritdoc />
+    public ICommand UndoCommand { get; }
+
+    /// <inheritdoc />
+    public ICommand RedoCommand { get; }
 
     /// <inheritdoc />
     public Stopwatch Timer { get; } = new();
@@ -318,6 +326,53 @@ public class MainViewModel : AsyncObservableRecipient,
         IsCheating = true;
         StartTimer();
         ConnectionManager.GenerateHint();
+    }
+
+    private void UndoCommandExecute()
+    {
+        if (!ConnectionManager.History.Any())
+        {
+            return;
+        }
+
+        var lastEntry = ConnectionManager.History.Last();
+        var island1 = ConnectionManager.Islands.SelectMany(x => x).First(x => x.Coordinates.Equals(lastEntry.Point1));
+        var island2 = ConnectionManager.Islands.SelectMany(x => x).First(x => x.Coordinates.Equals(lastEntry.Point2));
+
+        var islands = ConnectionManager.GetAllIslandsInvolvedInConnection(island1, island2);
+
+        foreach (var island in islands.Where(x => x.MaxConnections == 0))
+        {
+            var firstConnection = island.AllConnections.First(x => x.Equals(lastEntry.Point2));
+            var secondConnection = island.AllConnections.First(x => x.Equals(lastEntry.Point1));
+
+            island.AllConnections.Remove(firstConnection);
+            island.AllConnections.Remove(secondConnection);
+        }
+
+        var firstConnection1 = island1.AllConnections.First(x => x.Equals(lastEntry.Point2));
+        var secondConnection1 = island2.AllConnections.First(x => x.Equals(lastEntry.Point1));
+        island1.AllConnections.Remove(firstConnection1);
+        island2.AllConnections.Remove(secondConnection1);
+        island1.RefreshIslandColor();
+        island2.RefreshIslandColor();
+        ConnectionManager.History.Remove(lastEntry);
+    }
+
+    private bool UndoCommandCanExecute()
+    {
+        //return ConnectionManager.History.Any();
+        return true;
+    }
+
+    private void RedoCommandExecute()
+    {
+
+    }
+
+    private bool RedoCommandCanExecute()
+    {
+        return false;
     }
 
     private void StartTimer()

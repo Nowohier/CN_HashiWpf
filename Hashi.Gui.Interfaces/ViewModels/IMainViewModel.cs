@@ -66,6 +66,16 @@ public interface IMainViewModel
     ICommand WindowMouseClickedCommand { get; }
 
     /// <summary>
+    ///   Command executed when the user clicks on the "Undo" button.
+    /// </summary>
+    ICommand UndoCommand { get; }
+
+    /// <summary>
+    ///    Command executed when the user clicks on the "Redo" button.
+    /// </summary>
+    ICommand RedoCommand { get; }
+
+    /// <summary>
     ///     The current source island.
     /// </summary>
     Stopwatch Timer { get; }
