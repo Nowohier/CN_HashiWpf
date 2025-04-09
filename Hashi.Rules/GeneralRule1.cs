@@ -1,11 +1,11 @@
 ﻿using Hashi.Gui.Interfaces.ViewModels;
 using NRules.Fluent.Dsl;
 
-namespace Hashi.Rules.TwoConnections
+namespace Hashi.Rules
 {
-    public class TwoConnectionsRule2 : BaseRule
+    public class GeneralRule1 : BaseRule
     {
-        protected override string RuleMessage => "Islands with a maximum of two bridges can be connected to another island if there is only one neighbor still accepting connections.";
+        protected override string RuleMessage => "Islands with only one active neighbor can set their remaining connections to that neighbor.";
 
         /// <inheritdoc />
         public override void Define()
@@ -18,16 +18,16 @@ namespace Hashi.Rules.TwoConnections
             var missingConnectionsCount = 0;
 
             When()
-                .Match(() => island, x => x.MaxConnectionsReached == false && x.MaxConnections == 2)
+                .Match(() => island, x => x.MaxConnectionsReached == false)
                 .Query(() => connectionManager, q => q.Match<IConnectionManagerViewModel>())
                 .Let(() => allValidNeighbors, () => island.GetAllVisibleNeighbors().Where(x => x.MaxConnectionsReached == false).ToList())
                 .Let(() => neighbor, () => allValidNeighbors.First())
                 .Let(() => allValidNeighborsCount, () => allValidNeighbors.Count)
-                .Let(() => missingConnectionsCount, () => neighbor.MaxConnections - neighbor.AllConnections.Count)
+                .Let(() => missingConnectionsCount, () => island.MaxConnections - island.AllConnections.Count)
                 .Having(() => allValidNeighborsCount == 1);
 
             Then()
-                .Do(ctx => AddMissingConnectionsToOneTarget(island, allValidNeighbors.First(), missingConnectionsCount, connectionManager));
+                .Do(ctx => AddMissingConnectionsToOneTarget(island, neighbor, missingConnectionsCount, connectionManager));
         }
     }
 }

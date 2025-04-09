@@ -56,9 +56,9 @@ public interface IMainViewModel
     ICommand GenerateHintCommand { get; }
 
     /// <summary>
-    /// Command executed when the hint pop-up is closed.
+    /// Command executed when the window is clicked anywhere
     /// </summary>
-    ICommand HintPopUpClosedCommand { get; }
+    ICommand WindowMouseClickedCommand { get; }
 
     /// <summary>
     ///     The current source island.
