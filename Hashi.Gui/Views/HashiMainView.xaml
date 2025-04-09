@@ -82,6 +82,20 @@
                                 Foreground="{StaticResource IntenseGreenBrush}" VerticalAlignment="Center" />
                         </StackPanel>
                     </GroupBox>
+                    <GroupBox Header="HISTORY" Margin="10,0,0,0" Padding="5" Style="{x:Null}" DockPanel.Dock="Right"
+                              BorderThickness="0,1,0,0" BorderBrush="{StaticResource BasicBrush}"
+                              Background="{StaticResource MenuBackgroundBrush}">
+                        <StackPanel Orientation="Horizontal">
+                            <Button Style="{StaticResource MenuButtonStyle}" Command="{Binding UndoCommand}" Padding="5,0,5,0"
+                                    HorizontalAlignment="Left">
+                                <iconPacks:VaadinIcons Kind="ArrowBackward" Width="14" Height="14" />
+                            </Button>
+                            <Button Style="{StaticResource MenuButtonStyle}" Command="{Binding RedoCommand}" Padding="5,0,5,0" Margin="10,0,0,0"
+                                    HorizontalAlignment="Left">
+                                <iconPacks:VaadinIcons Kind="ArrowForward" Width="14" Height="14" />
+                            </Button>
+                        </StackPanel>
+                    </GroupBox>
                     <GroupBox Header="OTHER" Padding="5" Style="{x:Null}" Margin="10,0,0,0" BorderThickness="0,1,0,0"
                               BorderBrush="{StaticResource BasicBrush}"
                               Background="{StaticResource MenuBackgroundBrush}">

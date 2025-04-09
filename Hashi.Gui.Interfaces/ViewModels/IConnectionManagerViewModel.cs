@@ -15,6 +15,11 @@ public interface IConnectionManagerViewModel
     ObservableCollection<ObservableCollection<IIslandViewModel>> Islands { get; }
 
     /// <summary>
+    /// Gets the history of connections made in the game.
+    /// </summary>
+    IList<IHashiBridge> History { get; }
+
+    /// <summary>
     /// Determines if the rules are being applied.
     /// </summary>
     bool AreRulesBeingApplied { get; set; }
