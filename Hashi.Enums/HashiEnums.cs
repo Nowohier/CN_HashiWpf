@@ -1,4 +1,4 @@
-﻿namespace Hashi.Gui.Enums;
+﻿namespace Hashi.Enums;
 
 /// <summary>
 ///     Represents the type of operation for the bridge.

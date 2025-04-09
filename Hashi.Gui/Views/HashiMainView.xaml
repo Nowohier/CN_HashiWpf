@@ -5,11 +5,11 @@
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                  xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-                 xmlns:System="clr-namespace:System;assembly=System.Runtime"
+                 xmlns:system="clr-namespace:System;assembly=System.Runtime"
                  xmlns:viewModels="clr-namespace:Hashi.Gui.ViewModels"
-                 xmlns:enums="clr-namespace:Hashi.Gui.Enums;assembly=Hashi.Enums"
                  xmlns:converters="clr-namespace:Hashi.Gui.Converters"
                  xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+                 xmlns:enums="clr-namespace:Hashi.Enums;assembly=Hashi.Enums"
                  mc:Ignorable="d"
                  Loaded="Window_Loaded"
                  d:DataContext="{d:DesignInstance {x:Type viewModels:MainViewModel}, IsDesignTimeCreatable=False}"
@@ -23,7 +23,7 @@
         </DataTemplate>
     </mah:MetroWindow.IconTemplate>
     <Window.Resources>
-        <ObjectDataProvider x:Key="DifficultyEnums" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
+        <ObjectDataProvider x:Key="DifficultyEnums" MethodName="GetValues" ObjectType="{x:Type system:Enum}">
             <ObjectDataProvider.MethodParameters>
                 <x:Type TypeName="enums:DifficultyEnum" />
             </ObjectDataProvider.MethodParameters>
@@ -48,19 +48,15 @@
                               BorderThickness="0,1,0,0" Margin="0,0,0,0" BorderBrush="{StaticResource BasicBrush}"
                               Background="{StaticResource MenuBackgroundBrush}">
                         <DockPanel LastChildFill="False">
-                            <TextBlock Text="DIFFICULTY:" FontSize="10" VerticalAlignment="Center" Margin="0,0,5,0"
-                                       DockPanel.Dock="Left" />
+
                             <ComboBox BorderBrush="#FFD5DFE5" Focusable="False" Width="85"
                                       SelectedItem="{Binding SelectedDifficulty}" DisplayMemberPath=""
                                       ItemsSource="{Binding Source={StaticResource DifficultyEnums}}"
                                       DockPanel.Dock="Left" />
-                            <Button Style="{StaticResource MenuButtonStyle}" Padding="5,0,5,0"
-                                    HorizontalAlignment="Left"
+                            <Button Style="{StaticResource MenuButtonStyle}" Padding="3,0,3,0" Width="30"
+                                    HorizontalAlignment="Left" ToolTip="Create a new game" ToolTipService.InitialShowDelay="0"
                                     Command="{Binding CreateNewGameCommand}" Margin="10,0,0,0" DockPanel.Dock="Left">
-                                <StackPanel Orientation="Horizontal">
-                                    <iconPacks:Material Kind="StarPlusOutline" Width="14" Height="14" />
-                                    <TextBlock Text="CREATE" Margin="5,0,0,0" VerticalAlignment="Center" />
-                                </StackPanel>
+                                <iconPacks:PackIconPhosphorIcons Kind="ShootingStarThin" Width="20" Height="20" />
                             </Button>
                         </DockPanel>
                     </GroupBox>
@@ -68,58 +64,53 @@
                               BorderThickness="0,1,0,0" BorderBrush="{StaticResource BasicBrush}"
                               Background="{StaticResource MenuBackgroundBrush}">
                         <StackPanel Orientation="Horizontal">
-                            <iconPacks:PackIconMaterial Kind="Timer" VerticalAlignment="Center"
-                                                        Foreground="Red" Height="20" Width="20" />
+                            <iconPacks:PackIconPhosphorIcons Kind="Timer" VerticalAlignment="Center"
+                                                             Foreground="Red" Height="25" Width="25" />
                             <TextBlock Text="{Binding Timer.Elapsed, StringFormat={}{0:hh\\:mm\\:ss}}"
                                        Margin="10,0,0,0" FontSize="20"
                                        Foreground="Red" VerticalAlignment="Center" />
-                            <iconPacks:PackIconMaterial Kind="Crown" Margin="30,0,0,0" VerticalAlignment="Center"
-                                                        Foreground="{StaticResource IntenseGreenBrush}" Height="20"
-                                                        Width="20" />
+                            <iconPacks:PackIconPhosphorIcons Kind="Crown" Margin="30,0,0,0" VerticalAlignment="Center"
+                                                             Foreground="{StaticResource IntenseGreenBrush}" Height="30"
+                                                             Width="30" />
                             <TextBlock
                                 Text="{Binding HighscoreForSelectedDifficulty, StringFormat={}{0:hh\\:mm\\:ss}, TargetNullValue='00:00:00'}"
                                 Margin="10,0,0,0" FontSize="20"
                                 Foreground="{StaticResource IntenseGreenBrush}" VerticalAlignment="Center" />
                         </StackPanel>
                     </GroupBox>
-                    <GroupBox Header="HISTORY" Margin="10,0,0,0" Padding="5" Style="{x:Null}" DockPanel.Dock="Right"
-                              BorderThickness="0,1,0,0" BorderBrush="{StaticResource BasicBrush}"
-                              Background="{StaticResource MenuBackgroundBrush}">
-                        <StackPanel Orientation="Horizontal">
-                            <Button Style="{StaticResource MenuButtonStyle}" Command="{Binding UndoCommand}" Padding="5,0,5,0"
-                                    HorizontalAlignment="Left">
-                                <iconPacks:VaadinIcons Kind="ArrowBackward" Width="14" Height="14" />
-                            </Button>
-                            <Button Style="{StaticResource MenuButtonStyle}" Command="{Binding RedoCommand}" Padding="5,0,5,0" Margin="10,0,0,0"
-                                    HorizontalAlignment="Left">
-                                <iconPacks:VaadinIcons Kind="ArrowForward" Width="14" Height="14" />
-                            </Button>
-                        </StackPanel>
-                    </GroupBox>
-                    <GroupBox Header="OTHER" Padding="5" Style="{x:Null}" Margin="10,0,0,0" BorderThickness="0,1,0,0"
+                    <GroupBox Header="OPTIONS" Padding="5" Style="{x:Null}" Margin="10,0,0,0" BorderThickness="0,1,0,0"
                               BorderBrush="{StaticResource BasicBrush}"
                               Background="{StaticResource MenuBackgroundBrush}">
-                        <StackPanel Orientation="Horizontal">
-                            <Button Style="{StaticResource MenuButtonStyle}" Padding="5,0,5,0"
-                                    HorizontalAlignment="Left"
-                                    Command="{Binding RemoveAllBridgesCommand}">
+                        <DockPanel LastChildFill="False">
+                            <Button Style="{StaticResource MenuButtonStyle}" Padding="3,0,3,0" Width="30"
+                                    HorizontalAlignment="Left" ToolTip="Remove all Bridges" ToolTipService.InitialShowDelay="0"
+                                    Command="{Binding RemoveAllBridgesCommand}" DockPanel.Dock="Left">
+                                <Grid >
+                                    <iconPacks:PackIconPhosphorIcons Kind="BridgeThin" Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <iconPacks:PackIconPhosphorIcons Kind="ProhibitInsetThin" Width="22" Height="22" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Red"/>
+                                </Grid>
+                            </Button>
+                            <Button Style="{StaticResource MenuButtonStyle}" Command="{Binding GenerateHintCommand}" DockPanel.Dock="Left" Width="30" Padding="3,0,3,0" Margin="10,0,0,0"
+                                    HorizontalAlignment="Left" ToolTip="Show Hint" ToolTipService.InitialShowDelay="0">
                                 <StackPanel Orientation="Horizontal">
-                                    <iconPacks:Material Kind="SortVariantRemove" Width="14" Height="14" />
-                                    <TextBlock Text="REMOVE ALL BRIDGES" Margin="5,0,0,0" VerticalAlignment="Center" />
+                                    <iconPacks:PackIconPhosphorIcons Kind="LightbulbThin" Width="18" Height="18" />
                                 </StackPanel>
                             </Button>
                             <ToggleButton Style="{StaticResource MenuGridToggleButtonStyle}" Padding="5,0,5,0"
                                           IsChecked="{Binding Settings.AreGridLinesEnabled}" Margin="10,0,0,0"
-                                          HorizontalAlignment="Left">
+                                          HorizontalAlignment="Left" DockPanel.Dock="Left">
                             </ToggleButton>
-                            <Button Style="{StaticResource MenuButtonStyle}" Command="{Binding GenerateHintCommand}" Padding="5,0,5,0" Margin="10,0,0,0"
-                                    HorizontalAlignment="Left">
-                                <StackPanel Orientation="Horizontal">
-                                    <iconPacks:Material Kind="LightbulbOnOutline" Width="14" Height="14" />
-                                    <TextBlock Text="SHOW HINT" Margin="5,0,0,0" VerticalAlignment="Center" />
-                                </StackPanel>
+                            
+                            <Button Style="{StaticResource MenuButtonStyle}" Command="{Binding RedoCommand}" Padding="5,0,5,0" Margin="10,0,0,0" DockPanel.Dock="Right"
+                                    ToolTip="Redo last step" ToolTipService.InitialShowDelay="0">
+                                <iconPacks:PackIconPhosphorIcons Kind="ClockClockwiseThin" Width="18" Height="18"/>
                             </Button>
-                        </StackPanel>
+                            <Button Style="{StaticResource MenuButtonStyle}" Command="{Binding UndoCommand}" Padding="5,0,5,0" Margin="10,0,0,0" DockPanel.Dock="Right"
+                                    ToolTip="Undo last step" ToolTipService.InitialShowDelay="0">
+                                <iconPacks:PackIconPhosphorIcons Kind="ClockCounterClockwiseThin" Width="18" Height="18" />
+                            </Button>
+                            <Border DockPanel.Dock="Right" BorderThickness="0,0,1,0" Height="35" BorderBrush="Black"/>
+                        </DockPanel>
                     </GroupBox>
                 </DockPanel>
             </Border>

@@ -1,4 +1,4 @@
-﻿using Hashi.Gui.Enums;
+﻿using Hashi.Enums;
 
 namespace Hashi.Gui.Interfaces.Models
 {
