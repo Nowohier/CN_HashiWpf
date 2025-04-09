@@ -6,8 +6,8 @@
                     xmlns:converters="clr-namespace:Hashi.Gui.Converters"
                     xmlns:viewModels="clr-namespace:Hashi.Gui.ViewModels"
                     xmlns:behaviors="clr-namespace:Hashi.Gui.Behaviors"
-                    xmlns:enums="clr-namespace:Hashi.Gui.Enums;assembly=Hashi.Enums"
-                    xmlns:collections="clr-namespace:System.Collections;assembly=System.Runtime">
+                    xmlns:collections="clr-namespace:System.Collections;assembly=System.Runtime"
+                    xmlns:enums="clr-namespace:Hashi.Enums;assembly=Hashi.Enums">
 
     <converters:IslandVisibilityConverter x:Key="IslandVisibilityConverter" />
     <converters:TagToBridgeTypeEnumConverter x:Key="TagToBridgeTypeEnumConverter"/>
@@ -27,7 +27,7 @@
         <Setter Property="Focusable" Value="False" />
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="Background" Value="White" />
-        <Setter Property="Height" Value="22" />
+        <Setter Property="Height" Value="30" />
         <Setter Property="IsEnabled" Value="True" />
         <Style.Triggers>
             <DataTrigger Binding="{Binding Path=DataContext.IsGeneratingHashiPuzzle, RelativeSource={RelativeSource AncestorType=mah:MetroWindow, Mode=FindAncestor}}" Value="True">
@@ -40,9 +40,23 @@
         <Setter Property="Focusable" Value="False" />
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="FontSize" Value="10" />
+        <Setter Property="Width" Value="30" />
         <Setter Property="Background" Value="White" />
-        <Setter Property="Height" Value="22" />
+        <Setter Property="Height" Value="30" />
         <Setter Property="IsEnabled" Value="True" />
+        <Setter Property="ToolTip" Value="Toggle Gridlines" />
+        <Setter Property="ToolTipService.InitialShowDelay" Value="0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border BorderBrush="{TemplateBinding BorderBrush}" 
+                            Background="{TemplateBinding Background}" BorderThickness="1" CornerRadius="2" Padding="3,0,3,0">
+                        <ContentPresenter HorizontalAlignment="Center"                  
+                                          VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
         <Style.Triggers>
             <DataTrigger Binding="{Binding Path=DataContext.IsGeneratingHashiPuzzle, RelativeSource={RelativeSource AncestorType=mah:MetroWindow, Mode=FindAncestor}}" Value="True">
                 <Setter Property="IsEnabled" Value="False" />
@@ -51,10 +65,7 @@
                 <Setter Property="Foreground" Value="White" />
                 <Setter Property="Content">
                     <Setter.Value>
-                        <StackPanel Orientation="Horizontal">
-                            <iconPacks:Material Kind="ToggleSwitch" Width="21" Height="21"/>
-                            <TextBlock Text="GRIDLINES" Margin="5,0,0,0" VerticalAlignment="Center"/>
-                        </StackPanel>
+                        <iconPacks:PackIconVaadinIcons Kind="Grid" Width="14" Height="14" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     </Setter.Value>
                 </Setter>
             </DataTrigger>
@@ -62,13 +73,17 @@
                 <Setter Property="Foreground" Value="{StaticResource MahApps.Brushes.ThemeForeground}" />
                 <Setter Property="Content">
                     <Setter.Value>
-                        <StackPanel Orientation="Horizontal">
-                            <iconPacks:Material Kind="ToggleSwitchOffOutline" Width="21" Height="21"/>
-                            <TextBlock Text="GRIDLINES" Margin="5,0,0,0" VerticalAlignment="Center"/>
-                        </StackPanel>
+                        <Grid>
+                            <iconPacks:PackIconVaadinIcons Kind="Grid" Width="14" Height="14" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <iconPacks:PackIconPhosphorIcons Kind="ProhibitInsetThin" Width="22" Height="22" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Red"/>
+                        </Grid>
                     </Setter.Value>
                 </Setter>
             </DataTrigger>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Background" Value="White" />
+                <Setter Property="Foreground" Value="Black" />
+            </Trigger>
         </Style.Triggers>
     </Style>
 

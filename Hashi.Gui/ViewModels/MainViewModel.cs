@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Hashi.Enums;
 using Hashi.Generator.Interfaces;
 using Hashi.Gui.Enums;
 using Hashi.Gui.Extensions;

@@ -1,4 +1,4 @@
-﻿using Hashi.Gui.Enums;
+﻿using Hashi.Enums;
 using Hashi.Gui.Interfaces.Models;
 using System.Collections.ObjectModel;
 using System.Windows.Input;

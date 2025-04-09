@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
+using Hashi.Enums;
 using Hashi.Generator.Interfaces.Models;
-using Hashi.Gui.Enums;
 using Hashi.Gui.Extensions;
 using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.ViewModels;

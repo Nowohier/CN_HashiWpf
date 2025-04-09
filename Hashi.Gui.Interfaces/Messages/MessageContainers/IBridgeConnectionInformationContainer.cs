@@ -1,4 +1,4 @@
-﻿using Hashi.Gui.Enums;
+﻿using Hashi.Enums;
 using Hashi.Gui.Interfaces.ViewModels;
 
 namespace Hashi.Gui.Interfaces.Messages.MessageContainers;
