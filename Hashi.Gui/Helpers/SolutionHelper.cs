@@ -65,100 +65,100 @@ namespace Hashi.Gui.Helpers
 
         private bool SetSourceCount2Neighbors2TargetsCount2Hint()
         {
-            ObservableCollection<ObservableCollection<IIslandViewModel>> islands = WeakReferenceMessenger.Default.Send<AllIslandsRequestMessage>();
-            var potentialIslands = islands.SelectMany(x => x).Where(x => x is { MaxConnections: 2, MaxConnectionsReached: false });
+            //ObservableCollection<ObservableCollection<IIslandViewModel>> islands = WeakReferenceMessenger.Default.Send<AllIslandsRequestMessage>();
+            //var potentialIslands = islands.SelectMany(x => x).Where(x => x is { MaxConnections: 2, MaxConnectionsReached: false });
 
-            foreach (var potentialIsland in potentialIslands)
-            {
-                var allNeighbors = potentialIsland.GetAllVisibleNeighbors();
+            //foreach (var potentialIsland in potentialIslands)
+            //{
+            //    var allNeighbors = potentialIsland.GetAllVisibleNeighbors();
 
-                if (allNeighbors.Count != 2)
-                {
-                    continue;
-                }
+            //    if (allNeighbors.Count != 2)
+            //    {
+            //        continue;
+            //    }
 
-                var neighbors = allNeighbors.Where(x => x.MaxConnections == 2).ToList();
-                if (neighbors.Count == 2 && neighbors.Count(x => !x.MaxConnectionsReached) > 1)
-                {
-                    // Only two neighbors allowed with max connections = 2 and free connections
+            //    var neighbors = allNeighbors.Where(x => x.MaxConnections == 2).ToList();
+            //    if (neighbors.Count == 2 && neighbors.Count(x => !x.MaxConnectionsReached) > 1)
+            //    {
+            //        // Only two neighbors allowed with max connections = 2 and free connections
 
-                    // Set hint for the potential island
-                    foreach (var neighbor in neighbors)
-                    {
-                        if (potentialIsland.MaxConnectionsReached || neighbor.MaxConnectionsReached) continue;
+            //        // Set hint for the potential island
+            //        foreach (var neighbor in neighbors)
+            //        {
+            //            if (potentialIsland.MaxConnectionsReached || neighbor.MaxConnectionsReached) continue;
 
-                        var infoContainer = new BridgeConnectionInformationContainer(BridgeOperationTypeEnum.Add, potentialIsland, neighbor);
+            //            var infoContainer = new BridgeConnectionInformationContainer(BridgeOperationTypeEnum.Add, potentialIsland, neighbor);
 
-                        WeakReferenceMessenger.Default.Send(new BridgeConnectionChangedMessage(infoContainer));
-                    }
+            //            WeakReferenceMessenger.Default.Send(new BridgeConnectionChangedMessage(infoContainer));
+            //        }
 
-                    return true;
-                }
-            }
+            //        return true;
+            //    }
+            //}
 
             return false;
         }
 
         private bool SetSourceCount2Neighbors1Hint()
         {
-            ObservableCollection<ObservableCollection<IIslandViewModel>> islands = WeakReferenceMessenger.Default.Send<AllIslandsRequestMessage>();
-            var potentialIslands = islands.SelectMany(x => x).Where(x => x is { MaxConnections: 2, MaxConnectionsReached: false });
+            //ObservableCollection<ObservableCollection<IIslandViewModel>> islands = WeakReferenceMessenger.Default.Send<AllIslandsRequestMessage>();
+            //var potentialIslands = islands.SelectMany(x => x).Where(x => x is { MaxConnections: 2, MaxConnectionsReached: false });
 
-            foreach (var potentialIsland in potentialIslands)
-            {
-                var allNeighbors = potentialIsland.GetAllVisibleNeighbors();
+            //foreach (var potentialIsland in potentialIslands)
+            //{
+            //    var allNeighbors = potentialIsland.GetAllVisibleNeighbors();
 
-                if (allNeighbors.Count != 1)
-                {
-                    continue;
-                }
+            //    if (allNeighbors.Count != 1)
+            //    {
+            //        continue;
+            //    }
 
-                var neighbor = allNeighbors.First();
-                var missingConnections = neighbor.MaxConnections - neighbor.AllConnections.Count;
-                for (var i = 0; i < missingConnections; i++)
-                {
-                    if (potentialIsland.MaxConnectionsReached || neighbor.MaxConnectionsReached) break;
+            //    var neighbor = allNeighbors.First();
+            //    var missingConnections = neighbor.MaxConnections - neighbor.AllConnections.Count;
+            //    for (var i = 0; i < missingConnections; i++)
+            //    {
+            //        if (potentialIsland.MaxConnectionsReached || neighbor.MaxConnectionsReached) break;
 
-                    var infoContainer = new BridgeConnectionInformationContainer(BridgeOperationTypeEnum.Add, potentialIsland, neighbor);
+            //        var infoContainer = new BridgeConnectionInformationContainer(BridgeOperationTypeEnum.Add, potentialIsland, neighbor);
 
-                    WeakReferenceMessenger.Default.Send(new BridgeConnectionChangedMessage(infoContainer));
-                }
-            }
+            //        WeakReferenceMessenger.Default.Send(new BridgeConnectionChangedMessage(infoContainer));
+            //    }
+            //}
 
             return false;
         }
 
         private bool SetSourceCount4Neighbors2Hint()
         {
-            ObservableCollection<ObservableCollection<IIslandViewModel>> islands = WeakReferenceMessenger.Default.Send<AllIslandsRequestMessage>();
-            var potentialIslands = islands.SelectMany(x => x).Where(x => x is { MaxConnections: 4, MaxConnectionsReached: false });
+            //ObservableCollection<ObservableCollection<IIslandViewModel>> islands = WeakReferenceMessenger.Default.Send<AllIslandsRequestMessage>();
+            //var potentialIslands = islands.SelectMany(x => x).Where(x => x is { MaxConnections: 4, MaxConnectionsReached: false });
 
-            foreach (var potentialIsland in potentialIslands)
-            {
-                var allNeighbors = potentialIsland.GetAllVisibleNeighbors();
+            //foreach (var potentialIsland in potentialIslands)
+            //{
+            //    var allNeighbors = potentialIsland.GetAllVisibleNeighbors();
 
-                if (allNeighbors.Count != 2)
-                {
-                    continue;
-                }
+            //    if (allNeighbors.Count != 2)
+            //    {
+            //        continue;
+            //    }
 
-                // Only two neighbors allowed with free connections
-                // Set hint for the potential island
-                foreach (var neighbor in allNeighbors)
-                {
-                    if (potentialIsland.MaxConnectionsReached || neighbor.MaxConnectionsReached) continue;
+            //    // Only two neighbors allowed with free connections
+            //    // Set hint for the potential island
+            //    foreach (var neighbor in allNeighbors)
+            //    {
+            //        if (potentialIsland.MaxConnectionsReached || neighbor.MaxConnectionsReached) continue;
 
-                    var infoContainer = new BridgeConnectionInformationContainer(BridgeOperationTypeEnum.Add, potentialIsland, neighbor);
-                    WeakReferenceMessenger.Default.Send(new BridgeConnectionChangedMessage(infoContainer));
+            //        var infoContainer = new BridgeConnectionInformationContainer(BridgeOperationTypeEnum.Add, potentialIsland, neighbor);
+            //        WeakReferenceMessenger.Default.Send(new BridgeConnectionChangedMessage(infoContainer));
 
-                    if (potentialIsland.MaxConnectionsReached || neighbor.MaxConnectionsReached) continue;
+            //        if (potentialIsland.MaxConnectionsReached || neighbor.MaxConnectionsReached) continue;
 
-                    infoContainer = new BridgeConnectionInformationContainer(BridgeOperationTypeEnum.Add, potentialIsland, neighbor);
-                    WeakReferenceMessenger.Default.Send(new BridgeConnectionChangedMessage(infoContainer));
-                }
+            //        infoContainer = new BridgeConnectionInformationContainer(BridgeOperationTypeEnum.Add, potentialIsland, neighbor);
+            //        WeakReferenceMessenger.Default.Send(new BridgeConnectionChangedMessage(infoContainer));
+            //    }
 
-                return true;
-            }
+            //    return true;
+            //}
 
             return false;
         }
