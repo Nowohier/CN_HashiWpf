@@ -14,7 +14,7 @@ namespace Hashi.Rules.TwoConnections
             IIslandViewModel neighbor = default!;
             List<IIslandViewModel> allValidNeighbors = default!;
             IConnectionManagerViewModel connectionManager = default!;
-            var allNeighborsCount = 0;
+            var allValidNeighborsCount = 0;
             var missingConnectionsCount = 0;
 
             When()
@@ -22,12 +22,12 @@ namespace Hashi.Rules.TwoConnections
                 .Query(() => connectionManager, q => q.Match<IConnectionManagerViewModel>())
                 .Let(() => allValidNeighbors, () => island.GetAllVisibleNeighbors().Where(x => x.MaxConnectionsReached == false).ToList())
                 .Let(() => neighbor, () => allValidNeighbors.First())
-                .Let(() => allNeighborsCount, () => allValidNeighbors.Count)
+                .Let(() => allValidNeighborsCount, () => allValidNeighbors.Count)
                 .Let(() => missingConnectionsCount, () => neighbor.MaxConnections - neighbor.AllConnections.Count)
-                .Having(() => allNeighborsCount == 1);
+                .Having(() => allValidNeighborsCount == 1);
 
             Then()
-                .Do(ctx => AddConnectionsToOneTarget(island, allValidNeighbors.First(), missingConnectionsCount, connectionManager));
+                .Do(ctx => AddMissingConnectionsToOneTarget(island, allValidNeighbors.First(), missingConnectionsCount, connectionManager));
         }
     }
 }

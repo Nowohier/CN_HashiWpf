@@ -14,4 +14,8 @@
     <ProjectReference Include="..\Hashi.Gui.Interfaces\Hashi.Gui.Interfaces.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="FiveConnections\" />
+  </ItemGroup>
+
 </Project>

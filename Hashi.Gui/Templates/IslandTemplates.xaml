@@ -81,6 +81,10 @@
     </Style>
 
     <Style x:Key="BridgeStyle" TargetType="Line">
+        <!-- Set the DataContext to the Line itself. This is a bugfix for unwanted wpf behavior, see:-->
+        <!-- https://stackoverflow.com/questions/14282894/wpf-listbox-virtualization-creates-disconnecteditems-->
+        <!-- Not implementing this results in potential DataContext={DisconnectedItem} bugs-->
+        <Setter Property="DataContext" Value="{Binding}" />
         <Setter Property="Stroke" Value="{StaticResource BasicBrush}" />
         <Setter Property="StrokeThickness" Value="1" />
         <Setter Property="UseLayoutRounding" Value="True" />
