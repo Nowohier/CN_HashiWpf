@@ -67,6 +67,7 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
     {
         var hashiField = solutionContainer.HashiField;
         Islands.Clear();
+        History.Clear();
 
         if (session != null)
         {
