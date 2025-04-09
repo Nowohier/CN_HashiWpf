@@ -19,6 +19,7 @@ namespace Hashi.Gui.ViewModels;
 public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerViewModel
 {
     private readonly Func<int, int, int, IIslandViewModel> islandFactory;
+    private readonly Func<BridgeOperationTypeEnum, IHashiPoint, IHashiPoint, IHashiBridge> bridgeFactory;
     private string ruleMessage = string.Empty;
     private ISession? session;
 
@@ -26,15 +27,20 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
     ///     Initializes a new instance of the <see cref="ConnectionManagerViewModel" /> class.
     /// </summary>
     /// <param name="islandFactory">The island factory.</param>
-    public ConnectionManagerViewModel(Func<int, int, int, IIslandViewModel> islandFactory)
+    /// <param name="bridgeFactory"></param>
+    public ConnectionManagerViewModel(Func<int, int, int, IIslandViewModel> islandFactory, Func<BridgeOperationTypeEnum, IHashiPoint, IHashiPoint, IHashiBridge> bridgeFactory)
     {
         this.islandFactory = islandFactory;
+        this.bridgeFactory = bridgeFactory;
 
         WeakReferenceMessenger.Default.Register<ConnectionManagerViewModel, AllIslandsRequestMessage>(this, (_, m) => { m.Reply(Islands); });
     }
 
     /// <inheritdoc />
     public ObservableCollection<ObservableCollection<IIslandViewModel>> Islands { get; } = new();
+
+    /// <inheritdoc />
+    public IList<IHashiBridge> History { get; } = new List<IHashiBridge>();
 
     /// <inheritdoc />
     public bool AreRulesBeingApplied { get; set; }
@@ -88,6 +94,8 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
             return;
         }
 
+        History.Add(bridgeFactory.Invoke(BridgeOperationTypeEnum.Add, sourceIsland.Coordinates, targetIsland.Coordinates));
+
         ManageConnections(sourceIsland, targetIsland, (island, coordinates) => island.AddConnection(coordinates), isHint);
         if (AreAllConnectionsSet()) WeakReferenceMessenger.Default.SendAsync(new AllConnectionsSetMessage());
     }
@@ -102,14 +110,14 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
         {
             // Clears all source island connections
             foreach (var target in sourceIsland.AllConnections.Distinct().Select(GetIslandByCoordinates).ToList())
-                ManageConnections(sourceIsland, target,
-                    (island, coordinates) => island.RemoveAllConnectionsMatchingCoordinates(coordinates));
+            {
+                ManageConnections(sourceIsland, target, (island, coordinates) => island.RemoveAllConnectionsMatchingCoordinates(coordinates));
+            }
 
             return;
         }
 
-        ManageConnections(sourceIsland, targetIsland,
-            (island, coordinates) => island.RemoveAllConnectionsMatchingCoordinates(coordinates));
+        ManageConnections(sourceIsland, targetIsland, (island, coordinates) => island.RemoveAllConnectionsMatchingCoordinates(coordinates));
     }
 
     /// <inheritdoc />
