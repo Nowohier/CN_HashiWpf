@@ -17,9 +17,7 @@ namespace Hashi.Rules
             IConnectionManagerViewModel connectionManager)
         {
             if (!AreRulesBeingApplied(connectionManager)) return;
-            connectionManager.AddConnection(source, target, true);
-            source.RefreshIslandColor();
-            target.RefreshIslandColor();
+            ExecuteAddConnection(source, target, connectionManager);
         }
 
         /// <summary>
@@ -35,11 +33,8 @@ namespace Hashi.Rules
 
             foreach (var target in targets)
             {
-                connectionManager.AddConnection(source, target, true);
-                target.RefreshIslandColor();
+                ExecuteAddConnection(source, target, connectionManager);
             }
-
-            source.RefreshIslandColor();
         }
 
         /// <summary>
@@ -48,25 +43,16 @@ namespace Hashi.Rules
         /// <param name="source">The source island.</param>
         /// <param name="targets">The target islands.</param>
         /// <param name="connectionManager">The connection manager.</param>
-        protected virtual void AddMultipleConnectionsToEachTarget(IIslandViewModel source, List<IIslandViewModel> targets,
+        protected virtual void AddMultipleConnections(IIslandViewModel source, List<IIslandViewModel> targets,
             IConnectionManagerViewModel connectionManager)
         {
             if (!AreRulesBeingApplied(connectionManager)) return;
 
             foreach (var target in targets)
             {
-                if (source.MaxConnectionsReached || target.MaxConnectionsReached) continue;
-
-                connectionManager.AddConnection(source, target);
-                target.RefreshIslandColor();
-
-                if (source.MaxConnectionsReached || target.MaxConnectionsReached) continue;
-
-                connectionManager.AddConnection(source, target, true);
-                target.RefreshIslandColor();
+                ExecuteAddConnection(source, target, connectionManager);
+                ExecuteAddConnection(source, target, connectionManager);
             }
-
-            source.RefreshIslandColor();
         }
 
         /// <summary>
@@ -76,19 +62,29 @@ namespace Hashi.Rules
         /// <param name="target">The target island.</param>
         /// <param name="missingConnectionsCount">Amount of connections missing.</param>
         /// <param name="connectionManager">The connection manager.</param>
-        protected virtual void AddConnectionsToOneTarget(IIslandViewModel source, IIslandViewModel target, int missingConnectionsCount,
+        protected virtual void AddMissingConnectionsToOneTarget(IIslandViewModel source, IIslandViewModel target, int missingConnectionsCount,
             IConnectionManagerViewModel connectionManager)
         {
             if (!AreRulesBeingApplied(connectionManager)) return;
 
             for (var i = 0; i < missingConnectionsCount; i++)
             {
-                if (source.MaxConnectionsReached || target.MaxConnectionsReached) break;
-                connectionManager.AddConnection(source, target, true);
+                if (!ExecuteAddConnection(source, target, connectionManager)) break;
             }
+        }
 
+        private bool ExecuteAddConnection(IIslandViewModel source, IIslandViewModel target,
+            IConnectionManagerViewModel connectionManager)
+        {
+            if (source.MaxConnectionsReached ||
+                target.MaxConnectionsReached ||
+                target.AllConnections.Count(x => source.Coordinates.Equals(x)) == 2 ||
+                source.AllConnections.Count(x => target.Coordinates.Equals(x)) == 2) return false;
+
+            connectionManager.AddConnection(source, target, true);
             target.RefreshIslandColor();
             source.RefreshIslandColor();
+            return true;
         }
 
         private bool AreRulesBeingApplied(IConnectionManagerViewModel connectionManager)

@@ -3,15 +3,6 @@ using NRules.Fluent.Dsl;
 
 namespace Hashi.Rules.OneConnection
 {
-    /// <summary>
-    ///   Defines the rule for connecting islands with one connection.
-    ///   Is fired when
-    ///     MaxConnection = 1
-    ///     MaxConnectionsReached == false
-    ///     AllValidNeighbors Count == 1
-    ///   Is not fired when
-    ///     connectionManager.AreRulesBeingApplied == false
-    /// </summary>
     public class OneConnectionRule1 : BaseRule
     {
         protected override string RuleMessage => "Islands with a maximum of one bridge can set their connection if there is only one neighbor island accepting bridges. Neighbor islands with a maximum of one bridge cannot be connected to as both islands would be isolated then.";

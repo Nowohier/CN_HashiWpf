@@ -64,6 +64,11 @@ public interface IConnectionManagerViewModel
     void HighlightPathToTargetIsland(IIslandViewModel source, IIslandViewModel target);
 
     /// <summary>
+    ///    Resets the hint connections.
+    /// </summary>
+    void ResetAllHintConnections();
+
+    /// <summary>
     ///     Removes all highlights from the islands.
     /// </summary>
     void RemoveAllHighlights();

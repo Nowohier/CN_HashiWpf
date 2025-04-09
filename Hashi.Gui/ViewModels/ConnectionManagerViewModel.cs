@@ -11,7 +11,6 @@ using Hashi.Rules.OneConnection;
 using NRules;
 using NRules.Fluent;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Windows.Media;
 
@@ -38,7 +37,7 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
         this.brushFactory = brushFactory;
         SolutionHelper = solutionHelper;
 
-        WeakReferenceMessenger.Default.Register<ConnectionManagerViewModel, AllIslandsRequestMessage>(this, (r, m) => { m.Reply(Islands); });
+        WeakReferenceMessenger.Default.Register<ConnectionManagerViewModel, AllIslandsRequestMessage>(this, (_, m) => { m.Reply(Islands); });
     }
 
     /// <inheritdoc />
@@ -56,6 +55,7 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
             if (SetProperty(ref ruleMessage, value) && ruleMessage == string.Empty)
             {
                 WeakReferenceMessenger.Default.Send(new HintPopupClosedMessage());
+                RefreshIslandColors();
             }
         }
     }
@@ -75,7 +75,6 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
         if (session != null)
         {
             session.Events.RhsExpressionEvaluatedEvent -= OnRhsExpressionEvaluated;
-            session.Events.RuleFiredEvent -= OnRuleFired;
             session = null;
         }
 
@@ -178,6 +177,15 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
     }
 
     /// <inheritdoc />
+    public void ResetAllHintConnections()
+    {
+        foreach (var row in Islands)
+            foreach (var island in row)
+                foreach (var connection in island.AllConnections)
+                    connection.IsHint = false;
+    }
+
+    /// <inheritdoc />
     public void RefreshIslandColors()
     {
         foreach (var row in Islands)
@@ -223,8 +231,6 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
 
             //Create rules session
             session = factory.CreateSession();
-
-            session.Events.RuleFiredEvent += OnRuleFired;
             session.Events.RhsExpressionEvaluatedEvent += OnRhsExpressionEvaluated;
 
             session.InsertAll(Islands.SelectMany(x => x));
@@ -245,11 +251,6 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
         AreRulesBeingApplied = false;
     }
 
-    private void OnRuleFired(object? sender, NRules.Diagnostics.AgendaEventArgs e)
-    {
-        Debug.WriteLine($"Fired rule: {e.Rule.Name}");
-    }
-
     private bool AreAllConnectionsSet()
     {
         return Islands.All(row => row.All(island => island.MaxConnections == 0 || island.MaxConnectionsReached));
@@ -266,13 +267,9 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
             throw new InvalidOperationException("Diagonal connections are not allowed.");
 
         var sourceCoordinates = (IHashiPoint)source.Coordinates.Clone();
+        sourceCoordinates.IsHint = isHint;
         var targetCoordinates = (IHashiPoint)target.Coordinates.Clone();
-
-        if (isHint)
-        {
-            sourceCoordinates.IsHint = true;
-            targetCoordinates.IsHint = true;
-        }
+        targetCoordinates.IsHint = isHint;
 
         var islandsToConnect = SolutionHelper.GetAllIslandsInvolvedInConnection(source, target, Islands).ToList();
 
@@ -300,8 +297,8 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
     {
         return source == null || target == null
             ? null
-            : source.AllConnections.Count(c => c == target.Coordinates) >= 2 ||
-              target.AllConnections.Count(c => c == source.Coordinates) >= 2;
+            : source.AllConnections.Count(c => c.Equals(target.Coordinates)) >= 2 ||
+              target.AllConnections.Count(c => c.Equals(source.Coordinates)) >= 2;
     }
 
     /// <summary>
@@ -350,20 +347,20 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
         {
             case ConnectionTypeEnum.Vertical:
                 {
-                    var minY = (int)Math.Min(source.Coordinates.Y, target.Coordinates.Y);
-                    var maxY = (int)Math.Max(source.Coordinates.Y, target.Coordinates.Y);
+                    var minY = Math.Min(source.Coordinates.Y, target.Coordinates.Y);
+                    var maxY = Math.Max(source.Coordinates.Y, target.Coordinates.Y);
                     for (var y = minY + 1; y < maxY; y++)
-                        if (Islands[y][(int)source.Coordinates.X].MaxConnections > 0)
+                        if (Islands[y][source.Coordinates.X].MaxConnections > 0)
                             return true;
 
                     break;
                 }
             case ConnectionTypeEnum.Horizontal:
                 {
-                    var minX = (int)Math.Min(source.Coordinates.X, target.Coordinates.X);
-                    var maxX = (int)Math.Max(source.Coordinates.X, target.Coordinates.X);
+                    var minX = Math.Min(source.Coordinates.X, target.Coordinates.X);
+                    var maxX = Math.Max(source.Coordinates.X, target.Coordinates.X);
                     for (var x = minX + 1; x < maxX; x++)
-                        if (Islands[(int)source.Coordinates.Y][x].MaxConnections > 0)
+                        if (Islands[source.Coordinates.Y][x].MaxConnections > 0)
                             return true;
 
                     break;
