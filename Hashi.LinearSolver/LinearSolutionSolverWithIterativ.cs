@@ -1,5 +1,5 @@
 ﻿using Google.OrTools.Sat;
-using Hashi.Gui.Enums;
+using Hashi.Enums;
 using Hashi.LinearSolver.Interfaces;
 using Hashi.LinearSolver.Interfaces.Models;
 using System.Diagnostics;

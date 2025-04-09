@@ -1,4 +1,4 @@
-﻿using Hashi.Gui.Enums;
+﻿using Hashi.Enums;
 using System.Globalization;
 using System.Windows.Data;
 

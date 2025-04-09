@@ -1,7 +1,7 @@
-﻿using Hashi.Generator.Interfaces;
+﻿using Hashi.Enums;
+using Hashi.Generator.Interfaces;
 using Hashi.Generator.Interfaces.Models;
 using Hashi.Generator.Models;
-using Hashi.Gui.Enums;
 using Hashi.LinearSolver.Interfaces;
 using System.Diagnostics;
 using System.Drawing;

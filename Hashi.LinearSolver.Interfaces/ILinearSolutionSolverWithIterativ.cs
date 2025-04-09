@@ -1,4 +1,4 @@
-﻿using Hashi.Gui.Enums;
+﻿using Hashi.Enums;
 using Hashi.LinearSolver.Interfaces.Models;
 
 namespace Hashi.LinearSolver.Interfaces;

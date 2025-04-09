@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using Hashi.Gui.Enums;
+using Hashi.Enums;
 using Hashi.Gui.Interfaces.ViewModels;
 using Newtonsoft.Json;
 

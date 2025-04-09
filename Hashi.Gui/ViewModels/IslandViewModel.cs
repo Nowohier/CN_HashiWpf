@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using Hashi.Gui.Enums;
+using Hashi.Enums;
 using Hashi.Gui.EventArgs;
 using Hashi.Gui.Extensions;
 using Hashi.Gui.Helpers;
