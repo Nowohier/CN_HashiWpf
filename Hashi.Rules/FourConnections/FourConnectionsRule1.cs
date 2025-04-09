@@ -5,6 +5,8 @@ namespace Hashi.Rules.FourConnections
 {
     public class FourConnectionsRule1 : BaseRule
     {
+        protected override string RuleMessage => "Islands with a maximum of four bridges can set all connections if only two neighbors are available.";
+
         /// <inheritdoc />
         public override void Define()
         {

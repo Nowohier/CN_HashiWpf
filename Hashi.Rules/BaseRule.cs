@@ -5,6 +5,8 @@ namespace Hashi.Rules
 {
     public abstract class BaseRule : Rule
     {
+        protected abstract string RuleMessage { get; }
+
         /// <summary>
         /// Adds a connection to an island and stops the rule execution of all rules.
         /// </summary>
@@ -15,7 +17,7 @@ namespace Hashi.Rules
             IConnectionManagerViewModel connectionManager)
         {
             if (!AreRulesBeingApplied(connectionManager)) return;
-            connectionManager.AddConnection(source, target);
+            connectionManager.AddConnection(source, target, true);
             source.RefreshIslandColor();
             target.RefreshIslandColor();
         }
@@ -33,7 +35,7 @@ namespace Hashi.Rules
 
             foreach (var target in targets)
             {
-                connectionManager.AddConnection(source, target);
+                connectionManager.AddConnection(source, target, true);
                 target.RefreshIslandColor();
             }
 
@@ -60,7 +62,7 @@ namespace Hashi.Rules
 
                 if (source.MaxConnectionsReached || target.MaxConnectionsReached) continue;
 
-                connectionManager.AddConnection(source, target);
+                connectionManager.AddConnection(source, target, true);
                 target.RefreshIslandColor();
             }
 
@@ -82,7 +84,7 @@ namespace Hashi.Rules
             for (var i = 0; i < missingConnectionsCount; i++)
             {
                 if (source.MaxConnectionsReached || target.MaxConnectionsReached) break;
-                connectionManager.AddConnection(source, target);
+                connectionManager.AddConnection(source, target, true);
             }
 
             target.RefreshIslandColor();
@@ -96,7 +98,7 @@ namespace Hashi.Rules
                 return false;
             }
             connectionManager.AreRulesBeingApplied = false;
-
+            connectionManager.RuleMessage = RuleMessage;
             return true;
         }
     }

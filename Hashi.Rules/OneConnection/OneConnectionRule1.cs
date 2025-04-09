@@ -14,6 +14,8 @@ namespace Hashi.Rules.OneConnection
     /// </summary>
     public class OneConnectionRule1 : BaseRule
     {
+        protected override string RuleMessage => "Islands with a maximum of one bridge can set their connection if there is only one neighbor island accepting bridges. Neighbor islands with a maximum of one bridge cannot be connected to as both islands would be isolated then.";
+
         /// <inheritdoc />
         public override void Define()
         {

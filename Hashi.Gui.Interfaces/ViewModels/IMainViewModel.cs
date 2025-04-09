@@ -56,6 +56,11 @@ public interface IMainViewModel
     ICommand GenerateHintCommand { get; }
 
     /// <summary>
+    /// Command executed when the hint pop-up is closed.
+    /// </summary>
+    ICommand HintPopUpClosedCommand { get; }
+
+    /// <summary>
     ///     The current source island.
     /// </summary>
     Stopwatch Timer { get; }
