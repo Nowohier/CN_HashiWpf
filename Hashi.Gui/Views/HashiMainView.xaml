@@ -46,7 +46,7 @@
                               BorderThickness="0,1,0,0" Margin="0,0,0,0" BorderBrush="{StaticResource BasicBrush}"
                               Background="{StaticResource MenuBackgroundBrush}">
                         <DockPanel LastChildFill="False">
-                            <TextBlock Text="Difficulty:" VerticalAlignment="Center" Margin="0,0,5,0"
+                            <TextBlock Text="DIFFICULTY:" FontSize="10" VerticalAlignment="Center" Margin="0,0,5,0"
                                        DockPanel.Dock="Left" />
                             <ComboBox BorderBrush="#FFD5DFE5" Focusable="False" Width="85"
                                       SelectedItem="{Binding SelectedDifficulty}" DisplayMemberPath=""
@@ -57,7 +57,7 @@
                                     Command="{Binding CreateNewGameCommand}" Margin="10,0,0,0" DockPanel.Dock="Left">
                                 <StackPanel Orientation="Horizontal">
                                     <iconPacks:Material Kind="StarPlusOutline" Width="14" Height="14" />
-                                    <TextBlock Text="CREATE NEW GAME" Margin="5,0,0,0" VerticalAlignment="Center" />
+                                    <TextBlock Text="CREATE" Margin="5,0,0,0" VerticalAlignment="Center" />
                                 </StackPanel>
                             </Button>
                         </DockPanel>
@@ -143,7 +143,7 @@
                Margin="-10,0,10,0"
                AllowsTransparency="True">
             <Border x:Name="PopupBorder" Opacity="0.8" CornerRadius="2" Background="{StaticResource GreenIslandBrush}" BorderThickness="1" BorderBrush="{StaticResource BasicBrush}">
-                <TextBlock FontSize="16" TextWrapping="WrapWithOverflow" Margin="15">
+                <TextBlock FontSize="16" TextWrapping="WrapWithOverflow" Margin="10,5,10,5">
                     <Run FontWeight="Bold"
                          Text="Hint: " />
                     <Run Text="{Binding ConnectionManager.RuleMessage, Mode=OneWay}" />
