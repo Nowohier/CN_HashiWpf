@@ -10,9 +10,9 @@ public class _8ConnectionsRule1 : BaseRule
 
     public override void Define()
     {
-        IIslandViewModel island = default!;
-        List<IIslandViewModel> allNeighbors = default!;
-        IConnectionManagerViewModel connectionManager = default!;
+        IIslandViewModel island = null!;
+        List<IIslandViewModel> allNeighbors = null!;
+        IConnectionManagerViewModel connectionManager = null!;
 
         When()
             .Query(() => connectionManager, q => q.Match<IConnectionManagerViewModel>())

@@ -11,10 +11,10 @@ public class _2ConnectionsRule2 : BaseRule
     /// <inheritdoc />
     public override void Define()
     {
-        IIslandViewModel island = default!;
-        List<IIslandViewModel> allNeighbors = default!;
-        List<IIslandViewModel> validNeighbors = default!;
-        IConnectionManagerViewModel connectionManager = default!;
+        IIslandViewModel island = null!;
+        List<IIslandViewModel> allNeighbors = null!;
+        List<IIslandViewModel> validNeighbors = null!;
+        IConnectionManagerViewModel connectionManager = null!;
         var isSingleConnectionSetToMaxOneNeighbor = false;
 
         When()

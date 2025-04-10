@@ -10,10 +10,10 @@ public class _5ConnectionsRule1 : BaseRule
 
     public override void Define()
     {
-        IIslandViewModel island = default!;
-        List<IIslandViewModel> allNeighbors = default!;
-        List<IIslandViewModel> validNeighbors = default!;
-        IConnectionManagerViewModel connectionManager = default!;
+        IIslandViewModel island = null!;
+        List<IIslandViewModel> allNeighbors = null!;
+        List<IIslandViewModel> validNeighbors = null!;
+        IConnectionManagerViewModel connectionManager = null!;
 
         When()
             .Query(() => connectionManager, q => q.Match<IConnectionManagerViewModel>())
