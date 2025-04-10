@@ -16,8 +16,10 @@ public abstract class BaseRule : Rule
     protected virtual void AddConnection(IIslandViewModel source, IIslandViewModel target,
         IConnectionManagerViewModel connectionManager)
     {
-        if (!AreRulesBeingApplied(connectionManager)) return;
-        ExecuteAddConnection(source, target, connectionManager);
+        if (EnsureRulesAreBeingApplied(connectionManager) && ExecuteAddConnection(source, target, connectionManager))
+        {
+            FinalizeConnection(source, target);
+        }
     }
 
     /// <summary>
@@ -29,9 +31,15 @@ public abstract class BaseRule : Rule
     protected virtual void AddConnections(IIslandViewModel source, List<IIslandViewModel> targets,
         IConnectionManagerViewModel connectionManager)
     {
-        if (!AreRulesBeingApplied(connectionManager)) return;
+        if (!EnsureRulesAreBeingApplied(connectionManager)) return;
 
-        foreach (var target in targets) ExecuteAddConnection(source, target, connectionManager);
+        foreach (var target in targets)
+        {
+            if (ExecuteAddConnection(source, target, connectionManager))
+            {
+                FinalizeConnection(source, target);
+            }
+        }
     }
 
     /// <summary>
@@ -43,12 +51,15 @@ public abstract class BaseRule : Rule
     protected virtual void AddMultipleConnections(IIslandViewModel source, List<IIslandViewModel> targets,
         IConnectionManagerViewModel connectionManager)
     {
-        if (!AreRulesBeingApplied(connectionManager)) return;
+        if (!EnsureRulesAreBeingApplied(connectionManager)) return;
 
         foreach (var target in targets)
         {
-            ExecuteAddConnection(source, target, connectionManager);
-            ExecuteAddConnection(source, target, connectionManager);
+            for (var i = 0; i < 2; i++)
+            {
+                if (!ExecuteAddConnection(source, target, connectionManager)) break;
+            }
+            FinalizeConnection(source, target);
         }
     }
 
@@ -63,11 +74,13 @@ public abstract class BaseRule : Rule
         int missingConnectionsCount,
         IConnectionManagerViewModel connectionManager)
     {
-        if (!AreRulesBeingApplied(connectionManager)) return;
+        if (!EnsureRulesAreBeingApplied(connectionManager)) return;
 
         for (var i = 0; i < missingConnectionsCount; i++)
-            if (!ExecuteAddConnection(source, target, connectionManager))
-                break;
+        {
+            if (!ExecuteAddConnection(source, target, connectionManager)) break;
+        }
+        FinalizeConnection(source, target);
     }
 
     private bool ExecuteAddConnection(IIslandViewModel source, IIslandViewModel target,
@@ -79,16 +92,23 @@ public abstract class BaseRule : Rule
             source.AllConnections.Count(x => target.Coordinates.Equals(x)) == 2) return false;
 
         connectionManager.AddConnection(source, target, true);
-        target.RefreshIslandColor();
-        source.RefreshIslandColor();
         return true;
     }
 
-    private bool AreRulesBeingApplied(IConnectionManagerViewModel connectionManager)
+    private bool EnsureRulesAreBeingApplied(IConnectionManagerViewModel connectionManager)
     {
         if (connectionManager.AreRulesBeingApplied == false) return false;
         connectionManager.AreRulesBeingApplied = false;
         connectionManager.RuleMessage = RuleMessage;
         return true;
+    }
+
+    /// <summary>
+    /// Finalizes the connection by refreshing the colors of the source and target islands.
+    /// </summary>
+    private void FinalizeConnection(IIslandViewModel source, IIslandViewModel target)
+    {
+        source.RefreshIslandColor();
+        target.RefreshIslandColor();
     }
 }

@@ -13,14 +13,12 @@ public class _8ConnectionsRule1 : BaseRule
         IIslandViewModel island = default!;
         List<IIslandViewModel> allNeighbors = default!;
         IConnectionManagerViewModel connectionManager = default!;
-        var allNeighborsCount = 0;
 
         When()
             .Query(() => connectionManager, q => q.Match<IConnectionManagerViewModel>())
             .Match(() => island, x => x.MaxConnections == 8 && !x.MaxConnectionsReached)
             .Let(() => allNeighbors, () => island.GetAllVisibleNeighbors())
-            .Let(() => allNeighborsCount, () => allNeighbors.Count)
-            .Having(() => allNeighborsCount == 4);
+            .Having(() => allNeighbors.Count == 4);
 
         Then()
             .Do(ctx => AddMultipleConnections(island, allNeighbors, connectionManager));

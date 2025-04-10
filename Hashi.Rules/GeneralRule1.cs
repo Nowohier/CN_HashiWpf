@@ -12,22 +12,16 @@ public class GeneralRule1 : BaseRule
     public override void Define()
     {
         IIslandViewModel island = default!;
-        List<IIslandViewModel> allValidNeighbors = default!;
+        List<IIslandViewModel> validNeighbors = default!;
         IConnectionManagerViewModel connectionManager = default!;
-        var allValidNeighborsCount = 0;
-        var missingConnectionsCount = 0;
 
         When()
             .Match(() => island, x => x.MaxConnectionsReached == false)
             .Query(() => connectionManager, q => q.Match<IConnectionManagerViewModel>())
-            .Let(() => allValidNeighbors,
-                () => island.GetAllVisibleNeighbors().Where(x => x.MaxConnectionsReached == false).ToList())
-            .Let(() => allValidNeighborsCount, () => allValidNeighbors.Count)
-            .Let(() => missingConnectionsCount, () => island.MaxConnections - island.AllConnections.Count)
-            .Having(() => allValidNeighborsCount == 1);
+            .Let(() => validNeighbors, () => island.GetAllVisibleNeighbors().Where(x => x.MaxConnectionsReached == false).ToList())
+            .Having(() => validNeighbors.Count == 1);
 
         Then()
-            .Do(ctx => AddMissingConnectionsToOneTarget(island, allValidNeighbors.First(), missingConnectionsCount,
-                connectionManager));
+            .Do(ctx => AddMissingConnectionsToOneTarget(island, validNeighbors.First(), island.MaxConnections - island.AllConnections.Count, connectionManager));
     }
 }
