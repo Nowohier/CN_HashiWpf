@@ -1,44 +1,47 @@
 {
   "AreGridLinesEnabled": true,
+  "SelectedLanguageCulture": "de-DE",
   "HighScores": [
     {
-      "HighScoreTime": null,
+      "$type": "Hashi.Gui.ViewModels.HighScorePerDifficultyViewModel, Hashi.Gui",
+      "HighScoreTime": "00:00:04",
       "Difficulty": 0
     },
     {
-      "HighScoreTime": null,
+      "$type": "Hashi.Gui.ViewModels.HighScorePerDifficultyViewModel, Hashi.Gui",
       "Difficulty": 1
     },
     {
-      "HighScoreTime": null,
+      "$type": "Hashi.Gui.ViewModels.HighScorePerDifficultyViewModel, Hashi.Gui",
+      "HighScoreTime": "00:02:07.3549170",
       "Difficulty": 2
     },
     {
-      "HighScoreTime": null,
+      "$type": "Hashi.Gui.ViewModels.HighScorePerDifficultyViewModel, Hashi.Gui",
       "Difficulty": 3
     },
     {
-      "HighScoreTime": null,
+      "$type": "Hashi.Gui.ViewModels.HighScorePerDifficultyViewModel, Hashi.Gui",
       "Difficulty": 4
     },
     {
-      "HighScoreTime": null,
+      "$type": "Hashi.Gui.ViewModels.HighScorePerDifficultyViewModel, Hashi.Gui",
       "Difficulty": 5
     },
     {
-      "HighScoreTime": null,
+      "$type": "Hashi.Gui.ViewModels.HighScorePerDifficultyViewModel, Hashi.Gui",
       "Difficulty": 6
     },
     {
-      "HighScoreTime": null,
+      "$type": "Hashi.Gui.ViewModels.HighScorePerDifficultyViewModel, Hashi.Gui",
       "Difficulty": 7
     },
     {
-      "HighScoreTime": null,
+      "$type": "Hashi.Gui.ViewModels.HighScorePerDifficultyViewModel, Hashi.Gui",
       "Difficulty": 8
     },
     {
-      "HighScoreTime": null,
+      "$type": "Hashi.Gui.ViewModels.HighScorePerDifficultyViewModel, Hashi.Gui",
       "Difficulty": 9
     }
   ]
