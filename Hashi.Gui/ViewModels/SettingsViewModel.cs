@@ -14,11 +14,6 @@ public class SettingsViewModel : ObservableRecipient, ISettingsViewModel
     private bool areGridLinesEnabled;
     private string? selectedLanguage;
 
-    public SettingsViewModel()
-    {
-        Initialize();
-    }
-
     /// <inheritdoc />
     [JsonProperty(nameof(AreGridLinesEnabled))]
     public bool AreGridLinesEnabled
