@@ -30,5 +30,5 @@ public interface ISettingsViewModel
     /// <summary>
     ///   Initializes a fresh settings configuration.
     /// </summary>
-    void Initialize();
+    void InitializeHighScores();
 }

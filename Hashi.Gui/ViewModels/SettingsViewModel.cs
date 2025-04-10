@@ -14,6 +14,11 @@ public class SettingsViewModel : ObservableRecipient, ISettingsViewModel
     private bool areGridLinesEnabled;
     private string? selectedLanguage;
 
+    public SettingsViewModel()
+    {
+        InitializeLanguages();
+    }
+
     /// <inheritdoc />
     [JsonProperty(nameof(AreGridLinesEnabled))]
     public bool AreGridLinesEnabled
@@ -26,7 +31,7 @@ public class SettingsViewModel : ObservableRecipient, ISettingsViewModel
     [JsonProperty(nameof(SelectedLanguageCulture))]
     public string? SelectedLanguageCulture
     {
-        get => selectedLanguage;
+        get => selectedLanguage ?? (Languages.Count > 0 ? Languages.First().Culture : null);
         set => SetProperty(ref selectedLanguage, value);
     }
 
@@ -38,16 +43,18 @@ public class SettingsViewModel : ObservableRecipient, ISettingsViewModel
     public ObservableCollection<ILanguageViewModel> Languages { get; } = new();
 
     /// <inheritdoc />
-    public void Initialize()
+    public void InitializeHighScores()
     {
         HighScores.Clear();
         HighScores.AddRange(Enum.GetValues<DifficultyEnum>()
             .Select(x => new HighScorePerDifficultyViewModel(x)));
+    }
 
+    private void InitializeLanguages()
+    {
         Languages.Clear();
         Languages.Add(new LanguageViewModel("English", "English", "en-GB"));
         Languages.Add(new LanguageViewModel("German", "Deutsch", "de-DE"));
-        SelectedLanguageCulture = Languages[0].Culture;
     }
 
     /// <inheritdoc />
