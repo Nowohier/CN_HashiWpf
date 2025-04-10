@@ -9,10 +9,12 @@ using Hashi.Gui.Interfaces.Messages;
 using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Wrappers;
+using Hashi.Gui.Localization;
 using Hashi.Gui.Messages;
 using Hashi.Gui.Messaging;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.IO;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -79,10 +81,11 @@ public class MainViewModel : AsyncObservableRecipient,
         WeakReferenceMessenger.Default.Register<DropTargetIslandChangedMessage>(this);
         CreateNewGameCommand = new AsyncRelayCommand(CreateNewGameAsync);
         RemoveAllBridgesCommand = new RelayCommand(RemoveAllBridgesExecute);
-        GenerateHintCommand = new RelayCommand(GenerateHintExecute);
+        GenerateHintCommand = new RelayCommand(GenerateHintCommandExecute);
         UndoCommand = new RelayCommand(UndoCommandExecute, UndoCommandCanExecute);
         RedoCommand = new RelayCommand(RedoCommandExecute, RedoCommandCanExecute);
         WindowMouseClickedCommand = new RelayCommand(() => ConnectionManager.RuleMessage = string.Empty);
+        ChangeLanguageCommand = new RelayCommand<string>(ChangeLanguageCommandExecute);
 
         dispatcherTimer.Tick += (_, _) => OnPropertyChanged(nameof(Timer));
         Settings = LoadSettings();
@@ -148,6 +151,9 @@ public class MainViewModel : AsyncObservableRecipient,
     public ICommand RedoCommand { get; }
 
     /// <inheritdoc />
+    public ICommand ChangeLanguageCommand { get; }
+
+    /// <inheritdoc />
     public Stopwatch Timer { get; } = new();
 
     /// <inheritdoc />
@@ -161,6 +167,7 @@ public class MainViewModel : AsyncObservableRecipient,
             {
                 loadedSettings = (SettingsViewModel)jsonWrapper.DeserializeObject(File.ReadAllText(path), typeof(SettingsViewModel))!;
                 OnPropertyChanged(nameof(ISettingsViewModel));
+                TranslationSource.Instance.CurrentCulture = new CultureInfo(loadedSettings.SelectedLanguageCulture ?? "en-GB");
                 return loadedSettings;
             }
         }
@@ -170,8 +177,8 @@ public class MainViewModel : AsyncObservableRecipient,
         }
 
         loadedSettings = settingsFactory.Invoke();
-        loadedSettings.HighScores.AddRange(Enum.GetValues<DifficultyEnum>()
-            .Select(x => highScorePerDifficultyFactory.Invoke(x)));
+        loadedSettings.Initialize();
+        TranslationSource.Instance.CurrentCulture = new CultureInfo(loadedSettings.SelectedLanguageCulture ?? "en-GB");
         OnPropertyChanged(nameof(HighscoreForSelectedDifficulty));
         return loadedSettings;
     }
@@ -322,11 +329,18 @@ public class MainViewModel : AsyncObservableRecipient,
         ConnectionManager.HighlightPathToTargetIsland(sourceIsland, targetIsland);
     }
 
-    private void GenerateHintExecute()
+    private void GenerateHintCommandExecute()
     {
         IsCheating = true;
         StartTimer();
         ConnectionManager.GenerateHint();
+    }
+
+    private void ChangeLanguageCommandExecute(string? culture)
+    {
+        if (string.IsNullOrEmpty(culture)) return;
+        TranslationSource.Instance.CurrentCulture = new CultureInfo(culture);
+        Settings.SelectedLanguageCulture = culture;
     }
 
     private void UndoCommandExecute()

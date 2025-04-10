@@ -10,6 +10,7 @@
                  xmlns:converters="clr-namespace:Hashi.Gui.Converters"
                  xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
                  xmlns:enums="clr-namespace:Hashi.Enums;assembly=Hashi.Enums"
+                 xmlns:ns="clr-namespace:Hashi.Gui.Localization"
                  mc:Ignorable="d"
                  Loaded="Window_Loaded"
                  d:DataContext="{d:DesignInstance {x:Type viewModels:MainViewModel}, IsDesignTimeCreatable=False}"
@@ -100,7 +101,7 @@
                                           IsChecked="{Binding Settings.AreGridLinesEnabled}" Margin="10,0,0,0"
                                           HorizontalAlignment="Left" DockPanel.Dock="Left">
                             </ToggleButton>
-                            
+
                             <Button Style="{StaticResource MenuButtonStyle}" Command="{Binding RedoCommand}" Padding="5,0,5,0" Margin="10,0,0,0" DockPanel.Dock="Right"
                                     ToolTip="Redo last step" ToolTipService.InitialShowDelay="0">
                                 <iconPacks:PackIconPhosphorIcons Kind="ClockClockwiseThin" Width="18" Height="18"/>
@@ -109,7 +110,19 @@
                                     ToolTip="Undo last step" ToolTipService.InitialShowDelay="0">
                                 <iconPacks:PackIconPhosphorIcons Kind="ClockCounterClockwiseThin" Width="18" Height="18" />
                             </Button>
-                            <Border DockPanel.Dock="Right" BorderThickness="0,0,1,0" Height="35" BorderBrush="Black"/>
+                            <Border DockPanel.Dock="Right" BorderThickness="0,0,1,0" Height="35" BorderBrush="Black" Margin="10,0,0,0"/>
+                            <mah:DropDownButton Padding="5,0,5,0" Margin="10,0,0,0" DockPanel.Dock="Right"
+                                                ToolTip="{ns:Loc Language}" ItemsSource="{Binding Settings.Languages}" ToolTipService.InitialShowDelay="0" Height="30" BorderBrush="{StaticResource MahApps.Brushes.Button.Border}">
+                                <mah:DropDownButton.Icon>
+                                    <iconPacks:PackIconPhosphorIcons Kind="GlobeHemisphereWestThin" Width="18" Height="18"/>
+                                </mah:DropDownButton.Icon>
+                                <mah:DropDownButton.ItemContainerStyle>
+                                    <Style BasedOn="{StaticResource {x:Type MenuItem}}" TargetType="{x:Type MenuItem}">
+                                        <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type mah:DropDownButton}}, Path=DataContext.ChangeLanguageCommand}" />
+                                        <Setter Property="CommandParameter" Value="{Binding Culture}" />
+                                    </Style>
+                                </mah:DropDownButton.ItemContainerStyle>
+                            </mah:DropDownButton>
                         </DockPanel>
                     </GroupBox>
                 </DockPanel>

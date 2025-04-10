@@ -12,6 +12,7 @@ public class AutoFacViewModelsModule : Module
         // Register your view models here
         builder.RegisterType<IslandViewModel>().As<IIslandViewModel>().InstancePerDependency();
         builder.RegisterType<SettingsViewModel>().As<ISettingsViewModel>().InstancePerDependency();
+        builder.RegisterType<LanguageViewModel>().As<ILanguageViewModel>().InstancePerDependency();
         builder.RegisterType<HighScorePerDifficultyViewModel>().As<IHighScorePerDifficultyViewModel>()
             .InstancePerDependency();
         builder.RegisterType<ConnectionManagerViewModel>().As<IConnectionManagerViewModel>().SingleInstance();
