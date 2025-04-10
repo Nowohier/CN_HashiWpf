@@ -177,7 +177,8 @@ public class MainViewModel : AsyncObservableRecipient,
         }
 
         loadedSettings = settingsFactory.Invoke();
-        loadedSettings.Initialize();
+        loadedSettings.InitializeHighScores();
+        loadedSettings.SelectedLanguageCulture = loadedSettings.Languages[0].Culture;
         TranslationSource.Instance.CurrentCulture = new CultureInfo(loadedSettings.SelectedLanguageCulture ?? "en-GB");
         OnPropertyChanged(nameof(HighscoreForSelectedDifficulty));
         return loadedSettings;
