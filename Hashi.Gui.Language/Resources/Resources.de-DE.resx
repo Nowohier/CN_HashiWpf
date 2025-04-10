@@ -168,6 +168,12 @@
   <data name="_2ConnectionsRule2" xml:space="preserve">
     <value>Wenn eine 2er Insel eine Verbindung zu einer anderen Insel mit maximal einer Verbindung hat, kann die andere Verbindung nur zu einem Nachbarn mit maximal Verbindungen &gt; 1 führen.</value>
   </data>
+  <data name="_2ConnectionsRule3" xml:space="preserve">
+    <value>Wenn eine 2er Insel zwei Nachbarinseln hat und eine dieser Inseln eine 1er oder 2er Insel ist, muss eine Verbindung zu der anderen Insel hergestellt werden.</value>
+  </data>
+  <data name="_2ConnectionsRule4" xml:space="preserve">
+    <value>Wenn eine 2er Insel eine Nachbarinsel mit maximalen Verbindungen größer 1 hat alle weiteren 1er Inseln sind, muss eine Verbindung zu der größeren Insel gezogen werden.</value>
+  </data>
   <data name="_3ConnectionsRule1" xml:space="preserve">
     <value>Wenn eine 3er Insel nur zwei Nachbarn hat, muss zu jedem Nachbarn eine Verbindung aufgebaut werden.</value>
   </data>
@@ -180,8 +186,14 @@
   <data name="_5ConnectionsRule1" xml:space="preserve">
     <value>Wenn eine 5er Insel drei Nachbarn hat, dann benötigt jeder einen Anschluss.</value>
   </data>
+  <data name="_5ConnectionsRule2" xml:space="preserve">
+    <value>Wenn eine 5er Insel drei Nachbarn hat und eine Verbindung maximal eine Brücke erlaubt, dann können die verbleibenden Verbidnungen für die 5er Insel gesetzt werden.</value>
+  </data>
   <data name="_6ConnectionsRule1" xml:space="preserve">
     <value>Wenn eine 6er Insel drei Nachbarn hat, dann können alle Verbindungen gesetzt werden.</value>
+  </data>
+  <data name="_6ConnectionsRule2" xml:space="preserve">
+    <value>Wenn eine 6er Insel vier Nachbarn hat und bereits eine 1er Verbindung zu einer dieser Inseln gesetzt ist und diese nun keine weiteren Vebindungen zulässt , dann muss jede andere Insel mindestens eine Verbindung bekommen.</value>
   </data>
   <data name="_7ConnectionsRule1" xml:space="preserve">
     <value>Wenn eine 7er Insel vier Nachbarn hat, benötigt jeder einen Anschluss.</value>

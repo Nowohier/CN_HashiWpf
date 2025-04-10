@@ -1,63 +1,36 @@
-﻿using Hashi.Gui.Interfaces.Models;
-using Hashi.Gui.Interfaces.ViewModels;
-using Moq;
-using NRules.Testing;
-using System.Collections.ObjectModel;
+﻿using Hashi.Rules.Test.Helpers;
 using Times = NRules.Testing.Times;
 
 namespace Hashi.Rules.Test
 {
     [TestFixture]
-    public class _1ConnectionRule1Tests : RulesTestFixture
+    public class _1ConnectionRule1Tests : TestBase
     {
-        private Mock<IConnectionManagerViewModel> connectionManagerMock;
-        private IReadOnlyList<IReadOnlyList<Mock<IIslandViewModel>>> islandMockMatrix;
-        private IReadOnlyList<IIslandViewModel> islandMockObjectList;
-        private List<IIslandViewModel> neighborMockObjects = new();
-        private static readonly List<int[]> HashiField =
-        [
-            new[] { 0, 0, 2, 0, 2 },
-            new[] { 0, 0, 0, 0, 0 },
-            new[] { 1, 0, 1, 0, 2 },
-            new[] { 0, 0, 0, 0, 0 },
-            new[] { 0, 0, 2, 0, 2 }
-        ];
-
         public _1ConnectionRule1Tests()
         {
             Setup.Rule<_1ConnectionRule1>();
         }
 
-        [SetUp]
-        public void SetUp()
-        {
-            connectionManagerMock = new Mock<IConnectionManagerViewModel>(MockBehavior.Strict);
-            connectionManagerMock.SetupProperty(mock => mock.AreRulesBeingApplied, true);
-            connectionManagerMock.SetupProperty(mock => mock.RuleMessage, string.Empty);
-            connectionManagerMock.Setup(mock => mock.AddConnection(It.IsAny<IIslandViewModel>(), It.IsAny<IIslandViewModel>(), true));
-            Session.Insert(connectionManagerMock.Object);
-
-            islandMockMatrix = CreateTestMatrix(HashiField);
-            islandMockObjectList = GetIslandMockObjectsAsList(islandMockMatrix);
-            connectionManagerMock.Setup(mock => mock.Islands).Returns(GetIslandMockObjectsAsMatrix(islandMockMatrix));
-            neighborMockObjects =
-            [
-                islandMockMatrix[0][2].Object, // Left neighbor
-                islandMockMatrix[2][0].Object, // Top neighbor
-                islandMockMatrix[2][4].Object, // Bottom neighbor
-                islandMockMatrix[4][2].Object  // Right neighbor
-            ];
-        }
-
         [Test]
-        public void _1ConnectionRule1_ShouldTrigger_WhenIslandHasOneValidNeighbor()
+        public void _1ConnectionRule1_WhenOneValidNeighbor_ShouldTriggerRule()
         {
             // arrange
-            var neighbors = neighborMockObjects.Take(2).ToList();
-            islandMockMatrix[2][2].Setup(mock => mock.GetAllVisibleNeighbors()).Returns(neighbors);
+            var testIsland = CreateTestIslandMock(TestIslandEnum.TestIsland, 1);
+
+            // valid neighbor
+            var upIsland = CreateTestIslandMock(TestIslandEnum.UpIsland, 2);
+
+            // invalid neighbors
+            var leftIsland = CreateTestIslandMock(TestIslandEnum.LeftIsland, 2);
+            leftIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
+            var rightIsland = CreateTestIslandMock(TestIslandEnum.RightIsland, 2);
+            rightIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
+
+            testIsland.Setup(mock => mock.GetAllVisibleNeighbors())
+                .Returns([leftIsland.Object, upIsland.Object, rightIsland.Object]);
 
             // act
-            Session.InsertAll(islandMockObjectList);
+            Session.Insert(testIsland.Object);
             Session.Fire();
 
             // assert
@@ -65,14 +38,24 @@ namespace Hashi.Rules.Test
         }
 
         [Test]
-        public void _1ConnectionRule1_ShouldNotTrigger_WhenIslandHasMoreThanOneValidNeighbor()
+        public void _1ConnectionRule1_WhenMoreThanOneValidNeighbor_ShouldNotTriggerRule()
         {
             // arrange
-            var neighbors = neighborMockObjects.Take(3).ToList();
-            islandMockMatrix[2][2].Setup(mock => mock.GetAllVisibleNeighbors()).Returns(neighbors);
+            var testIsland = CreateTestIslandMock(TestIslandEnum.TestIsland, 1);
+
+            // valid neighbors
+            var upIsland = CreateTestIslandMock(TestIslandEnum.UpIsland, 2);
+            var leftIsland = CreateTestIslandMock(TestIslandEnum.LeftIsland, 2);
+
+            // invalid neighbor
+            var rightIsland = CreateTestIslandMock(TestIslandEnum.RightIsland, 2);
+            rightIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
+
+            testIsland.Setup(mock => mock.GetAllVisibleNeighbors())
+                .Returns([leftIsland.Object, upIsland.Object, rightIsland.Object]);
 
             // act
-            Session.InsertAll(islandMockObjectList);
+            Session.Insert(testIsland.Object);
             Session.Fire();
 
             // assert
@@ -80,61 +63,27 @@ namespace Hashi.Rules.Test
         }
 
         [Test]
-        public void Rule_ShouldNotTrigger_WhenIslandHasNoValidNeighbors()
+        public void _1ConnectionRule1_WhenNoValidNeighbor_ShouldNotTriggerRule()
         {
+            // arrange
+            var testIsland = CreateTestIslandMock(TestIslandEnum.TestIsland, 1);
 
-        }
+            // invalid neighbors
+            var upIsland = CreateTestIslandMock(TestIslandEnum.UpIsland, 2);
+            upIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
+            var leftIsland = CreateTestIslandMock(TestIslandEnum.LeftIsland, 1);
+            var rightIsland = CreateTestIslandMock(TestIslandEnum.RightIsland, 2);
+            rightIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
 
-        private IReadOnlyList<IReadOnlyList<Mock<IIslandViewModel>>> CreateTestMatrix(IReadOnlyList<int[]> hashiField)
-        {
-            var list = new List<List<Mock<IIslandViewModel>>>();
-            for (var row = 0; row < hashiField.Count; row++)
-            {
-                var rowCollection = new List<Mock<IIslandViewModel>>();
-                for (var column = 0; column < hashiField[0].Length; column++)
-                    rowCollection.Add(CreateIslandMock(column, row, hashiField[row][column]));
-                list.Add(rowCollection);
-            }
+            testIsland.Setup(mock => mock.GetAllVisibleNeighbors())
+                .Returns([leftIsland.Object, upIsland.Object, rightIsland.Object]);
 
-            return list;
-        }
+            // act
+            Session.Insert(testIsland.Object);
+            Session.Fire();
 
-        private IReadOnlyList<IIslandViewModel> GetIslandMockObjectsAsList(IReadOnlyList<IReadOnlyList<Mock<IIslandViewModel>>> islandMockMatrix)
-        {
-            return (islandMockMatrix.SelectMany(row => row, (row, islandMock) => islandMock.Object)).ToList();
-        }
-
-        private ObservableCollection<ObservableCollection<IIslandViewModel>> GetIslandMockObjectsAsMatrix(IReadOnlyList<IReadOnlyList<Mock<IIslandViewModel>>> islandMockMatrix)
-        {
-            var observableMatrix = new ObservableCollection<ObservableCollection<IIslandViewModel>>();
-
-            foreach (var row in islandMockMatrix)
-            {
-                var observableRow = new ObservableCollection<IIslandViewModel>(row.Select(mock => mock.Object));
-                observableMatrix.Add(observableRow);
-            }
-
-            return observableMatrix;
-        }
-
-        private Mock<IIslandViewModel> CreateIslandMock(int x, int y, int maxConnections)
-        {
-            var islandMock = new Mock<IIslandViewModel>(MockBehavior.Strict);
-            islandMock.Setup(mock => mock.Coordinates).Returns(CreateHashiPointMock(x, y).Object);
-            islandMock.Setup(mock => mock.MaxConnections).Returns(maxConnections);
-            islandMock.Setup(mock => mock.MaxConnectionsReached).Returns(maxConnections == 0);
-            islandMock.Setup(mock => mock.GetAllVisibleNeighbors()).Returns(new List<IIslandViewModel>());
-            islandMock.Setup(mock => mock.AllConnections).Returns(new ObservableCollection<IHashiPoint>());
-            islandMock.Setup(mock => mock.RefreshIslandColor());
-            return islandMock;
-        }
-
-        private Mock<IHashiPoint> CreateHashiPointMock(int x, int y)
-        {
-            var hashPointMock = new Mock<IHashiPoint>(MockBehavior.Strict);
-            hashPointMock.Setup(mock => mock.X).Returns(x);
-            hashPointMock.Setup(mock => mock.Y).Returns(y);
-            return hashPointMock;
+            // assert
+            Verify(x => x.Rule().Fired(Times.Never));
         }
     }
 }
