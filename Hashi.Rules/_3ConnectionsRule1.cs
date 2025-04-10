@@ -10,10 +10,10 @@ public class _3ConnectionsRule1 : BaseRule
 
     public override void Define()
     {
-        IIslandViewModel island = default!;
-        List<IIslandViewModel> allNeighbors = default!;
-        List<IIslandViewModel> validNeighbors = default!;
-        IConnectionManagerViewModel connectionManager = default!;
+        IIslandViewModel island = null!;
+        List<IIslandViewModel> allNeighbors = null!;
+        List<IIslandViewModel> validNeighbors = null!;
+        IConnectionManagerViewModel connectionManager = null!;
 
         When()
             .Match(() => island, x => x.MaxConnections == 3 && x.AllConnections.Count < 2)
