@@ -12,19 +12,16 @@ public class _1ConnectionRule1 : BaseRule
     public override void Define()
     {
         IIslandViewModel island = default!;
-        List<IIslandViewModel> allValidNeighbors = default!;
+        List<IIslandViewModel> validNeighbors = default!;
         IConnectionManagerViewModel connectionManager = default!;
-        var validNeighborsCount = 0;
 
         When()
-            .Match(() => island, x => x.MaxConnectionsReached == false && x.MaxConnections == 1)
+            .Match(() => island, x => !x.MaxConnectionsReached && x.MaxConnections == 1)
             .Query(() => connectionManager, q => q.Match<IConnectionManagerViewModel>())
-            .Let(() => allValidNeighbors,
-                () => island.GetAllVisibleNeighbors().Where(x => x.MaxConnections != 1).ToList())
-            .Let(() => validNeighborsCount, () => allValidNeighbors.Count)
-            .Having(() => validNeighborsCount == 1);
+            .Let(() => validNeighbors, () => island.GetAllVisibleNeighbors().Where(x => x.MaxConnections != 1).ToList())
+            .Having(() => validNeighbors.Count == 1);
 
         Then()
-            .Do(ctx => AddConnection(island, allValidNeighbors.First(), connectionManager));
+            .Do(ctx => AddConnection(island, validNeighbors.First(), connectionManager));
     }
 }

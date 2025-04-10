@@ -13,25 +13,19 @@ public class _2ConnectionsRule2 : BaseRule
     {
         IIslandViewModel island = default!;
         List<IIslandViewModel> allNeighbors = default!;
-        List<IIslandViewModel> allValidNeighbors = default!;
+        List<IIslandViewModel> validNeighbors = default!;
         IConnectionManagerViewModel connectionManager = default!;
-        var allNeighborsCount = 0;
-        var validNeighborsCount = 0;
         var isSingleConnectionSetToMaxOneNeighbor = false;
 
         When()
             .Match(() => island, x => x.MaxConnections == 2 && x.AllConnections.Count == 1)
             .Query(() => connectionManager, q => q.Match<IConnectionManagerViewModel>())
             .Let(() => allNeighbors, () => island.GetAllVisibleNeighbors())
-            .Let(() => allValidNeighbors, () => allNeighbors.Where(x => x.MaxConnections > 1).ToList())
-            .Let(() => allNeighborsCount, () => allNeighbors.Count)
-            .Let(() => validNeighborsCount, () => allValidNeighbors.Count)
-            .Let(() => isSingleConnectionSetToMaxOneNeighbor,
-                () => allNeighbors.Count(x => x.AllConnections.Contains(island.Coordinates) && x.MaxConnections == 1) ==
-                      1)
-            .Having(() => allNeighborsCount > 1 && validNeighborsCount == 1 && isSingleConnectionSetToMaxOneNeighbor);
+            .Let(() => validNeighbors, () => allNeighbors.Where(x => x.MaxConnections > 1).ToList())
+            .Let(() => isSingleConnectionSetToMaxOneNeighbor, () => allNeighbors.Count(x => x.AllConnections.Contains(island.Coordinates) && x.MaxConnections == 1) == 1)
+            .Having(() => allNeighbors.Count > 1 && validNeighbors.Count == 1 && isSingleConnectionSetToMaxOneNeighbor);
 
         Then()
-            .Do(ctx => AddConnection(island, allValidNeighbors.First(), connectionManager));
+            .Do(ctx => AddConnection(island, validNeighbors.First(), connectionManager));
     }
 }

@@ -14,19 +14,13 @@ public class _5ConnectionsRule1 : BaseRule
         List<IIslandViewModel> allNeighbors = default!;
         List<IIslandViewModel> validNeighbors = default!;
         IConnectionManagerViewModel connectionManager = default!;
-        var allNeighborsCount = 0;
-        var allNeighborsHaveConnectionToSource = false;
 
         When()
             .Query(() => connectionManager, q => q.Match<IConnectionManagerViewModel>())
             .Match(() => island, x => x.MaxConnections == 5 && !x.MaxConnectionsReached)
             .Let(() => allNeighbors, () => island.GetAllVisibleNeighbors())
-            .Let(() => validNeighbors,
-                () => allNeighbors.Where(x => !x.AllConnections.Contains(island.Coordinates)).ToList())
-            .Let(() => allNeighborsCount, () => allNeighbors.Count)
-            .Let(() => allNeighborsHaveConnectionToSource,
-                () => allNeighbors.All(x => x.AllConnections.Contains(island.Coordinates)))
-            .Having(() => allNeighborsCount == 3 && !allNeighborsHaveConnectionToSource);
+            .Let(() => validNeighbors, () => allNeighbors.Where(x => !x.AllConnections.Contains(island.Coordinates)).ToList())
+            .Having(() => allNeighbors.Count == 3 && !allNeighbors.All(x => x.AllConnections.Contains(island.Coordinates)));
 
         Then()
             .Do(ctx => AddConnections(island, validNeighbors, connectionManager));
