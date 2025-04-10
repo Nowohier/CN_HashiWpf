@@ -21,7 +21,7 @@ public class _2ConnectionsRule1 : BaseRule
             .Query(() => connectionManager, q => q.Match<IConnectionManagerViewModel>())
             .Let(() => allNeighbors, () => island.GetAllVisibleNeighbors())
             .Let(() => validNeighbors, () => allNeighbors.Where(x => x.MaxConnections == 2 && !x.MaxConnectionsReached).ToList())
-            .Having(() => validNeighbors.Count == 2);
+            .Having(() => allNeighbors.Count == 2 && validNeighbors.Count == 2);
 
         Then()
             .Do(ctx => AddConnections(island, validNeighbors, connectionManager));
