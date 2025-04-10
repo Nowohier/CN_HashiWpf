@@ -10,8 +10,8 @@ namespace Hashi.Rules.Test.Helpers
     {
         protected Mock<IConnectionManagerViewModel> ConnectionManagerMock;
 
-        [SetUp]
-        public void SetUp()
+        [OneTimeSetUp]
+        public void OneTimeSetup()
         {
             ConnectionManagerMock = new Mock<IConnectionManagerViewModel>(MockBehavior.Strict);
             ConnectionManagerMock.SetupProperty(mock => mock.AreRulesBeingApplied, true);
@@ -20,37 +20,43 @@ namespace Hashi.Rules.Test.Helpers
             Session.Insert(ConnectionManagerMock.Object);
         }
 
-        protected Mock<IIslandViewModel> CreateTestIslandMock(TestIslandEnum islandEnum, int maxConnections)
+        [SetUp]
+        public void SetUp()
+        {
+
+        }
+
+        protected Mock<IIslandViewModel> CreateTestIslandMock(TestIslandEnum islandEnum, int maxConnections, bool maxConnectionsReached = false)
         {
             return islandEnum switch
             {
-                TestIslandEnum.TestIsland => CreateIslandMock(1, 1, maxConnections),
-                TestIslandEnum.LeftIsland => CreateIslandMock(0, 1, maxConnections),
-                TestIslandEnum.RightIsland => CreateIslandMock(2, 1, maxConnections),
-                TestIslandEnum.UpIsland => CreateIslandMock(1, 0, maxConnections),
-                TestIslandEnum.DownIsland => CreateIslandMock(1, 2, maxConnections),
+                TestIslandEnum.TestIsland => CreateIslandMock(1, 1, maxConnections, maxConnectionsReached),
+                TestIslandEnum.LeftIsland => CreateIslandMock(0, 1, maxConnections, maxConnectionsReached),
+                TestIslandEnum.RightIsland => CreateIslandMock(2, 1, maxConnections, maxConnectionsReached),
+                TestIslandEnum.UpIsland => CreateIslandMock(1, 0, maxConnections, maxConnectionsReached),
+                TestIslandEnum.DownIsland => CreateIslandMock(1, 2, maxConnections, maxConnectionsReached),
                 _ => throw new ArgumentOutOfRangeException(nameof(islandEnum), islandEnum, null)
             };
         }
 
-        private Mock<IIslandViewModel> CreateIslandMock(int x, int y, int maxConnections)
-        {
-            var islandMock = new Mock<IIslandViewModel>(MockBehavior.Strict);
-            islandMock.Setup(mock => mock.Coordinates).Returns(CreateHashiPointMock(x, y).Object);
-            islandMock.Setup(mock => mock.MaxConnections).Returns(maxConnections);
-            islandMock.Setup(mock => mock.MaxConnectionsReached).Returns(maxConnections == 0);
-            islandMock.Setup(mock => mock.GetAllVisibleNeighbors()).Returns(new List<IIslandViewModel>());
-            islandMock.Setup(mock => mock.AllConnections).Returns(new ObservableCollection<IHashiPoint>());
-            islandMock.Setup(mock => mock.RefreshIslandColor());
-            return islandMock;
-        }
-
-        private Mock<IHashiPoint> CreateHashiPointMock(int x, int y)
+        protected Mock<IHashiPoint> CreateHashiPointMock(int x, int y)
         {
             var hashPointMock = new Mock<IHashiPoint>(MockBehavior.Strict);
             hashPointMock.Setup(mock => mock.X).Returns(x);
             hashPointMock.Setup(mock => mock.Y).Returns(y);
             return hashPointMock;
+        }
+
+        private Mock<IIslandViewModel> CreateIslandMock(int x, int y, int maxConnections, bool maxConnectionsReached)
+        {
+            var islandMock = new Mock<IIslandViewModel>(MockBehavior.Strict);
+            islandMock.Setup(mock => mock.Coordinates).Returns(CreateHashiPointMock(x, y).Object);
+            islandMock.Setup(mock => mock.MaxConnections).Returns(maxConnections);
+            islandMock.Setup(mock => mock.MaxConnectionsReached).Returns(maxConnectionsReached || maxConnections == 0);
+            islandMock.Setup(mock => mock.GetAllVisibleNeighbors()).Returns(new List<IIslandViewModel>());
+            islandMock.Setup(mock => mock.AllConnections).Returns(new ObservableCollection<IHashiPoint>());
+            islandMock.Setup(mock => mock.RefreshIslandColor());
+            return islandMock;
         }
     }
 }
