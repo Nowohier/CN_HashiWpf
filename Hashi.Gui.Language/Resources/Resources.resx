@@ -168,6 +168,12 @@
   <data name="_2ConnectionsRule2" xml:space="preserve">
     <value>If an island with a maximum of two bridges has a connection to another island with max one connections, then the other connection can only go to a neighbor with max connections &gt; 1.</value>
   </data>
+  <data name="_2ConnectionsRule3" xml:space="preserve">
+    <value>If an island with a maximum of two connections has two neighbor islands and one of them is an island with a maximum of two connections, a connection must be established to the other island.</value>
+  </data>
+  <data name="_2ConnectionsRule4" xml:space="preserve">
+    <value>If an island with a maximum of two bridges has a neighbor island with maximum bridges greater than one and all remaining neighbors are islands with a maximum of one bridge, a bridge must be drawn to the larger island.</value>
+  </data>
   <data name="_3ConnectionsRule1" xml:space="preserve">
     <value>If an island with a maximum of three bridges has only two neighbors, then a connection must be set to each neighbor.</value>
   </data>
@@ -180,8 +186,14 @@
   <data name="_5ConnectionsRule1" xml:space="preserve">
     <value>If an island with a maximum of five connections has three neighbors then each needs one connection.</value>
   </data>
+  <data name="_5ConnectionsRule2" xml:space="preserve">
+    <value>If an island with a maximum of five  bridges has three neighbors and one connection to the source island only allows a maximum of one bridge, then the remaining connections for the source island can be set.</value>
+  </data>
   <data name="_6ConnectionsRule1" xml:space="preserve">
     <value>If an island with a maximum of six connections has three neighbors then set all connections.</value>
+  </data>
+  <data name="_6ConnectionsRule2" xml:space="preserve">
+    <value>If a 6-connection island has four neighbors and already has a 1-connection to one of these islands, which no longer allows further connections, then every other island must receive at least one connection.</value>
   </data>
   <data name="_7ConnectionsRule1" xml:space="preserve">
     <value>If an island with a maximum of seven connections has four neighbors then each needs one connection.</value>
