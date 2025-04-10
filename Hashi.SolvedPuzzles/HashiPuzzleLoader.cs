@@ -1,5 +1,5 @@
-﻿using Hashi.SolvedPuzzles.Interfaces;
-using System.Text.Json;
+﻿using System.Text.Json;
+using Hashi.SolvedPuzzles.Interfaces;
 
 namespace Hashi.SolvedPuzzles;
 

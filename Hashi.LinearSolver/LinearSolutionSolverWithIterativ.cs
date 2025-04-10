@@ -4,6 +4,8 @@ using Hashi.LinearSolver.Interfaces;
 using Hashi.LinearSolver.Interfaces.Models;
 using System.Diagnostics;
 
+// ReSharper disable All
+
 namespace Hashi.LinearSolver;
 
 /// <inheritdoc cref="ILinearSolutionSolverWithIterativ" />
@@ -141,13 +143,18 @@ public class LinearSolutionSolverWithIterativ : ILinearSolutionSolverWithIterati
                     foreach (var islandRight in potentialBlockingIslandsRight)
                     {
                         foreach (var bridgePair in delta)
-                            if (islandRight.Down != null && ((bridgePair.Bridge1[0] == island.Number && bridgePair.Bridge1[1] == island.Right.Number
-                                                                 && bridgePair.Bridge2[0] == islandRight.Number &&
-                                                                 bridgePair.Bridge2[1] == islandRight.Down.Number)
-                                                             || (bridgePair.Bridge2[0] == island.Number && bridgePair.Bridge2[1] == island.Right.Number
-                                                                 && bridgePair.Bridge1[0] == islandRight.Number &&
-                                                                 bridgePair.Bridge1[1] ==
-                                                                 islandRight.Down.Number)))
+                            if (islandRight.Down != null &&
+                                ((bridgePair.Bridge1[0] == island.Number && bridgePair.Bridge1[1] == island.Right.Number
+                                                                         && bridgePair.Bridge2[0] ==
+                                                                         islandRight.Number &&
+                                                                         bridgePair.Bridge2[1] ==
+                                                                         islandRight.Down.Number)
+                                 || (bridgePair.Bridge2[0] == island.Number && bridgePair.Bridge2[1] ==
+                                                                            island.Right.Number
+                                                                            && bridgePair.Bridge1[0] ==
+                                                                            islandRight.Number &&
+                                                                            bridgePair.Bridge1[1] ==
+                                                                            islandRight.Down.Number)))
                                 checkRight = true;
                         if (!checkRight)
                             if (islandRight.Down != null)
@@ -337,8 +344,7 @@ public class LinearSolutionSolverWithIterativ : ILinearSolutionSolverWithIterati
         return components;
     }
 
-    /// <inheritdoc />
-    public void PrintBridges(IBridge bridge, long edgeNumber)
+    private void PrintBridges(IBridge bridge, long edgeNumber)
     {
         if (bridge.Island1.X < bridge.Island2.X)
             for (var i = bridge.Island1.X + 1; i < bridge.Island2.X; i++)

@@ -11,7 +11,7 @@
                     xmlns:ns="clr-namespace:Hashi.Gui.Localization">
 
     <converters:IslandVisibilityConverter x:Key="IslandVisibilityConverter" />
-    <converters:TagToBridgeTypeEnumConverter x:Key="TagToBridgeTypeEnumConverter"/>
+    <converters:TagToBridgeTypeEnumConverter x:Key="TagToBridgeTypeEnumConverter" />
     <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
 
     <Style x:Key="WindowIconStyle" TargetType="{x:Type iconPacks:PackIconBase}">
@@ -31,13 +31,16 @@
         <Setter Property="Height" Value="30" />
         <Setter Property="IsEnabled" Value="True" />
         <Style.Triggers>
-            <DataTrigger Binding="{Binding Path=DataContext.IsGeneratingHashiPuzzle, RelativeSource={RelativeSource AncestorType=mah:MetroWindow, Mode=FindAncestor}}" Value="True">
+            <DataTrigger
+                Binding="{Binding Path=DataContext.(viewModels:MainViewModel.IsGeneratingHashiPuzzle), RelativeSource={RelativeSource AncestorType=mah:MetroWindow, Mode=FindAncestor}}"
+                Value="True">
                 <Setter Property="IsEnabled" Value="False" />
             </DataTrigger>
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="MenuGridToggleButtonStyle" TargetType="ToggleButton" BasedOn="{StaticResource MahApps.Styles.ToggleButton}">
+    <Style x:Key="MenuGridToggleButtonStyle" TargetType="ToggleButton"
+           BasedOn="{StaticResource MahApps.Styles.ToggleButton}">
         <Setter Property="Focusable" Value="False" />
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="FontSize" Value="10" />
@@ -50,23 +53,27 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ToggleButton">
-                    <Border BorderBrush="{TemplateBinding BorderBrush}" 
-                            Background="{TemplateBinding Background}" BorderThickness="1" CornerRadius="2" Padding="3,0,3,0">
-                        <ContentPresenter HorizontalAlignment="Center"                  
-                                          VerticalAlignment="Center"/>
+                    <Border BorderBrush="{TemplateBinding BorderBrush}"
+                            Background="{TemplateBinding Background}" BorderThickness="1" CornerRadius="2"
+                            Padding="3,0,3,0">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center" />
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
         <Style.Triggers>
-            <DataTrigger Binding="{Binding Path=DataContext.IsGeneratingHashiPuzzle, RelativeSource={RelativeSource AncestorType=mah:MetroWindow, Mode=FindAncestor}}" Value="True">
+            <DataTrigger
+                Binding="{Binding Path=DataContext.(viewModels:MainViewModel.IsGeneratingHashiPuzzle), RelativeSource={RelativeSource AncestorType=mah:MetroWindow, Mode=FindAncestor}}"
+                Value="True">
                 <Setter Property="IsEnabled" Value="False" />
             </DataTrigger>
             <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource Mode=Self}}" Value="True">
                 <Setter Property="Foreground" Value="White" />
                 <Setter Property="Content">
                     <Setter.Value>
-                        <iconPacks:PackIconVaadinIcons Kind="Grid" Width="14" Height="14" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <iconPacks:PackIconVaadinIcons Kind="Grid" Width="14" Height="14" VerticalAlignment="Center"
+                                                       HorizontalAlignment="Center" />
                     </Setter.Value>
                 </Setter>
             </DataTrigger>
@@ -75,8 +82,11 @@
                 <Setter Property="Content">
                     <Setter.Value>
                         <Grid>
-                            <iconPacks:PackIconVaadinIcons Kind="Grid" Width="14" Height="14" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                            <iconPacks:PackIconPhosphorIcons Kind="ProhibitInsetThin" Width="22" Height="22" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Red"/>
+                            <iconPacks:PackIconVaadinIcons Kind="Grid" Width="14" Height="14"
+                                                           VerticalAlignment="Center" HorizontalAlignment="Center" />
+                            <iconPacks:PackIconPhosphorIcons Kind="ProhibitInsetThin" Width="22" Height="22"
+                                                             HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                             Foreground="Red" />
                         </Grid>
                     </Setter.Value>
                 </Setter>
@@ -97,7 +107,7 @@
     </Style>
 
     <Style x:Key="BridgeStyle" TargetType="Line">
-        <!-- Set the DataContext to the Line itself. This is a bugfix for unwanted wpf behavior, see:-->
+        <!-- Set the DataContext to the Line itself. This is a bug fix for unwanted wpf behavior, see:-->
         <!-- https://stackoverflow.com/questions/14282894/wpf-listbox-virtualization-creates-disconnecteditems-->
         <!-- Not implementing this results in potential DataContext={DisconnectedItem} bugs-->
         <Setter Property="DataContext" Value="{Binding}" />
@@ -124,67 +134,86 @@
     <DataTemplate x:Key="DataTemplateIsland" DataType="{x:Type viewModels:IslandViewModel}">
         <Border BorderThickness="0">
             <Grid UseLayoutRounding="True" SnapsToDevicePixels="True">
-                <Rectangle Width="30" Height="15" Style="{StaticResource PotentialConnectionStyle}" 
+                <Rectangle Width="30" Height="15" Style="{StaticResource PotentialConnectionStyle}"
                            HorizontalAlignment="Right" VerticalAlignment="Center"
                            Visibility="{Binding IsHighlightHorizontalRight, Converter={StaticResource BoolToVisibilityConverter}}" />
-                <Rectangle Width="30" Height="15" Style="{StaticResource PotentialConnectionStyle}" 
+                <Rectangle Width="30" Height="15" Style="{StaticResource PotentialConnectionStyle}"
                            HorizontalAlignment="Left" VerticalAlignment="Center"
                            Visibility="{Binding IsHighlightHorizontalLeft, Converter={StaticResource BoolToVisibilityConverter}}" />
-                <Rectangle Width="15" Height="30" Style="{StaticResource PotentialConnectionStyle}" 
+                <Rectangle Width="15" Height="30" Style="{StaticResource PotentialConnectionStyle}"
                            HorizontalAlignment="Center" VerticalAlignment="Top"
                            Visibility="{Binding IsHighlightVerticalTop, Converter={StaticResource BoolToVisibilityConverter}}" />
-                <Rectangle Width="15" Height="30" Style="{StaticResource PotentialConnectionStyle}" 
+                <Rectangle Width="15" Height="30" Style="{StaticResource PotentialConnectionStyle}"
                            HorizontalAlignment="Center" VerticalAlignment="Bottom"
                            Visibility="{Binding IsHighlightVerticalBottom, Converter={StaticResource BoolToVisibilityConverter}}" />
 
-                <Line X1="0" Y1="0" X2="60" Y2="0" Style="{StaticResource GridLinesStyle}" HorizontalAlignment="Stretch"
-                      VerticalAlignment="Center" Stroke="LightGray" StrokeDashArray="4,4" StrokeThickness="1" 
-                      Visibility="{Binding RelativeSource={RelativeSource AncestorType=mah:MetroWindow, Mode=FindAncestor}, Path=DataContext.Settings.AreGridLinesEnabled, Converter={StaticResource BoolToVisibilityConverter}}" />
+                <Line X1="0" Y1="0" X2="60" Y2="0" Style="{StaticResource GridLinesStyle}"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Center" Stroke="LightGray" StrokeDashArray="4,4"
+                      Visibility="{Binding RelativeSource={RelativeSource AncestorType=mah:MetroWindow, Mode=FindAncestor}, Path=DataContext.(viewModels:MainViewModel.Settings).AreGridLinesEnabled, Converter={StaticResource BoolToVisibilityConverter}}" />
                 <Line X1="0" Y1="0" X2="0" Y2="60" Style="{StaticResource GridLinesStyle}" HorizontalAlignment="Center"
-                      VerticalAlignment="Stretch" Stroke="LightGray" StrokeDashArray="4,4" StrokeThickness="1"
-                      Visibility="{Binding RelativeSource={RelativeSource AncestorType=mah:MetroWindow, Mode=FindAncestor}, Path=DataContext.Settings.AreGridLinesEnabled, Converter={StaticResource BoolToVisibilityConverter}}" />
+                      VerticalAlignment="Stretch" Stroke="LightGray" StrokeDashArray="4,4"
+                      Visibility="{Binding RelativeSource={RelativeSource AncestorType=mah:MetroWindow, Mode=FindAncestor}, Path=DataContext.(viewModels:MainViewModel.Settings).AreGridLinesEnabled, Converter={StaticResource BoolToVisibilityConverter}}" />
 
                 <!--Double Lines horizontal-->
-                <Line Style="{StaticResource BridgeStyle}" X1="0" Y1="-2" X2="60" Y2="-2" HorizontalAlignment="Center" VerticalAlignment="Center" Tag ="{x:Static enums:BridgeTypeEnum.HorizontalDouble}"/>
-                <Line Style="{StaticResource BridgeStyle}" X1="0" Y1="8" X2="60" Y2="8" HorizontalAlignment="Center" VerticalAlignment="Center" Tag ="{x:Static enums:BridgeTypeEnum.HorizontalDouble}"/>
+                <Line Style="{StaticResource BridgeStyle}" X1="0" Y1="-2" X2="60" Y2="-2" HorizontalAlignment="Center"
+                      VerticalAlignment="Center" Tag="{x:Static enums:BridgeTypeEnum.HorizontalDouble}" />
+                <Line Style="{StaticResource BridgeStyle}" X1="0" Y1="8" X2="60" Y2="8" HorizontalAlignment="Center"
+                      VerticalAlignment="Center" Tag="{x:Static enums:BridgeTypeEnum.HorizontalDouble}" />
 
                 <!--Double Lines horizontal right-->
-                <Line Style="{StaticResource BridgeStyle}" X1="30" Y1="-2" X2="60" Y2="-2" HorizontalAlignment="Right" VerticalAlignment="Center" Tag ="{x:Static enums:BridgeTypeEnum.HorizontalDoubleRight}"/>
-                <Line Style="{StaticResource BridgeStyle}" X1="30" Y1="8" X2="60" Y2="8" HorizontalAlignment="Right" VerticalAlignment="Center" Tag ="{x:Static enums:BridgeTypeEnum.HorizontalDoubleRight}"/>
+                <Line Style="{StaticResource BridgeStyle}" X1="30" Y1="-2" X2="60" Y2="-2" HorizontalAlignment="Right"
+                      VerticalAlignment="Center" Tag="{x:Static enums:BridgeTypeEnum.HorizontalDoubleRight}" />
+                <Line Style="{StaticResource BridgeStyle}" X1="30" Y1="8" X2="60" Y2="8" HorizontalAlignment="Right"
+                      VerticalAlignment="Center" Tag="{x:Static enums:BridgeTypeEnum.HorizontalDoubleRight}" />
 
                 <!--Double Lines horizontal left-->
-                <Line Style="{StaticResource BridgeStyle}" X1="0" Y1="-2" X2="30" Y2="-2" HorizontalAlignment="Left" VerticalAlignment="Center" Tag ="{x:Static enums:BridgeTypeEnum.HorizontalDoubleLeft}"/>
-                <Line Style="{StaticResource BridgeStyle}" X1="0" Y1="8" X2="30" Y2="8" HorizontalAlignment="Left" VerticalAlignment="Center" Tag ="{x:Static enums:BridgeTypeEnum.HorizontalDoubleLeft}" />
+                <Line Style="{StaticResource BridgeStyle}" X1="0" Y1="-2" X2="30" Y2="-2" HorizontalAlignment="Left"
+                      VerticalAlignment="Center" Tag="{x:Static enums:BridgeTypeEnum.HorizontalDoubleLeft}" />
+                <Line Style="{StaticResource BridgeStyle}" X1="0" Y1="8" X2="30" Y2="8" HorizontalAlignment="Left"
+                      VerticalAlignment="Center" Tag="{x:Static enums:BridgeTypeEnum.HorizontalDoubleLeft}" />
 
                 <!--Double Lines vertical-->
-                <Line Style="{StaticResource BridgeStyle}" X1="-3" Y1="0" X2="-3" Y2="60" HorizontalAlignment="Center" VerticalAlignment="Center" Tag ="{x:Static enums:BridgeTypeEnum.VerticalDouble}" />
-                <Line Style="{StaticResource BridgeStyle}" X1="8" Y1="0" X2="8" Y2="60" HorizontalAlignment="Center" VerticalAlignment="Center" Tag ="{x:Static enums:BridgeTypeEnum.VerticalDouble}"/>
+                <Line Style="{StaticResource BridgeStyle}" X1="-3" Y1="0" X2="-3" Y2="60" HorizontalAlignment="Center"
+                      VerticalAlignment="Center" Tag="{x:Static enums:BridgeTypeEnum.VerticalDouble}" />
+                <Line Style="{StaticResource BridgeStyle}" X1="8" Y1="0" X2="8" Y2="60" HorizontalAlignment="Center"
+                      VerticalAlignment="Center" Tag="{x:Static enums:BridgeTypeEnum.VerticalDouble}" />
 
                 <!--Double Lines vertical top-->
-                <Line Style="{StaticResource BridgeStyle}" X1="-3" Y1="0" X2="-3" Y2="30" HorizontalAlignment="Center" VerticalAlignment="Top" Tag ="{x:Static enums:BridgeTypeEnum.VerticalDoubleUp}" />
-                <Line Style="{StaticResource BridgeStyle}" X1="8" Y1="0" X2="8" Y2="30" HorizontalAlignment="Center" VerticalAlignment="Top" Tag ="{x:Static enums:BridgeTypeEnum.VerticalDoubleUp}"/>
+                <Line Style="{StaticResource BridgeStyle}" X1="-3" Y1="0" X2="-3" Y2="30" HorizontalAlignment="Center"
+                      VerticalAlignment="Top" Tag="{x:Static enums:BridgeTypeEnum.VerticalDoubleUp}" />
+                <Line Style="{StaticResource BridgeStyle}" X1="8" Y1="0" X2="8" Y2="30" HorizontalAlignment="Center"
+                      VerticalAlignment="Top" Tag="{x:Static enums:BridgeTypeEnum.VerticalDoubleUp}" />
 
                 <!--Double Lines vertical bottom-->
-                <Line Style="{StaticResource BridgeStyle}" X1="-3" Y1="30" X2="-3" Y2="60" HorizontalAlignment="Center" VerticalAlignment="Bottom" Tag ="{x:Static enums:BridgeTypeEnum.VerticalDoubleDown}"/>
-                <Line Style="{StaticResource BridgeStyle}" X1="8" Y1="30" X2="8" Y2="60" HorizontalAlignment="Center" VerticalAlignment="Bottom" Tag ="{x:Static enums:BridgeTypeEnum.VerticalDoubleDown}"/>
+                <Line Style="{StaticResource BridgeStyle}" X1="-3" Y1="30" X2="-3" Y2="60" HorizontalAlignment="Center"
+                      VerticalAlignment="Bottom" Tag="{x:Static enums:BridgeTypeEnum.VerticalDoubleDown}" />
+                <Line Style="{StaticResource BridgeStyle}" X1="8" Y1="30" X2="8" Y2="60" HorizontalAlignment="Center"
+                      VerticalAlignment="Bottom" Tag="{x:Static enums:BridgeTypeEnum.VerticalDoubleDown}" />
 
                 <!--Single line horizontal-->
-                <Line Style="{StaticResource BridgeStyle}" X1="0" Y1="0" X2="60" Y2="0" HorizontalAlignment="Center" VerticalAlignment="Center" Tag ="{x:Static enums:BridgeTypeEnum.Horizontal}"/>
+                <Line Style="{StaticResource BridgeStyle}" X1="0" Y1="0" X2="60" Y2="0" HorizontalAlignment="Center"
+                      VerticalAlignment="Center" Tag="{x:Static enums:BridgeTypeEnum.Horizontal}" />
 
                 <!--Single line horizontal right-->
-                <Line Style="{StaticResource BridgeStyle}" X1="30" Y1="0" X2="60" Y2="0" HorizontalAlignment="Right" VerticalAlignment="Center" Tag ="{x:Static enums:BridgeTypeEnum.HorizontalRight}" />
+                <Line Style="{StaticResource BridgeStyle}" X1="30" Y1="0" X2="60" Y2="0" HorizontalAlignment="Right"
+                      VerticalAlignment="Center" Tag="{x:Static enums:BridgeTypeEnum.HorizontalRight}" />
 
                 <!--Single line horizontal left-->
-                <Line Style="{StaticResource BridgeStyle}" X1="0" Y1="0" X2="30" Y2="0" HorizontalAlignment="Left" VerticalAlignment="Center" Tag ="{x:Static enums:BridgeTypeEnum.HorizontalLeft}"/>
+                <Line Style="{StaticResource BridgeStyle}" X1="0" Y1="0" X2="30" Y2="0" HorizontalAlignment="Left"
+                      VerticalAlignment="Center" Tag="{x:Static enums:BridgeTypeEnum.HorizontalLeft}" />
 
                 <!--Single line vertical-->
-                <Line Style="{StaticResource BridgeStyle}" X1="0" Y1="0" X2="0" Y2="60" HorizontalAlignment="Center" VerticalAlignment="Center" Tag="{x:Static enums:BridgeTypeEnum.Vertical}"/>
+                <Line Style="{StaticResource BridgeStyle}" X1="0" Y1="0" X2="0" Y2="60" HorizontalAlignment="Center"
+                      VerticalAlignment="Center" Tag="{x:Static enums:BridgeTypeEnum.Vertical}" />
 
                 <!--Single line vertical top-->
-                <Line Style="{StaticResource BridgeStyle}" X1="0" Y1="0" X2="0" Y2="30" HorizontalAlignment="Center" VerticalAlignment="Top" Tag="{x:Static enums:BridgeTypeEnum.VerticalUp}"/>
+                <Line Style="{StaticResource BridgeStyle}" X1="0" Y1="0" X2="0" Y2="30" HorizontalAlignment="Center"
+                      VerticalAlignment="Top" Tag="{x:Static enums:BridgeTypeEnum.VerticalUp}" />
 
                 <!--Single line vertical bottom-->
-                <Line Style="{StaticResource BridgeStyle}" X1="0" Y1="30" X2="0" Y2="60" HorizontalAlignment="Center" VerticalAlignment="Bottom" Tag="{x:Static enums:BridgeTypeEnum.VerticalDown}"/>
+                <Line Style="{StaticResource BridgeStyle}" X1="0" Y1="30" X2="0" Y2="60" HorizontalAlignment="Center"
+                      VerticalAlignment="Bottom" Tag="{x:Static enums:BridgeTypeEnum.VerticalDown}" />
 
                 <Ellipse Width="40" Height="40" Fill="{Binding IslandColor.Brush}" HorizontalAlignment="Center"
                          VerticalAlignment="Center"
@@ -195,6 +224,7 @@
                            Visibility="{Binding MaxConnections, Converter={StaticResource IslandVisibilityConverter}}"
                            IsHitTestVisible="True" AllowDrop="True" />
                 <b:Interaction.Behaviors>
+                    <!-- ReSharper disable once MarkupAttributeTypo -->
                     <behaviors:IslandDragDropBehavior
                         DragEnterCommand="{Binding DragEnterCommand}"
                         DragOverCommand="{Binding DragOverCommand}"

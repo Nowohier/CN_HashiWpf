@@ -1,5 +1,7 @@
 ﻿using Hashi.LinearSolver.Interfaces.Models;
 
+// ReSharper disable All
+
 namespace Hashi.LinearSolver.Models;
 // y = y-Koordinate; x = x-Koordinate; value = Wert des Knotens; up = obere Nachbarknoten; down = untere Nachbarknoten
 // right = rechter Nachbarknoten; left = linke Nachbarknoten
@@ -23,10 +25,6 @@ public class Island : IIsland
         Y = y;
         X = x;
         Value = value;
-        UpBridges = 0;
-        DownBridges = 0;
-        LeftBridges = 0;
-        RightBridges = 0;
         Number = number;
         LowerNeighbors = new List<IIsland>();
         UpNeighbors = new List<IIsland>();
@@ -55,18 +53,6 @@ public class Island : IIsland
 
     /// <inheritdoc />
     public int Number { get; }
-
-    /// <inheritdoc />
-    public int UpBridges { get; }
-
-    /// <inheritdoc />
-    public int DownBridges { get; }
-
-    /// <inheritdoc />
-    public int LeftBridges { get; }
-
-    /// <inheritdoc />
-    public int RightBridges { get; }
 
     /// <inheritdoc />
     public List<IIsland> LowerNeighbors { get; }
@@ -108,9 +94,9 @@ public class Island : IIsland
         var islandsBlocking = new List<IIsland>();
         if (Down == null) return islandsBlocking;
         for (var row = Down.Y - 1; row > Y; row--)
-        for (var checkEl = 0; checkEl < X; checkEl++)
-            islandsBlocking.AddRange(island.Where(node =>
-                node.X == checkEl && node.Y == row && node.Right != null && node.Right.X > X));
+            for (var checkEl = 0; checkEl < X; checkEl++)
+                islandsBlocking.AddRange(island.Where(node =>
+                    node.X == checkEl && node.Y == row && node.Right != null && node.Right.X > X));
         return islandsBlocking;
     }
 
@@ -120,9 +106,9 @@ public class Island : IIsland
         var islandsBlocking = new List<IIsland>();
         if (Right == null) return islandsBlocking;
         for (var column = Right.X - 1; column > X; column--)
-        for (var checkEl = 0; checkEl < Y; checkEl++)
-            islandsBlocking.AddRange(island.Where(node =>
-                node.Y == checkEl && node.X == column && node.Down != null && node.Down.Y > Y));
+            for (var checkEl = 0; checkEl < Y; checkEl++)
+                islandsBlocking.AddRange(island.Where(node =>
+                    node.Y == checkEl && node.X == column && node.Down != null && node.Down.Y > Y));
         return islandsBlocking;
     }
 }

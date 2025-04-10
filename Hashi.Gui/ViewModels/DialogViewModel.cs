@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Hashi.Gui.Enums;
+using Hashi.Enums;
 using Hashi.Gui.Interfaces.General;
 using System.Windows.Input;
 

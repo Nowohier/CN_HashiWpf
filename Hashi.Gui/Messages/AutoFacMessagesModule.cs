@@ -11,9 +11,12 @@ public class AutoFacMessagesModule : Module
     {
         // Register your messages here
         builder.RegisterType<AllConnectionsSetMessage>().As<IAllConnectionsSetMessage>().InstancePerDependency();
-        builder.RegisterType<BridgeConnectionChangedMessage>().As<IBridgeConnectionChangedMessage>().InstancePerDependency();
-        builder.RegisterType<DropTargetIslandChangedMessage>().As<IDropTargetIslandChangedMessage>().InstancePerDependency();
-        builder.RegisterType<UpdateAllIslandColorsMessage>().As<IUpdateAllIslandColorsMessage>().InstancePerDependency();
+        builder.RegisterType<BridgeConnectionChangedMessage>().As<IBridgeConnectionChangedMessage>()
+            .InstancePerDependency();
+        builder.RegisterType<DropTargetIslandChangedMessage>().As<IDropTargetIslandChangedMessage>()
+            .InstancePerDependency();
+        builder.RegisterType<UpdateAllIslandColorsMessage>().As<IUpdateAllIslandColorsMessage>()
+            .InstancePerDependency();
         builder.RegisterType<AllIslandsRequestMessage>().As<IAllIslandsRequestMessage>().InstancePerDependency();
     }
 }

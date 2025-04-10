@@ -46,26 +46,6 @@ public interface IIsland
     int Number { get; }
 
     /// <summary>
-    ///     Gets the upper bridges.
-    /// </summary>
-    int UpBridges { get; }
-
-    /// <summary>
-    ///     Gets the lower bridges.
-    /// </summary>
-    int DownBridges { get; }
-
-    /// <summary>
-    ///     Gets the left bridges
-    /// </summary>
-    int LeftBridges { get; }
-
-    /// <summary>
-    ///     Gets the right bridges.
-    /// </summary>
-    int RightBridges { get; }
-
-    /// <summary>
     ///     Gets the lower neighbors.
     /// </summary>
     List<IIsland> LowerNeighbors { get; }

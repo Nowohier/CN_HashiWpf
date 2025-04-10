@@ -22,7 +22,7 @@ public static class ObservableCollectionExtensions
     }
 
     /// <summary>
-    ///    Removes all items that match the predicate from the ObservableCollection.
+    ///     Removes all items that match the predicate from the ObservableCollection.
     /// </summary>
     /// <typeparam name="T">The type of object to handle.</typeparam>
     /// <param name="collection">The collection to add the range to.</param>
@@ -34,9 +34,6 @@ public static class ObservableCollectionExtensions
         if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
         var itemsToRemove = collection.Where(predicate).ToList();
-        foreach (var item in itemsToRemove)
-        {
-            collection.Remove(item);
-        }
+        foreach (var item in itemsToRemove) collection.Remove(item);
     }
 }

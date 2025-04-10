@@ -1,6 +1,6 @@
-﻿using Hashi.Generator.Interfaces.Models;
+﻿using System.Collections.ObjectModel;
+using Hashi.Generator.Interfaces.Models;
 using Hashi.Gui.Interfaces.Models;
-using System.Collections.ObjectModel;
 
 namespace Hashi.Gui.Interfaces.ViewModels;
 
@@ -15,27 +15,27 @@ public interface IConnectionManagerViewModel
     ObservableCollection<ObservableCollection<IIslandViewModel>> Islands { get; }
 
     /// <summary>
-    /// Gets the history of connections made in the game.
+    ///     Gets the history of connections made in the game.
     /// </summary>
     IList<IHashiBridge> History { get; }
 
     /// <summary>
-    /// Determines if the rules are being applied.
+    ///     Determines if the rules are being applied.
     /// </summary>
     bool AreRulesBeingApplied { get; set; }
 
     /// <summary>
-    ///   Gets the rule message.
+    ///     Gets the rule message.
     /// </summary>
     string RuleMessage { get; set; }
 
     /// <summary>
-    ///    Gets or sets the solution container.
+    ///     Gets or sets the solution container.
     /// </summary>
     ISolutionContainer? Solution { get; }
 
     /// <summary>
-    ///    Rebuilds the island collection with a new solution container.
+    ///     Rebuilds the island collection with a new solution container.
     /// </summary>
     /// <param name="solutionContainer"></param>
     void InitializeNewSolution(ISolutionContainer solutionContainer);
@@ -71,7 +71,7 @@ public interface IConnectionManagerViewModel
     IEnumerable<IIslandViewModel> GetAllIslandsInvolvedInConnection(IIslandViewModel source, IIslandViewModel target);
 
     /// <summary>
-    ///    Resets the hint connections.
+    ///     Resets the hint connections.
     /// </summary>
     void ResetAllHintConnections();
 
@@ -86,12 +86,12 @@ public interface IConnectionManagerViewModel
     void ClearTemporaryDropTargets();
 
     /// <summary>
-    ///    Refreshes the island colors.
+    ///     Refreshes the island colors.
     /// </summary>
     void RefreshIslandColors();
 
     /// <summary>
-    /// Generates a hint for the current solution container and islands.
+    ///     Generates a hint for the current solution container and islands.
     /// </summary>
     void GenerateHint();
 

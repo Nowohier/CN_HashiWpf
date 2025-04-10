@@ -17,15 +17,6 @@ public static class CursorHelper
         return relativeTo.PointFromScreen(new Point(w32Mouse.X, w32Mouse.Y));
     }
 
-    public static Rect GetAbsolutePlacement(this FrameworkElement element, bool relativeToScreen = false)
-    {
-        var absolutePos = element.PointToScreen(new Point(0, 0));
-        if (relativeToScreen) return new Rect(absolutePos.X, absolutePos.Y, element.ActualWidth, element.ActualHeight);
-        var posMW = Application.Current.MainWindow.PointToScreen(new Point(0, 0));
-        absolutePos = new Point(absolutePos.X - posMW.X, absolutePos.Y - posMW.Y);
-        return new Rect(absolutePos.X, absolutePos.Y, element.ActualWidth, element.ActualHeight);
-    }
-
     [StructLayout(LayoutKind.Sequential)]
     private struct Win32Point
     {

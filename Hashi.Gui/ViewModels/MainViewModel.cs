@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Enums;
 using Hashi.Generator.Interfaces;
-using Hashi.Gui.Enums;
 using Hashi.Gui.Extensions;
 using Hashi.Gui.Helpers;
 using Hashi.Gui.Interfaces.Messages;
@@ -36,16 +35,15 @@ public class MainViewModel : AsyncObservableRecipient,
     private readonly DispatcherTimer dispatcherTimer = new() { Interval = TimeSpan.FromSeconds(1) };
     private readonly IHashiGenerator hashiGenerator;
     internal readonly string HashiSettingsFileName = "HashiSettings.json";
-    private readonly Func<DifficultyEnum, IHighScorePerDifficultyViewModel> highScorePerDifficultyFactory;
     private readonly IJsonWrapper jsonWrapper;
 
     internal readonly string SaveFilePath =
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"CN_Hashi\Settings");
 
     private readonly Func<ISettingsViewModel> settingsFactory;
-    private bool isTimerRunning;
-    private bool isGeneratingHashiPuzzle;
     private bool isCheating;
+    private bool isGeneratingHashiPuzzle;
+    private bool isTimerRunning;
     private DifficultyEnum selectedDifficulty = DifficultyEnum.Easy3;
 
     /// <summary>
@@ -53,7 +51,6 @@ public class MainViewModel : AsyncObservableRecipient,
     /// </summary>
     /// <param name="brushFactory">The solid color brush factory.</param>
     /// <param name="settingsFactory">The settings factory.</param>
-    /// <param name="highScorePerDifficultyFactory">The highscore per difficulty factory.</param>
     /// <param name="connectionManager">The connection manager.</param>
     /// <param name="dialogWrapper">The dialog wrapper.</param>
     /// <param name="jsonWrapper">The json wrapper.</param>
@@ -61,7 +58,6 @@ public class MainViewModel : AsyncObservableRecipient,
     public MainViewModel(
         Func<SolidColorBrush, IHashiBrush> brushFactory,
         Func<ISettingsViewModel> settingsFactory,
-        Func<DifficultyEnum, IHighScorePerDifficultyViewModel> highScorePerDifficultyFactory,
         IConnectionManagerViewModel connectionManager,
         IDialogWrapper dialogWrapper,
         IJsonWrapper jsonWrapper,
@@ -69,7 +65,6 @@ public class MainViewModel : AsyncObservableRecipient,
     {
         this.brushFactory = brushFactory;
         this.settingsFactory = settingsFactory;
-        this.highScorePerDifficultyFactory = highScorePerDifficultyFactory;
         ConnectionManager = connectionManager;
         this.dialogWrapper = dialogWrapper;
         this.jsonWrapper = jsonWrapper;
@@ -165,9 +160,12 @@ public class MainViewModel : AsyncObservableRecipient,
             var path = Path.Combine(SaveFilePath, HashiSettingsFileName);
             if (File.Exists(path))
             {
-                loadedSettings = (SettingsViewModel)jsonWrapper.DeserializeObject(File.ReadAllText(path), typeof(SettingsViewModel))!;
+                loadedSettings =
+                    (SettingsViewModel)jsonWrapper.DeserializeObject(File.ReadAllText(path),
+                        typeof(SettingsViewModel))!;
                 OnPropertyChanged(nameof(ISettingsViewModel));
-                TranslationSource.Instance.CurrentCulture = new CultureInfo(loadedSettings.SelectedLanguageCulture ?? "en-GB");
+                TranslationSource.Instance.CurrentCulture =
+                    new CultureInfo(loadedSettings.SelectedLanguageCulture ?? "en-GB");
                 return loadedSettings;
             }
         }
@@ -346,10 +344,7 @@ public class MainViewModel : AsyncObservableRecipient,
 
     private void UndoCommandExecute()
     {
-        if (!ConnectionManager.History.Any())
-        {
-            return;
-        }
+        if (!ConnectionManager.History.Any()) return;
 
         var lastEntry = ConnectionManager.History.Last();
         var island1 = ConnectionManager.Islands.SelectMany(x => x).First(x => x.Coordinates.Equals(lastEntry.Point1));
@@ -383,7 +378,6 @@ public class MainViewModel : AsyncObservableRecipient,
 
     private void RedoCommandExecute()
     {
-
     }
 
     private bool RedoCommandCanExecute()
