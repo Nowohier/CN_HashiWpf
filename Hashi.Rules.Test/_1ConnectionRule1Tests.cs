@@ -21,10 +21,8 @@ namespace Hashi.Rules.Test
             var upIsland = CreateTestIslandMock(TestIslandEnum.UpIsland, 2);
 
             // invalid neighbors
-            var leftIsland = CreateTestIslandMock(TestIslandEnum.LeftIsland, 2);
-            leftIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
-            var rightIsland = CreateTestIslandMock(TestIslandEnum.RightIsland, 2);
-            rightIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
+            var leftIsland = CreateTestIslandMock(TestIslandEnum.LeftIsland, 2, true);
+            var rightIsland = CreateTestIslandMock(TestIslandEnum.RightIsland, 2, true);
 
             testIsland.Setup(mock => mock.GetAllVisibleNeighbors())
                 .Returns([leftIsland.Object, upIsland.Object, rightIsland.Object]);
@@ -48,8 +46,7 @@ namespace Hashi.Rules.Test
             var leftIsland = CreateTestIslandMock(TestIslandEnum.LeftIsland, 2);
 
             // invalid neighbor
-            var rightIsland = CreateTestIslandMock(TestIslandEnum.RightIsland, 2);
-            rightIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
+            var rightIsland = CreateTestIslandMock(TestIslandEnum.RightIsland, 2, true);
 
             testIsland.Setup(mock => mock.GetAllVisibleNeighbors())
                 .Returns([leftIsland.Object, upIsland.Object, rightIsland.Object]);
@@ -69,11 +66,9 @@ namespace Hashi.Rules.Test
             var testIsland = CreateTestIslandMock(TestIslandEnum.TestIsland, 1);
 
             // invalid neighbors
-            var upIsland = CreateTestIslandMock(TestIslandEnum.UpIsland, 2);
-            upIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
+            var upIsland = CreateTestIslandMock(TestIslandEnum.UpIsland, 2, true);
             var leftIsland = CreateTestIslandMock(TestIslandEnum.LeftIsland, 1);
-            var rightIsland = CreateTestIslandMock(TestIslandEnum.RightIsland, 2);
-            rightIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
+            var rightIsland = CreateTestIslandMock(TestIslandEnum.RightIsland, 2, true);
 
             testIsland.Setup(mock => mock.GetAllVisibleNeighbors())
                 .Returns([leftIsland.Object, upIsland.Object, rightIsland.Object]);

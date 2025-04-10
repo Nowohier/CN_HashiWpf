@@ -11,11 +11,11 @@ public class _4ConnectionsRule2 : BaseRule
     /// <inheritdoc />
     public override void Define()
     {
-        IIslandViewModel island = default!;
-        List<IIslandViewModel> allNeighbors = default!;
-        List<IIslandViewModel> validNeighbors = default!;
-        List<IIslandViewModel> filteredNeighbors = default!;
-        IConnectionManagerViewModel connectionManager = default!;
+        IIslandViewModel island = null!;
+        List<IIslandViewModel> allNeighbors = null!;
+        List<IIslandViewModel> validNeighbors = null!;
+        List<IIslandViewModel> filteredNeighbors = null!;
+        IConnectionManagerViewModel connectionManager = null!;
 
         When()
             .Match(() => island, x => !x.MaxConnectionsReached && x.MaxConnections == 4 && (x.MaxConnections - x.AllConnections.Count >= 2 || x.MaxConnections - x.AllConnections.Count <= 3))
