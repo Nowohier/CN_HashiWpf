@@ -76,6 +76,11 @@ public interface IMainViewModel
     ICommand RedoCommand { get; }
 
     /// <summary>
+    ///    Command to change the language of the application.
+    /// </summary>
+    ICommand ChangeLanguageCommand { get; }
+
+    /// <summary>
     ///     The current source island.
     /// </summary>
     Stopwatch Timer { get; }
