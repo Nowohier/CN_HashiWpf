@@ -1,62 +1,66 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Gui.Interfaces.Messages;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
-namespace Hashi.Gui.Messaging
+namespace Hashi.Gui.Messaging;
+
+/// <summary>
+///     An abstract base class for recipients that can handle asynchronous messages.
+/// </summary>
+[SuppressMessage("ReSharper", "IdentifierTypo")]
+public abstract class AsyncObservableRecipient : ObservableRecipient
 {
-    /// <summary>
-    ///   An abstract base class for recipients that can handle asynchronous messages.
-    /// </summary>
-    public abstract class AsyncObservableRecipient : ObservableRecipient
+    // Cache reflection results.
+    private static readonly MethodInfo? RegisterMethodInfo = typeof(IMessengerExtensions).GetMethod(
+        nameof(IMessengerExtensions.Register), BindingFlags.Public | BindingFlags.Static, new[] { typeof(object) });
+
+    private static readonly MethodInfo? UnregisterMethodInfo =
+        typeof(IMessenger).GetMethod("Unregister", new[] { typeof(object) });
+
+    /// <inheritdoc />
+    protected override void OnActivated()
     {
-        // Cache reflection results.
-        private static readonly MethodInfo? RegisterMethodInfo = typeof(IMessengerExtensions).GetMethod(nameof(IMessengerExtensions.Register), BindingFlags.Public | BindingFlags.Static, new[] { typeof(object) });
-        private static readonly MethodInfo? UnregisterMethodInfo = typeof(IMessenger).GetMethod("Unregister", new[] { typeof(object) });
+        base.OnActivated();
+        RegisterAsyncHandlers();
+    }
 
-        /// <inheritdoc />
-        protected override void OnActivated()
+    /// <inheritdoc />
+    protected override void OnDeactivated()
+    {
+        UnregisterAsyncHandlers();
+        base.OnDeactivated();
+    }
+
+    private void RegisterAsyncHandlers()
+    {
+        var asyncRecipientInterfaces = GetType().GetInterfaces()
+            .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IAsyncRecipient<>));
+
+        foreach (var iFace in asyncRecipientInterfaces)
         {
-            base.OnActivated();
-            RegisterAsyncHandlers();
-        }
-
-        /// <inheritdoc />
-        protected override void OnDeactivated()
-        {
-            UnregisterAsyncHandlers();
-            base.OnDeactivated();
-        }
-
-        private void RegisterAsyncHandlers()
-        {
-            var asyncRecipientInterfaces = this.GetType().GetInterfaces()
-                .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IAsyncRecipient<>));
-
-            foreach (var iFace in asyncRecipientInterfaces)
+            var messageType = iFace.GetGenericArguments()[0];
+            if (RegisterMethodInfo != null)
             {
-                var messageType = iFace.GetGenericArguments()[0];
-                if (RegisterMethodInfo != null)
-                {
-                    var registerMethod = RegisterMethodInfo.MakeGenericMethod(messageType);
-                    registerMethod.Invoke(null, new object[] { Messenger, this });
-                }
+                var registerMethod = RegisterMethodInfo.MakeGenericMethod(messageType);
+                registerMethod.Invoke(null, new object[] { Messenger, this });
             }
         }
+    }
 
-        private void UnregisterAsyncHandlers()
+    private void UnregisterAsyncHandlers()
+    {
+        var interfaces = GetType().GetInterfaces()
+            .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IAsyncRecipient<>));
+
+        foreach (var iFace in interfaces)
         {
-            var interfaces = GetType().GetInterfaces()
-                .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IAsyncRecipient<>));
-
-            foreach (var iFace in interfaces)
+            var messageType = iFace.GetGenericArguments().First();
+            if (UnregisterMethodInfo != null)
             {
-                var messageType = iFace.GetGenericArguments().First();
-                if (UnregisterMethodInfo != null)
-                {
-                    var genericMethod = UnregisterMethodInfo.MakeGenericMethod(messageType);
-                    genericMethod.Invoke(Messenger, new object[] { this });
-                }
+                var genericMethod = UnregisterMethodInfo.MakeGenericMethod(messageType);
+                genericMethod.Invoke(Messenger, new object[] { this });
             }
         }
     }

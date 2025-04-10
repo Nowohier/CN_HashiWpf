@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
+// ReSharper disable UnusedMember.Global
+
 namespace Hashi.SolvedPuzzles.Interfaces;
 
 [SuppressMessage("ReSharper", "InconsistentNaming")]

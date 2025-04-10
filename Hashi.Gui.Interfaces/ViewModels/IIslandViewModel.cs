@@ -1,12 +1,12 @@
-﻿using Hashi.Enums;
-using Hashi.Gui.Interfaces.Models;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
+using Hashi.Enums;
+using Hashi.Gui.Interfaces.Models;
 
 namespace Hashi.Gui.Interfaces.ViewModels;
 
 /// <summary>
-///   Represents the view model for an island in the Hashi game.
+///     Represents the view model for an island in the Hashi game.
 /// </summary>
 public interface IIslandViewModel
 {
@@ -111,12 +111,12 @@ public interface IIslandViewModel
     ICommand MouseMoveCommand { get; }
 
     /// <summary>
-    /// Resets the drop target.
+    ///     Resets the drop target.
     /// </summary>
     void ResetDropTarget();
 
     /// <summary>
-    /// Refreshes the island color and sets it to the default color if it is not set.
+    ///     Refreshes the island color and sets it to the default color if it is not set.
     /// </summary>
     void RefreshIslandColor();
 
@@ -128,20 +128,23 @@ public interface IIslandViewModel
     ConnectionTypeEnum GetConnectionType(IIslandViewModel targetIsland);
 
     /// <summary>
-    /// Gets all neighbors with MaxConnections > 0 and no colliding connections.
+    ///     Gets all neighbors with MaxConnections > 0 and no colliding connections.
     /// </summary>
     /// <returns>a list of visible neighbor islands.</returns>
     List<IIslandViewModel> GetAllVisibleNeighbors();
 
     /// <summary>
-    ///    Gets the visible neighbor of the current island in the given direction of potential target island.
+    ///     Gets the visible neighbor of the current island in the given direction of potential target island.
     /// </summary>
     /// <param name="potentialTargetIsland">The potential target island to give a hint in which direction to search.</param>
-    /// <returns>the visible neighbor of the current island in the given direction of potential target island. Null if not found.</returns>
+    /// <returns>
+    ///     the visible neighbor of the current island in the given direction of potential target island. Null if not
+    ///     found.
+    /// </returns>
     IIslandViewModel? GetVisibleNeighbor(IIslandViewModel potentialTargetIsland);
 
     /// <summary>
-    ///    Gets the visible neighbor of the current island in the given direction.
+    ///     Gets the visible neighbor of the current island in the given direction.
     /// </summary>
     /// <param name="direction">The direction.</param>
     /// <returns>the visible neighbor of the current island in the given direction. Null if not found.</returns>

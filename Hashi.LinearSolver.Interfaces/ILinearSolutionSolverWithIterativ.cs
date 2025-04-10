@@ -1,5 +1,4 @@
 ﻿using Hashi.Enums;
-using Hashi.LinearSolver.Interfaces.Models;
 
 namespace Hashi.LinearSolver.Interfaces;
 
@@ -14,11 +13,4 @@ public interface ILinearSolutionSolverWithIterativ
     /// <param name="mainField">The generated main hashi field.</param>
     /// <returns>a status enum.</returns>
     Task<SolverStatusEnum> SolveAsync(int[][] mainField);
-
-    /// <summary>
-    ///     Prints the bridges on the field.
-    /// </summary>
-    /// <param name="bridge"></param>
-    /// <param name="edgeNumber"></param>
-    void PrintBridges(IBridge bridge, long edgeNumber);
 }

@@ -1,8 +1,8 @@
-﻿using Autofac;
+﻿using System.Drawing;
+using Autofac;
 using Hashi.Generator.Interfaces;
 using Hashi.Generator.Interfaces.Models;
 using Hashi.Generator.Models;
-using System.Drawing;
 
 namespace Hashi.Generator;
 
@@ -38,7 +38,8 @@ public class AutoFacGeneratorModule : Module
         {
             var c = context.Resolve<IComponentContext>();
             return (hashiField, bridgeCoordinates) => c.Resolve<ISolutionContainer>(
-                new NamedParameter("hashiField", hashiField), new NamedParameter("bridgeCoordinates", bridgeCoordinates));
+                new NamedParameter("hashiField", hashiField),
+                new NamedParameter("bridgeCoordinates", bridgeCoordinates));
         });
 
         builder.Register<Func<IIsland, IIsland, int, IBridge>>(context =>

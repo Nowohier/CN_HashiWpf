@@ -1,25 +1,26 @@
 ﻿using Hashi.Enums;
+using System.Diagnostics.CodeAnalysis;
 
-namespace Hashi.Gui.Interfaces.Models
+namespace Hashi.Gui.Interfaces.Models;
+
+/// <summary>
+///     Represents a bridge between two points in the Hashi game.
+/// </summary>
+[SuppressMessage("ReSharper", "UnusedMemberInSuper.Global")]
+public interface IHashiBridge
 {
     /// <summary>
-    ///   Represents a bridge between two points in the Hashi game.
+    ///     Gets the action type of the bridge operation.
     /// </summary>
-    public interface IHashiBridge
-    {
-        /// <summary>
-        ///    Gets the action type of the bridge operation.
-        /// </summary>
-        BridgeOperationTypeEnum ActionType { get; }
+    BridgeOperationTypeEnum ActionType { get; }
 
-        /// <summary>
-        ///     Gets the first point.
-        /// </summary>
-        IHashiPoint Point1 { get; }
+    /// <summary>
+    ///     Gets the first point.
+    /// </summary>
+    IHashiPoint Point1 { get; }
 
-        /// <summary>
-        ///     Gets the second point.
-        /// </summary>
-        IHashiPoint Point2 { get; }
-    }
+    /// <summary>
+    ///     Gets the second point.
+    /// </summary>
+    IHashiPoint Point2 { get; }
 }

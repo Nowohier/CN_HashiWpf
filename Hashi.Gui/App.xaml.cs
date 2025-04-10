@@ -1,10 +1,11 @@
 ﻿using Autofac;
+using Hashi.Enums;
 using Hashi.Gui.AutoFac;
-using Hashi.Gui.Enums;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Views;
 using Hashi.Gui.Interfaces.Wrappers;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace Hashi.Gui;
 
@@ -13,8 +14,8 @@ namespace Hashi.Gui;
 /// </summary>
 public partial class App
 {
-    private IMainViewModel? mainViewModel;
     private IDialogWrapper? dialogWrapper;
+    private IMainViewModel? mainViewModel;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="App" /> class.
@@ -25,7 +26,7 @@ public partial class App
         InitializeComponent();
 
         // Handle unhandled exceptions
-        this.DispatcherUnhandledException += OnDispatcherUnhandledException;
+        DispatcherUnhandledException += OnDispatcherUnhandledException;
         AppDomain.CurrentDomain.UnhandledException += OnCurrentDomainUnhandledException;
         TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
     }
@@ -66,10 +67,11 @@ public partial class App
     /// <summary>
     ///     Handles unhandled exceptions.
     /// </summary>
-    private void OnDispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+    private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
     {
         // Log the exception, show a message to the user, etc.
-        dialogWrapper?.Show("Error", $"An unhandled exception occurred: {e.Exception.Message}", DialogButton.Ok, DialogImage.Error);
+        dialogWrapper?.Show("Error", $"An unhandled exception occurred: {e.Exception.Message}", DialogButton.Ok,
+            DialogImage.Error);
 
         // Prevent the application from crashing
         e.Handled = true;
@@ -82,9 +84,8 @@ public partial class App
     {
         // Log the exception, show a message to the user, etc.
         if (e.ExceptionObject is Exception ex)
-        {
-            dialogWrapper?.Show("Error", $"An unhandled exception occurred: {ex.Message}", DialogButton.Ok, DialogImage.Error);
-        }
+            dialogWrapper?.Show("Error", $"An unhandled exception occurred: {ex.Message}", DialogButton.Ok,
+                DialogImage.Error);
     }
 
     /// <summary>
@@ -93,7 +94,8 @@ public partial class App
     private void OnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
     {
         // Log the exception, show a message to the user, etc.
-        dialogWrapper?.Show("Error", $"An unobserved task exception occurred: {e.Exception.Message}", DialogButton.Ok, DialogImage.Error);
+        dialogWrapper?.Show("Error", $"An unobserved task exception occurred: {e.Exception.Message}", DialogButton.Ok,
+            DialogImage.Error);
 
         // Prevent the application from crashing
         e.SetObserved();

@@ -23,13 +23,13 @@ namespace Hashi.Gui.ViewModels;
 public class IslandViewModel : ObservableRecipient, IIslandViewModel
 {
     private readonly IHashiPoint mouseDownPosition = new HashiPoint(0, 0);
+    private IIslandViewModel? dropTargetIsland;
     private bool isDragging;
     private bool isHighlightHorizontalLeft;
     private bool isHighlightHorizontalRight;
     private bool isHighlightVerticalBottom;
     private bool isHighlightVerticalTop;
     private IHashiBrush islandColor = new HashiBrush(Brushes.LightBlue);
-    private IIslandViewModel? dropTargetIsland;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="IslandViewModel" /> class.
@@ -139,7 +139,9 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
     public ConnectionTypeEnum GetConnectionType(IIslandViewModel targetIsland)
     {
         if (Coordinates.X == targetIsland.Coordinates.X) return ConnectionTypeEnum.Vertical;
-        return Coordinates.Y == targetIsland.Coordinates.Y ? ConnectionTypeEnum.Horizontal : ConnectionTypeEnum.Diagonal;
+        return Coordinates.Y == targetIsland.Coordinates.Y
+            ? ConnectionTypeEnum.Horizontal
+            : ConnectionTypeEnum.Diagonal;
     }
 
     /// <inheritdoc />
@@ -171,9 +173,7 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
         ArgumentNullException.ThrowIfNull(potentialTargetIsland);
 
         if (this == potentialTargetIsland)
-        {
             throw new ArgumentException("Potential target island is identical to source.");
-        }
 
         if (Coordinates.Y == potentialTargetIsland.Coordinates.Y && Coordinates.X > potentialTargetIsland.Coordinates.X)
             return GetVisibleNeighbor(DirectionEnum.Left);
@@ -236,7 +236,8 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
     /// <inheritdoc />
     public override string ToString()
     {
-        return $"Island, Coordinate (X = {Coordinates.X}, Y = {Coordinates.Y}) | MaxConnections: {MaxConnections}, MaxReached: {MaxConnectionsReached}, BridgesCount: (Up {BridgesUp.Count}, Down {BridgesDown.Count}, Left {BridgesLeft.Count}, Right {BridgesRight.Count}";
+        return
+            $"Island, Coordinate (X = {Coordinates.X}, Y = {Coordinates.Y}) | MaxConnections: {MaxConnections}, MaxReached: {MaxConnectionsReached}, BridgesCount: (Up {BridgesUp.Count}, Down {BridgesDown.Count}, Left {BridgesLeft.Count}, Right {BridgesRight.Count}";
     }
 
     /// <summary>
@@ -336,9 +337,8 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
     protected virtual void MouseLeftButtonUpCommandExecute(MouseButtonEventArgs? e)
     {
         if (!isDragging)
-        {
-            WeakReferenceMessenger.Default.Send(new BridgeConnectionChangedMessage(new BridgeConnectionInformationContainer(BridgeOperationTypeEnum.RemoveAll, this)));
-        }
+            WeakReferenceMessenger.Default.Send(new BridgeConnectionChangedMessage(
+                new BridgeConnectionInformationContainer(BridgeOperationTypeEnum.RemoveAll, this)));
 
         WeakReferenceMessenger.Default.Send(new UpdateAllIslandColorsMessage());
     }
@@ -362,32 +362,29 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
                 potentialIsland != dropTargetIsland)
             {
                 dropTargetIsland = potentialIsland;
-                WeakReferenceMessenger.Default.Send(new DropTargetIslandChangedMessage(new BridgeConnectionInformationContainer(BridgeOperationTypeEnum.None, this, dropTargetIsland)));
+                WeakReferenceMessenger.Default.Send(new DropTargetIslandChangedMessage(
+                    new BridgeConnectionInformationContainer(BridgeOperationTypeEnum.None, this, dropTargetIsland)));
             }
 
         if (e.KeyStates != DragDropKeyStates.None) return;
 
         isDragging = false;
 
-        if (dropTargetIsland == null)
-        {
-            return;
-        }
+        if (dropTargetIsland == null) return;
 
         var potentialTarget = GetVisibleNeighbor(dropTargetIsland);
 
-        WeakReferenceMessenger.Default.Send(new BridgeConnectionChangedMessage(new BridgeConnectionInformationContainer(BridgeOperationTypeEnum.Add, this, potentialTarget)));
+        WeakReferenceMessenger.Default.Send(new BridgeConnectionChangedMessage(
+            new BridgeConnectionInformationContainer(BridgeOperationTypeEnum.Add, this, potentialTarget)));
         WeakReferenceMessenger.Default.Send(new UpdateAllIslandColorsMessage());
     }
 
     private IIslandViewModel? CheckDirection(int dx, int dy, ConnectionTypeEnum connectionType)
     {
-        ObservableCollection<ObservableCollection<IIslandViewModel>> islands = WeakReferenceMessenger.Default.Send<AllIslandsRequestMessage>();
+        ObservableCollection<ObservableCollection<IIslandViewModel>> islands =
+            WeakReferenceMessenger.Default.Send<AllIslandsRequestMessage>();
 
-        if (connectionType == ConnectionTypeEnum.Diagonal)
-        {
-            return null;
-        }
+        if (connectionType == ConnectionTypeEnum.Diagonal) return null;
 
         var currentX = Coordinates.X + dx;
         var currentY = Coordinates.Y + dy;
@@ -395,15 +392,9 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
         while (currentY >= 0 && currentY < islands.Count && currentX >= 0 && currentX < islands[currentY].Count)
         {
             var neighbor = islands[currentY][currentX];
-            if (IsCollidingConnection(neighbor, connectionType))
-            {
-                break;
-            }
+            if (IsCollidingConnection(neighbor, connectionType)) break;
 
-            if (neighbor.MaxConnections > 0)
-            {
-                return neighbor;
-            }
+            if (neighbor.MaxConnections > 0) return neighbor;
 
             currentX += dx;
             currentY += dy;
@@ -420,16 +411,14 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
     /// <returns>a boolean value indicating if the connection would collide.</returns>
     private bool IsCollidingConnection(IIslandViewModel target, ConnectionTypeEnum connectionType)
     {
-        if (target.MaxConnections > 0)
-        {
-            return false;
-        }
+        if (target.MaxConnections > 0) return false;
 
         return connectionType switch
         {
             ConnectionTypeEnum.Vertical => target.BridgesLeft.Count > 0 || target.BridgesRight.Count > 0,
             ConnectionTypeEnum.Horizontal => target.BridgesUp.Count > 0 || target.BridgesDown.Count > 0,
-            _ => throw new ArgumentOutOfRangeException(nameof(connectionType), connectionType, "Invalid connection type.")
+            _ => throw new ArgumentOutOfRangeException(nameof(connectionType), connectionType,
+                @"Invalid connection type.")
         };
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Hashi.Enums;
+﻿// ReSharper disable UnusedMember.Global
+
+namespace Hashi.Enums;
 
 /// <summary>
 ///     Represents the type of operation for the bridge.
@@ -22,7 +24,7 @@ public enum ConnectionTypeEnum
 }
 
 /// <summary>
-///      Represents the direction of the bridge.
+///     Represents the direction of the bridge.
 /// </summary>
 public enum DirectionEnum
 {
@@ -50,7 +52,7 @@ public enum DifficultyEnum
 }
 
 /// <summary>
-///      Represents the status of the solver.
+///     Represents the status of the solver.
 /// </summary>
 public enum SolverStatusEnum
 {
@@ -62,7 +64,7 @@ public enum SolverStatusEnum
 }
 
 /// <summary>
-///      Represents the type of bridge.
+///     Represents the type of bridge.
 /// </summary>
 public enum BridgeTypeEnum
 {

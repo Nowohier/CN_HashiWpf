@@ -14,12 +14,12 @@ namespace Hashi.Generator;
 public class HashiGenerator : IHashiGenerator
 {
     private readonly Func<IIsland, IIsland, int, IBridge> bridgeFactory;
-    private readonly Func<int[][], IList<IBridgeCoordinates>, ISolutionContainer> solutionContainerFactory;
     private readonly List<IBridge> bridges = new();
     private readonly Func<int, int, int, IIsland> islandFactory;
     private readonly List<IIsland> islands = new();
     private readonly ILinearSolutionSolverWithIterativ linearSolutionSolverWithIterativ;
     private readonly Random random = new();
+    private readonly Func<int[][], IList<IBridgeCoordinates>, ISolutionContainer> solutionContainerFactory;
 
     public HashiGenerator(Func<int, int, int, IIsland> islandFactory,
         Func<IIsland, IIsland, int, IBridge> bridgeFactory,
@@ -32,7 +32,8 @@ public class HashiGenerator : IHashiGenerator
         this.linearSolutionSolverWithIterativ = linearSolutionSolverWithIterativ;
     }
 
-    public async Task<ISolutionContainer> GenerateHashAsync(int difficulty = -1, int amountNodes = 10, int width = 0, int length = 0, int alpha = 0,
+    public async Task<ISolutionContainer> GenerateHashAsync(int difficulty = -1, int amountNodes = 10, int width = 0,
+        int length = 0, int alpha = 0,
         int beta = 0)
     {
         // ToDo: remove
@@ -153,7 +154,8 @@ public class HashiGenerator : IHashiGenerator
     /// <param name="beta">The beta value.</param>
     /// <param name="checkDifficulty">Determines if the difficulty should be checked.</param>
     /// <returns>a valid hashi field array with one possible solution.</returns>
-    private async Task<ISolutionContainer> GenerateHashAsync(int numberOfIslands, int sizeLength, int sizeWidth, int difficulty, int beta,
+    private async Task<ISolutionContainer> GenerateHashAsync(int numberOfIslands, int sizeLength, int sizeWidth,
+        int difficulty, int beta,
         bool checkDifficulty)
     {
         var field = await CreateHashAsync(numberOfIslands, sizeLength, sizeWidth, difficulty, beta, checkDifficulty);
@@ -161,7 +163,9 @@ public class HashiGenerator : IHashiGenerator
         while (await linearSolutionSolverWithIterativ.SolveAsync(field) == SolverStatusEnum.Infeasible)
             field = await CreateHashAsync(numberOfIslands, sizeLength, sizeWidth, difficulty, beta, checkDifficulty);
 
-        var bridgesList = (IList<IBridgeCoordinates>)GetBridges().Select(x => new BridgeCoordinates(new Point(x.Island1.X, x.Island1.Y), new Point(x.Island2.X, x.Island2.Y), x.AmountBridgesSet)).ToList<IBridgeCoordinates>();
+        var bridgesList = (IList<IBridgeCoordinates>)GetBridges()
+            .Select(x => new BridgeCoordinates(new Point(x.Island1.X, x.Island1.Y), new Point(x.Island2.X, x.Island2.Y),
+                x.AmountBridgesSet)).ToList<IBridgeCoordinates>();
 
         Debug.WriteLine(string.Empty);
         Debug.WriteLine(string.Join("\nNumberOfIslands", field.Select(row => $"{{{string.Join(", ", row)}}}")));
@@ -169,7 +173,8 @@ public class HashiGenerator : IHashiGenerator
         return solutionContainerFactory.Invoke(field, bridgesList);
     }
 
-    private async Task<int[][]> CreateHashAsync(int numberOfIslands, int sizeLength, int sizeWidth, int difficulty, int beta,
+    private async Task<int[][]> CreateHashAsync(int numberOfIslands, int sizeLength, int sizeWidth, int difficulty,
+        int beta,
         bool checkDifficulty)
     {
         var task = Task.Run(() =>
@@ -449,6 +454,7 @@ public class HashiGenerator : IHashiGenerator
         return -1;
     }
 
+    // ReSharper disable once IdentifierTypo
     private int DownBlockedd(IIsland mainIsland, int[][] mainField)
     {
         if (mainIsland.IslandDown == null) return -1;
@@ -464,6 +470,7 @@ public class HashiGenerator : IHashiGenerator
         return -1;
     }
 
+    // ReSharper disable once IdentifierTypo
     private int RightBlockedd(IIsland mainIsland, int[][] mainField)
     {
         if (mainIsland.IslandRight == null) return -1;

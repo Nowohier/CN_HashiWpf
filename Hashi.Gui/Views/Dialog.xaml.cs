@@ -1,4 +1,4 @@
-﻿using Hashi.Gui.Enums;
+﻿using Hashi.Enums;
 using Hashi.Gui.Helpers;
 using Hashi.Gui.Interfaces.General;
 using Hashi.Gui.ViewModels;

@@ -16,7 +16,7 @@ public interface IHashiPoint : ICloneable
     public int Y { get; }
 
     /// <summary>
-    ///    Indicates whether the point is a hint.
+    ///     Indicates whether the point is a hint.
     /// </summary>
     bool IsHint { get; set; }
 }
