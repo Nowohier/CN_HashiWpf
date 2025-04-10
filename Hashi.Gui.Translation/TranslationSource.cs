@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Resources;
 
-namespace Hashi.Gui.Localization
+namespace Hashi.Gui.Translation
 {
     /// <summary>
     ///   Provides a singleton instance for accessing localized strings.

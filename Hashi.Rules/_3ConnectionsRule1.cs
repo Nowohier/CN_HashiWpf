@@ -1,11 +1,12 @@
 ﻿using Hashi.Gui.Interfaces.ViewModels;
+using Hashi.Gui.Translation;
 using NRules.Fluent.Dsl;
 
 namespace Hashi.Rules
 {
     public class _3ConnectionsRule1 : BaseRule
     {
-        protected override string RuleMessage => "If an island with a maximum of three bridges has only two neighbors, then a connection must be set to each neighbor.";
+        protected override string RuleMessage => TranslationSource.Instance[nameof(_3ConnectionsRule1)]!;
 
         public override void Define()
         {

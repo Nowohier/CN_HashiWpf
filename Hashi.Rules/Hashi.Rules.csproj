@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Hashi.Gui.Interfaces\Hashi.Gui.Interfaces.csproj" />
+    <ProjectReference Include="..\Hashi.Gui.Translation\Hashi.Gui.Translation.csproj" />
   </ItemGroup>
 
 </Project>
