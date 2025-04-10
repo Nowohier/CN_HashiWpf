@@ -98,7 +98,6 @@ public abstract class BaseRule : Rule
     private bool EnsureRulesAreBeingApplied(IConnectionManagerViewModel connectionManager)
     {
         if (connectionManager.AreRulesBeingApplied == false) return false;
-        connectionManager.AreRulesBeingApplied = false;
         connectionManager.RuleMessage = RuleMessage;
         return true;
     }
