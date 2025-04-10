@@ -1,4 +1,6 @@
-﻿namespace CNHashiWpf.Test.Models.V3;
+﻿// ReSharper disable CommentTypo
+
+namespace Hashi.Gui.Test.Models.V3;
 
 [TestFixture]
 public class V3Test

@@ -4,11 +4,13 @@ using Hashi.Gui.Extensions;
 using Hashi.Gui.Interfaces.ViewModels;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Hashi.Gui.ViewModels;
 
 /// <inheritdoc cref="ISettingsViewModel" />
 [JsonObject(MemberSerialization.OptIn)]
+[SuppressMessage("ReSharper", "StringLiteralTypo")]
 public class SettingsViewModel : ObservableRecipient, ISettingsViewModel
 {
     private bool areGridLinesEnabled;

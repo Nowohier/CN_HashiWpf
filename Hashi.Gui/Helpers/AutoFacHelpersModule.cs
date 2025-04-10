@@ -1,14 +1,12 @@
 ﻿using Autofac;
 
-namespace Hashi.Gui.Helpers
+namespace Hashi.Gui.Helpers;
+
+/// <inheritdoc />
+public class AutoFacHelpersModule : Module
 {
     /// <inheritdoc />
-    public class AutoFacHelpersModule : Module
+    protected override void Load(ContainerBuilder builder)
     {
-        /// <inheritdoc />
-        protected override void Load(ContainerBuilder builder)
-        {
-
-        }
     }
 }

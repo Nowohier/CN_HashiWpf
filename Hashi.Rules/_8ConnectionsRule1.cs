@@ -2,28 +2,27 @@
 using Hashi.Gui.Translation;
 using NRules.Fluent.Dsl;
 
-namespace Hashi.Rules
+namespace Hashi.Rules;
+
+public class _8ConnectionsRule1 : BaseRule
 {
-    public class _8ConnectionsRule1 : BaseRule
+    protected override string RuleMessage => TranslationSource.Instance[nameof(_8ConnectionsRule1)]!;
+
+    public override void Define()
     {
-        protected override string RuleMessage => TranslationSource.Instance[nameof(_8ConnectionsRule1)]!;
+        IIslandViewModel island = default!;
+        List<IIslandViewModel> allNeighbors = default!;
+        IConnectionManagerViewModel connectionManager = default!;
+        var allNeighborsCount = 0;
 
-        public override void Define()
-        {
-            IIslandViewModel island = default!;
-            List<IIslandViewModel> allNeighbors = default!;
-            IConnectionManagerViewModel connectionManager = default!;
-            var allNeighborsCount = 0;
+        When()
+            .Query(() => connectionManager, q => q.Match<IConnectionManagerViewModel>())
+            .Match(() => island, x => x.MaxConnections == 8 && !x.MaxConnectionsReached)
+            .Let(() => allNeighbors, () => island.GetAllVisibleNeighbors())
+            .Let(() => allNeighborsCount, () => allNeighbors.Count)
+            .Having(() => allNeighborsCount == 4);
 
-            When()
-                .Query(() => connectionManager, q => q.Match<IConnectionManagerViewModel>())
-                .Match(() => island, x => x.MaxConnections == 8 && !x.MaxConnectionsReached)
-                .Let(() => allNeighbors, () => island.GetAllVisibleNeighbors())
-                .Let(() => allNeighborsCount, () => allNeighbors.Count)
-                .Having(() => allNeighborsCount == 4);
-
-            Then()
-                .Do(ctx => AddMultipleConnections(island, allNeighbors, connectionManager));
-        }
+        Then()
+            .Do(ctx => AddMultipleConnections(island, allNeighbors, connectionManager));
     }
 }

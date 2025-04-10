@@ -1,21 +1,20 @@
-﻿using Hashi.Gui.Translation;
-using System.Windows.Data;
+﻿using System.Windows.Data;
+using Hashi.Gui.Translation;
 
-namespace Hashi.Gui.Localization
+namespace Hashi.Gui.Localization;
+
+/// <summary>
+///     A binding class for localization.
+/// </summary>
+public class Loc : Binding
 {
     /// <summary>
-    ///   A binding class for localization.
+    ///     Initializes a new instance of the <see cref="Loc" /> class.
     /// </summary>
-    public class Loc : Binding
+    /// <param name="name">The name of the binding property.</param>
+    public Loc(string name) : base($"[{name}]")
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="Loc" /> class.
-        /// </summary>
-        /// <param name="name">The name of the binding property.</param>
-        public Loc(string name) : base($"[{name}]")
-        {
-            Mode = BindingMode.OneWay;
-            Source = TranslationSource.Instance;
-        }
+        Mode = BindingMode.OneWay;
+        Source = TranslationSource.Instance;
     }
 }

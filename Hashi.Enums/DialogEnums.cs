@@ -1,4 +1,6 @@
-﻿namespace Hashi.Gui.Enums;
+﻿// ReSharper disable UnusedMember.Global
+
+namespace Hashi.Enums;
 
 public enum DialogImage
 {

@@ -4,7 +4,7 @@ using Hashi.Gui.Interfaces.ViewModels;
 
 namespace Hashi.Gui.Messages.MessageContainers;
 
-/// <inheritdoc cref="IBridgeConnectionInformationContainer"/>
+/// <inheritdoc cref="IBridgeConnectionInformationContainer" />
 public class BridgeConnectionInformationContainer : IBridgeConnectionInformationContainer
 {
     /// <summary>
@@ -13,7 +13,8 @@ public class BridgeConnectionInformationContainer : IBridgeConnectionInformation
     /// <param name="bridgeOperationType">The bridge operation type.</param>
     /// <param name="sourceIsland">The source island.</param>
     /// <param name="targetIsland">The target island.</param>
-    public BridgeConnectionInformationContainer(BridgeOperationTypeEnum bridgeOperationType, IIslandViewModel sourceIsland, IIslandViewModel? targetIsland = null)
+    public BridgeConnectionInformationContainer(BridgeOperationTypeEnum bridgeOperationType,
+        IIslandViewModel sourceIsland, IIslandViewModel? targetIsland = null)
     {
         BridgeOperationType = bridgeOperationType;
         SourceIsland = sourceIsland;

@@ -14,10 +14,11 @@ public class JsonWrapper : IJsonWrapper
         Formatting = Formatting.Indented,
         NullValueHandling = NullValueHandling.Ignore,
         TypeNameHandling = TypeNameHandling.Auto,
-        Converters = {
+        Converters =
+        {
             new AbstractConverter<HighScorePerDifficultyViewModel, IHighScorePerDifficultyViewModel>(),
             new AbstractConverter<SettingsViewModel, ISettingsViewModel>()
-        },
+        }
     };
 
     /// <inheritdoc />

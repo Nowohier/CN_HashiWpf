@@ -18,17 +18,17 @@ public interface ISettingsViewModel
     ObservableCollection<IHighScorePerDifficultyViewModel> HighScores { get; }
 
     /// <summary>
-    ///    Gets the collection of available languages for the game.
+    ///     Gets the collection of available languages for the game.
     /// </summary>
     ObservableCollection<ILanguageViewModel> Languages { get; }
 
     /// <summary>
-    ///    Gets or sets the selected language culture for the game.
+    ///     Gets or sets the selected language culture for the game.
     /// </summary>
     string? SelectedLanguageCulture { get; set; }
 
     /// <summary>
-    ///   Initializes a fresh settings configuration.
+    ///     Initializes a fresh settings configuration.
     /// </summary>
     void InitializeHighScores();
 }

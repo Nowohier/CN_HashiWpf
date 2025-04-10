@@ -1,18 +1,19 @@
 ﻿using System.Globalization;
 using System.Windows.Data;
-using Hashi.Enums;
 
 namespace Hashi.Gui.Converters;
 
 /// <summary>
-///     Converts a Tag Property of a FrameworkElement to a BridgeTypeEnum.
+///     A converter that is used to set the maximum width of the message text in the UI.
 /// </summary>
-public class TagToBridgeTypeEnumConverter : IValueConverter
+public class MaxMessageTextWidthConverter : IValueConverter
 {
     /// <inheritdoc />
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        return value is not BridgeTypeEnum bridgeType ? BridgeTypeEnum.None : bridgeType;
+        if (value is not double val) return 0;
+
+        return val - 30;
     }
 
     /// <inheritdoc />

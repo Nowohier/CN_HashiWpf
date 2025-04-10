@@ -1,10 +1,10 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Windows;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Hashi.Gui.Interfaces.Models;
-using System.Windows;
 
 namespace Hashi.Gui.Models;
 
-/// <inheritdoc cref="IHashiPoint"/>
+/// <inheritdoc cref="IHashiPoint" />
 public class HashiPoint : ObservableRecipient, IHashiPoint
 {
     private string hintMessage = string.Empty;
@@ -41,7 +41,7 @@ public class HashiPoint : ObservableRecipient, IHashiPoint
     {
         var clone = new HashiPoint(X, Y, IsHint)
         {
-            hintMessage = this.hintMessage
+            hintMessage = hintMessage
         };
         return clone;
     }
@@ -49,10 +49,7 @@ public class HashiPoint : ObservableRecipient, IHashiPoint
     /// <inheritdoc />
     public override bool Equals(object? obj)
     {
-        if (obj is not IHashiPoint item)
-        {
-            return false;
-        }
+        if (obj is not IHashiPoint item) return false;
 
         return X.Equals(item.X) && Y.Equals(item.Y);
     }

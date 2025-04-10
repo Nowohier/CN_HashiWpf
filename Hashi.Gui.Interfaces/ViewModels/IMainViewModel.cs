@@ -1,12 +1,12 @@
-﻿using Hashi.Enums;
-using Hashi.Gui.Interfaces.Messages;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Windows.Input;
+using Hashi.Enums;
+using Hashi.Gui.Interfaces.Messages;
 
 namespace Hashi.Gui.Interfaces.ViewModels;
 
 /// <summary>
-///   The main view model for the Hashi game.
+///     The main view model for the Hashi game.
 /// </summary>
 public interface IMainViewModel
 {
@@ -16,7 +16,7 @@ public interface IMainViewModel
     public IConnectionManagerViewModel ConnectionManager { get; }
 
     /// <summary>
-    /// Determines if a hashi puzzle is being generated.
+    ///     Determines if a hashi puzzle is being generated.
     /// </summary>
     bool IsGeneratingHashiPuzzle { get; set; }
 
@@ -26,7 +26,7 @@ public interface IMainViewModel
     bool IsTimerRunning { get; set; }
 
     /// <summary>
-    /// Determines if the user has used hints or not.
+    ///     Determines if the user has used hints or not.
     /// </summary>
     bool IsCheating { get; set; }
 
@@ -56,27 +56,27 @@ public interface IMainViewModel
     ICommand RemoveAllBridgesCommand { get; }
 
     /// <summary>
-    ///    Command to generate a hint.
+    ///     Command to generate a hint.
     /// </summary>
     ICommand GenerateHintCommand { get; }
 
     /// <summary>
-    /// Command executed when the window is clicked anywhere
+    ///     Command executed when the window is clicked anywhere
     /// </summary>
     ICommand WindowMouseClickedCommand { get; }
 
     /// <summary>
-    ///   Command executed when the user clicks on the "Undo" button.
+    ///     Command executed when the user clicks on the "Undo" button.
     /// </summary>
     ICommand UndoCommand { get; }
 
     /// <summary>
-    ///    Command executed when the user clicks on the "Redo" button.
+    ///     Command executed when the user clicks on the "Redo" button.
     /// </summary>
     ICommand RedoCommand { get; }
 
     /// <summary>
-    ///    Command to change the language of the application.
+    ///     Command to change the language of the application.
     /// </summary>
     ICommand ChangeLanguageCommand { get; }
 
