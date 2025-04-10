@@ -1,11 +1,12 @@
 ﻿using Hashi.Gui.Interfaces.ViewModels;
+using Hashi.Gui.Translation;
 using NRules.Fluent.Dsl;
 
 namespace Hashi.Rules
 {
     public class GeneralRule1 : BaseRule
     {
-        protected override string RuleMessage => "Islands with only one active neighbor can set their remaining connections to that neighbor.";
+        protected override string RuleMessage => TranslationSource.Instance[nameof(GeneralRule1)]!;
 
         /// <inheritdoc />
         public override void Define()

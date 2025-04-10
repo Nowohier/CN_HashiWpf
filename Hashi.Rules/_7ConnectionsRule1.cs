@@ -1,11 +1,12 @@
 ﻿using Hashi.Gui.Interfaces.ViewModels;
+using Hashi.Gui.Translation;
 using NRules.Fluent.Dsl;
 
 namespace Hashi.Rules
 {
     public class _7ConnectionsRule1 : BaseRule
     {
-        protected override string RuleMessage => "If an island with a maximum of seven connections has four neighbors then each needs one connection.";
+        protected override string RuleMessage => TranslationSource.Instance[nameof(_7ConnectionsRule1)]!;
 
         public override void Define()
         {

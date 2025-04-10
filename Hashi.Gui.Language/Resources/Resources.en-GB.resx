@@ -117,7 +117,76 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CreateTitle" xml:space="preserve">
+    <value>CREATE NEW GAME</value>
+  </data>
+  <data name="CreateTooltip" xml:space="preserve">
+    <value>Create a new game</value>
+  </data>
+  <data name="GeneralRule1" xml:space="preserve">
+    <value>Islands with only one active neighbor can set their remaining connections to that neighbor.</value>
+  </data>
+  <data name="HashiLoadingText" xml:space="preserve">
+    <value>Please wait - generating Hashi puzzle...</value>
+  </data>
+  <data name="HintText" xml:space="preserve">
+    <value>Hint: </value>
+  </data>
   <data name="Language" xml:space="preserve">
     <value>Language</value>
+  </data>
+  <data name="MessagesTitle" xml:space="preserve">
+    <value>MESSAGES</value>
+  </data>
+  <data name="OptionsTitle" xml:space="preserve">
+    <value>OPTIONS</value>
+  </data>
+  <data name="Redo" xml:space="preserve">
+    <value>Redo</value>
+  </data>
+  <data name="RemoveAllBridgesTooltip" xml:space="preserve">
+    <value>Remove all bridges</value>
+  </data>
+  <data name="ShowHintTooltip" xml:space="preserve">
+    <value>Show hint</value>
+  </data>
+  <data name="TimesTitle" xml:space="preserve">
+    <value>TIMES</value>
+  </data>
+  <data name="ToggleGridlinesTooltip" xml:space="preserve">
+    <value>Toggle gridlines</value>
+  </data>
+  <data name="Undo" xml:space="preserve">
+    <value>Undo</value>
+  </data>
+  <data name="_1ConnectionRule1" xml:space="preserve">
+    <value>Islands with a maximum of one bridge can set their connection if there is only one neighbor island accepting bridges. Neighbor islands with a maximum of one bridge cannot be connected to as both islands would be isolated then.</value>
+  </data>
+  <data name="_2ConnectionsRule1" xml:space="preserve">
+    <value>If an island with a maximum of two bridges has two neighbor islands with also a maximum of two bridges, then a connection to each neighbors must be set.</value>
+  </data>
+  <data name="_2ConnectionsRule2" xml:space="preserve">
+    <value>If an island with a maximum of two bridges has a connection to another island with max one connections, then the other connection can only go to a neighbor with max connections &gt; 1.</value>
+  </data>
+  <data name="_3ConnectionsRule1" xml:space="preserve">
+    <value>If an island with a maximum of three bridges has only two neighbors, then a connection must be set to each neighbor.</value>
+  </data>
+  <data name="_4ConnectionsRule1" xml:space="preserve">
+    <value>Islands with a maximum of four bridges can set all connections if only two neighbors are available.</value>
+  </data>
+  <data name="_4ConnectionsRule2" xml:space="preserve">
+    <value>Islands with a maximum of four bridges and three neighbors can set one connection to each neighbor if one of the neighbors already has a connection to the island and has max connections.</value>
+  </data>
+  <data name="_5ConnectionsRule1" xml:space="preserve">
+    <value>If an island with a maximum of five connections has three neighbors then each needs one connection.</value>
+  </data>
+  <data name="_6ConnectionsRule1" xml:space="preserve">
+    <value>If an island with a maximum of six connections has three neighbors then set all connections.</value>
+  </data>
+  <data name="_7ConnectionsRule1" xml:space="preserve">
+    <value>If an island with a maximum of seven connections has four neighbors then each needs one connection.</value>
+  </data>
+  <data name="_8ConnectionsRule1" xml:space="preserve">
+    <value>If an island with a maximum of eight connections has four neighbors then set all connections.</value>
   </data>
 </root>
