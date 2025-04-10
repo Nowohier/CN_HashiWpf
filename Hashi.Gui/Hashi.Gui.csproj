@@ -34,7 +34,7 @@
     <ProjectReference Include="..\Hashi.Enums\Hashi.Enums.csproj" />
     <ProjectReference Include="..\Hashi.Generator\Hashi.Generator.csproj" />
     <ProjectReference Include="..\Hashi.Gui.Interfaces\Hashi.Gui.Interfaces.csproj" />
-    <ProjectReference Include="..\Hashi.Gui.Language\Hashi.Gui.Language.csproj" />
+    <ProjectReference Include="..\Hashi.Gui.Translation\Hashi.Gui.Translation.csproj" />
     <ProjectReference Include="..\Hashi.Rules\Hashi.Rules.csproj" />
   </ItemGroup>
 

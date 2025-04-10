@@ -1,4 +1,5 @@
-﻿using System.Windows.Data;
+﻿using Hashi.Gui.Translation;
+using System.Windows.Data;
 
 namespace Hashi.Gui.Localization
 {

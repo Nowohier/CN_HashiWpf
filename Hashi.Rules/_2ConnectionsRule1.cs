@@ -1,11 +1,12 @@
 ﻿using Hashi.Gui.Interfaces.ViewModels;
+using Hashi.Gui.Translation;
 using NRules.Fluent.Dsl;
 
 namespace Hashi.Rules
 {
     public class _2ConnectionsRule1 : BaseRule
     {
-        protected override string RuleMessage => "If an island with a maximum of two bridges has two neighbor islands with also a maximum of two bridges, then a connection to each neighbors must be set.";
+        protected override string RuleMessage => TranslationSource.Instance[nameof(_2ConnectionsRule1)]!;
 
         /// <inheritdoc />
         public override void Define()

@@ -7,7 +7,8 @@
                     xmlns:viewModels="clr-namespace:Hashi.Gui.ViewModels"
                     xmlns:behaviors="clr-namespace:Hashi.Gui.Behaviors"
                     xmlns:collections="clr-namespace:System.Collections;assembly=System.Runtime"
-                    xmlns:enums="clr-namespace:Hashi.Enums;assembly=Hashi.Enums">
+                    xmlns:enums="clr-namespace:Hashi.Enums;assembly=Hashi.Enums"
+                    xmlns:ns="clr-namespace:Hashi.Gui.Localization">
 
     <converters:IslandVisibilityConverter x:Key="IslandVisibilityConverter" />
     <converters:TagToBridgeTypeEnumConverter x:Key="TagToBridgeTypeEnumConverter"/>
@@ -44,7 +45,7 @@
         <Setter Property="Background" Value="White" />
         <Setter Property="Height" Value="30" />
         <Setter Property="IsEnabled" Value="True" />
-        <Setter Property="ToolTip" Value="Toggle Gridlines" />
+        <Setter Property="ToolTip" Value="{ns:Loc ToggleGridlinesTooltip}" />
         <Setter Property="ToolTipService.InitialShowDelay" Value="0" />
         <Setter Property="Template">
             <Setter.Value>
