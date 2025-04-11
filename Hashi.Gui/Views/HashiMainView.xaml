@@ -30,8 +30,6 @@
                 <x:Type TypeName="enums:DifficultyEnum" />
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
-        <converters:EmptyStringToVisibilityConverter x:Key="EmptyStringToVisibilityConverter" />
-        <converters:MaxMessageTextWidthConverter x:Key="MaxMessageTextWidthConverter" />
     </Window.Resources>
     <Grid Margin="10">
         <Grid.RowDefinitions>

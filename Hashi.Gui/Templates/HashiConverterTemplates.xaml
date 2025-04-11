@@ -1,0 +1,10 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:converters="clr-namespace:Hashi.Gui.Converters">
+
+    <converters:IslandVisibilityConverter x:Key="IslandVisibilityConverter" />
+    <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+    <converters:TagToBridgeTypeEnumConverter x:Key="TagToBridgeTypeEnumConverter" />
+    <converters:EmptyStringToVisibilityConverter x:Key="EmptyStringToVisibilityConverter" />
+    <converters:MaxMessageTextWidthConverter x:Key="MaxMessageTextWidthConverter" />
+</ResourceDictionary>
