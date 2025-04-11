@@ -26,6 +26,12 @@ namespace Hashi.Rules.Test.Helpers
 
         }
 
+        [TearDown]
+        public void TearDown()
+        {
+            Session.RetractAll(Session.Query<IIslandViewModel>());
+        }
+
         protected Mock<IIslandViewModel> CreateTestIslandMock(TestIslandEnum islandEnum, int maxConnections, bool maxConnectionsReached = false)
         {
             return islandEnum switch
