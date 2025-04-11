@@ -19,8 +19,8 @@ public class _7ConnectionsRule1 : BaseRule
             .Query(() => connectionManager, q => q.Match<IConnectionManagerViewModel>())
             .Match(() => island, x => x.MaxConnections == 7 && !x.MaxConnectionsReached)
             .Let(() => allNeighbors, () => island.GetAllVisibleNeighbors())
-            .Let(() => validNeighbors, () => allNeighbors.Where(x => !x.AllConnections.Contains(island.Coordinates)).ToList())
-            .Having(() => allNeighbors.Count == 4 && !allNeighbors.All(x => x.AllConnections.Contains(island.Coordinates)));
+            .Having(() => allNeighbors.Count == 4 && !AreAllIslandsConnectedToSource(island, allNeighbors))
+            .Let(() => validNeighbors, () => GetConnectableNeighborsWithNoConnectionSetToSource(island, allNeighbors));
 
         Then()
             .Do(ctx => AddConnections(island, validNeighbors, connectionManager));

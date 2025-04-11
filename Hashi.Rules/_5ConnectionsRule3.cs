@@ -4,26 +4,25 @@ using NRules.Fluent.Dsl;
 
 namespace Hashi.Rules;
 
-public class _4ConnectionsRule2 : BaseRule
+public class _5ConnectionsRule3 : BaseRule
 {
-    protected override string RuleMessage => TranslationSource.Instance[nameof(_4ConnectionsRule2)]!;
+    protected override string RuleMessage => TranslationSource.Instance[nameof(_5ConnectionsRule3)]!;
 
-    /// <inheritdoc />
     public override void Define()
     {
         IIslandViewModel island = null!;
         List<IIslandViewModel> allNeighbors = null!;
-        List<IIslandViewModel> validNeighbors = null!;
         List<IIslandViewModel> restrictedNeighbors = null!;
+        List<IIslandViewModel> validNeighbors = null!;
         IConnectionManagerViewModel connectionManager = null!;
 
         When()
-            .Match(() => island, x => !x.MaxConnectionsReached && x.MaxConnections == 4 && (x.MaxConnections - x.AllConnections.Count >= 2 || x.MaxConnections - x.AllConnections.Count <= 3))
+            .Match(() => island, x => x.MaxConnections == 5 && !x.MaxConnectionsReached)
             .Query(() => connectionManager, q => q.Match<IConnectionManagerViewModel>())
             .Let(() => allNeighbors, () => island.GetAllVisibleNeighbors())
-            .Having(() => allNeighbors.Count == 3)
+            .Having(() => allNeighbors.Count == 4)
             .Let(() => restrictedNeighbors, () => GetIslandsConnectedAndMaxConnectionsReached(island, allNeighbors, null))
-            .Having(() => restrictedNeighbors.Count == 1 && GetAmountConnectionsToSource(island, restrictedNeighbors) == 1)
+            .Having(() => restrictedNeighbors.Count == 2 && GetAmountConnectionsToSource(island, restrictedNeighbors) <= 3)
             .Let(() => validNeighbors, () => GetConnectableNeighborsWithNoConnectionSetToSource(island, allNeighbors));
 
         Then()

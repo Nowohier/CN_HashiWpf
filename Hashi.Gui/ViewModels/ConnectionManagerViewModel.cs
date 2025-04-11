@@ -273,9 +273,21 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
 
         if (session == null)
         {
+            // ReSharper disable once UseObjectOrCollectionInitializer
+            var rulesToCheck = new List<Type>();
+            //rulesToCheck.Add(typeof(_4ConnectionsRule2));
+
             //Load rules
             var repository = new RuleRepository();
-            repository.Load(x => x.From(typeof(_1ConnectionRule1).Assembly));
+
+            if (rulesToCheck.Count > 0)
+            {
+                repository.Load(x => x.From(rulesToCheck));
+            }
+            else
+            {
+                repository.Load(x => x.From(typeof(_1ConnectionRule1).Assembly));
+            }
 
             //Compile rules
             var factory = repository.Compile();

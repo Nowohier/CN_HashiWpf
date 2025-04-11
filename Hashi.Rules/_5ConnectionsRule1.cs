@@ -19,8 +19,8 @@ public class _5ConnectionsRule1 : BaseRule
             .Query(() => connectionManager, q => q.Match<IConnectionManagerViewModel>())
             .Match(() => island, x => x.MaxConnections == 5 && !x.MaxConnectionsReached)
             .Let(() => allNeighbors, () => island.GetAllVisibleNeighbors())
-            .Let(() => validNeighbors, () => allNeighbors.Where(x => !x.AllConnections.Contains(island.Coordinates)).ToList())
-            .Having(() => allNeighbors.Count == 3 && !allNeighbors.All(x => x.AllConnections.Contains(island.Coordinates)));
+            .Let(() => validNeighbors, () => GetConnectableNeighborsWithNoConnectionSetToSource(island, allNeighbors))
+            .Having(() => allNeighbors.Count == 3 && validNeighbors.Count > 0);
 
         Then()
             .Do(ctx => AddConnections(island, validNeighbors, connectionManager));
