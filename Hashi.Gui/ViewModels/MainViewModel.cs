@@ -11,6 +11,10 @@ using Hashi.Gui.Interfaces.Wrappers;
 using Hashi.Gui.Messages;
 using Hashi.Gui.Messaging;
 using Hashi.Gui.Translation;
+using Hashi.Rules;
+using NRules;
+using NRules.Diagnostics;
+using NRules.Fluent;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -36,6 +40,7 @@ public class MainViewModel : AsyncObservableRecipient,
     private readonly IHashiGenerator hashiGenerator;
     internal readonly string HashiSettingsFileName = "HashiSettings.json";
     private readonly IJsonWrapper jsonWrapper;
+    private ISession? session;
 
     internal readonly string SaveFilePath =
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"CN_Hashi\Settings");
@@ -45,6 +50,7 @@ public class MainViewModel : AsyncObservableRecipient,
     private bool isGeneratingHashiPuzzle;
     private bool isTimerRunning;
     private DifficultyEnum selectedDifficulty = DifficultyEnum.Easy3;
+    private Type selectedRule;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="MainViewModel" /> class.
@@ -82,6 +88,7 @@ public class MainViewModel : AsyncObservableRecipient,
         WindowMouseClickedCommand = new RelayCommand(() => ConnectionManager.RuleMessage = string.Empty);
         ChangeLanguageCommand = new RelayCommand<string>(ChangeLanguageCommandExecute);
 
+        selectedRule = Rules.First();
         dispatcherTimer.Tick += (_, _) => OnPropertyChanged(nameof(Timer));
         Settings = LoadSettings();
     }
@@ -115,6 +122,21 @@ public class MainViewModel : AsyncObservableRecipient,
     {
         get => isGeneratingHashiPuzzle;
         set => SetProperty(ref isGeneratingHashiPuzzle, value);
+    }
+
+    /// <inheritdoc />
+    public IList<Type> Rules { get; } = typeof(_1ConnectionRule1).Assembly.GetTypes().Where(static x => x.Name.StartsWith("_")).ToList();
+
+    /// <inheritdoc />
+    public Type SelectedRule
+    {
+        get => selectedRule;
+        set
+        {
+            if (!SetProperty(ref selectedRule, value) || session == null) return;
+            session.Events.RhsExpressionEvaluatedEvent -= OnRhsExpressionEvaluated;
+            session = null;
+        }
     }
 
     /// <inheritdoc />
@@ -208,6 +230,13 @@ public class MainViewModel : AsyncObservableRecipient,
         IsGeneratingHashiPuzzle = true;
         IsCheating = false;
         var solutionContainer = await hashiGenerator.GenerateHashAsync((int)SelectedDifficulty);
+
+        if (session != null)
+        {
+            session.Events.RhsExpressionEvaluatedEvent -= OnRhsExpressionEvaluated;
+            session = null;
+        }
+
         ConnectionManager.InitializeNewSolution(solutionContainer);
 
         StopTimer();
@@ -332,7 +361,49 @@ public class MainViewModel : AsyncObservableRecipient,
     {
         IsCheating = true;
         StartTimer();
-        ConnectionManager.GenerateHint();
+        GenerateHint();
+    }
+
+    private void GenerateHint()
+    {
+        ConnectionManager.AreRulesBeingApplied = true;
+
+        if (session == null)
+        {
+            //Load rules
+            var repository = new RuleRepository();
+
+            if (SelectedRule != typeof(_0AllRules))
+            {
+                repository.Load(x => x.From(SelectedRule));
+            }
+            else
+            {
+                repository.Load(x => x.From(Rules));
+            }
+
+            //Compile rules
+            var factory = repository.Compile();
+
+            //Create rules session
+            session = factory.CreateSession();
+            session.Events.RhsExpressionEvaluatedEvent += OnRhsExpressionEvaluated;
+
+            session.InsertAll(ConnectionManager.Islands.SelectMany(x => x));
+            session.Insert(ConnectionManager);
+        }
+        else
+        {
+            session.UpdateAll(ConnectionManager.Islands.SelectMany(x => x));
+            session.Update(ConnectionManager);
+        }
+
+        var rulesFired = session.Fire();
+    }
+
+    private void OnRhsExpressionEvaluated(object? sender, RhsExpressionEventArgs e)
+    {
+        ConnectionManager.AreRulesBeingApplied = false;
     }
 
     private void ChangeLanguageCommandExecute(string? culture)

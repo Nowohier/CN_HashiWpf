@@ -1,6 +1,6 @@
-﻿using System.Collections.ObjectModel;
-using Hashi.Generator.Interfaces.Models;
+﻿using Hashi.Generator.Interfaces.Models;
 using Hashi.Gui.Interfaces.Models;
+using System.Collections.ObjectModel;
 
 namespace Hashi.Gui.Interfaces.ViewModels;
 
@@ -89,11 +89,6 @@ public interface IConnectionManagerViewModel
     ///     Refreshes the island colors.
     /// </summary>
     void RefreshIslandColors();
-
-    /// <summary>
-    ///     Generates a hint for the current solution container and islands.
-    /// </summary>
-    void GenerateHint();
 
     /// <summary>
     ///     Gets an island by coordinates.
