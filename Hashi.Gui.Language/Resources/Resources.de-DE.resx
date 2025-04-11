@@ -204,4 +204,7 @@
   <data name="_8ConnectionsRule1" xml:space="preserve">
     <value>Wenn eine 8er Insel vier Nachbarn hat, dann können alle Verbindungen gesetzt werden.</value>
   </data>
+  <data name="_0AllRules" xml:space="preserve">
+    <value>Alle Regeln werden jetzt angewendet um Hinweise zu generieren.</value>
+  </data>
 </root>

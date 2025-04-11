@@ -1,5 +1,6 @@
 ﻿using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Translation;
+using Hashi.Rules.Extensions;
 using NRules.Fluent.Dsl;
 
 namespace Hashi.Rules;
@@ -21,9 +22,9 @@ public class _5ConnectionsRule3 : BaseRule
             .Query(() => connectionManager, q => q.Match<IConnectionManagerViewModel>())
             .Let(() => allNeighbors, () => island.GetAllVisibleNeighbors())
             .Having(() => allNeighbors.Count == 4)
-            .Let(() => restrictedNeighbors, () => GetIslandsConnectedAndMaxConnectionsReached(island, allNeighbors, null))
-            .Having(() => restrictedNeighbors.Count == 2 && GetAmountConnectionsToSource(island, restrictedNeighbors) <= 3)
-            .Let(() => validNeighbors, () => GetConnectableNeighborsWithNoConnectionSetToSource(island, allNeighbors));
+            .Let(() => restrictedNeighbors, () => island.GetMaxedOutConnectedNeighbors(allNeighbors, null))
+            .Having(() => restrictedNeighbors.Count == 2 && island.CountConnectionsToNeighbors(restrictedNeighbors) <= 3)
+            .Let(() => validNeighbors, () => island.GetConnectableNeighborsWithoutConnection(allNeighbors));
 
         Then()
             .Do(ctx => AddConnections(island, validNeighbors, connectionManager));

@@ -204,4 +204,7 @@
   <data name="_8ConnectionsRule1" xml:space="preserve">
     <value>If an island with a maximum of eight connections has four neighbors then set all connections.</value>
   </data>
+  <data name="_0AllRules" xml:space="preserve">
+    <value>All rules will now be used to generate hints.</value>
+  </data>
 </root>

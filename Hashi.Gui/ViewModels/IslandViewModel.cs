@@ -112,6 +112,9 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
     public int MaxConnections { get; }
 
     /// <inheritdoc />
+    public int RemainingConnections => MaxConnections - AllConnections.Count;
+
+    /// <inheritdoc />
     public IHashiPoint Coordinates { get; }
 
     /// <inheritdoc />

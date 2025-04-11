@@ -1,5 +1,6 @@
 ﻿using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Translation;
+using Hashi.Rules.Extensions;
 using NRules.Fluent.Dsl;
 
 namespace Hashi.Rules;
@@ -18,13 +19,14 @@ public class _4ConnectionsRule2 : BaseRule
         IConnectionManagerViewModel connectionManager = null!;
 
         When()
-            .Match(() => island, x => !x.MaxConnectionsReached && x.MaxConnections == 4 && (x.MaxConnections - x.AllConnections.Count >= 2 || x.MaxConnections - x.AllConnections.Count <= 3))
+            .Match(() => island, x => x.MaxConnections == 4 && x.AreRemainingConnectionsWithinRange(2, 3))
             .Query(() => connectionManager, q => q.Match<IConnectionManagerViewModel>())
             .Let(() => allNeighbors, () => island.GetAllVisibleNeighbors())
             .Having(() => allNeighbors.Count == 3)
-            .Let(() => restrictedNeighbors, () => GetIslandsConnectedAndMaxConnectionsReached(island, allNeighbors, null))
-            .Having(() => restrictedNeighbors.Count == 1 && GetAmountConnectionsToSource(island, restrictedNeighbors) == 1)
-            .Let(() => validNeighbors, () => GetConnectableNeighborsWithNoConnectionSetToSource(island, allNeighbors));
+            .Let(() => restrictedNeighbors, () => island.GetMaxedOutConnectedNeighbors(allNeighbors, null))
+            .Having(() => restrictedNeighbors.Count == 1 && island.CountConnectionsToNeighbors(restrictedNeighbors) == 1)
+            .Let(() => validNeighbors, () => island.GetConnectableNeighborsWithoutConnection(allNeighbors))
+            .Having(() => validNeighbors.Count > 0);
 
         Then()
             .Do(ctx => AddConnections(island, validNeighbors, connectionManager));
