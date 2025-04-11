@@ -4,9 +4,9 @@ using NRules.Fluent.Dsl;
 
 namespace Hashi.Rules;
 
-public class GeneralRule1 : BaseRule
+public class _9GeneralRule1 : BaseRule
 {
-    protected override string RuleMessage => TranslationSource.Instance[nameof(GeneralRule1)]!;
+    protected override string RuleMessage => TranslationSource.Instance[nameof(_9GeneralRule1)]!;
 
     /// <inheritdoc />
     public override void Define()

@@ -1,7 +1,7 @@
-﻿using System.Diagnostics;
-using System.Windows.Input;
-using Hashi.Enums;
+﻿using Hashi.Enums;
 using Hashi.Gui.Interfaces.Messages;
+using System.Diagnostics;
+using System.Windows.Input;
 
 namespace Hashi.Gui.Interfaces.ViewModels;
 
@@ -84,6 +84,16 @@ public interface IMainViewModel
     ///     The current source island.
     /// </summary>
     Stopwatch Timer { get; }
+
+    /// <summary>
+    /// A list of rules that are applied to the game.
+    /// </summary>
+    IList<Type> Rules { get; }
+
+    /// <summary>
+    /// The current selected rule.
+    /// </summary>
+    Type SelectedRule { get; set; }
 
     /// <summary>
     ///     Loads the settings from the JSON file.
