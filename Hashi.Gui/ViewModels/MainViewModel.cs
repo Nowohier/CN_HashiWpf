@@ -366,6 +366,11 @@ public class MainViewModel : AsyncObservableRecipient,
 
     private void GenerateHint()
     {
+        if (ConnectionManager.AreRulesBeingApplied)
+        {
+            return;
+        }
+
         ConnectionManager.AreRulesBeingApplied = true;
 
         if (session == null)
