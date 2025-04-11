@@ -1,17 +1,14 @@
 ﻿<Application x:Class="Hashi.Gui.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:converters="clr-namespace:Hashi.Gui.Converters">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
-                <ResourceDictionary
-                    Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
-                <ResourceDictionary
-                    Source="pack://application:,,,/Hashi.Gui;component/ResourceLibraries/HashiColors.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Hashi.Gui;component/Templates/HashiConverterTemplates.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Hashi.Gui;component/ResourceLibraries/HashiColors.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Hashi.Gui;component/ResourceLibraries/HashiConverters.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Hashi.Gui;component/Templates/HashiStyleTemplates.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Hashi.Gui;component/Templates/HashiDataTemplates.xaml" />
             </ResourceDictionary.MergedDictionaries>
