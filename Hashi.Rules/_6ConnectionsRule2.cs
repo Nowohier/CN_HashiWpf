@@ -10,7 +10,6 @@ public class _6ConnectionsRule2 : BaseRule
 
     public override void Define()
     {
-        //ToDo: Check this rule!!!
         IIslandViewModel island = null!;
         List<IIslandViewModel> allNeighbors = null!;
         List<IIslandViewModel> restrictedNeighbors = null!;
@@ -21,10 +20,10 @@ public class _6ConnectionsRule2 : BaseRule
             .Query(() => connectionManager, q => q.Match<IConnectionManagerViewModel>())
             .Match(() => island, x => x.MaxConnections == 6 && !x.MaxConnectionsReached)
             .Let(() => allNeighbors, () => island.GetAllVisibleNeighbors())
-            .Having(() => !allNeighbors.All(x => x.AllConnections.Any(y => y.Equals(island.Coordinates))))
-            .Let(() => restrictedNeighbors, () => allNeighbors.Where(x => x.MaxConnectionsReached && x.AllConnections.Count(y => y.Equals(island.Coordinates)) == 1).ToList())
-            .Having(() => allNeighbors.Count == 4 && restrictedNeighbors.Count == 1)
-            .Let(() => validNeighbors, () => allNeighbors.Except(restrictedNeighbors).Where(x => !x.MaxConnectionsReached && !x.AllConnections.Any(y => y.Equals(island.Coordinates))).ToList());
+            .Having(() => allNeighbors.Count == 4)
+            .Let(() => restrictedNeighbors, () => GetIslandsConnectedAndMaxConnectionsReached(island, allNeighbors, 1))
+            .Having(() => restrictedNeighbors.Count == 1)
+            .Let(() => validNeighbors, () => GetConnectableNeighborsWithNoConnectionSetToSource(island, allNeighbors).Except(restrictedNeighbors).ToList());
 
         Then()
             .Do(ctx => AddConnections(island, validNeighbors, connectionManager));

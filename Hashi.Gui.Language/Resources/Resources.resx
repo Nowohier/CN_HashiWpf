@@ -189,6 +189,9 @@
   <data name="_5ConnectionsRule2" xml:space="preserve">
     <value>If an island with a maximum of five  bridges has three neighbors and one connection to the source island only allows a maximum of one bridge, then the remaining connections for the source island can be set.</value>
   </data>
+  <data name="_5ConnectionsRule3" xml:space="preserve">
+    <value>If a 5-connection island has four neighbors and two full neighbors have a total of no more than three connections to the island, a connection must be drawn to each of the remaining neighbors if no connection has already been established.</value>
+  </data>
   <data name="_6ConnectionsRule1" xml:space="preserve">
     <value>If an island with a maximum of six connections has three neighbors then set all connections.</value>
   </data>
