@@ -181,13 +181,16 @@
     <value>4er Inseln können alle Verbindungen herstellen, wenn nur zwei Nachbarn verfügbar sind.</value>
   </data>
   <data name="_4ConnectionsRule2" xml:space="preserve">
-    <value>Inseln mit maximal vier Brücken und drei Nachbarn können eine Verbindung zu jedem Nachbarn herstellen, wenn einer der Nachbarn bereits eine Verbindung zur Insel hat und über die maximale Anzahl an Verbindungen verfügt.</value>
+    <value>4er Inseln mit drei Nachbarn können eine Verbindung zu jedem Nachbarn herstellen, wenn einer der Nachbarn bereits eine Verbindung zur Insel hat und über die maximale Anzahl an Verbindungen verfügt.</value>
   </data>
   <data name="_5ConnectionsRule1" xml:space="preserve">
     <value>Wenn eine 5er Insel drei Nachbarn hat, dann benötigt jeder einen Anschluss.</value>
   </data>
   <data name="_5ConnectionsRule2" xml:space="preserve">
-    <value>Wenn eine 5er Insel drei Nachbarn hat und eine Verbindung maximal eine Brücke erlaubt, dann können die verbleibenden Verbidnungen für die 5er Insel gesetzt werden.</value>
+    <value>Wenn eine 5er Insel drei Nachbarn hat und eine Verbindung maximal eine Brücke erlaubt, dann können die verbleibenden Verbindungen für die 5er Insel gesetzt werden.</value>
+  </data>
+  <data name="_5ConnectionsRule3" xml:space="preserve">
+    <value>Wenn eine 5er Insel vier Nachbarn hat und zwei volle Nachbarn in Summe nicht mehr als drei Verbindungen zur Insel haben, muss zu den restlichen Nachbarn jeweils eine Verbindung gezogen werden, sofern noch keine Verbindung hergestellt wurde.</value>
   </data>
   <data name="_6ConnectionsRule1" xml:space="preserve">
     <value>Wenn eine 6er Insel drei Nachbarn hat, dann können alle Verbindungen gesetzt werden.</value>

@@ -20,7 +20,7 @@ public class _5ConnectionsRule2 : BaseRule
             .Query(() => connectionManager, q => q.Match<IConnectionManagerViewModel>())
             .Let(() => neighbors, () => island.GetAllVisibleNeighbors())
             .Having(() => neighbors.Count == 3)
-            .Let(() => restrictedNeighbors, () => neighbors.Where(x => x.MaxConnectionsReached && x.AllConnections.Count(y => y.Equals(island.Coordinates)) == 1).ToList())
+            .Let(() => restrictedNeighbors, () => GetIslandsConnectedAndMaxConnectionsReached(island, neighbors, 1))
             .Having(() => restrictedNeighbors.Count == 1);
 
         Then()

@@ -19,7 +19,7 @@ public class _3ConnectionsRule1 : BaseRule
             .Match(() => island, x => x.MaxConnections == 3 && x.AllConnections.Count < 2)
             .Query(() => connectionManager, q => q.Match<IConnectionManagerViewModel>())
             .Let(() => allNeighbors, () => island.GetAllVisibleNeighbors())
-            .Let(() => validNeighbors, () => allNeighbors.Where(x => !x.MaxConnectionsReached && !x.AllConnections.Any(y => y.Equals(island.Coordinates))).ToList())
+            .Let(() => validNeighbors, () => GetConnectableNeighborsWithNoConnectionSetToSource(island, allNeighbors))
             .Having(() => allNeighbors.Count == 2);
 
         Then()
