@@ -8,68 +8,6 @@ public abstract class BaseRule : Rule
     protected abstract string RuleMessage { get; }
 
     /// <summary>
-    ///   Gets the connectable neighbors of the source island that do not have a connection set to the source island.
-    /// </summary>
-    /// <param name="source">The source island.</param>
-    /// <param name="allNeighbors">The visible neighbor islands.</param>
-    /// <returns>connectable neighbors of the source island that do not have a connection set to the source island.</returns>
-    protected static List<IIslandViewModel> GetConnectableNeighborsWithNoConnectionSetToSource(IIslandViewModel source, IEnumerable<IIslandViewModel> allNeighbors)
-    {
-        return allNeighbors.Where(x => !x.MaxConnectionsReached && !x.AllConnections.Any(y => y.Equals(source.Coordinates))).ToList();
-    }
-
-    /// <summary>
-    ///   Checks if all islands are connected to the source island.
-    /// </summary>
-    /// <param name="source">The source island.</param>
-    /// <param name="allNeighbors">The visible neighbor islands.</param>
-    /// <returns>a boolean value indicating if all islands are connected to the source island.</returns>
-    protected static bool AreAllIslandsConnectedToSource(IIslandViewModel source, IEnumerable<IIslandViewModel> allNeighbors)
-    {
-        return allNeighbors.All(x => x.AllConnections.Contains(source.Coordinates));
-    }
-
-    /// <summary>
-    ///   Gets the islands connected to the source island.
-    /// </summary>
-    /// <param name="source">The source island.</param>
-    /// <param name="allNeighbors">The visible neighbor islands.</param>
-    /// <param name="amountConnections">(optional) The amount of connections per neighbor to the source island.</param>
-    /// <returns>the islands connected by one connection to the source island.</returns>
-    protected static List<IIslandViewModel> GetIslandsConnected(IIslandViewModel source,
-        IEnumerable<IIslandViewModel> allNeighbors, int? amountConnections)
-    {
-        return amountConnections == null
-            ? allNeighbors.Where(x => x.AllConnections.Any(y => y.Equals(source.Coordinates))).ToList()
-            : allNeighbors
-                .Where(x => x.AllConnections.Count(y => y.Equals(source.Coordinates)) == (int)amountConnections)
-                .ToList();
-    }
-
-    /// <summary>
-    ///  Gets the amount of connections to the source island from the neighbors.
-    /// </summary>
-    /// <param name="source">The source island.</param>
-    /// <param name="neighbors">The visible neighbor islands.</param>
-    /// <returns></returns>
-    protected int GetAmountConnectionsToSource(IIslandViewModel source, IEnumerable<IIslandViewModel> neighbors)
-    {
-        return neighbors.Sum(x => x.AllConnections.Count(y => y.Equals(source.Coordinates)));
-    }
-
-    /// <summary>
-    ///   Gets the islands connected to the source island which have reached the maximum connections.
-    /// </summary>
-    /// <param name="source">The source island.</param>
-    /// <param name="allNeighbors">The visible neighbor islands.</param>
-    /// <param name="amountConnections">The amount of connections per neighbor to the source island.</param>
-    /// <returns>the islands connected to the source island which have reached the maximum connections.</returns>
-    protected static List<IIslandViewModel> GetIslandsConnectedAndMaxConnectionsReached(IIslandViewModel source, IEnumerable<IIslandViewModel> allNeighbors, int? amountConnections)
-    {
-        return GetIslandsConnected(source, allNeighbors, amountConnections).Where(x => x.MaxConnectionsReached).ToList();
-    }
-
-    /// <summary>
     ///     Adds a connection to an island and stops the rule execution of all rules.
     /// </summary>
     /// <param name="source">The source island.</param>

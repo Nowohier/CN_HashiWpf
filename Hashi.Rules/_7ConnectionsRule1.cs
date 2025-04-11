@@ -1,5 +1,6 @@
 ﻿using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Translation;
+using Hashi.Rules.Extensions;
 using NRules.Fluent.Dsl;
 
 namespace Hashi.Rules;
@@ -19,8 +20,8 @@ public class _7ConnectionsRule1 : BaseRule
             .Query(() => connectionManager, q => q.Match<IConnectionManagerViewModel>())
             .Match(() => island, x => x.MaxConnections == 7 && !x.MaxConnectionsReached)
             .Let(() => allNeighbors, () => island.GetAllVisibleNeighbors())
-            .Having(() => allNeighbors.Count == 4 && !AreAllIslandsConnectedToSource(island, allNeighbors))
-            .Let(() => validNeighbors, () => GetConnectableNeighborsWithNoConnectionSetToSource(island, allNeighbors));
+            .Having(() => allNeighbors.Count == 4 && !island.AreAllNeighborsConnected(allNeighbors))
+            .Let(() => validNeighbors, () => island.GetConnectableNeighborsWithoutConnection(allNeighbors));
 
         Then()
             .Do(ctx => AddConnections(island, validNeighbors, connectionManager));
