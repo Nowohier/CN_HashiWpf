@@ -135,6 +135,7 @@ public class MainViewModel : AsyncObservableRecipient,
         {
             if (!SetProperty(ref selectedRule, value)) return;
 
+            ConnectionManager.RuleMessage = TranslationSource.Instance[selectedRule.Name] ?? string.Empty;
             ConnectionManager.AreRulesBeingApplied = false;
 
             if (session == null) return;

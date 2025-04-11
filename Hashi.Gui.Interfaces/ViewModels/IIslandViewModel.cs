@@ -1,7 +1,7 @@
-﻿using System.Collections.ObjectModel;
-using System.Windows.Input;
-using Hashi.Enums;
+﻿using Hashi.Enums;
 using Hashi.Gui.Interfaces.Models;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace Hashi.Gui.Interfaces.ViewModels;
 
@@ -69,6 +69,11 @@ public interface IIslandViewModel
     ///     Gets the maximum number of connections for this island.
     /// </summary>
     int MaxConnections { get; }
+
+    /// <summary>
+    ///     Gets the remaining number of connections for this island.
+    /// </summary>
+    int RemainingConnections { get; }
 
     /// <summary>
     ///     Gets the coordinates of the island.
