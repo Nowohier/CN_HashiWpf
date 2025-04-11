@@ -133,7 +133,11 @@ public class MainViewModel : AsyncObservableRecipient,
         get => selectedRule;
         set
         {
-            if (!SetProperty(ref selectedRule, value) || session == null) return;
+            if (!SetProperty(ref selectedRule, value)) return;
+
+            ConnectionManager.AreRulesBeingApplied = false;
+
+            if (session == null) return;
             session.Events.RhsExpressionEvaluatedEvent -= OnRhsExpressionEvaluated;
             session = null;
         }
@@ -233,6 +237,7 @@ public class MainViewModel : AsyncObservableRecipient,
 
         if (session != null)
         {
+            ConnectionManager.AreRulesBeingApplied = false;
             session.Events.RhsExpressionEvaluatedEvent -= OnRhsExpressionEvaluated;
             session = null;
         }
@@ -404,6 +409,7 @@ public class MainViewModel : AsyncObservableRecipient,
         }
 
         var rulesFired = session.Fire();
+        ConnectionManager.AreRulesBeingApplied = false;
     }
 
     private void OnRhsExpressionEvaluated(object? sender, RhsExpressionEventArgs e)
