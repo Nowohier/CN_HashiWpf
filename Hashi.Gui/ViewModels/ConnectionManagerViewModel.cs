@@ -6,10 +6,6 @@ using Hashi.Gui.Extensions;
 using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Messages;
-using Hashi.Rules;
-using NRules;
-using NRules.Diagnostics;
-using NRules.Fluent;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 
@@ -22,7 +18,6 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
     private readonly Func<BridgeOperationTypeEnum, IHashiPoint, IHashiPoint, IHashiBridge> bridgeFactory;
     private readonly Func<int, int, int, IIslandViewModel> islandFactory;
     private string ruleMessage = string.Empty;
-    private ISession? session;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ConnectionManagerViewModel" /> class.
@@ -71,12 +66,6 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
         var hashiField = solutionContainer.HashiField;
         Islands.Clear();
         History.Clear();
-
-        if (session != null)
-        {
-            session.Events.RhsExpressionEvaluatedEvent -= OnRhsExpressionEvaluated;
-            session = null;
-        }
 
         Solution = solutionContainer;
         for (var row = 0; row < hashiField.Count; row++)
@@ -266,52 +255,6 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
         return Islands[coordinates.Y][coordinates.X];
     }
 
-    /// <inheritdoc />
-    public void GenerateHint()
-    {
-        AreRulesBeingApplied = true;
-
-        if (session == null)
-        {
-            // ReSharper disable once UseObjectOrCollectionInitializer
-            var rulesToCheck = new List<Type>();
-            //rulesToCheck.Add(typeof(_2ConnectionsRule1));
-
-            //Load rules
-            var repository = new RuleRepository();
-
-            if (rulesToCheck.Count > 0)
-            {
-                repository.Load(x => x.From(rulesToCheck));
-            }
-            else
-            {
-                repository.Load(x => x.From(typeof(_1ConnectionRule1).Assembly));
-            }
-
-            //Compile rules
-            var factory = repository.Compile();
-
-            //Create rules session
-            session = factory.CreateSession();
-            session.Events.RhsExpressionEvaluatedEvent += OnRhsExpressionEvaluated;
-
-            session.InsertAll(Islands.SelectMany(x => x));
-            session.Insert(this);
-        }
-        else
-        {
-            session.UpdateAll(Islands.SelectMany(x => x));
-            session.Update(this);
-        }
-
-        session.Fire();
-    }
-
-    private void OnRhsExpressionEvaluated(object? sender, RhsExpressionEventArgs e)
-    {
-        AreRulesBeingApplied = false;
-    }
 
     private bool AreAllConnectionsSet()
     {

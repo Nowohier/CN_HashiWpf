@@ -123,7 +123,7 @@
   <data name="CreateTooltip" xml:space="preserve">
     <value>Create a new game</value>
   </data>
-  <data name="GeneralRule1" xml:space="preserve">
+  <data name="_9GeneralRule1" xml:space="preserve">
     <value>Islands with only one active neighbor can set their remaining connections to that neighbor.</value>
   </data>
   <data name="HashiLoadingText" xml:space="preserve">

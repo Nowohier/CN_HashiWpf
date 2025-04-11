@@ -8,14 +8,14 @@
                  xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                  xmlns:system="clr-namespace:System;assembly=System.Runtime"
                  xmlns:viewModels="clr-namespace:Hashi.Gui.ViewModels"
-                 xmlns:converters="clr-namespace:Hashi.Gui.Converters"
                  xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
                  xmlns:enums="clr-namespace:Hashi.Enums;assembly=Hashi.Enums"
                  xmlns:ns="clr-namespace:Hashi.Gui.Localization"
+                 xmlns:helpers="clr-namespace:Hashi.Gui.Helpers"
                  mc:Ignorable="d"
                  Loaded="Window_Loaded"
                  d:DataContext="{d:DesignInstance {x:Type viewModels:MainViewModel}, IsDesignTimeCreatable=False}"
-                 Title="Hashiwokakero" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen"
+                 Title="Hashiwokakero" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
                  AllowDrop="True" WindowTitleBrush="{StaticResource BasicBrush}">
     <mah:MetroWindow.IconTemplate>
         <DataTemplate>
@@ -31,6 +31,30 @@
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
     </Window.Resources>
+    <mah:MetroWindow.RightWindowCommands>
+        <mah:WindowCommands>
+            <StackPanel Orientation="Horizontal" Visibility="{Binding Source={x:Static helpers:DebugHelper.IsDebugBuild}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                <TextBlock Text="Rules:" VerticalAlignment="Center"/>
+                <ComboBox Height="26" BorderThickness="1" ItemsSource="{Binding Rules}" SelectedItem="{Binding SelectedRule}" DisplayMemberPath="Name" Margin="5,0,10,0"/>
+            </StackPanel>
+            <mah:DropDownButton Padding="5,0,5,0" Margin="10,0,0,0" DockPanel.Dock="Right"
+                                ToolTip="{ns:Loc Language}" ItemsSource="{Binding Settings.Languages}"
+                                ToolTipService.InitialShowDelay="0" Height="30"
+                                BorderBrush="{StaticResource MahApps.Brushes.Button.Border}">
+                <mah:DropDownButton.Icon>
+                    <iconPacks:PackIconPhosphorIcons Kind="GlobeHemisphereWest" Width="18"
+                                                     Height="18" />
+                </mah:DropDownButton.Icon>
+                <mah:DropDownButton.ItemContainerStyle>
+                    <Style BasedOn="{StaticResource {x:Type MenuItem}}" TargetType="{x:Type MenuItem}">
+                        <Setter Property="Command"
+                                Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type mah:DropDownButton}}, Path=DataContext.ChangeLanguageCommand}" />
+                        <Setter Property="CommandParameter" Value="{Binding Culture}" />
+                    </Style>
+                </mah:DropDownButton.ItemContainerStyle>
+            </mah:DropDownButton>
+        </mah:WindowCommands>
+    </mah:MetroWindow.RightWindowCommands>
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -122,22 +146,6 @@
                             </Button>
                             <Border DockPanel.Dock="Right" BorderThickness="0,0,1,0" Height="35" BorderBrush="Black"
                                     Margin="10,0,0,0" />
-                            <mah:DropDownButton Padding="5,0,5,0" Margin="10,0,0,0" DockPanel.Dock="Right"
-                                                ToolTip="{ns:Loc Language}" ItemsSource="{Binding Settings.Languages}"
-                                                ToolTipService.InitialShowDelay="0" Height="30"
-                                                BorderBrush="{StaticResource MahApps.Brushes.Button.Border}">
-                                <mah:DropDownButton.Icon>
-                                    <iconPacks:PackIconPhosphorIcons Kind="GlobeHemisphereWestThin" Width="18"
-                                                                     Height="18" />
-                                </mah:DropDownButton.Icon>
-                                <mah:DropDownButton.ItemContainerStyle>
-                                    <Style BasedOn="{StaticResource {x:Type MenuItem}}" TargetType="{x:Type MenuItem}">
-                                        <Setter Property="Command"
-                                                Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type mah:DropDownButton}}, Path=DataContext.ChangeLanguageCommand}" />
-                                        <Setter Property="CommandParameter" Value="{Binding Culture}" />
-                                    </Style>
-                                </mah:DropDownButton.ItemContainerStyle>
-                            </mah:DropDownButton>
                         </DockPanel>
                     </GroupBox>
                 </DockPanel>
