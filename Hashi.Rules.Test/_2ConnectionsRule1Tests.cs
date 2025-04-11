@@ -4,6 +4,7 @@ using Times = NRules.Testing.Times;
 namespace Hashi.Rules.Test
 {
     [TestFixture]
+    [NonParallelizable]
     public class _2ConnectionsRule1Tests : TestBase
     {
         public _2ConnectionsRule1Tests()
@@ -35,7 +36,7 @@ namespace Hashi.Rules.Test
         }
 
         [Test]
-        public void _2ConnectionsRule1_WhenTwoValidNeighborsAndAdditionalNeighbors_ShouldNotTriggerRule() //ToDo: This fails when running whole class, but not when running this test alone - race condition? -> Fix
+        public void _2ConnectionsRule1_WhenTwoValidNeighborsAndAdditionalNeighbors_ShouldNotTriggerRule() //ToDo: This fails when running whole class, but not when running this test alone
         {
             // arrange
             var testIsland = CreateTestIslandMock(TestIslandEnum.TestIsland, 2);
