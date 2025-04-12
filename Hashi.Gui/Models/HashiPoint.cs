@@ -1,6 +1,6 @@
-﻿using System.Windows;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Hashi.Gui.Interfaces.Models;
+using System.Drawing;
 
 namespace Hashi.Gui.Models;
 
@@ -82,7 +82,7 @@ public class HashiPoint : ObservableRecipient, IHashiPoint
     /// <param name="point"></param>
     public static implicit operator HashiPoint(Point point)
     {
-        return new HashiPoint((int)point.X, (int)point.Y);
+        return new HashiPoint(point.X, point.Y);
     }
 
     /// <inheritdoc />
