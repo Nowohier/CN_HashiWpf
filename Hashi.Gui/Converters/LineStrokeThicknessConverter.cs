@@ -9,22 +9,12 @@ namespace Hashi.Gui.Converters
     /// A converter that returns a <see cref="Thickness"/> based on the size of the <see cref="ItemsControl"/>.
     /// This fixes a WPF issue that shapes are not rendered correctly when the size is too small.
     /// </summary>
-    public class StrokeThicknessConverter : IValueConverter
+    public class LineStrokeThicknessConverter : IValueConverter
     {
         /// <inheritdoc />
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            if (value is not ItemsControl itemsControl)
-            {
-                return 1;
-            }
-
-            if (itemsControl.ActualWidth > 1000 || itemsControl.ActualHeight > 1000)
-            {
-                return 1.5;
-            }
-
-            return 1;
+            return value is not ItemsControl itemsControl ? 1.5 : itemsControl.ActualWidth > 1000 || itemsControl.ActualHeight > 1000 ? 2 : 1.5;
         }
 
         /// <inheritdoc />

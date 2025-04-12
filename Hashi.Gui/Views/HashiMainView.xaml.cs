@@ -1,6 +1,6 @@
-﻿using System.Windows;
-using Hashi.Gui.Interfaces.ViewModels;
+﻿using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Views;
+using System.Windows;
 
 namespace Hashi.Gui.Views;
 
