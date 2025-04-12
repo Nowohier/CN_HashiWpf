@@ -93,41 +93,57 @@ public class MainViewModel : AsyncObservableRecipient,
         Settings = LoadSettings();
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Gets the connection manager view model.
+    /// </summary>
     public IConnectionManagerViewModel ConnectionManager { get; }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Gets the settings view model.
+    /// </summary>
     public ISettingsViewModel Settings { get; }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Gets the highscore for the selected difficulty.
+    /// </summary>
     public TimeSpan? HighscoreForSelectedDifficulty => Settings.HighScores
         .FirstOrDefault(x => x.Difficulty.Equals(SelectedDifficulty))?.HighScoreTime;
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Determines if the timer is running.
+    /// </summary>
     public bool IsTimerRunning
     {
         get => isTimerRunning;
         set => SetProperty(ref isTimerRunning, value);
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Determines if the game is in cheating mode.
+    /// </summary>
     public bool IsCheating
     {
         get => isCheating;
         set => SetProperty(ref isCheating, value);
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Determines if the game is generating a new Hashi puzzle.
+    /// </summary>
     public bool IsGeneratingHashiPuzzle
     {
         get => isGeneratingHashiPuzzle;
         set => SetProperty(ref isGeneratingHashiPuzzle, value);
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Gets the list of rules available for the game.
+    /// </summary>
     public IList<Type> Rules { get; } = typeof(_1ConnectionRule1).Assembly.GetTypes().Where(static x => x.Name.StartsWith("_")).ToList();
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Gets or sets the selected rule for the game.
+    /// </summary>
     public Type SelectedRule
     {
         get => selectedRule;
@@ -144,7 +160,9 @@ public class MainViewModel : AsyncObservableRecipient,
         }
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Gets or sets the selected difficulty for the game.
+    /// </summary>
     public DifficultyEnum SelectedDifficulty
     {
         get => selectedDifficulty;
@@ -154,31 +172,50 @@ public class MainViewModel : AsyncObservableRecipient,
         }
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Creates a new game.
+    /// </summary>
     public ICommand CreateNewGameCommand { get; }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Removes all bridges from the game.
+    /// </summary>
     public ICommand RemoveAllBridgesCommand { get; }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Generates a hint for the game.
+    /// </summary>
     public ICommand GenerateHintCommand { get; }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Handles the mouse click event on the window.
+    /// </summary>
     public ICommand WindowMouseClickedCommand { get; }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Executes the undo command.
+    /// </summary>
     public ICommand UndoCommand { get; }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Executes the redo command.
+    /// </summary>
     public ICommand RedoCommand { get; }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Changes the language of the game.
+    /// </summary>
     public ICommand ChangeLanguageCommand { get; }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Gets the timer for the game.
+    /// </summary>
     public Stopwatch Timer { get; } = new();
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Loads the settings from a JSON file.
+    /// </summary>
+    /// <returns>an <see cref="ISettingsViewModel"/>.</returns>
     public ISettingsViewModel LoadSettings()
     {
         ISettingsViewModel loadedSettings;
@@ -249,7 +286,9 @@ public class MainViewModel : AsyncObservableRecipient,
         IsGeneratingHashiPuzzle = false;
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Removes all bridges from the game.
+    /// </summary>
     public void RemoveAllBridgesExecute()
     {
         foreach (var row in ConnectionManager.Islands)
@@ -455,6 +494,7 @@ public class MainViewModel : AsyncObservableRecipient,
 
     private bool UndoCommandCanExecute()
     {
+        // ToDo: Implement this correctly
         //return ConnectionManager.History.Any();
         return true;
     }

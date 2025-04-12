@@ -1,7 +1,6 @@
 ﻿using Hashi.Enums;
 using Hashi.Gui.Interfaces.Models;
 using System.Collections.ObjectModel;
-using System.Windows.Input;
 
 namespace Hashi.Gui.Interfaces.ViewModels;
 
@@ -79,41 +78,6 @@ public interface IIslandViewModel
     ///     Gets the coordinates of the island.
     /// </summary>
     IHashiPoint Coordinates { get; }
-
-    /// <summary>
-    ///     Gets the command for the left mouse button down event.
-    /// </summary>
-    ICommand MouseLeftButtonDownCommand { get; }
-
-    /// <summary>
-    ///     Gets the command for the left mouse button up event.
-    /// </summary>
-    ICommand MouseLeftButtonUpCommand { get; }
-
-    /// <summary>
-    ///     Gets the command for the drag enter event.
-    /// </summary>
-    ICommand DragEnterCommand { get; }
-
-    /// <summary>
-    ///     Gets the command for the drag over event.
-    /// </summary>
-    ICommand DragOverCommand { get; }
-
-    /// <summary>
-    ///     Gets the command for the drag leave event.
-    /// </summary>
-    ICommand DragLeaveCommand { get; }
-
-    /// <summary>
-    ///     Gets the command for the drop event.
-    /// </summary>
-    ICommand DropCommand { get; }
-
-    /// <summary>
-    ///     Gets the command for the mouse move event.
-    /// </summary>
-    ICommand MouseMoveCommand { get; }
 
     /// <summary>
     ///     Resets the drop target.
