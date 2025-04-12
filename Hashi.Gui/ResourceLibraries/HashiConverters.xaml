@@ -7,4 +7,5 @@
     <converters:TagToBridgeTypeEnumConverter x:Key="TagToBridgeTypeEnumConverter" />
     <converters:EmptyStringToVisibilityConverter x:Key="EmptyStringToVisibilityConverter" />
     <converters:MaxMessageTextWidthConverter x:Key="MaxMessageTextWidthConverter" />
+    <converters:StrokeThicknessConverter x:Key="StrokeThicknessConverter" />
 </ResourceDictionary>
