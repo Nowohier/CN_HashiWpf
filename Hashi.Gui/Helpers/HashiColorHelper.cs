@@ -27,4 +27,7 @@ public static class HashiColorHelper
 
     public static SolidColorBrush PotentialConnectionBrush =
         (SolidColorBrush)Application.Current.Resources[nameof(PotentialConnectionBrush)]!;
+
+    public static SolidColorBrush GridLineBrush =
+        (SolidColorBrush)Application.Current.Resources[nameof(GridLineBrush)]!;
 }

@@ -24,10 +24,10 @@
 
                 <Line X1="0" Y1="0" X2="60" Y2="0" Style="{StaticResource GridLinesStyle}"
                       HorizontalAlignment="Stretch"
-                      VerticalAlignment="Center" Stroke="LightGray" StrokeDashArray="4,4"
+                      VerticalAlignment="Center"
                       Visibility="{Binding RelativeSource={RelativeSource AncestorType=mah:MetroWindow, Mode=FindAncestor}, Path=DataContext.(viewModels:MainViewModel.Settings).AreGridLinesEnabled, Converter={StaticResource BoolToVisibilityConverter}}" />
                 <Line X1="0" Y1="0" X2="0" Y2="60" Style="{StaticResource GridLinesStyle}" HorizontalAlignment="Center"
-                      VerticalAlignment="Stretch" Stroke="LightGray" StrokeDashArray="4,4"
+                      VerticalAlignment="Stretch"
                       Visibility="{Binding RelativeSource={RelativeSource AncestorType=mah:MetroWindow, Mode=FindAncestor}, Path=DataContext.(viewModels:MainViewModel.Settings).AreGridLinesEnabled, Converter={StaticResource BoolToVisibilityConverter}}" />
 
                 <!--Double Lines horizontal-->
