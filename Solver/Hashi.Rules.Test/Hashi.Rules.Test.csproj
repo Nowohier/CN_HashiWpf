@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Hashi.Gui.Interfaces\Hashi.Gui.Interfaces.csproj" />
+    <ProjectReference Include="..\..\Gui\Hashi.Gui.Interfaces\Hashi.Gui.Interfaces.csproj" />
     <ProjectReference Include="..\Hashi.Rules\Hashi.Rules.csproj" />
   </ItemGroup>
 
