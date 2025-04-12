@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="Hashi.Rules.Test" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="NRules.Fluent" Version="1.0.2" />
   </ItemGroup>
 
