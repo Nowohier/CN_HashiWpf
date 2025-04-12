@@ -13,7 +13,7 @@ public abstract class BaseRule : Rule
     /// <param name="source">The source island.</param>
     /// <param name="target">The target island.</param>
     /// <param name="connectionManager">The connection manager.</param>
-    protected virtual void AddConnection(IIslandViewModel source, IIslandViewModel target,
+    internal virtual void AddConnection(IIslandViewModel source, IIslandViewModel target,
         IConnectionManagerViewModel connectionManager)
     {
         if (EnsureRulesAreBeingApplied(connectionManager) && ExecuteAddConnection(source, target, connectionManager))
@@ -28,7 +28,7 @@ public abstract class BaseRule : Rule
     /// <param name="source">The source island.</param>
     /// <param name="targets">The target islands.</param>
     /// <param name="connectionManager">The connection manager.</param>
-    protected virtual void AddConnections(IIslandViewModel source, List<IIslandViewModel> targets,
+    internal virtual void AddConnections(IIslandViewModel source, List<IIslandViewModel> targets,
         IConnectionManagerViewModel connectionManager)
     {
         if (!EnsureRulesAreBeingApplied(connectionManager)) return;
@@ -48,7 +48,7 @@ public abstract class BaseRule : Rule
     /// <param name="source">The source island.</param>
     /// <param name="targets">The target islands.</param>
     /// <param name="connectionManager">The connection manager.</param>
-    protected virtual void AddMultipleConnections(IIslandViewModel source, List<IIslandViewModel> targets,
+    internal virtual void AddMultipleConnections(IIslandViewModel source, List<IIslandViewModel> targets,
         IConnectionManagerViewModel connectionManager)
     {
         if (!EnsureRulesAreBeingApplied(connectionManager)) return;
@@ -70,7 +70,7 @@ public abstract class BaseRule : Rule
     /// <param name="target">The target island.</param>
     /// <param name="missingConnectionsCount">Amount of connections missing.</param>
     /// <param name="connectionManager">The connection manager.</param>
-    protected virtual void AddMissingConnectionsToOneTarget(IIslandViewModel source, IIslandViewModel target,
+    internal virtual void AddMissingConnectionsToOneTarget(IIslandViewModel source, IIslandViewModel target,
         int missingConnectionsCount,
         IConnectionManagerViewModel connectionManager)
     {
@@ -81,6 +81,13 @@ public abstract class BaseRule : Rule
             if (!ExecuteAddConnection(source, target, connectionManager)) break;
         }
         FinalizeConnection(source, target);
+    }
+
+    protected virtual bool EnsureRulesAreBeingApplied(IConnectionManagerViewModel connectionManager)
+    {
+        if (connectionManager.AreRulesBeingApplied == false) return false;
+        connectionManager.RuleMessage = RuleMessage;
+        return true;
     }
 
     private bool ExecuteAddConnection(IIslandViewModel source, IIslandViewModel target,
@@ -95,17 +102,10 @@ public abstract class BaseRule : Rule
         return true;
     }
 
-    private bool EnsureRulesAreBeingApplied(IConnectionManagerViewModel connectionManager)
-    {
-        if (connectionManager.AreRulesBeingApplied == false) return false;
-        connectionManager.RuleMessage = RuleMessage;
-        return true;
-    }
-
     /// <summary>
     /// Finalizes the connection by refreshing the colors of the source and target islands.
     /// </summary>
-    private void FinalizeConnection(IIslandViewModel source, IIslandViewModel target)
+    internal void FinalizeConnection(IIslandViewModel source, IIslandViewModel target)
     {
         source.RefreshIslandColor();
         target.RefreshIslandColor();
