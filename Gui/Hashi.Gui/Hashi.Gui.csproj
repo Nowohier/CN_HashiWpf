@@ -31,11 +31,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Hashi.Enums\Hashi.Enums.csproj" />
-    <ProjectReference Include="..\Hashi.Generator\Hashi.Generator.csproj" />
+    <ProjectReference Include="..\..\Enums\Hashi.Enums\Hashi.Enums.csproj" />
+    <ProjectReference Include="..\..\Generator\Hashi.Generator\Hashi.Generator.csproj" />
     <ProjectReference Include="..\Hashi.Gui.Interfaces\Hashi.Gui.Interfaces.csproj" />
     <ProjectReference Include="..\Hashi.Gui.Translation\Hashi.Gui.Translation.csproj" />
-    <ProjectReference Include="..\Hashi.Rules\Hashi.Rules.csproj" />
+    <ProjectReference Include="..\..\Solver\Hashi.Rules\Hashi.Rules.csproj" />
   </ItemGroup>
 
 </Project>
