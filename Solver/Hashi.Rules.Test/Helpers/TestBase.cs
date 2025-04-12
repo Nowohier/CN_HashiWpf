@@ -2,7 +2,6 @@
 using Hashi.Gui.Interfaces.ViewModels;
 using Moq;
 using NRules.Testing;
-using System.Collections.ObjectModel;
 
 namespace Hashi.Rules.Test.Helpers
 {
@@ -32,7 +31,15 @@ namespace Hashi.Rules.Test.Helpers
             Session.RetractAll(Session.Query<IIslandViewModel>());
         }
 
-        protected Mock<IIslandViewModel> CreateTestIslandMock(TestIslandEnum islandEnum, int maxConnections, bool maxConnectionsReached = false)
+        protected Mock<IIslandViewModel> SetupTestee(int maxConnections, params Mock<IIslandViewModel>[] neighbors)
+        {
+            var testIsland = CreateIslandMock(TestIslandEnum.TestIsland, maxConnections);
+            testIsland.Setup(mock => mock.GetAllVisibleNeighbors()).Returns(neighbors.Select(n => n.Object).ToList());
+            return testIsland;
+        }
+
+
+        protected Mock<IIslandViewModel> CreateIslandMock(TestIslandEnum islandEnum, int maxConnections, bool maxConnectionsReached = false)
         {
             return islandEnum switch
             {
@@ -59,8 +66,8 @@ namespace Hashi.Rules.Test.Helpers
             islandMock.Setup(mock => mock.Coordinates).Returns(CreateHashiPointMock(x, y).Object);
             islandMock.Setup(mock => mock.MaxConnections).Returns(maxConnections);
             islandMock.Setup(mock => mock.MaxConnectionsReached).Returns(maxConnectionsReached || maxConnections == 0);
-            islandMock.Setup(mock => mock.GetAllVisibleNeighbors()).Returns(new List<IIslandViewModel>());
-            islandMock.Setup(mock => mock.AllConnections).Returns(new ObservableCollection<IHashiPoint>());
+            islandMock.Setup(mock => mock.GetAllVisibleNeighbors()).Returns([]);
+            islandMock.Setup(mock => mock.AllConnections).Returns([]);
             islandMock.Setup(mock => mock.RefreshIslandColor());
             return islandMock;
         }

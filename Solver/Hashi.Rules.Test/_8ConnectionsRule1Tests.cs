@@ -15,17 +15,13 @@ namespace Hashi.Rules.Test
         public void _8ConnectionsRule1_WhenFourValidNeighbors_ShouldTriggerRule()
         {
             // arrange
-            var testIsland = CreateTestIslandMock(TestIslandEnum.TestIsland, 8);
-            testIsland.Setup(mock => mock.MaxConnectionsReached).Returns(false);
-
             // valid neighbors
-            var leftIsland = CreateTestIslandMock(TestIslandEnum.LeftIsland, 3);
-            var rightIsland = CreateTestIslandMock(TestIslandEnum.RightIsland, 3);
-            var upIsland = CreateTestIslandMock(TestIslandEnum.UpIsland, 3);
-            var downIsland = CreateTestIslandMock(TestIslandEnum.DownIsland, 3);
+            var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
+            var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
+            var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 3);
+            var downIsland = CreateIslandMock(TestIslandEnum.DownIsland, 3);
 
-            testIsland.Setup(mock => mock.GetAllVisibleNeighbors())
-                .Returns([leftIsland.Object, rightIsland.Object, upIsland.Object, downIsland.Object]);
+            var testIsland = SetupTestee(8, leftIsland, rightIsland, upIsland, downIsland);
 
             // act
             Session.Insert(testIsland.Object);
@@ -43,24 +39,20 @@ namespace Hashi.Rules.Test
         public void _8ConnectionsRule1_WhenNoValidNeighbors_ShouldNotTriggerRule()
         {
             // arrange
-            var testIsland = CreateTestIslandMock(TestIslandEnum.TestIsland, 8);
-            testIsland.Setup(mock => mock.MaxConnectionsReached).Returns(false);
-
             // invalid neighbors
-            var leftIsland = CreateTestIslandMock(TestIslandEnum.LeftIsland, 3);
+            var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
             leftIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
 
-            var rightIsland = CreateTestIslandMock(TestIslandEnum.RightIsland, 3);
+            var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
             rightIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
 
-            var upIsland = CreateTestIslandMock(TestIslandEnum.UpIsland, 3);
+            var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 3);
             upIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
 
-            var downIsland = CreateTestIslandMock(TestIslandEnum.DownIsland, 3);
+            var downIsland = CreateIslandMock(TestIslandEnum.DownIsland, 3);
             downIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
 
-            testIsland.Setup(mock => mock.GetAllVisibleNeighbors())
-                .Returns([leftIsland.Object, rightIsland.Object, upIsland.Object, downIsland.Object]);
+            var testIsland = SetupTestee(8, leftIsland, rightIsland, upIsland, downIsland);
 
             // act
             Session.Insert(testIsland.Object);
@@ -74,16 +66,12 @@ namespace Hashi.Rules.Test
         public void _8ConnectionsRule1_WhenLessThanFourNeighbors_ShouldNotTriggerRule()
         {
             // arrange
-            var testIsland = CreateTestIslandMock(TestIslandEnum.TestIsland, 8);
-            testIsland.Setup(mock => mock.MaxConnectionsReached).Returns(false);
-
             // valid neighbors
-            var leftIsland = CreateTestIslandMock(TestIslandEnum.LeftIsland, 3);
-            var rightIsland = CreateTestIslandMock(TestIslandEnum.RightIsland, 3);
-            var upIsland = CreateTestIslandMock(TestIslandEnum.UpIsland, 3);
+            var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
+            var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
+            var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 3);
 
-            testIsland.Setup(mock => mock.GetAllVisibleNeighbors())
-                .Returns([leftIsland.Object, rightIsland.Object, upIsland.Object]);
+            var testIsland = SetupTestee(8, leftIsland, rightIsland, upIsland);
 
             // act
             Session.Insert(testIsland.Object);
@@ -97,17 +85,14 @@ namespace Hashi.Rules.Test
         public void _8ConnectionsRule1_WhenIslandHasMaxConnectionsReached_ShouldNotTriggerRule()
         {
             // arrange
-            var testIsland = CreateTestIslandMock(TestIslandEnum.TestIsland, 8);
-            testIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
-
             // valid neighbors
-            var leftIsland = CreateTestIslandMock(TestIslandEnum.LeftIsland, 3);
-            var rightIsland = CreateTestIslandMock(TestIslandEnum.RightIsland, 3);
-            var upIsland = CreateTestIslandMock(TestIslandEnum.UpIsland, 3);
-            var downIsland = CreateTestIslandMock(TestIslandEnum.DownIsland, 3);
+            var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
+            var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
+            var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 3);
+            var downIsland = CreateIslandMock(TestIslandEnum.DownIsland, 3);
 
-            testIsland.Setup(mock => mock.GetAllVisibleNeighbors())
-                .Returns([leftIsland.Object, rightIsland.Object, upIsland.Object, downIsland.Object]);
+            var testIsland = SetupTestee(8, leftIsland, rightIsland, upIsland, downIsland);
+            testIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
 
             // act
             Session.Insert(testIsland.Object);
@@ -121,11 +106,7 @@ namespace Hashi.Rules.Test
         public void _8ConnectionsRule1_WhenNoNeighbors_ShouldNotTriggerRule()
         {
             // arrange
-            var testIsland = CreateTestIslandMock(TestIslandEnum.TestIsland, 8);
-            testIsland.Setup(mock => mock.MaxConnectionsReached).Returns(false);
-
-            testIsland.Setup(mock => mock.GetAllVisibleNeighbors())
-                .Returns([]);
+            var testIsland = SetupTestee(8);
 
             // act
             Session.Insert(testIsland.Object);
