@@ -86,7 +86,6 @@ public class BridgeVisibilityBehavior : Behavior<Line>, IRecipient<HintPopupClos
 
         solidColorBrush.BeginAnimation(SolidColorBrush.ColorProperty, fadeOutAnimation);
         line.Effect = null;
-        line.StrokeThickness = 1;
     }
 
     /// <inheritdoc />
