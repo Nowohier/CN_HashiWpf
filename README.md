@@ -1,9 +1,9 @@
 
 # Hashiwokakero ("build bridges!")
 
-![Screenshot of the UI](/Gui/Hashi.Gui/Resources/hashi_screenshot.png?raw=true)
-
 Hashiwokakero is a type of logic puzzle. It is played on a rectangular grid with no standard size, although the grid itself is not usually drawn. Some cells start out with (usually encircled) numbers from 1 to 8 inclusive; these are the "islands". The rest of the cells are empty.
+
+![Screenshot of the UI](/Gui/Hashi.Gui/Resources/hashi_screenshot.png?raw=true)
 
 The goal is to connect all of the islands by drawing a series of bridges between the islands. The bridges must follow certain criteria:
 
@@ -15,8 +15,6 @@ The goal is to connect all of the islands by drawing a series of bridges between
 - The bridges must connect the islands into a single connected group.
 
 
-
-Info from Wikipedia (https://en.wikipedia.org/wiki/Hashiwokakero)
 ## Solution Methods
 Solving a Hashiwokakero puzzle is a matter of procedural force: having determined where a bridge must be placed, placing it there can eliminate other possible places for bridges, forcing the placement of another bridge, and so on.
 
@@ -26,5 +24,5 @@ It is common practice to cross off or fill in islands whose bridge quota has bee
 
 Any bridge that would completely isolate a group of islands from another group would not be permitted, as one would then have two groups of islands that could not connect.
 
-Info from Wikipedia (https://en.wikipedia.org/wiki/Hashiwokakero)
+All infos from Wikipedia (https://en.wikipedia.org/wiki/Hashiwokakero)
 
