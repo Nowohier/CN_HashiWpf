@@ -15,18 +15,15 @@ namespace Hashi.Rules.Test
         public void _2ConnectionsRule2_WhenOneNeighborWithMaxConnectionsOneAndOneValidNeighbor_ShouldTriggerRule()
         {
             // arrange
-            var testIsland = CreateTestIslandMock(TestIslandEnum.TestIsland, 2);
+            // valid neighbor
+            var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 2);
+            var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 1);
+
+            var testIsland = SetupTestee(2, leftIsland, upIsland);
             testIsland.Setup(mock => mock.AllConnections).Returns([CreateHashiPointMock(0, 1).Object]);
 
-            // valid neighbor
-            var leftIsland = CreateTestIslandMock(TestIslandEnum.LeftIsland, 2);
-
             // neighbor with MaxConnections == 1 and already connected
-            var upIsland = CreateTestIslandMock(TestIslandEnum.UpIsland, 1);
             upIsland.Setup(mock => mock.AllConnections).Returns([testIsland.Object.Coordinates]);
-
-            testIsland.Setup(mock => mock.GetAllVisibleNeighbors())
-                .Returns([leftIsland.Object, upIsland.Object]);
 
             // act
             Session.Insert(testIsland.Object);
@@ -42,15 +39,12 @@ namespace Hashi.Rules.Test
         public void _2ConnectionsRule2_WhenNoNeighborWithMaxConnectionsOne_ShouldNotTriggerRule()
         {
             // arrange
-            var testIsland = CreateTestIslandMock(TestIslandEnum.TestIsland, 2);
-            testIsland.Setup(mock => mock.AllConnections).Returns([CreateHashiPointMock(0, 1).Object]);
-
             // valid neighbors
-            var leftIsland = CreateTestIslandMock(TestIslandEnum.LeftIsland, 2);
-            var upIsland = CreateTestIslandMock(TestIslandEnum.UpIsland, 2);
+            var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 2);
+            var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 2);
 
-            testIsland.Setup(mock => mock.GetAllVisibleNeighbors())
-                .Returns([leftIsland.Object, upIsland.Object]);
+            var testIsland = SetupTestee(2, leftIsland, upIsland);
+            testIsland.Setup(mock => mock.AllConnections).Returns([CreateHashiPointMock(0, 1).Object]);
 
             // act
             Session.Insert(testIsland.Object);
@@ -64,15 +58,15 @@ namespace Hashi.Rules.Test
         public void _2ConnectionsRule2_WhenMoreThanOneValidNeighbor_ShouldNotTriggerRule()
         {
             // arrange
-            var testIsland = CreateTestIslandMock(TestIslandEnum.TestIsland, 2);
+            var testIsland = CreateIslandMock(TestIslandEnum.TestIsland, 2);
             testIsland.Setup(mock => mock.AllConnections).Returns([CreateHashiPointMock(0, 1).Object]);
 
             // valid neighbors
-            var leftIsland = CreateTestIslandMock(TestIslandEnum.LeftIsland, 2);
-            var rightIsland = CreateTestIslandMock(TestIslandEnum.RightIsland, 2);
+            var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 2);
+            var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 2);
 
             // neighbor with MaxConnections == 1 and already connected
-            var upIsland = CreateTestIslandMock(TestIslandEnum.UpIsland, 1);
+            var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 1);
             upIsland.Setup(mock => mock.AllConnections).Returns([testIsland.Object.Coordinates]);
 
             testIsland.Setup(mock => mock.GetAllVisibleNeighbors())
@@ -90,12 +84,12 @@ namespace Hashi.Rules.Test
         public void _2ConnectionsRule2_WhenNoValidNeighbors_ShouldNotTriggerRule()
         {
             // arrange
-            var testIsland = CreateTestIslandMock(TestIslandEnum.TestIsland, 2);
+            var testIsland = CreateIslandMock(TestIslandEnum.TestIsland, 2);
             testIsland.Setup(mock => mock.AllConnections).Returns([CreateHashiPointMock(0, 1).Object]);
 
             // neighbors with MaxConnections == 1 but no valid connections
-            var leftIsland = CreateTestIslandMock(TestIslandEnum.LeftIsland, 1);
-            var upIsland = CreateTestIslandMock(TestIslandEnum.UpIsland, 1);
+            var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 1);
+            var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 1);
 
             testIsland.Setup(mock => mock.GetAllVisibleNeighbors())
                 .Returns([leftIsland.Object, upIsland.Object]);

@@ -18,19 +18,14 @@ namespace Hashi.Rules.Test
         public void _3ConnectionsRule1_WhenTwoValidNeighbors_ShouldTriggerRule()
         {
             // arrange
-            var testIsland = CreateTestIslandMock(TestIslandEnum.TestIsland, 3);
-            testIsland.Setup(mock => mock.AllConnections).Returns([]);
-
             // valid neighbors
-            var leftIsland = CreateTestIslandMock(TestIslandEnum.LeftIsland, 3);
+            var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
             leftIsland.Setup(mock => mock.MaxConnectionsReached).Returns(false);
 
-            var rightIsland = CreateTestIslandMock(TestIslandEnum.RightIsland, 3);
+            var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
             rightIsland.Setup(mock => mock.MaxConnectionsReached).Returns(false);
 
-            testIsland.Setup(mock => mock.GetAllVisibleNeighbors())
-                .Returns([leftIsland.Object, rightIsland.Object]);
-
+            var testIsland = SetupTestee(3, leftIsland, rightIsland);
             testIsland.Setup(mock => mock.GetConnectableNeighborsWithoutConnection(It.IsAny<List<IIslandViewModel>>()))
                 .Returns([leftIsland.Object, rightIsland.Object]);
 
@@ -48,19 +43,14 @@ namespace Hashi.Rules.Test
         public void _3ConnectionsRule1_WhenNoValidNeighbors_ShouldNotTriggerRule()
         {
             // arrange
-            var testIsland = CreateTestIslandMock(TestIslandEnum.TestIsland, 3);
-            testIsland.Setup(mock => mock.AllConnections).Returns([]);
-
             // invalid neighbors
-            var leftIsland = CreateTestIslandMock(TestIslandEnum.LeftIsland, 3);
+            var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
             leftIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
 
-            var rightIsland = CreateTestIslandMock(TestIslandEnum.RightIsland, 3);
+            var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
             rightIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
 
-            testIsland.Setup(mock => mock.GetAllVisibleNeighbors())
-                .Returns([leftIsland.Object, rightIsland.Object]);
-
+            var testIsland = SetupTestee(3, leftIsland, rightIsland);
             testIsland.Setup(mock => mock.GetConnectableNeighborsWithoutConnection(It.IsAny<List<IIslandViewModel>>()))
                 .Returns([]);
 
@@ -76,17 +66,12 @@ namespace Hashi.Rules.Test
         public void _3ConnectionsRule1_WhenMoreThanTwoNeighbors_ShouldNotTriggerRule()
         {
             // arrange
-            var testIsland = CreateTestIslandMock(TestIslandEnum.TestIsland, 3);
-            testIsland.Setup(mock => mock.AllConnections).Returns([]);
-
             // valid neighbors
-            var leftIsland = CreateTestIslandMock(TestIslandEnum.LeftIsland, 3);
-            var rightIsland = CreateTestIslandMock(TestIslandEnum.RightIsland, 3);
-            var upIsland = CreateTestIslandMock(TestIslandEnum.UpIsland, 3);
+            var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
+            var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
+            var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 3);
 
-            testIsland.Setup(mock => mock.GetAllVisibleNeighbors())
-                .Returns([leftIsland.Object, rightIsland.Object, upIsland.Object]);
-
+            var testIsland = SetupTestee(3, leftIsland, rightIsland, upIsland);
             testIsland.Setup(mock => mock.GetConnectableNeighborsWithoutConnection(It.IsAny<List<IIslandViewModel>>()))
                 .Returns([leftIsland.Object, rightIsland.Object]);
 
@@ -102,19 +87,15 @@ namespace Hashi.Rules.Test
         public void _3ConnectionsRule1_WhenIslandAlreadyHasTwoConnections_ShouldNotTriggerRule()
         {
             // arrange
-            var testIsland = CreateTestIslandMock(TestIslandEnum.TestIsland, 3);
+            // valid neighbors
+            var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
+            var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
+
+            var testIsland = SetupTestee(3, leftIsland, rightIsland);
             testIsland.Setup(mock => mock.AllConnections).Returns([
                 CreateHashiPointMock(0, 1).Object,
                 CreateHashiPointMock(1, 0).Object
             ]);
-
-            // valid neighbors
-            var leftIsland = CreateTestIslandMock(TestIslandEnum.LeftIsland, 3);
-            var rightIsland = CreateTestIslandMock(TestIslandEnum.RightIsland, 3);
-
-            testIsland.Setup(mock => mock.GetAllVisibleNeighbors())
-                .Returns([leftIsland.Object, rightIsland.Object]);
-
             testIsland.Setup(mock => mock.GetConnectableNeighborsWithoutConnection(It.IsAny<List<IIslandViewModel>>()))
                 .Returns([leftIsland.Object, rightIsland.Object]);
 
@@ -130,15 +111,10 @@ namespace Hashi.Rules.Test
         public void _3ConnectionsRule1_WhenIslandHasLessThanTwoNeighbors_ShouldNotTriggerRule()
         {
             // arrange
-            var testIsland = CreateTestIslandMock(TestIslandEnum.TestIsland, 3);
-            testIsland.Setup(mock => mock.AllConnections).Returns([]);
-
             // valid neighbor
-            var leftIsland = CreateTestIslandMock(TestIslandEnum.LeftIsland, 3);
+            var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
 
-            testIsland.Setup(mock => mock.GetAllVisibleNeighbors())
-                .Returns([leftIsland.Object]);
-
+            var testIsland = SetupTestee(3, leftIsland);
             testIsland.Setup(mock => mock.GetConnectableNeighborsWithoutConnection(It.IsAny<List<IIslandViewModel>>()))
                 .Returns([leftIsland.Object]);
 
@@ -149,5 +125,90 @@ namespace Hashi.Rules.Test
             // assert
             Verify(x => x.Rule().Fired(Times.Never));
         }
+
+        [Test]
+        public void _3ConnectionsRule1_WhenNoNeighbors_ShouldNotTriggerRule()
+        {
+            // arrange
+            var testIsland = SetupTestee(3);
+            testIsland.Setup(mock => mock.GetConnectableNeighborsWithoutConnection(It.IsAny<List<IIslandViewModel>>()))
+                .Returns([]);
+
+            // act
+            Session.Insert(testIsland.Object);
+            Session.Fire();
+
+            // assert
+            Verify(x => x.Rule().Fired(Times.Never));
+        }
+
+        [Test]
+        public void _3ConnectionsRule1_WhenAllNeighborsHaveMaxConnections_ShouldNotTriggerRule()
+        {
+            // arrange
+            var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
+            leftIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
+
+            var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
+            rightIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
+
+            var testIsland = SetupTestee(3, leftIsland, rightIsland);
+            testIsland.Setup(mock => mock.GetConnectableNeighborsWithoutConnection(It.IsAny<List<IIslandViewModel>>()))
+                .Returns([]);
+
+            // act
+            Session.Insert(testIsland.Object);
+            Session.Fire();
+
+            // assert
+            Verify(x => x.Rule().Fired(Times.Never));
+        }
+
+        [Test]
+        public void _3ConnectionsRule1_WhenMixedNeighbors_ShouldTriggerRule()
+        {
+            // arrange
+            var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
+            leftIsland.Setup(mock => mock.MaxConnectionsReached).Returns(false);
+
+            var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
+            rightIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
+
+            var testIsland = SetupTestee(3, leftIsland, rightIsland);
+            testIsland.Setup(mock => mock.GetConnectableNeighborsWithoutConnection(It.IsAny<List<IIslandViewModel>>()))
+                .Returns([leftIsland.Object]);
+
+            // act
+            Session.Insert(testIsland.Object);
+            Session.Fire();
+
+            // assert
+            Verify(x => x.Rule().Fired(Times.Once));
+            ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, leftIsland.Object, true), Moq.Times.Once);
+        }
+
+        [Test]
+        public void _3ConnectionsRule1_WhenInvalidRemainingConnections_ShouldNotTriggerRule()
+        {
+            // arrange
+            var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
+            leftIsland.Setup(mock => mock.MaxConnectionsReached).Returns(false);
+
+            var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
+            rightIsland.Setup(mock => mock.MaxConnectionsReached).Returns(false);
+
+            var testIsland = SetupTestee(3, leftIsland, rightIsland);
+            testIsland.Setup(mock => mock.AreRemainingConnectionsWithinRange(2, 3)).Returns(false);
+            testIsland.Setup(mock => mock.GetConnectableNeighborsWithoutConnection(It.IsAny<List<IIslandViewModel>>()))
+                .Returns([leftIsland.Object, rightIsland.Object]);
+
+            // act
+            Session.Insert(testIsland.Object);
+            Session.Fire();
+
+            // assert
+            Verify(x => x.Rule().Fired(Times.Never));
+        }
+
     }
 }
