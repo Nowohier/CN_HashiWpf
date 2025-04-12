@@ -3,7 +3,8 @@
 
 Hashiwokakero is a type of logic puzzle. It is played on a rectangular grid with no standard size, although the grid itself is not usually drawn. Some cells start out with (usually encircled) numbers from 1 to 8 inclusive; these are the "islands". The rest of the cells are empty.
 
-![Screenshot of the UI](/Gui/Hashi.Gui/Resources/hashi_screenshot.png?raw=true)
+App screenshot:
+![App screenshot](/Gui/Hashi.Gui/Resources/hashi_screenshot.png?raw=true)
 
 The goal is to connect all of the islands by drawing a series of bridges between the islands. The bridges must follow certain criteria:
 
