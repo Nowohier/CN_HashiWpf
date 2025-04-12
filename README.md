@@ -27,5 +27,5 @@ Any bridge that would completely isolate a group of islands from another group w
 Info from Wikipedia (https://en.wikipedia.org/wiki/Hashiwokakero)
 ## Screenshots
 
-![Screenshot of the UI](/relative/path/to/img.jpg?raw=true "Optional Title")
+![Screenshot of the UI](/Gui/Hashi.Gui/Resources/hashi_screenshot.png?raw=true "Optional Title")
 
