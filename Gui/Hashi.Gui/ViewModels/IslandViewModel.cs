@@ -16,8 +16,6 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 
-// ReSharper disable CompareOfFloatsByEqualityOperator
-
 namespace Hashi.Gui.ViewModels;
 
 public class IslandViewModel : ObservableRecipient, IIslandViewModel
@@ -117,25 +115,39 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
     /// <inheritdoc />
     public IHashiPoint Coordinates { get; }
 
-    /// <inheritdoc />
+    /// <summary>
+    ///     Gets or sets the command that is executed when the left mouse button is pressed.
+    /// </summary>
     public ICommand MouseLeftButtonDownCommand { get; }
 
-    /// <inheritdoc />
+    /// <summary>
+    ///    Gets or sets the command that is executed when the left mouse button is released.
+    /// </summary>
     public ICommand MouseLeftButtonUpCommand { get; }
 
-    /// <inheritdoc />
+    /// <summary>
+    ///    Gets or sets the command that is executed when the drag enter event occurs.
+    /// </summary>
     public ICommand DragEnterCommand { get; }
 
-    /// <inheritdoc />
+    /// <summary>
+    ///    Gets or sets the command that is executed when the drag over event occurs.
+    /// </summary>
     public ICommand DragOverCommand { get; }
 
-    /// <inheritdoc />
+    /// <summary>
+    ///    Gets or sets the command that is executed when the drag leave event occurs.
+    /// </summary>
     public ICommand DragLeaveCommand { get; }
 
-    /// <inheritdoc />
+    /// <summary>
+    ///    Gets or sets the command that is executed when the drop event occurs.
+    /// </summary>
     public ICommand DropCommand { get; }
 
-    /// <inheritdoc />
+    /// <summary>
+    ///    Gets or sets the command that is executed when the mouse moves.
+    /// </summary>
     public ICommand MouseMoveCommand { get; }
 
     /// <inheritdoc />
@@ -346,11 +358,6 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
         WeakReferenceMessenger.Default.Send(new UpdateAllIslandColorsMessage());
     }
 
-    /// <summary>
-    ///     Handles the query continue drag event.
-    /// </summary>
-    /// <param name="sender">The sender.</param>
-    /// <param name="e">The event args.</param>
     private void QueryContinueDragHandler(object sender, QueryContinueDragEventArgs e)
     {
         var window = Application.Current.MainWindow as IViewBoxControl;
@@ -406,12 +413,6 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
         return null;
     }
 
-    /// <summary>
-    ///     Checks if the potential connection between the source and target islands would collide with existing connections.
-    /// </summary>
-    /// <param name="target">The target island.</param>
-    /// <param name="connectionType">The connection type.</param>
-    /// <returns>a boolean value indicating if the connection would collide.</returns>
     private bool IsCollidingConnection(IIslandViewModel target, ConnectionTypeEnum connectionType)
     {
         if (target.MaxConnections > 0) return false;

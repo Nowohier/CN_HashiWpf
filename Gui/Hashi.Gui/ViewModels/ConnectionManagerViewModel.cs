@@ -7,12 +7,10 @@ using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Messages;
 using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Hashi.Gui.ViewModels;
 
 /// <inheritdoc cref="IConnectionManagerViewModel" />
-[SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
 public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerViewModel
 {
     private readonly Func<BridgeOperationTypeEnum, IHashiPoint, IHashiPoint, IHashiBridge> bridgeFactory;
