@@ -24,7 +24,10 @@ public class _6ConnectionsRule2 : BaseRule
             .Having(() => allNeighbors.Count == 4)
             .Let(() => restrictedNeighbors, () => island.GetMaxedOutConnectedNeighbors(allNeighbors, 1))
             .Having(() => restrictedNeighbors.Count == 1)
-            .Let(() => validNeighbors, () => island.GetConnectableNeighborsWithoutConnection(allNeighbors).Except(restrictedNeighbors).ToList());
+            .Let(() => validNeighbors,
+                () => island.GetConnectableNeighborsWithoutConnection(allNeighbors).Except(restrictedNeighbors)
+                    .ToList())
+            .Having(() => validNeighbors.Count > 0);
 
         Then()
             .Do(ctx => AddConnections(island, validNeighbors, connectionManager));
