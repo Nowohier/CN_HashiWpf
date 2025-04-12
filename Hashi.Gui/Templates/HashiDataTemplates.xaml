@@ -31,39 +31,39 @@
                       Visibility="{Binding RelativeSource={RelativeSource AncestorType=mah:MetroWindow, Mode=FindAncestor}, Path=DataContext.(viewModels:MainViewModel.Settings).AreGridLinesEnabled, Converter={StaticResource BoolToVisibilityConverter}}" />
 
                 <!--Double Lines horizontal-->
-                <Line Style="{StaticResource BridgeStyle}" X1="0" Y1="-2" X2="60" Y2="-2" HorizontalAlignment="Center"
+                <Line Style="{StaticResource BridgeStyle}" X1="0" Y1="-3" X2="60" Y2="-3" HorizontalAlignment="Center"
                       VerticalAlignment="Center" Tag="{x:Static enums:BridgeTypeEnum.HorizontalDouble}" />
-                <Line Style="{StaticResource BridgeStyle}" X1="0" Y1="8" X2="60" Y2="8" HorizontalAlignment="Center"
+                <Line Style="{StaticResource BridgeStyle}" X1="0" Y1="6" X2="60" Y2="6" HorizontalAlignment="Center"
                       VerticalAlignment="Center" Tag="{x:Static enums:BridgeTypeEnum.HorizontalDouble}" />
 
                 <!--Double Lines horizontal right-->
-                <Line Style="{StaticResource BridgeStyle}" X1="30" Y1="-2" X2="60" Y2="-2" HorizontalAlignment="Right"
+                <Line Style="{StaticResource BridgeStyle}" X1="30" Y1="-3" X2="60" Y2="-3" HorizontalAlignment="Right"
                       VerticalAlignment="Center" Tag="{x:Static enums:BridgeTypeEnum.HorizontalDoubleRight}" />
-                <Line Style="{StaticResource BridgeStyle}" X1="30" Y1="8" X2="60" Y2="8" HorizontalAlignment="Right"
+                <Line Style="{StaticResource BridgeStyle}" X1="30" Y1="6" X2="60" Y2="6" HorizontalAlignment="Right"
                       VerticalAlignment="Center" Tag="{x:Static enums:BridgeTypeEnum.HorizontalDoubleRight}" />
 
                 <!--Double Lines horizontal left-->
-                <Line Style="{StaticResource BridgeStyle}" X1="0" Y1="-2" X2="30" Y2="-2" HorizontalAlignment="Left"
+                <Line Style="{StaticResource BridgeStyle}" X1="0" Y1="-3" X2="30" Y2="-3" HorizontalAlignment="Left"
                       VerticalAlignment="Center" Tag="{x:Static enums:BridgeTypeEnum.HorizontalDoubleLeft}" />
-                <Line Style="{StaticResource BridgeStyle}" X1="0" Y1="8" X2="30" Y2="8" HorizontalAlignment="Left"
+                <Line Style="{StaticResource BridgeStyle}" X1="0" Y1="6" X2="30" Y2="6" HorizontalAlignment="Left"
                       VerticalAlignment="Center" Tag="{x:Static enums:BridgeTypeEnum.HorizontalDoubleLeft}" />
 
                 <!--Double Lines vertical-->
                 <Line Style="{StaticResource BridgeStyle}" X1="-3" Y1="0" X2="-3" Y2="60" HorizontalAlignment="Center"
                       VerticalAlignment="Center" Tag="{x:Static enums:BridgeTypeEnum.VerticalDouble}" />
-                <Line Style="{StaticResource BridgeStyle}" X1="8" Y1="0" X2="8" Y2="60" HorizontalAlignment="Center"
+                <Line Style="{StaticResource BridgeStyle}" X1="6" Y1="0" X2="6" Y2="60" HorizontalAlignment="Center"
                       VerticalAlignment="Center" Tag="{x:Static enums:BridgeTypeEnum.VerticalDouble}" />
 
                 <!--Double Lines vertical top-->
                 <Line Style="{StaticResource BridgeStyle}" X1="-3" Y1="0" X2="-3" Y2="30" HorizontalAlignment="Center"
                       VerticalAlignment="Top" Tag="{x:Static enums:BridgeTypeEnum.VerticalDoubleUp}" />
-                <Line Style="{StaticResource BridgeStyle}" X1="8" Y1="0" X2="8" Y2="30" HorizontalAlignment="Center"
+                <Line Style="{StaticResource BridgeStyle}" X1="6" Y1="0" X2="6" Y2="30" HorizontalAlignment="Center"
                       VerticalAlignment="Top" Tag="{x:Static enums:BridgeTypeEnum.VerticalDoubleUp}" />
 
                 <!--Double Lines vertical bottom-->
                 <Line Style="{StaticResource BridgeStyle}" X1="-3" Y1="30" X2="-3" Y2="60" HorizontalAlignment="Center"
                       VerticalAlignment="Bottom" Tag="{x:Static enums:BridgeTypeEnum.VerticalDoubleDown}" />
-                <Line Style="{StaticResource BridgeStyle}" X1="8" Y1="30" X2="8" Y2="60" HorizontalAlignment="Center"
+                <Line Style="{StaticResource BridgeStyle}" X1="6" Y1="30" X2="6" Y2="60" HorizontalAlignment="Center"
                       VerticalAlignment="Bottom" Tag="{x:Static enums:BridgeTypeEnum.VerticalDoubleDown}" />
 
                 <!--Single line horizontal-->
