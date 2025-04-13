@@ -11,11 +11,11 @@ public class _2ConnectionsRule1 : BaseRule
     /// <inheritdoc />
     public override void Define()
     {
-        IIslandViewModel? island = null!;
+        IIslandViewModel island = null!;
         List<IIslandViewModel> allNeighbors = null!;
-        List<IIslandViewModel?> validNeighbors = null!;
+        List<IIslandViewModel> validNeighbors = null!;
         List<IIslandViewModel> invalidNeighbors = null!;
-        IConnectionManagerViewModel? connectionManager = null!;
+        IConnectionManagerViewModel connectionManager = null!;
 
         When()
             .Match(() => island, x => x.AllConnections.Count == 0 && x.MaxConnections == 2)
