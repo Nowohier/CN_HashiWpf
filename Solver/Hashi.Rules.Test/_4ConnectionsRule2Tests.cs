@@ -176,16 +176,15 @@ namespace Hashi.Rules.Test
         public void _4ConnectionsRule2_WhenMixedNeighbors_ShouldTriggerRule()
         {
             // arrange
-            var restrictedNeighbor = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
-            restrictedNeighbor.Setup(mock => mock.MaxConnectionsReached).Returns(true);
-
+            var restrictedNeighbor = CreateIslandMock(TestIslandEnum.LeftIsland, 1, true);
+            restrictedNeighbor.Setup(mock => mock.AllConnections).Returns([CreateHashiPointMock(1, 1).Object]);
             var validNeighbor1 = CreateIslandMock(TestIslandEnum.RightIsland, 3);
-            validNeighbor1.Setup(mock => mock.MaxConnectionsReached).Returns(false);
+            var validNeighbor2 = CreateIslandMock(TestIslandEnum.UpIsland, 3, true);
 
-            var invalidNeighbor = CreateIslandMock(TestIslandEnum.UpIsland, 3);
-            invalidNeighbor.Setup(mock => mock.MaxConnectionsReached).Returns(true);
-
-            var testIsland = SetupTestIsland(4, restrictedNeighbor, validNeighbor1, invalidNeighbor);
+            var testIsland = SetupTestIsland(4, restrictedNeighbor, validNeighbor1, validNeighbor2);
+            testIsland.Setup(mock => mock.RemainingConnections).Returns(3);
+            testIsland.Setup(mock => mock.MaxConnectionsReached).Returns(false);
+            testIsland.Setup(mock => mock.AllConnections).Returns([CreateHashiPointMock(1, 1).Object]);
 
             // act
             Session.Insert(testIsland.Object);

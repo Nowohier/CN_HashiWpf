@@ -12,20 +12,18 @@ namespace Hashi.Rules.Test
         }
 
         [Test]
-        public void _5ConnectionsRule2_WhenThreeNeighborsWithOneRestrictedNeighbor_ShouldTriggerRule()
+        public void _5ConnectionsRule2_WhenFourNeighborsWithOneConnectedRestrictedNeighbor_ShouldTriggerRule()
         {
             // arrange
             // neighbors
-            var restrictedNeighbor = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
-            restrictedNeighbor.Setup(mock => mock.MaxConnectionsReached).Returns(true);
-
+            var restrictedNeighbor1 = CreateIslandMock(TestIslandEnum.LeftIsland, 3, true);
+            var restrictedNeighbor2 = CreateIslandMock(TestIslandEnum.DownIsland, 1, true);
+            restrictedNeighbor2.Setup(mock => mock.AllConnections).Returns([CreateHashiPointMock(1, 1).Object]);
             var validNeighbor1 = CreateIslandMock(TestIslandEnum.RightIsland, 3);
-            validNeighbor1.Setup(mock => mock.MaxConnectionsReached).Returns(false);
-
             var validNeighbor2 = CreateIslandMock(TestIslandEnum.UpIsland, 3);
-            validNeighbor2.Setup(mock => mock.MaxConnectionsReached).Returns(false);
 
-            var testIsland = SetupTestIsland(5, restrictedNeighbor, validNeighbor1, validNeighbor2);
+            var testIsland = SetupTestIsland(5, restrictedNeighbor1, restrictedNeighbor2, validNeighbor1, validNeighbor2);
+            testIsland.Setup(mock => mock.AllConnections).Returns([CreateHashiPointMock(1, 1).Object]);
 
             // act
             Session.Insert(testIsland.Object);
@@ -33,8 +31,8 @@ namespace Hashi.Rules.Test
 
             // assert
             Verify(x => x.Rule().Fired(Times.Once));
-            ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, validNeighbor1.Object, true), Moq.Times.Once);
-            ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, validNeighbor2.Object, true), Moq.Times.Once);
+            ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, validNeighbor1.Object, true), Moq.Times.Exactly(2));
+            ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, validNeighbor2.Object, true), Moq.Times.Exactly(2));
         }
 
         [Test]
