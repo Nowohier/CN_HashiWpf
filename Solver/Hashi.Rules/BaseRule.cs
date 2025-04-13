@@ -7,14 +7,21 @@ public abstract class BaseRule : Rule
 {
     protected abstract string RuleMessage { get; }
 
+    internal virtual bool EnsureRulesAreBeingApplied(IConnectionManagerViewModel? connectionManager)
+    {
+        if (connectionManager == null || connectionManager.AreRulesBeingApplied == false) return false;
+        connectionManager.RuleMessage = RuleMessage;
+        return true;
+    }
+
     /// <summary>
     ///     Adds a connection to an island and stops the rule execution of all rules.
     /// </summary>
     /// <param name="source">The source island.</param>
     /// <param name="target">The target island.</param>
     /// <param name="connectionManager">The connection manager.</param>
-    internal virtual void AddConnection(IIslandViewModel source, IIslandViewModel target,
-        IConnectionManagerViewModel connectionManager)
+    internal virtual void AddConnection(IIslandViewModel? source, IIslandViewModel? target,
+        IConnectionManagerViewModel? connectionManager)
     {
         if (EnsureRulesAreBeingApplied(connectionManager) && ExecuteAddConnection(source, target, connectionManager))
         {
@@ -28,8 +35,8 @@ public abstract class BaseRule : Rule
     /// <param name="source">The source island.</param>
     /// <param name="targets">The target islands.</param>
     /// <param name="connectionManager">The connection manager.</param>
-    internal virtual void AddConnections(IIslandViewModel source, List<IIslandViewModel> targets,
-        IConnectionManagerViewModel connectionManager)
+    internal virtual void AddConnections(IIslandViewModel? source, List<IIslandViewModel?> targets,
+        IConnectionManagerViewModel? connectionManager)
     {
         if (!EnsureRulesAreBeingApplied(connectionManager)) return;
 
@@ -48,8 +55,8 @@ public abstract class BaseRule : Rule
     /// <param name="source">The source island.</param>
     /// <param name="targets">The target islands.</param>
     /// <param name="connectionManager">The connection manager.</param>
-    internal virtual void AddMultipleConnections(IIslandViewModel source, List<IIslandViewModel> targets,
-        IConnectionManagerViewModel connectionManager)
+    internal virtual void AddMultipleConnections(IIslandViewModel? source, List<IIslandViewModel?> targets,
+        IConnectionManagerViewModel? connectionManager)
     {
         if (!EnsureRulesAreBeingApplied(connectionManager)) return;
 
@@ -70,9 +77,9 @@ public abstract class BaseRule : Rule
     /// <param name="target">The target island.</param>
     /// <param name="missingConnectionsCount">Amount of connections missing.</param>
     /// <param name="connectionManager">The connection manager.</param>
-    internal virtual void AddMissingConnectionsToOneTarget(IIslandViewModel source, IIslandViewModel target,
+    internal virtual void AddMissingConnectionsToOneTarget(IIslandViewModel? source, IIslandViewModel? target,
         int missingConnectionsCount,
-        IConnectionManagerViewModel connectionManager)
+        IConnectionManagerViewModel? connectionManager)
     {
         if (!EnsureRulesAreBeingApplied(connectionManager)) return;
 
@@ -83,17 +90,19 @@ public abstract class BaseRule : Rule
         FinalizeConnection(source, target);
     }
 
-    protected virtual bool EnsureRulesAreBeingApplied(IConnectionManagerViewModel connectionManager)
+    /// <summary>
+    /// Finalizes the connection by refreshing the colors of the source and target islands.
+    /// </summary>
+    internal void FinalizeConnection(IIslandViewModel? source, IIslandViewModel? target)
     {
-        if (connectionManager.AreRulesBeingApplied == false) return false;
-        connectionManager.RuleMessage = RuleMessage;
-        return true;
+        source?.RefreshIslandColor();
+        target?.RefreshIslandColor();
     }
 
-    private bool ExecuteAddConnection(IIslandViewModel source, IIslandViewModel target,
-        IConnectionManagerViewModel connectionManager)
+    internal bool ExecuteAddConnection(IIslandViewModel? source, IIslandViewModel? target,
+        IConnectionManagerViewModel? connectionManager)
     {
-        if (source.MaxConnectionsReached ||
+        if (source == null || target == null || source == target || connectionManager == null || source.MaxConnectionsReached ||
             target.MaxConnectionsReached ||
             target.AllConnections.Count(x => source.Coordinates.Equals(x)) == 2 ||
             source.AllConnections.Count(x => target.Coordinates.Equals(x)) == 2) return false;
@@ -103,11 +112,79 @@ public abstract class BaseRule : Rule
     }
 
     /// <summary>
-    /// Finalizes the connection by refreshing the colors of the source and target islands.
+    ///   Gets the connectable neighbors of the source island that do not have a connection set to the source island.
     /// </summary>
-    internal void FinalizeConnection(IIslandViewModel source, IIslandViewModel target)
+    /// <param name="source">The source island.</param>
+    /// <param name="allNeighbors">The visible neighbor islands.</param>
+    /// <returns>connectable neighbors of the source island that do not have a connection set to the source island.</returns>
+    internal List<IIslandViewModel?> GetConnectableNeighborsWithoutConnection(IIslandViewModel? source, IEnumerable<IIslandViewModel?> allNeighbors)
     {
-        source.RefreshIslandColor();
-        target.RefreshIslandColor();
+        return allNeighbors.Where(x => !x.MaxConnectionsReached && !x.AllConnections.Any(y => y.Equals(source.Coordinates))).ToList();
+    }
+
+    /// <summary>
+    ///   Checks if all islands are connected to the source island.
+    /// </summary>
+    /// <param name="source">The source island.</param>
+    /// <param name="allNeighbors">The visible neighbor islands.</param>
+    /// <returns>a boolean value indicating if all islands are connected to the source island.</returns>
+    internal bool AreAllNeighborsConnected(IIslandViewModel? source, IEnumerable<IIslandViewModel?> allNeighbors)
+    {
+        return allNeighbors.All(x => x.AllConnections.Contains(source.Coordinates));
+    }
+
+    /// <summary>
+    ///   Gets the islands connected to the source island.
+    /// </summary>
+    /// <param name="source">The source island.</param>
+    /// <param name="allNeighbors">The visible neighbor islands.</param>
+    /// <param name="amountConnections">(optional) The amount of connections per neighbor to the source island.</param>
+    /// <returns>the islands connected by one connection to the source island.</returns>
+    internal List<IIslandViewModel?> GetConnectedNeighbors(IIslandViewModel? source, IEnumerable<IIslandViewModel?> allNeighbors, int? amountConnections)
+    {
+        return amountConnections == null
+            ? allNeighbors.Where(x => x.AllConnections.Any(y => y.Equals(source.Coordinates))).ToList()
+            : allNeighbors
+                .Where(x => x.AllConnections.Count(y => y.Equals(source.Coordinates)) == (int)amountConnections)
+                .ToList();
+    }
+
+    /// <summary>
+    ///  Gets the amount of connections to the source island from the neighbors.
+    /// </summary>
+    /// <param name="source">The source island.</param>
+    /// <param name="neighbors">The visible neighbor islands.</param>
+    /// <returns></returns>
+    internal int CountConnectionsToNeighbors(IIslandViewModel? source, IEnumerable<IIslandViewModel>? neighbors)
+    {
+        if (source == null || neighbors == null)
+        {
+            return 0;
+        }
+        return neighbors.Sum(x => x.AllConnections.Count(y => y.Equals(source.Coordinates)));
+    }
+
+    /// <summary>
+    /// Checks if the remaining connections of the island are within the range of the two values.
+    /// </summary>
+    /// <param name="source">The source island.</param>
+    /// <param name="minValue">The first value.</param>
+    /// <param name="maxValue">The second value.</param>
+    /// <returns></returns>
+    internal bool AreRemainingConnectionsWithinRange(IIslandViewModel? source, int minValue, int maxValue)
+    {
+        return source.RemainingConnections >= minValue && source.RemainingConnections <= maxValue;
+    }
+
+    /// <summary>
+    ///   Gets the islands connected to the source island which have reached the maximum connections.
+    /// </summary>
+    /// <param name="source">The source island.</param>
+    /// <param name="allNeighbors">The visible neighbor islands.</param>
+    /// <param name="amountConnections">The amount of connections per neighbor to the source island.</param>
+    /// <returns>the islands connected to the source island which have reached the maximum connections.</returns>
+    internal List<IIslandViewModel?> GetMaxedOutConnectedNeighbors(IIslandViewModel? source, IEnumerable<IIslandViewModel?> allNeighbors, int? amountConnections)
+    {
+        return GetConnectedNeighbors(source, allNeighbors, amountConnections).Where(x => x.MaxConnectionsReached).ToList();
     }
 }

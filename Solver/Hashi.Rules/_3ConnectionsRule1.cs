@@ -1,6 +1,5 @@
 ﻿using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Translation;
-using Hashi.Rules.Extensions;
 using NRules.Fluent.Dsl;
 
 namespace Hashi.Rules;
@@ -11,16 +10,16 @@ public class _3ConnectionsRule1 : BaseRule
 
     public override void Define()
     {
-        IIslandViewModel island = null!;
-        List<IIslandViewModel> allNeighbors = null!;
-        List<IIslandViewModel> validNeighbors = null!;
-        IConnectionManagerViewModel connectionManager = null!;
+        IIslandViewModel? island = null!;
+        List<IIslandViewModel?> allNeighbors = null!;
+        List<IIslandViewModel?> validNeighbors = null!;
+        IConnectionManagerViewModel? connectionManager = null!;
 
         When()
             .Match(() => island, x => x.MaxConnections == 3 && x.AllConnections.Count < 2)
             .Query(() => connectionManager, q => q.Match<IConnectionManagerViewModel>())
             .Let(() => allNeighbors, () => island.GetAllVisibleNeighbors())
-            .Let(() => validNeighbors, () => island.GetConnectableNeighborsWithoutConnection(allNeighbors))
+            .Let(() => validNeighbors, () => GetConnectableNeighborsWithoutConnection(island, allNeighbors))
             .Having(() => allNeighbors.Count == 2);
 
         Then()

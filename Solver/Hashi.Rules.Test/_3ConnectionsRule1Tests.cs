@@ -1,7 +1,4 @@
-using Hashi.Gui.Interfaces.ViewModels;
-using Hashi.Rules.Extensions;
 using Hashi.Rules.Test.Helpers;
-using Moq;
 using Times = NRules.Testing.Times;
 
 namespace Hashi.Rules.Test
@@ -26,8 +23,6 @@ namespace Hashi.Rules.Test
             rightIsland.Setup(mock => mock.MaxConnectionsReached).Returns(false);
 
             var testIsland = SetupTestIsland(3, leftIsland, rightIsland);
-            testIsland.Setup(mock => mock.GetConnectableNeighborsWithoutConnection(It.IsAny<List<IIslandViewModel>>()))
-                .Returns([leftIsland.Object, rightIsland.Object]);
 
             // act
             Session.Insert(testIsland.Object);
@@ -51,8 +46,6 @@ namespace Hashi.Rules.Test
             rightIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
 
             var testIsland = SetupTestIsland(3, leftIsland, rightIsland);
-            testIsland.Setup(mock => mock.GetConnectableNeighborsWithoutConnection(It.IsAny<List<IIslandViewModel>>()))
-                .Returns([]);
 
             // act
             Session.Insert(testIsland.Object);
@@ -72,8 +65,6 @@ namespace Hashi.Rules.Test
             var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 3);
 
             var testIsland = SetupTestIsland(3, leftIsland, rightIsland, upIsland);
-            testIsland.Setup(mock => mock.GetConnectableNeighborsWithoutConnection(It.IsAny<List<IIslandViewModel>>()))
-                .Returns([leftIsland.Object, rightIsland.Object]);
 
             // act
             Session.Insert(testIsland.Object);
@@ -96,8 +87,6 @@ namespace Hashi.Rules.Test
                 CreateHashiPointMock(0, 1).Object,
                 CreateHashiPointMock(1, 0).Object
             ]);
-            testIsland.Setup(mock => mock.GetConnectableNeighborsWithoutConnection(It.IsAny<List<IIslandViewModel>>()))
-                .Returns([leftIsland.Object, rightIsland.Object]);
 
             // act
             Session.Insert(testIsland.Object);
@@ -115,8 +104,6 @@ namespace Hashi.Rules.Test
             var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
 
             var testIsland = SetupTestIsland(3, leftIsland);
-            testIsland.Setup(mock => mock.GetConnectableNeighborsWithoutConnection(It.IsAny<List<IIslandViewModel>>()))
-                .Returns([leftIsland.Object]);
 
             // act
             Session.Insert(testIsland.Object);
@@ -131,8 +118,6 @@ namespace Hashi.Rules.Test
         {
             // arrange
             var testIsland = SetupTestIsland(3);
-            testIsland.Setup(mock => mock.GetConnectableNeighborsWithoutConnection(It.IsAny<List<IIslandViewModel>>()))
-                .Returns([]);
 
             // act
             Session.Insert(testIsland.Object);
@@ -153,8 +138,6 @@ namespace Hashi.Rules.Test
             rightIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
 
             var testIsland = SetupTestIsland(3, leftIsland, rightIsland);
-            testIsland.Setup(mock => mock.GetConnectableNeighborsWithoutConnection(It.IsAny<List<IIslandViewModel>>()))
-                .Returns([]);
 
             // act
             Session.Insert(testIsland.Object);
@@ -175,8 +158,6 @@ namespace Hashi.Rules.Test
             rightIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
 
             var testIsland = SetupTestIsland(3, leftIsland, rightIsland);
-            testIsland.Setup(mock => mock.GetConnectableNeighborsWithoutConnection(It.IsAny<List<IIslandViewModel>>()))
-                .Returns([leftIsland.Object]);
 
             // act
             Session.Insert(testIsland.Object);
@@ -198,9 +179,6 @@ namespace Hashi.Rules.Test
             rightIsland.Setup(mock => mock.MaxConnectionsReached).Returns(false);
 
             var testIsland = SetupTestIsland(3, leftIsland, rightIsland);
-            testIsland.Setup(mock => mock.AreRemainingConnectionsWithinRange(2, 3)).Returns(false);
-            testIsland.Setup(mock => mock.GetConnectableNeighborsWithoutConnection(It.IsAny<List<IIslandViewModel>>()))
-                .Returns([leftIsland.Object, rightIsland.Object]);
 
             // act
             Session.Insert(testIsland.Object);
