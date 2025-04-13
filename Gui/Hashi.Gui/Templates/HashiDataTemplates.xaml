@@ -25,10 +25,10 @@
                 <Line X1="0" Y1="0" X2="60" Y2="0" Style="{StaticResource GridLinesStyle}"
                       HorizontalAlignment="Stretch"
                       VerticalAlignment="Center"
-                      Visibility="{Binding RelativeSource={RelativeSource AncestorType=mah:MetroWindow, Mode=FindAncestor}, Path=DataContext.(viewModels:MainViewModel.Settings).AreGridLinesEnabled, Converter={StaticResource BoolToVisibilityConverter}}" />
+                      Visibility="{Binding RelativeSource={RelativeSource AncestorType=mah:MetroWindow, Mode=FindAncestor}, Path=DataContext.(viewModels:MainViewModel.SettingsProvider).Settings.AreGridLinesEnabled, Converter={StaticResource BoolToVisibilityConverter}}" />
                 <Line X1="0" Y1="0" X2="0" Y2="60" Style="{StaticResource GridLinesStyle}" HorizontalAlignment="Center"
                       VerticalAlignment="Stretch"
-                      Visibility="{Binding RelativeSource={RelativeSource AncestorType=mah:MetroWindow, Mode=FindAncestor}, Path=DataContext.(viewModels:MainViewModel.Settings).AreGridLinesEnabled, Converter={StaticResource BoolToVisibilityConverter}}" />
+                      Visibility="{Binding RelativeSource={RelativeSource AncestorType=mah:MetroWindow, Mode=FindAncestor}, Path=DataContext.(viewModels:MainViewModel.SettingsProvider).Settings.AreGridLinesEnabled, Converter={StaticResource BoolToVisibilityConverter}}" />
 
                 <!--Double Lines horizontal-->
                 <Line Style="{StaticResource BridgeStyle}" X1="0" Y1="-3" X2="60" Y2="-3" HorizontalAlignment="Center"

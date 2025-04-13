@@ -3,6 +3,7 @@ using Hashi.Generator;
 using Hashi.Gui.Helpers;
 using Hashi.Gui.Messages;
 using Hashi.Gui.Models;
+using Hashi.Gui.Providers;
 using Hashi.Gui.ViewModels;
 using Hashi.Gui.Views;
 using Hashi.Gui.Wrappers;
@@ -26,5 +27,6 @@ public class AutoFacMainModule : Module
         builder.RegisterModule<AutoFacWrapperModule>();
         builder.RegisterModule<AutoFacLinearSolverModule>();
         builder.RegisterModule<AutoFacHelpersModule>();
+        builder.RegisterModule<AutoFacProvidersModule>();
     }
 }

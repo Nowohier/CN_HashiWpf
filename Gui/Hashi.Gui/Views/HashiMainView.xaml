@@ -38,7 +38,7 @@
                 <ComboBox Height="26" BorderThickness="1" ItemsSource="{Binding Rules}" SelectedItem="{Binding SelectedRule}" DisplayMemberPath="Name" Margin="5,0,10,0"/>
             </StackPanel>
             <mah:DropDownButton Padding="5,0,5,0" Margin="10,0,0,0" DockPanel.Dock="Right"
-                                ToolTip="{ns:Loc Language}" ItemsSource="{Binding Settings.Languages}"
+                                ToolTip="{ns:Loc Language}" ItemsSource="{Binding SettingsProvider.Settings.Languages}"
                                 ToolTipService.InitialShowDelay="0" Height="30"
                                 BorderBrush="{StaticResource MahApps.Brushes.Button.Border}">
                 <mah:DropDownButton.Icon>
@@ -91,7 +91,7 @@
                         <StackPanel Orientation="Horizontal">
                             <iconPacks:PackIconPhosphorIcons Kind="Timer" VerticalAlignment="Center"
                                                              Foreground="Red" Height="25" Width="25" />
-                            <TextBlock Text="{Binding Timer.Elapsed, StringFormat={}{0:hh\\:mm\\:ss}}"
+                            <TextBlock Text="{Binding TimerProvider.Timer.Elapsed, StringFormat={}{0:hh\\:mm\\:ss}}"
                                        Margin="10,0,0,0" FontSize="20"
                                        Foreground="Red" VerticalAlignment="Center" />
                             <iconPacks:PackIconPhosphorIcons Kind="Crown" Margin="30,0,0,0" VerticalAlignment="Center"
@@ -131,7 +131,7 @@
                                 </StackPanel>
                             </Button>
                             <ToggleButton Style="{StaticResource MenuGridToggleButtonStyle}" Padding="5,0,5,0"
-                                          IsChecked="{Binding Settings.AreGridLinesEnabled}" Margin="10,0,0,0"
+                                          IsChecked="{Binding SettingsProvider.Settings.AreGridLinesEnabled}" Margin="10,0,0,0"
                                           HorizontalAlignment="Left" DockPanel.Dock="Left" />
                             <Button Style="{StaticResource MenuButtonStyle}" Command="{Binding RedoCommand}"
                                     Padding="5,0,5,0" Margin="10,0,0,0" DockPanel.Dock="Right"
