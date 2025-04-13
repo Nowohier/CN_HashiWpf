@@ -115,7 +115,6 @@ public abstract class BaseRule : Rule
     /// <summary>
     ///   Gets the connectable neighbors of the source island that do not have a connection set to the source island.
     /// </summary>
-    /// <param name="source">The source island.</param>
     /// <param name="allNeighbors">The visible neighbor islands.</param>
     /// <returns>connectable neighbors of the source island that do not have a connection set to the source island.</returns>
     internal List<IIslandViewModel> GetConnectableNeighbors(IEnumerable<IIslandViewModel> allNeighbors)
