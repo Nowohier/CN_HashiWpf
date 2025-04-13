@@ -1,7 +1,4 @@
-using Hashi.Gui.Interfaces.ViewModels;
-using Hashi.Rules.Extensions;
 using Hashi.Rules.Test.Helpers;
-using Moq;
 using Times = NRules.Testing.Times;
 
 namespace Hashi.Rules.Test
@@ -25,9 +22,6 @@ namespace Hashi.Rules.Test
             var downIsland = CreateIslandMock(TestIslandEnum.DownIsland, 3);
 
             var testIsland = SetupTestIsland(7, leftIsland, rightIsland, upIsland, downIsland);
-            testIsland.Setup(mock => mock.AreAllNeighborsConnected(It.IsAny<List<IIslandViewModel>>())).Returns(false);
-            testIsland.Setup(mock => mock.GetConnectableNeighborsWithoutConnection(It.IsAny<List<IIslandViewModel>>()))
-                .Returns([leftIsland.Object, rightIsland.Object, upIsland.Object, downIsland.Object]);
 
             // act
             Session.Insert(testIsland.Object);
@@ -52,7 +46,6 @@ namespace Hashi.Rules.Test
             var downIsland = CreateIslandMock(TestIslandEnum.DownIsland, 3);
 
             var testIsland = SetupTestIsland(7, leftIsland, rightIsland, upIsland, downIsland);
-            testIsland.Setup(mock => mock.AreAllNeighborsConnected(It.IsAny<List<IIslandViewModel>>())).Returns(true);
 
             // act
             Session.Insert(testIsland.Object);
@@ -72,7 +65,6 @@ namespace Hashi.Rules.Test
             var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 3);
 
             var testIsland = SetupTestIsland(7, leftIsland, rightIsland, upIsland);
-            testIsland.Setup(mock => mock.AreAllNeighborsConnected(It.IsAny<List<IIslandViewModel>>())).Returns(false);
 
             // act
             Session.Insert(testIsland.Object);
@@ -114,9 +106,6 @@ namespace Hashi.Rules.Test
             var downIsland = CreateIslandMock(TestIslandEnum.DownIsland, 3);
 
             var testIsland = SetupTestIsland(7, leftIsland, rightIsland, upIsland, downIsland);
-            testIsland.Setup(mock => mock.AreAllNeighborsConnected(It.IsAny<List<IIslandViewModel>>())).Returns(false);
-            testIsland.Setup(mock => mock.GetConnectableNeighborsWithoutConnection(It.IsAny<List<IIslandViewModel>>()))
-                .Returns([]);
 
             // act
             Session.Insert(testIsland.Object);
