@@ -1,8 +1,8 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Gui.Interfaces.Messages;
-using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
 
 namespace Hashi.Gui.Messaging;
 

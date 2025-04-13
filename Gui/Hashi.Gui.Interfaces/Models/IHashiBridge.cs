@@ -1,5 +1,5 @@
-﻿using Hashi.Enums;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
+using Hashi.Enums;
 
 namespace Hashi.Gui.Interfaces.Models;
 

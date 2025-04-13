@@ -35,11 +35,11 @@ public class MainViewModel : AsyncObservableRecipient,
     private readonly Func<SolidColorBrush, IHashiBrush> brushFactory;
     private readonly IDialogWrapper dialogWrapper;
     private readonly IHashiGenerator hashiGenerator;
-    private ISession? session;
     private bool isCheating;
     private bool isGeneratingHashiPuzzle;
     private DifficultyEnum selectedDifficulty = DifficultyEnum.Easy3;
     private Type selectedRule;
+    private ISession? session;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="MainViewModel" /> class.
@@ -81,25 +81,19 @@ public class MainViewModel : AsyncObservableRecipient,
         selectedRule = Rules.First();
     }
 
-    /// <inheritdoc />
-    public IHashiSettingsProvider SettingsProvider { get; }
-
-    /// <inheritdoc />
-    public ITimerProvider TimerProvider { get; }
-
     /// <summary>
-    /// Gets the connection manager view model.
+    ///     Gets the connection manager view model.
     /// </summary>
     public IConnectionManagerViewModel ConnectionManager { get; }
 
     /// <summary>
-    /// Gets the highscore for the selected difficulty.
+    ///     Gets the highscore for the selected difficulty.
     /// </summary>
     public TimeSpan? HighscoreForSelectedDifficulty => SettingsProvider.Settings.HighScores
         .FirstOrDefault(x => x.Difficulty.Equals(SelectedDifficulty))?.HighScoreTime;
 
     /// <summary>
-    /// Determines if the game is in cheating mode.
+    ///     Determines if the game is in cheating mode.
     /// </summary>
     public bool IsCheating
     {
@@ -108,7 +102,7 @@ public class MainViewModel : AsyncObservableRecipient,
     }
 
     /// <summary>
-    /// Determines if the game is generating a new Hashi puzzle.
+    ///     Determines if the game is generating a new Hashi puzzle.
     /// </summary>
     public bool IsGeneratingHashiPuzzle
     {
@@ -117,12 +111,13 @@ public class MainViewModel : AsyncObservableRecipient,
     }
 
     /// <summary>
-    /// Gets the list of rules available for the game.
+    ///     Gets the list of rules available for the game.
     /// </summary>
-    public IList<Type> Rules { get; } = typeof(_1ConnectionRule1).Assembly.GetTypes().Where(static x => x.Name.StartsWith('_')).ToList();
+    public IList<Type> Rules { get; } = typeof(_1ConnectionRule1).Assembly.GetTypes()
+        .Where(static x => x.Name.StartsWith('_')).ToList();
 
     /// <summary>
-    /// Gets or sets the selected rule for the game.
+    ///     Gets or sets the selected rule for the game.
     /// </summary>
     public Type SelectedRule
     {
@@ -141,7 +136,7 @@ public class MainViewModel : AsyncObservableRecipient,
     }
 
     /// <summary>
-    /// Gets or sets the selected difficulty for the game.
+    ///     Gets or sets the selected difficulty for the game.
     /// </summary>
     public DifficultyEnum SelectedDifficulty
     {
@@ -153,39 +148,45 @@ public class MainViewModel : AsyncObservableRecipient,
     }
 
     /// <summary>
-    /// Creates a new game.
+    ///     Creates a new game.
     /// </summary>
     public ICommand CreateNewGameCommand { get; }
 
     /// <summary>
-    /// Removes all bridges from the game.
+    ///     Removes all bridges from the game.
     /// </summary>
     public ICommand RemoveAllBridgesCommand { get; }
 
     /// <summary>
-    /// Generates a hint for the game.
+    ///     Generates a hint for the game.
     /// </summary>
     public ICommand GenerateHintCommand { get; }
 
     /// <summary>
-    /// Handles the mouse click event on the window.
+    ///     Handles the mouse click event on the window.
     /// </summary>
     public ICommand WindowMouseClickedCommand { get; }
 
     /// <summary>
-    /// Executes the undo command.
+    ///     Executes the undo command.
     /// </summary>
     public ICommand UndoCommand { get; }
 
     /// <summary>
-    /// Executes the redo command.
+    ///     Executes the redo command.
     /// </summary>
     public ICommand RedoCommand { get; }
 
     /// <summary>
-    /// Changes the language of the game.
+    ///     Changes the language of the game.
     /// </summary>
     public ICommand ChangeLanguageCommand { get; }
+
+    /// <inheritdoc />
+    public IHashiSettingsProvider SettingsProvider { get; }
+
+    /// <inheritdoc />
+    public ITimerProvider TimerProvider { get; }
 
     /// <inheritdoc />
     public async Task CreateNewGameAsync()
@@ -205,24 +206,6 @@ public class MainViewModel : AsyncObservableRecipient,
 
         TimerProvider.StopTimer();
         IsGeneratingHashiPuzzle = false;
-    }
-
-    /// <summary>
-    /// Removes all bridges from the game.
-    /// </summary>
-    public void RemoveAllBridgesExecute()
-    {
-        foreach (var row in ConnectionManager.Islands)
-            foreach (var island in row)
-            {
-                island.AllConnections.Clear();
-                island.NotifyBridgeConnections();
-            }
-
-        TimerProvider.StopTimer();
-
-        IsCheating = false;
-        WeakReferenceMessenger.Default.Send(new UpdateAllIslandColorsMessage());
     }
 
     /// <inheritdoc cref="IMainViewModel.Receive(IBridgeConnectionChangedMessage)" />
@@ -319,6 +302,24 @@ public class MainViewModel : AsyncObservableRecipient,
         ConnectionManager.HighlightPathToTargetIsland(sourceIsland, targetIsland);
     }
 
+    /// <summary>
+    ///     Removes all bridges from the game.
+    /// </summary>
+    public void RemoveAllBridgesExecute()
+    {
+        foreach (var row in ConnectionManager.Islands)
+            foreach (var island in row)
+            {
+                island.AllConnections.Clear();
+                island.NotifyBridgeConnections();
+            }
+
+        TimerProvider.StopTimer();
+
+        IsCheating = false;
+        WeakReferenceMessenger.Default.Send(new UpdateAllIslandColorsMessage());
+    }
+
     private void GenerateHintCommandExecute()
     {
         IsCheating = true;
@@ -328,10 +329,7 @@ public class MainViewModel : AsyncObservableRecipient,
 
     private void GenerateHint()
     {
-        if (ConnectionManager.AreRulesBeingApplied)
-        {
-            return;
-        }
+        if (ConnectionManager.AreRulesBeingApplied) return;
 
         ConnectionManager.AreRulesBeingApplied = true;
 
@@ -341,13 +339,9 @@ public class MainViewModel : AsyncObservableRecipient,
             var repository = new RuleRepository();
 
             if (SelectedRule != typeof(_0AllRules))
-            {
                 repository.Load(x => x.From(SelectedRule));
-            }
             else
-            {
                 repository.Load(x => x.From(Rules));
-            }
 
             //Compile rules
             var factory = repository.Compile();
@@ -368,9 +362,8 @@ public class MainViewModel : AsyncObservableRecipient,
         var rulesFired = session.Fire();
 
         if (rulesFired == 0)
-        {
-            dialogWrapper.Show(TranslationSource.Instance["MessageNoHintsCaption"]!, TranslationSource.Instance["MessageNoHintsText"]!, DialogButton.Ok, DialogImage.Information);
-        }
+            dialogWrapper.Show(TranslationSource.Instance["MessageNoHintsCaption"]!,
+                TranslationSource.Instance["MessageNoHintsText"]!, DialogButton.Ok, DialogImage.Information);
 
         ConnectionManager.AreRulesBeingApplied = false;
     }

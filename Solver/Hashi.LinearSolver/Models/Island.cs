@@ -94,9 +94,9 @@ public class Island : IIsland
         var islandsBlocking = new List<IIsland>();
         if (Down == null) return islandsBlocking;
         for (var row = Down.Y - 1; row > Y; row--)
-            for (var checkEl = 0; checkEl < X; checkEl++)
-                islandsBlocking.AddRange(island.Where(node =>
-                    node.X == checkEl && node.Y == row && node.Right != null && node.Right.X > X));
+        for (var checkEl = 0; checkEl < X; checkEl++)
+            islandsBlocking.AddRange(island.Where(node =>
+                node.X == checkEl && node.Y == row && node.Right != null && node.Right.X > X));
         return islandsBlocking;
     }
 
@@ -106,9 +106,9 @@ public class Island : IIsland
         var islandsBlocking = new List<IIsland>();
         if (Right == null) return islandsBlocking;
         for (var column = Right.X - 1; column > X; column--)
-            for (var checkEl = 0; checkEl < Y; checkEl++)
-                islandsBlocking.AddRange(island.Where(node =>
-                    node.Y == checkEl && node.X == column && node.Down != null && node.Down.Y > Y));
+        for (var checkEl = 0; checkEl < Y; checkEl++)
+            islandsBlocking.AddRange(island.Where(node =>
+                node.Y == checkEl && node.X == column && node.Down != null && node.Down.Y > Y));
         return islandsBlocking;
     }
 }

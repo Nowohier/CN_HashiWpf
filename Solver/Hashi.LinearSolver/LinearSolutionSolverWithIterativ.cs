@@ -1,8 +1,8 @@
-﻿using Google.OrTools.Sat;
+﻿using System.Diagnostics;
+using Google.OrTools.Sat;
 using Hashi.Enums;
 using Hashi.LinearSolver.Interfaces;
 using Hashi.LinearSolver.Interfaces.Models;
-using System.Diagnostics;
 
 // ReSharper disable All
 
@@ -51,12 +51,12 @@ public class LinearSolutionSolverWithIterativ : ILinearSolutionSolverWithIterati
             // Create all nodes
             var numberOfNodes = 0;
             for (var row = 0; row < mainField.Length; row++)
-                for (var col = 0; col < mainField[row].Length; col++)
-                {
-                    if (mainField[row][col] == 0) continue;
-                    numberOfNodes++;
-                    islands.Add(islandFactory.Invoke(mainField[row][col], row, col, numberOfNodes - 1));
-                }
+            for (var col = 0; col < mainField[row].Length; col++)
+            {
+                if (mainField[row][col] == 0) continue;
+                numberOfNodes++;
+                islands.Add(islandFactory.Invoke(mainField[row][col], row, col, numberOfNodes - 1));
+            }
 
             // Set islands neighbors
             foreach (var island in islands) island.SetAllNeighbors(mainField, islands);
