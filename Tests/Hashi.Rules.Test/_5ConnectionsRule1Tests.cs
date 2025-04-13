@@ -1,117 +1,119 @@
 using Hashi.Rules.Test.Helpers;
 using Times = NRules.Testing.Times;
 
-namespace Hashi.Rules.Test
+namespace Hashi.Rules.Test;
+
+[TestFixture]
+public class _5ConnectionsRule1Tests : TestBase
 {
-    [TestFixture]
-    public class _5ConnectionsRule1Tests : TestBase
+    public _5ConnectionsRule1Tests()
     {
-        public _5ConnectionsRule1Tests()
-        {
-            Setup.Rule<_5ConnectionsRule1>();
-        }
+        Setup.Rule<_5ConnectionsRule1>();
+    }
 
-        [Test]
-        public void _5ConnectionsRule1_WhenThreeValidNeighbors_ShouldTriggerRule()
-        {
-            // arrange
-            // valid neighbors
-            var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
-            var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
-            var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 3);
+    [Test]
+    public void _5ConnectionsRule1_WhenThreeValidNeighbors_ShouldTriggerRule()
+    {
+        // arrange
+        // valid neighbors
+        var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
+        var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
+        var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 3);
 
-            var testIsland = SetupTestIsland(5, leftIsland, rightIsland, upIsland);
+        var testIsland = SetupTestIsland(5, leftIsland, rightIsland, upIsland);
 
-            // act
-            Session.Insert(testIsland.Object);
-            Session.Fire();
+        // act
+        Session.Insert(testIsland.Object);
+        Session.Fire();
 
-            // assert
-            Verify(x => x.Rule().Fired(Times.Once));
-            ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, leftIsland.Object, true), Moq.Times.Once);
-            ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, rightIsland.Object, true), Moq.Times.Once);
-            ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, upIsland.Object, true), Moq.Times.Once);
-        }
+        // assert
+        Verify(x => x.Rule().Fired(Times.Once));
+        ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, leftIsland.Object, true),
+            Moq.Times.Once);
+        ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, rightIsland.Object, true),
+            Moq.Times.Once);
+        ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, upIsland.Object, true),
+            Moq.Times.Once);
+    }
 
-        [Test]
-        public void _5ConnectionsRule1_WhenNoValidNeighbors_ShouldNotTriggerRule()
-        {
-            // arrange
-            // invalid neighbors
-            var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
-            leftIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
+    [Test]
+    public void _5ConnectionsRule1_WhenNoValidNeighbors_ShouldNotTriggerRule()
+    {
+        // arrange
+        // invalid neighbors
+        var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
+        leftIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
 
-            var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
-            rightIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
+        var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
+        rightIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
 
-            var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 3);
-            upIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
+        var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 3);
+        upIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
 
-            var testIsland = SetupTestIsland(5, leftIsland, rightIsland, upIsland);
+        var testIsland = SetupTestIsland(5, leftIsland, rightIsland, upIsland);
 
-            // act
-            Session.Insert(testIsland.Object);
-            Session.Fire();
+        // act
+        Session.Insert(testIsland.Object);
+        Session.Fire();
 
-            // assert
-            Verify(x => x.Rule().Fired(Times.Never));
-        }
+        // assert
+        Verify(x => x.Rule().Fired(Times.Never));
+    }
 
-        [Test]
-        public void _5ConnectionsRule1_WhenLessThanThreeNeighbors_ShouldNotTriggerRule()
-        {
-            // arrange
-            // valid neighbors
-            var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
-            var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
+    [Test]
+    public void _5ConnectionsRule1_WhenLessThanThreeNeighbors_ShouldNotTriggerRule()
+    {
+        // arrange
+        // valid neighbors
+        var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
+        var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
 
-            var testIsland = SetupTestIsland(5, leftIsland, rightIsland);
+        var testIsland = SetupTestIsland(5, leftIsland, rightIsland);
 
-            // act
-            Session.Insert(testIsland.Object);
-            Session.Fire();
+        // act
+        Session.Insert(testIsland.Object);
+        Session.Fire();
 
-            // assert
-            Verify(x => x.Rule().Fired(Times.Never));
-        }
+        // assert
+        Verify(x => x.Rule().Fired(Times.Never));
+    }
 
-        [Test]
-        public void _5ConnectionsRule1_WhenIslandHasMaxConnectionsReached_ShouldNotTriggerRule()
-        {
-            // arrange
-            // valid neighbors
-            var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
-            var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
-            var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 3);
+    [Test]
+    public void _5ConnectionsRule1_WhenIslandHasMaxConnectionsReached_ShouldNotTriggerRule()
+    {
+        // arrange
+        // valid neighbors
+        var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
+        var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
+        var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 3);
 
-            var testIsland = SetupTestIsland(5, leftIsland, rightIsland, upIsland);
-            testIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
+        var testIsland = SetupTestIsland(5, leftIsland, rightIsland, upIsland);
+        testIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
 
-            // act
-            Session.Insert(testIsland.Object);
-            Session.Fire();
+        // act
+        Session.Insert(testIsland.Object);
+        Session.Fire();
 
-            // assert
-            Verify(x => x.Rule().Fired(Times.Never));
-        }
+        // assert
+        Verify(x => x.Rule().Fired(Times.Never));
+    }
 
-        [Test]
-        public void _5ConnectionsRule1_WhenNoConnectableNeighbors_ShouldNotTriggerRule()
-        {
-            // arrange
-            // neighbors
-            var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 3, true);
-            var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3, true);
-            var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 3, true);
+    [Test]
+    public void _5ConnectionsRule1_WhenNoConnectableNeighbors_ShouldNotTriggerRule()
+    {
+        // arrange
+        // neighbors
+        var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 3, true);
+        var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3, true);
+        var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 3, true);
 
-            var testIsland = SetupTestIsland(5, leftIsland, rightIsland, upIsland);
+        var testIsland = SetupTestIsland(5, leftIsland, rightIsland, upIsland);
 
-            // act
-            Session.Insert(testIsland.Object);
-            Session.Fire();
+        // act
+        Session.Insert(testIsland.Object);
+        Session.Fire();
 
-            // assert
-            Verify(x => x.Rule().Fired(Times.Never));
-        }
+        // assert
+        Verify(x => x.Rule().Fired(Times.Never));
     }
 }

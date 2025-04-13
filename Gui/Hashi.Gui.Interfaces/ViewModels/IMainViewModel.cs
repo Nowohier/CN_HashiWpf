@@ -9,12 +9,12 @@ namespace Hashi.Gui.Interfaces.ViewModels;
 public interface IMainViewModel
 {
     /// <summary>
-    /// The timer provider for the Hashi game.
+    ///     The timer provider for the Hashi game.
     /// </summary>
     ITimerProvider TimerProvider { get; }
 
     /// <summary>
-    /// The settings provider for the Hashi game.
+    ///     The settings provider for the Hashi game.
     /// </summary>
     IHashiSettingsProvider SettingsProvider { get; }
 

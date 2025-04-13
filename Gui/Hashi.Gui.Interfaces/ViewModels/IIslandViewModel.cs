@@ -1,6 +1,6 @@
-﻿using Hashi.Enums;
+﻿using System.Collections.ObjectModel;
+using Hashi.Enums;
 using Hashi.Gui.Interfaces.Models;
-using System.Collections.ObjectModel;
 
 namespace Hashi.Gui.Interfaces.ViewModels;
 

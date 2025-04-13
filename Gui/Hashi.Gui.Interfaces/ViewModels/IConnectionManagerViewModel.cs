@@ -1,6 +1,6 @@
-﻿using Hashi.Generator.Interfaces.Models;
+﻿using System.Collections.ObjectModel;
+using Hashi.Generator.Interfaces.Models;
 using Hashi.Gui.Interfaces.Models;
-using System.Collections.ObjectModel;
 
 namespace Hashi.Gui.Interfaces.ViewModels;
 

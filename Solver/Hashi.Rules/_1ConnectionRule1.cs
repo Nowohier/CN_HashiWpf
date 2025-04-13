@@ -18,7 +18,9 @@ public class _1ConnectionRule1 : BaseRule
         When()
             .Match(() => island, x => !x.MaxConnectionsReached && x.MaxConnections == 1)
             .Query(() => connectionManager, q => q.Match<IConnectionManagerViewModel>())
-            .Let(() => validNeighbors, () => island.GetAllVisibleNeighbors().Where(x => x.MaxConnections != 1 && !x.MaxConnectionsReached).ToList())
+            .Let(() => validNeighbors,
+                () => island.GetAllVisibleNeighbors().Where(x => x.MaxConnections != 1 && !x.MaxConnectionsReached)
+                    .ToList())
             .Having(() => validNeighbors.Count == 1);
 
         Then()

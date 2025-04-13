@@ -94,7 +94,8 @@
     <Style x:Key="GridLinesStyle" TargetType="Line">
         <Setter Property="Stroke" Value="{StaticResource GridLineBrush}" />
         <Setter Property="StrokeDashArray" Value="4,4" />
-        <Setter Property="StrokeThickness" Value="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl, Mode=FindAncestor, AncestorLevel=2}, Converter={StaticResource GridStrokeThicknessConverter}}"/>
+        <Setter Property="StrokeThickness"
+                Value="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl, Mode=FindAncestor, AncestorLevel=2}, Converter={StaticResource GridStrokeThicknessConverter}}" />
         <Setter Property="UseLayoutRounding" Value="True" />
         <Setter Property="RenderOptions.EdgeMode" Value="Aliased" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
@@ -106,7 +107,8 @@
         <!-- Not implementing this results in potential DataContext={DisconnectedItem} bugs-->
         <Setter Property="DataContext" Value="{Binding}" />
         <Setter Property="Stroke" Value="{StaticResource BasicBrush}" />
-        <Setter Property="StrokeThickness" Value="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl, Mode=FindAncestor, AncestorLevel=2}, Converter={StaticResource LineStrokeThicknessConverter}}"/>
+        <Setter Property="StrokeThickness"
+                Value="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl, Mode=FindAncestor, AncestorLevel=2}, Converter={StaticResource LineStrokeThicknessConverter}}" />
         <Setter Property="UseLayoutRounding" Value="False" />
         <Setter Property="RenderOptions.EdgeMode" Value="Aliased" />
         <Setter Property="SnapsToDevicePixels" Value="True" />

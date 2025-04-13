@@ -1,16 +1,15 @@
 ﻿using Autofac;
 using Hashi.Gui.Interfaces.Providers;
 
-namespace Hashi.Gui.Providers
+namespace Hashi.Gui.Providers;
+
+/// <inheritdoc />
+public class AutoFacProvidersModule : Module
 {
     /// <inheritdoc />
-    public class AutoFacProvidersModule : Module
+    protected override void Load(ContainerBuilder builder)
     {
-        /// <inheritdoc />
-        protected override void Load(ContainerBuilder builder)
-        {
-            builder.RegisterType<HashiSettingsProvider>().As<IHashiSettingsProvider>().SingleInstance();
-            builder.RegisterType<TimerProvider>().As<ITimerProvider>().SingleInstance();
-        }
+        builder.RegisterType<HashiSettingsProvider>().As<IHashiSettingsProvider>().SingleInstance();
+        builder.RegisterType<TimerProvider>().As<ITimerProvider>().SingleInstance();
     }
 }

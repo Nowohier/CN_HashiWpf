@@ -1,7 +1,7 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
+﻿using System.Diagnostics.CodeAnalysis;
+using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Gui.Interfaces.Messages;
 using Hashi.Gui.Messages;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Hashi.Gui.Extensions;
 

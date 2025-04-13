@@ -1,4 +1,8 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Enums;
@@ -11,10 +15,6 @@ using Hashi.Gui.Interfaces.Views;
 using Hashi.Gui.Messages;
 using Hashi.Gui.Messages.MessageContainers;
 using Hashi.Gui.Models;
-using System.Collections.ObjectModel;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Media;
 
 namespace Hashi.Gui.ViewModels;
 
@@ -48,6 +48,41 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
         MouseLeftButtonDownCommand = new RelayCommand<MouseButtonEventArgs>(MouseLeftButtonDownCommandExecute);
         MouseLeftButtonUpCommand = new RelayCommand<MouseButtonEventArgs>(MouseLeftButtonUpCommandExecute);
     }
+
+    /// <summary>
+    ///     Gets or sets the command that is executed when the left mouse button is pressed.
+    /// </summary>
+    public ICommand MouseLeftButtonDownCommand { get; }
+
+    /// <summary>
+    ///     Gets or sets the command that is executed when the left mouse button is released.
+    /// </summary>
+    public ICommand MouseLeftButtonUpCommand { get; }
+
+    /// <summary>
+    ///     Gets or sets the command that is executed when the drag enter event occurs.
+    /// </summary>
+    public ICommand DragEnterCommand { get; }
+
+    /// <summary>
+    ///     Gets or sets the command that is executed when the drag over event occurs.
+    /// </summary>
+    public ICommand DragOverCommand { get; }
+
+    /// <summary>
+    ///     Gets or sets the command that is executed when the drag leave event occurs.
+    /// </summary>
+    public ICommand DragLeaveCommand { get; }
+
+    /// <summary>
+    ///     Gets or sets the command that is executed when the drop event occurs.
+    /// </summary>
+    public ICommand DropCommand { get; }
+
+    /// <summary>
+    ///     Gets or sets the command that is executed when the mouse moves.
+    /// </summary>
+    public ICommand MouseMoveCommand { get; }
 
     /// <inheritdoc />
     public ObservableCollection<IHashiPoint> AllConnections { get; } = new();
@@ -114,41 +149,6 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
 
     /// <inheritdoc />
     public IHashiPoint Coordinates { get; }
-
-    /// <summary>
-    ///     Gets or sets the command that is executed when the left mouse button is pressed.
-    /// </summary>
-    public ICommand MouseLeftButtonDownCommand { get; }
-
-    /// <summary>
-    ///    Gets or sets the command that is executed when the left mouse button is released.
-    /// </summary>
-    public ICommand MouseLeftButtonUpCommand { get; }
-
-    /// <summary>
-    ///    Gets or sets the command that is executed when the drag enter event occurs.
-    /// </summary>
-    public ICommand DragEnterCommand { get; }
-
-    /// <summary>
-    ///    Gets or sets the command that is executed when the drag over event occurs.
-    /// </summary>
-    public ICommand DragOverCommand { get; }
-
-    /// <summary>
-    ///    Gets or sets the command that is executed when the drag leave event occurs.
-    /// </summary>
-    public ICommand DragLeaveCommand { get; }
-
-    /// <summary>
-    ///    Gets or sets the command that is executed when the drop event occurs.
-    /// </summary>
-    public ICommand DropCommand { get; }
-
-    /// <summary>
-    ///    Gets or sets the command that is executed when the mouse moves.
-    /// </summary>
-    public ICommand MouseMoveCommand { get; }
 
     /// <inheritdoc />
     public ConnectionTypeEnum GetConnectionType(IIslandViewModel targetIsland)

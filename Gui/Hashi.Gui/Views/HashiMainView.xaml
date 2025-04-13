@@ -15,7 +15,8 @@
                  mc:Ignorable="d"
                  Loaded="Window_Loaded"
                  d:DataContext="{d:DesignInstance {x:Type viewModels:MainViewModel}, IsDesignTimeCreatable=False}"
-                 Title="Hashiwokakero" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
+                 Title="Hashiwokakero" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen"
+                 ResizeMode="NoResize"
                  AllowDrop="True" WindowTitleBrush="{StaticResource BasicBrush}">
     <mah:MetroWindow.IconTemplate>
         <DataTemplate>
@@ -33,9 +34,11 @@
     </Window.Resources>
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands>
-            <StackPanel Orientation="Horizontal" Visibility="{Binding Source={x:Static helpers:DebugHelper.IsDebugBuild}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-                <TextBlock Text="Rules:" VerticalAlignment="Center"/>
-                <ComboBox Height="26" BorderThickness="1" ItemsSource="{Binding Rules}" SelectedItem="{Binding SelectedRule}" DisplayMemberPath="Name" Margin="5,0,10,0"/>
+            <StackPanel Orientation="Horizontal"
+                        Visibility="{Binding Source={x:Static helpers:DebugHelper.IsDebugBuild}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                <TextBlock Text="Rules:" VerticalAlignment="Center" />
+                <ComboBox Height="26" BorderThickness="1" ItemsSource="{Binding Rules}"
+                          SelectedItem="{Binding SelectedRule}" DisplayMemberPath="Name" Margin="5,0,10,0" />
             </StackPanel>
             <mah:DropDownButton Padding="5,0,5,0" Margin="10,0,0,0" DockPanel.Dock="Right"
                                 ToolTip="{ns:Loc Language}" ItemsSource="{Binding SettingsProvider.Settings.Languages}"
@@ -131,7 +134,8 @@
                                 </StackPanel>
                             </Button>
                             <ToggleButton Style="{StaticResource MenuGridToggleButtonStyle}" Padding="5,0,5,0"
-                                          IsChecked="{Binding SettingsProvider.Settings.AreGridLinesEnabled}" Margin="10,0,0,0"
+                                          IsChecked="{Binding SettingsProvider.Settings.AreGridLinesEnabled}"
+                                          Margin="10,0,0,0"
                                           HorizontalAlignment="Left" DockPanel.Dock="Left" />
                             <Button Style="{StaticResource MenuButtonStyle}" Command="{Binding RedoCommand}"
                                     Padding="5,0,5,0" Margin="10,0,0,0" DockPanel.Dock="Right"

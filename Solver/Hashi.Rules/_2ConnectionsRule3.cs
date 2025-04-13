@@ -20,8 +20,12 @@ public class _2ConnectionsRule3 : BaseRule
             .Match(() => island, x => x.MaxConnections == 2 && x.AllConnections.Count == 0)
             .Query(() => connectionManager, q => q.Match<IConnectionManagerViewModel>())
             .Let(() => allNeighbors, () => island.GetAllVisibleNeighbors())
-            .Let(() => validNeighbors, () => allNeighbors.Where(x => x.MaxConnections > 2 && !x.MaxConnectionsReached).ToList())
-            .Having(() => allNeighbors.Count == 2 && allNeighbors.Count(x => x.MaxConnections <= 2 && !x.MaxConnectionsReached) == 1 && validNeighbors.Count == 1);
+            .Let(() => validNeighbors,
+                () => allNeighbors.Where(x => x.MaxConnections > 2 && !x.MaxConnectionsReached).ToList())
+            .Having(() =>
+                allNeighbors.Count == 2 &&
+                allNeighbors.Count(x => x.MaxConnections <= 2 && !x.MaxConnectionsReached) == 1 &&
+                validNeighbors.Count == 1);
 
         Then()
             .Do(ctx => AddConnection(island, validNeighbors.First(), connectionManager));
