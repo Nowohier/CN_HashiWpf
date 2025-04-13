@@ -61,7 +61,7 @@ public partial class App
     {
         base.OnExit(e);
 
-        mainViewModel?.SaveSettings();
+        mainViewModel?.SettingsProvider.SaveSettings();
     }
 
     /// <summary>

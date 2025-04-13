@@ -6,6 +6,7 @@ using Hashi.Gui.Extensions;
 using Hashi.Gui.Helpers;
 using Hashi.Gui.Interfaces.Messages;
 using Hashi.Gui.Interfaces.Models;
+using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Wrappers;
 using Hashi.Gui.Messages;
@@ -15,13 +16,10 @@ using Hashi.Rules;
 using NRules;
 using NRules.Diagnostics;
 using NRules.Fluent;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.IO;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Threading;
 
 namespace Hashi.Gui.ViewModels;
 
@@ -36,19 +34,10 @@ public class MainViewModel : AsyncObservableRecipient,
 {
     private readonly Func<SolidColorBrush, IHashiBrush> brushFactory;
     private readonly IDialogWrapper dialogWrapper;
-    private readonly DispatcherTimer dispatcherTimer = new() { Interval = TimeSpan.FromSeconds(1) };
     private readonly IHashiGenerator hashiGenerator;
-    internal readonly string HashiSettingsFileName = "HashiSettings.json";
-    private readonly IJsonWrapper jsonWrapper;
     private ISession? session;
-
-    internal readonly string SaveFilePath =
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"CN_Hashi\Settings");
-
-    private readonly Func<ISettingsViewModel> settingsFactory;
     private bool isCheating;
     private bool isGeneratingHashiPuzzle;
-    private bool isTimerRunning;
     private DifficultyEnum selectedDifficulty = DifficultyEnum.Easy3;
     private Type selectedRule;
 
@@ -56,30 +45,31 @@ public class MainViewModel : AsyncObservableRecipient,
     ///     Initializes a new instance of the <see cref="MainViewModel" /> class.
     /// </summary>
     /// <param name="brushFactory">The solid color brush factory.</param>
-    /// <param name="settingsFactory">The settings factory.</param>
     /// <param name="connectionManager">The connection manager.</param>
     /// <param name="dialogWrapper">The dialog wrapper.</param>
-    /// <param name="jsonWrapper">The json wrapper.</param>
     /// <param name="hashiGenerator">The hashi generator.</param>
+    /// <param name="settingsProvider">The settings provider.</param>
+    /// <param name="timerProvider">The timer provider.</param>
     public MainViewModel(
         Func<SolidColorBrush, IHashiBrush> brushFactory,
-        Func<ISettingsViewModel> settingsFactory,
         IConnectionManagerViewModel connectionManager,
         IDialogWrapper dialogWrapper,
-        IJsonWrapper jsonWrapper,
-        IHashiGenerator hashiGenerator)
+        IHashiGenerator hashiGenerator,
+        IHashiSettingsProvider settingsProvider,
+        ITimerProvider timerProvider)
     {
         this.brushFactory = brushFactory;
-        this.settingsFactory = settingsFactory;
         ConnectionManager = connectionManager;
+        SettingsProvider = settingsProvider;
+        TimerProvider = timerProvider;
         this.dialogWrapper = dialogWrapper;
-        this.jsonWrapper = jsonWrapper;
         this.hashiGenerator = hashiGenerator;
 
         WeakReferenceMessenger.Default.Register<BridgeConnectionChangedMessage>(this);
         WeakReferenceMessenger.Default.Register<UpdateAllIslandColorsMessage>(this);
         WeakReferenceMessenger.Default.Register<AllConnectionsSetMessage>(this);
         WeakReferenceMessenger.Default.Register<DropTargetIslandChangedMessage>(this);
+
         CreateNewGameCommand = new AsyncRelayCommand(CreateNewGameAsync);
         RemoveAllBridgesCommand = new RelayCommand(RemoveAllBridgesExecute);
         GenerateHintCommand = new RelayCommand(GenerateHintCommandExecute);
@@ -89,9 +79,13 @@ public class MainViewModel : AsyncObservableRecipient,
         ChangeLanguageCommand = new RelayCommand<string>(ChangeLanguageCommandExecute);
 
         selectedRule = Rules.First();
-        dispatcherTimer.Tick += (_, _) => OnPropertyChanged(nameof(Timer));
-        Settings = LoadSettings();
     }
+
+    /// <inheritdoc />
+    public IHashiSettingsProvider SettingsProvider { get; }
+
+    /// <inheritdoc />
+    public ITimerProvider TimerProvider { get; }
 
     /// <summary>
     /// Gets the connection manager view model.
@@ -99,24 +93,10 @@ public class MainViewModel : AsyncObservableRecipient,
     public IConnectionManagerViewModel ConnectionManager { get; }
 
     /// <summary>
-    /// Gets the settings view model.
-    /// </summary>
-    public ISettingsViewModel Settings { get; }
-
-    /// <summary>
     /// Gets the highscore for the selected difficulty.
     /// </summary>
-    public TimeSpan? HighscoreForSelectedDifficulty => Settings.HighScores
+    public TimeSpan? HighscoreForSelectedDifficulty => SettingsProvider.Settings.HighScores
         .FirstOrDefault(x => x.Difficulty.Equals(SelectedDifficulty))?.HighScoreTime;
-
-    /// <summary>
-    /// Determines if the timer is running.
-    /// </summary>
-    public bool IsTimerRunning
-    {
-        get => isTimerRunning;
-        set => SetProperty(ref isTimerRunning, value);
-    }
 
     /// <summary>
     /// Determines if the game is in cheating mode.
@@ -139,7 +119,7 @@ public class MainViewModel : AsyncObservableRecipient,
     /// <summary>
     /// Gets the list of rules available for the game.
     /// </summary>
-    public IList<Type> Rules { get; } = typeof(_1ConnectionRule1).Assembly.GetTypes().Where(static x => x.Name.StartsWith("_")).ToList();
+    public IList<Type> Rules { get; } = typeof(_1ConnectionRule1).Assembly.GetTypes().Where(static x => x.Name.StartsWith('_')).ToList();
 
     /// <summary>
     /// Gets or sets the selected rule for the game.
@@ -207,65 +187,6 @@ public class MainViewModel : AsyncObservableRecipient,
     /// </summary>
     public ICommand ChangeLanguageCommand { get; }
 
-    /// <summary>
-    /// Gets the timer for the game.
-    /// </summary>
-    public Stopwatch Timer { get; } = new();
-
-    /// <summary>
-    /// Loads the settings from a JSON file.
-    /// </summary>
-    /// <returns>an <see cref="ISettingsViewModel"/>.</returns>
-    public ISettingsViewModel LoadSettings()
-    {
-        ISettingsViewModel loadedSettings;
-        try
-        {
-            var path = Path.Combine(SaveFilePath, HashiSettingsFileName);
-            if (File.Exists(path))
-            {
-                loadedSettings =
-                    (SettingsViewModel)jsonWrapper.DeserializeObject(File.ReadAllText(path),
-                        typeof(SettingsViewModel))!;
-                OnPropertyChanged(nameof(ISettingsViewModel));
-                TranslationSource.Instance.CurrentCulture =
-                    new CultureInfo(loadedSettings.SelectedLanguageCulture ?? "en-GB");
-                return loadedSettings;
-            }
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine(ex.StackTrace);
-        }
-
-        loadedSettings = settingsFactory.Invoke();
-        loadedSettings.InitializeHighScores();
-        loadedSettings.SelectedLanguageCulture = loadedSettings.Languages[0].Culture;
-        TranslationSource.Instance.CurrentCulture = new CultureInfo(loadedSettings.SelectedLanguageCulture ?? "en-GB");
-        OnPropertyChanged(nameof(HighscoreForSelectedDifficulty));
-        return loadedSettings;
-    }
-
-    /// <inheritdoc />
-    public void SaveSettings()
-    {
-        if (Settings == null) throw new InvalidOperationException("Settings cannot be null.");
-
-        var jsonArray = jsonWrapper.SerializeObject(Settings);
-        var path = Path.Combine(SaveFilePath, HashiSettingsFileName);
-
-        try
-        {
-            if (!Directory.Exists(SaveFilePath)) Directory.CreateDirectory(SaveFilePath);
-
-            File.WriteAllText(path, jsonArray);
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine(ex.StackTrace);
-        }
-    }
-
     /// <inheritdoc />
     public async Task CreateNewGameAsync()
     {
@@ -282,7 +203,7 @@ public class MainViewModel : AsyncObservableRecipient,
 
         ConnectionManager.InitializeNewSolution(solutionContainer);
 
-        StopTimer();
+        TimerProvider.StopTimer();
         IsGeneratingHashiPuzzle = false;
     }
 
@@ -298,11 +219,7 @@ public class MainViewModel : AsyncObservableRecipient,
                 island.NotifyBridgeConnections();
             }
 
-        if (Timer.IsRunning)
-        {
-            Timer.Reset();
-            IsTimerRunning = false;
-        }
+        TimerProvider.StopTimer();
 
         IsCheating = false;
         WeakReferenceMessenger.Default.Send(new UpdateAllIslandColorsMessage());
@@ -323,7 +240,7 @@ public class MainViewModel : AsyncObservableRecipient,
         {
             BridgeOperationTypeEnum.Add => () =>
             {
-                StartTimer();
+                TimerProvider.StartTimer();
                 ConnectionManager.AddConnection(sourceIsland, targetIsland);
             }
             ,
@@ -351,7 +268,7 @@ public class MainViewModel : AsyncObservableRecipient,
     {
         var caption = "Game Over";
         var dialogMessage = "All connections are set!";
-        Timer.Stop();
+        TimerProvider.StopTimer();
 
         //ToDo: Check if all islands are connected
 
@@ -363,9 +280,9 @@ public class MainViewModel : AsyncObservableRecipient,
         }
 
         //Check if highscore - if yes, write highscore to json and show message
-        var actualScore = Timer.Elapsed;
+        var actualScore = TimerProvider.Timer.Elapsed;
         var currentSettingForSetDifficulty =
-            Settings.HighScores.FirstOrDefault(x => x.Difficulty == SelectedDifficulty);
+            SettingsProvider.Settings.HighScores.FirstOrDefault(x => x.Difficulty == SelectedDifficulty);
         var currentHighScore = currentSettingForSetDifficulty?.HighScoreTime;
         if (currentSettingForSetDifficulty != null && (currentHighScore == null || actualScore < currentHighScore))
         {
@@ -374,7 +291,7 @@ public class MainViewModel : AsyncObservableRecipient,
                              $"Your time: {actualScore:hh\\:mm\\:ss}\n" +
                              $"Previous highscore: {currentHighScore:hh\\:mm\\:ss}";
             currentSettingForSetDifficulty.HighScoreTime = actualScore;
-            SaveSettings();
+            SettingsProvider.SaveSettings();
             OnPropertyChanged(nameof(HighscoreForSelectedDifficulty));
             OnPropertyChanged(nameof(HighscoreForSelectedDifficulty));
         }
@@ -405,7 +322,7 @@ public class MainViewModel : AsyncObservableRecipient,
     private void GenerateHintCommandExecute()
     {
         IsCheating = true;
-        StartTimer();
+        TimerProvider.StartTimer();
         GenerateHint();
     }
 
@@ -448,7 +365,7 @@ public class MainViewModel : AsyncObservableRecipient,
             session.Update(ConnectionManager);
         }
 
-        var rulesFired = session.Fire();
+        session.Fire();
         ConnectionManager.AreRulesBeingApplied = false;
     }
 
@@ -461,7 +378,7 @@ public class MainViewModel : AsyncObservableRecipient,
     {
         if (string.IsNullOrEmpty(culture)) return;
         TranslationSource.Instance.CurrentCulture = new CultureInfo(culture);
-        Settings.SelectedLanguageCulture = culture;
+        SettingsProvider.Settings.SelectedLanguageCulture = culture;
     }
 
     private void UndoCommandExecute()
@@ -506,24 +423,5 @@ public class MainViewModel : AsyncObservableRecipient,
     private bool RedoCommandCanExecute()
     {
         return false;
-    }
-
-    private void StartTimer()
-    {
-        if (Timer.IsRunning) return;
-
-        // Start timers
-        dispatcherTimer.Start();
-        Timer.Start();
-        IsTimerRunning = true;
-    }
-
-    private void StopTimer()
-    {
-        // Stop timers
-        Timer.Reset();
-        IsTimerRunning = false;
-        dispatcherTimer.Stop();
-        OnPropertyChanged(nameof(Timer));
     }
 }
