@@ -5,7 +5,7 @@ VisualStudioVersion = 17.13.35828.75
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hashi.Gui", "Gui\Hashi.Gui\Hashi.Gui.csproj", "{E261B679-C699-4924-84CC-C378F28B343B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hashi.Gui.Test", "Gui\Hashi.Gui.Test\Hashi.Gui.Test.csproj", "{2502E7E1-41CE-45B0-BD0A-9616DCDE26DB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hashi.Gui.Test", "Tests\Hashi.Gui.Test\Hashi.Gui.Test.csproj", "{2502E7E1-41CE-45B0-BD0A-9616DCDE26DB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hashi.Generator", "Generator\Hashi.Generator\Hashi.Generator.csproj", "{7A045235-E054-452A-BD97-30F822BDD7C2}"
 EndProject
@@ -21,11 +21,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hashi.Generator.Interfaces"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hashi.LinearSolver.Interfaces", "Solver\Hashi.LinearSolver.Interfaces\Hashi.LinearSolver.Interfaces.csproj", "{25DC01CE-BB3C-46BD-905F-D3AE47B10044}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hashi.Generator.Test", "Generator\Hashi.Generator.Test\Hashi.Generator.Test.csproj", "{2825EA8C-3D3B-4943-B121-1598EB4D1E98}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hashi.Generator.Test", "Tests\Hashi.Generator.Test\Hashi.Generator.Test.csproj", "{2825EA8C-3D3B-4943-B121-1598EB4D1E98}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hashi.LinearSolver.Test", "Solver\Hashi.LinearSolver.Test\Hashi.LinearSolver.Test.csproj", "{8E355EBC-BAA1-4190-9257-1BB1BCBDA99B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hashi.LinearSolver.Test", "Tests\Hashi.LinearSolver.Test\Hashi.LinearSolver.Test.csproj", "{8E355EBC-BAA1-4190-9257-1BB1BCBDA99B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hashi.SolvedPuzzles.Test", "PuzzleLoader\Hashi.SolvedPuzzles.Test\Hashi.SolvedPuzzles.Test.csproj", "{05DD818A-5668-4DD3-9756-3CEA69A9B146}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hashi.SolvedPuzzles.Test", "Tests\Hashi.SolvedPuzzles.Test\Hashi.SolvedPuzzles.Test.csproj", "{05DD818A-5668-4DD3-9756-3CEA69A9B146}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Generator", "Generator", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
@@ -45,7 +45,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hashi.Gui.Language", "Gui\H
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hashi.Gui.Translation", "Gui\Hashi.Gui.Translation\Hashi.Gui.Translation.csproj", "{727F72AB-7821-4502-9FFB-CCE94DD1F751}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hashi.Rules.Test", "Solver\Hashi.Rules.Test\Hashi.Rules.Test.csproj", "{5F7D239A-3B55-4298-ACA5-F11C0BFBC1B2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hashi.Rules.Test", "Tests\Hashi.Rules.Test\Hashi.Rules.Test.csproj", "{5F7D239A-3B55-4298-ACA5-F11C0BFBC1B2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A8676F02-566E-4E0B-BA45-CDE4ECDAB20E}"
 EndProject

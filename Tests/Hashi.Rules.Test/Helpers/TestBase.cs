@@ -2,9 +2,11 @@
 using Hashi.Gui.Interfaces.ViewModels;
 using Moq;
 using NRules.Testing;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Hashi.Rules.Test.Helpers
 {
+    [ExcludeFromCodeCoverage]
     public abstract class TestBase : RulesTestFixture
     {
         protected Mock<IConnectionManagerViewModel> ConnectionManagerMock;
