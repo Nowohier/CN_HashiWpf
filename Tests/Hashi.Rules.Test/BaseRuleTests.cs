@@ -855,6 +855,48 @@ namespace Hashi.Rules.Test
             testableBaseRule.Invoking(x => x.EnsureRulesAreBeingApplied(null!))
                 .Should().Throw<NullReferenceException>();
         }
+
+        [Test]
+        public void AddMultipleConnections_ShouldSkipTarget_WhenTargetHasMaxConnections()
+        {
+            // arrange
+            var targetIslands = new List<IIslandViewModel> { targetIslandMock.Object };
+            connectionManagerMock.Setup(cm => cm.AreRulesBeingApplied).Returns(true);
+            targetIslandMock.Setup(x => x.MaxConnectionsReached).Returns(true);
+
+            // act
+            testableBaseRule.AddMultipleConnections(sourceIslandMock.Object, targetIslands, connectionManagerMock.Object);
+
+            // assert
+            connectionManagerMock.Verify(cm => cm.AddConnection(It.IsAny<IIslandViewModel>(), It.IsAny<IIslandViewModel>(), true), Times.Never);
+        }
+
+        [Test]
+        public void AddMultipleConnections_ShouldAddConnectionsToSomeTargets_WhenOthersFail()
+        {
+            // arrange
+            var targetIslandMock1 = new Mock<IIslandViewModel>();
+            var targetIslandMock2 = new Mock<IIslandViewModel>();
+
+            targetIslandMock1.Setup(x => x.MaxConnectionsReached).Returns(false);
+            targetIslandMock1.Setup(x => x.AllConnections).Returns([]);
+            targetIslandMock1.Setup(x => x.Coordinates).Returns(new Mock<IHashiPoint>().Object);
+            targetIslandMock2.Setup(x => x.MaxConnectionsReached).Returns(true);
+            targetIslandMock2.Setup(x => x.AllConnections).Returns([]);
+            targetIslandMock2.Setup(x => x.Coordinates).Returns(new Mock<IHashiPoint>().Object);
+
+            var targetIslands = new List<IIslandViewModel> { targetIslandMock1.Object, targetIslandMock2.Object };
+
+            connectionManagerMock.Setup(x => x.AreRulesBeingApplied).Returns(true);
+            sourceIslandMock.Setup(x => x.AllConnections).Returns([]);
+
+            // act
+            testableBaseRule.AddMultipleConnections(sourceIslandMock.Object, targetIslands, connectionManagerMock.Object);
+
+            // assert
+            connectionManagerMock.Verify(cm => cm.AddConnection(sourceIslandMock.Object, targetIslandMock1.Object, true), Times.Exactly(2));
+            connectionManagerMock.Verify(cm => cm.AddConnection(sourceIslandMock.Object, targetIslandMock2.Object, true), Times.Never);
+        }
     }
 
     /// <summary>
