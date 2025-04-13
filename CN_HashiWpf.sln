@@ -47,6 +47,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hashi.Gui.Translation", "Gu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hashi.Rules.Test", "Solver\Hashi.Rules.Test\Hashi.Rules.Test.csproj", "{5F7D239A-3B55-4298-ACA5-F11C0BFBC1B2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AppPackages", "AppPackages", "{571D2A2B-D0E3-45B5-85E2-FEA8C8F557B6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
