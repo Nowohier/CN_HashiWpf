@@ -10,10 +10,10 @@ public class _5ConnectionsRule2 : BaseRule
 
     public override void Define()
     {
-        IIslandViewModel? island = null!;
-        List<IIslandViewModel?> neighbors = null!;
+        IIslandViewModel island = null!;
+        List<IIslandViewModel> neighbors = null!;
         List<IIslandViewModel> restrictedNeighbors = null!;
-        IConnectionManagerViewModel? connectionManager = null!;
+        IConnectionManagerViewModel connectionManager = null!;
 
         When()
             .Match(() => island, x => x.MaxConnections == 5 && !x.MaxConnectionsReached)

@@ -74,7 +74,7 @@ namespace Hashi.Rules.Test
             targetIslandMock.Setup(ti => ti.AllConnections).Returns([]);
 
             // act
-            testableBaseRule.AddConnections(sourceIslandMock.Object, targetIslands, connectionManagerMock.Object);
+            testableBaseRule.AddConnections(sourceIslandMock.Object, targetIslands!, connectionManagerMock.Object);
 
             // assert
             connectionManagerMock.Verify(cm => cm.AddConnection(sourceIslandMock.Object, targetIslandMock.Object, true),
@@ -93,7 +93,7 @@ namespace Hashi.Rules.Test
             targetIslandMock.Setup(ti => ti.AllConnections).Returns([]);
 
             // act
-            testableBaseRule.AddMultipleConnections(sourceIslandMock.Object, targetIslands,
+            testableBaseRule.AddMultipleConnections(sourceIslandMock.Object, targetIslands!,
                 connectionManagerMock.Object);
 
             // assert
@@ -136,7 +136,7 @@ namespace Hashi.Rules.Test
             var neighbors = new List<IIslandViewModel?> { neighborIslandMock1.Object, neighborIslandMock2.Object };
 
             // act
-            var result = testableBaseRule.GetConnectableNeighborsWithoutConnection(sourceIslandMock.Object, neighbors);
+            var result = testableBaseRule.GetConnectableNeighborsWithoutConnection(sourceIslandMock.Object, neighbors!);
 
             // assert
             result.Should().HaveCount(1);
@@ -162,7 +162,7 @@ namespace Hashi.Rules.Test
             }
 
             // act
-            var result = testableBaseRule.GetConnectedNeighbors(sourceIslandMock.Object, neighbors, null);
+            var result = testableBaseRule.GetConnectedNeighbors(sourceIslandMock.Object, neighbors!, null);
 
             // assert
             result.Should().HaveCount(connectedNeighbors);
@@ -183,7 +183,7 @@ namespace Hashi.Rules.Test
             var neighbors = new List<IIslandViewModel?> { neighborIslandMock1.Object, neighborIslandMock2.Object };
 
             // act
-            var result = testableBaseRule.GetConnectedNeighbors(sourceIslandMock.Object, neighbors, null);
+            var result = testableBaseRule.GetConnectedNeighbors(sourceIslandMock.Object, neighbors!, null);
 
             // assert
             result.Should().HaveCount(2);
@@ -207,7 +207,7 @@ namespace Hashi.Rules.Test
             var neighbors = new List<IIslandViewModel?> { neighborIslandMock.Object };
 
             // act
-            var result = testableBaseRule.GetConnectedNeighbors(sourceIslandMock.Object, neighbors, 2);
+            var result = testableBaseRule.GetConnectedNeighbors(sourceIslandMock.Object, neighbors!, 2);
 
             // assert
             result.Should().HaveCount(1);
@@ -229,7 +229,7 @@ namespace Hashi.Rules.Test
             var neighbors = new List<IIslandViewModel?> { neighborIslandMock1.Object, neighborIslandMock2.Object };
 
             // act
-            var result = testableBaseRule.GetConnectedNeighbors(sourceIslandMock.Object, neighbors, null);
+            var result = testableBaseRule.GetConnectedNeighbors(sourceIslandMock.Object, neighbors!, null);
 
             // assert
             result.Should().HaveCount(1);
@@ -252,7 +252,7 @@ namespace Hashi.Rules.Test
             var neighbors = new List<IIslandViewModel?> { neighborIslandMock1.Object, neighborIslandMock2.Object };
 
             // act
-            var result = testableBaseRule.AreAllNeighborsConnected(sourceIslandMock.Object, neighbors);
+            var result = testableBaseRule.AreAllNeighborsConnected(sourceIslandMock.Object, neighbors!);
 
             // assert
             result.Should().BeTrue();
@@ -273,7 +273,7 @@ namespace Hashi.Rules.Test
             var neighbors = new List<IIslandViewModel?> { neighborIslandMock1.Object, neighborIslandMock2.Object };
 
             // act
-            var result = testableBaseRule.AreAllNeighborsConnected(sourceIslandMock.Object, neighbors);
+            var result = testableBaseRule.AreAllNeighborsConnected(sourceIslandMock.Object, neighbors!);
 
             // assert
             result.Should().BeFalse();
@@ -292,7 +292,7 @@ namespace Hashi.Rules.Test
             var neighbors = new List<IIslandViewModel?> { neighborIslandMock.Object };
 
             // act
-            var result = testableBaseRule.GetConnectedNeighbors(sourceIslandMock.Object, neighbors, 2);
+            var result = testableBaseRule.GetConnectedNeighbors(sourceIslandMock.Object, neighbors!, 2);
 
             // assert
             result.Should().BeEmpty();
@@ -365,7 +365,7 @@ namespace Hashi.Rules.Test
             var neighbors = new List<IIslandViewModel?> { neighborIslandMock1.Object, neighborIslandMock2.Object };
 
             // act
-            var result = testableBaseRule.GetMaxedOutConnectedNeighbors(sourceIslandMock.Object, neighbors, null);
+            var result = testableBaseRule.GetMaxedOutConnectedNeighbors(sourceIslandMock.Object, neighbors!, null);
 
             // assert
             result.Should().HaveCount(1);
@@ -551,7 +551,7 @@ namespace Hashi.Rules.Test
             var neighbors = new List<IIslandViewModel?> { neighborIslandMock.Object };
 
             // act
-            var result = testableBaseRule.GetConnectableNeighborsWithoutConnection(sourceIslandMock.Object, neighbors);
+            var result = testableBaseRule.GetConnectableNeighborsWithoutConnection(sourceIslandMock.Object, neighbors!);
 
             // assert
             result.Should().BeEmpty();
@@ -573,7 +573,7 @@ namespace Hashi.Rules.Test
         {
             // act & assert
             testableBaseRule.Invoking(x => x.AddConnection(sourceIslandMock.Object, targetIslandMock.Object, null!))
-                .Should().NotThrow();
+                .Should().Throw<NullReferenceException>();
         }
 
         [Test]
@@ -598,7 +598,7 @@ namespace Hashi.Rules.Test
         public void AddConnections_ShouldNotThrow_WhenTargetListIsEmpty()
         {
             // arrange
-            var targetIslands = new List<IIslandViewModel?>();
+            var targetIslands = new List<IIslandViewModel>();
             connectionManagerMock.Setup(cm => cm.AreRulesBeingApplied).Returns(true);
 
             // act & assert
@@ -610,7 +610,7 @@ namespace Hashi.Rules.Test
         public void AddConnections_ShouldHandleDuplicateTargets()
         {
             // arrange
-            var targetIslands = new List<IIslandViewModel?> { targetIslandMock.Object, targetIslandMock.Object };
+            var targetIslands = new List<IIslandViewModel> { targetIslandMock.Object, targetIslandMock.Object };
             connectionManagerMock.Setup(cm => cm.AreRulesBeingApplied).Returns(true);
             var hashPointMock = new Mock<IHashiPoint>(MockBehavior.Strict);
             hashPointMock.Setup(mock => mock.X).Returns(1);
@@ -637,7 +637,7 @@ namespace Hashi.Rules.Test
             connectionManagerMock.Setup(cm => cm.AreRulesBeingApplied).Returns(true);
 
             // act & assert
-            testableBaseRule.Invoking(x => x.AddMultipleConnections(sourceIslandMock.Object, targetIslands, connectionManagerMock.Object))
+            testableBaseRule.Invoking(x => x.AddMultipleConnections(sourceIslandMock.Object, targetIslands!, connectionManagerMock.Object))
                 .Should().NotThrow();
         }
 
@@ -650,7 +650,7 @@ namespace Hashi.Rules.Test
             sourceIslandMock.Setup(x => x.MaxConnectionsReached).Returns(true);
 
             // act
-            testableBaseRule.AddMultipleConnections(sourceIslandMock.Object, targetIslands, connectionManagerMock.Object);
+            testableBaseRule.AddMultipleConnections(sourceIslandMock.Object, targetIslands!, connectionManagerMock.Object);
 
             // assert
             connectionManagerMock.Verify(cm => cm.AddConnection(It.IsAny<IIslandViewModel>(), It.IsAny<IIslandViewModel>(), true), Times.Never);
@@ -702,7 +702,7 @@ namespace Hashi.Rules.Test
             var neighbors = new List<IIslandViewModel?> { neighborIslandMock.Object };
 
             // act
-            var result = testableBaseRule.GetConnectedNeighbors(sourceIslandMock.Object, neighbors, 2);
+            var result = testableBaseRule.GetConnectedNeighbors(sourceIslandMock.Object, neighbors!, 2);
 
             // assert
             result.Should().BeEmpty();
@@ -731,11 +731,9 @@ namespace Hashi.Rules.Test
         [Test]
         public void CountConnectionsToNeighbors_ShouldReturnZero_WhenNeighborsListIsNull()
         {
-            // act
-            var result = testableBaseRule.CountConnectionsToNeighbors(sourceIslandMock.Object, null!);
-
-            // assert
-            result.Should().Be(0);
+            // arrange, act, assert
+            testableBaseRule.Invoking(x => x.CountConnectionsToNeighbors(sourceIslandMock.Object, null!))
+                .Should().Throw<ArgumentNullException>();
         }
 
         [Test]
@@ -850,7 +848,7 @@ namespace Hashi.Rules.Test
         {
             // act & assert
             testableBaseRule.Invoking(x => x.EnsureRulesAreBeingApplied(null!))
-                .Should().NotThrow();
+                .Should().Throw<NullReferenceException>();
         }
     }
 
@@ -875,7 +873,7 @@ namespace Hashi.Rules.Test
         /// Overrides the EnsureRulesAreBeingApplied method for testing.
         /// </summary>
         [ExcludeFromCodeCoverage]
-        internal override bool EnsureRulesAreBeingApplied(IConnectionManagerViewModel? connectionManager)
+        internal override bool EnsureRulesAreBeingApplied(IConnectionManagerViewModel connectionManager)
         {
             return EnsureRulesAreBeingAppliedOverride && base.EnsureRulesAreBeingApplied(connectionManager);
         }

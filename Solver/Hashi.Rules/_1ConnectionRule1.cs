@@ -11,9 +11,9 @@ public class _1ConnectionRule1 : BaseRule
     /// <inheritdoc />
     public override void Define()
     {
-        IIslandViewModel? island = null!;
-        List<IIslandViewModel?> validNeighbors = null!;
-        IConnectionManagerViewModel? connectionManager = null!;
+        IIslandViewModel island = null!;
+        List<IIslandViewModel> validNeighbors = null!;
+        IConnectionManagerViewModel connectionManager = null!;
 
         When()
             .Match(() => island, x => !x.MaxConnectionsReached && x.MaxConnections == 1)
