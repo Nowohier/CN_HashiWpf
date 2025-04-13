@@ -19,9 +19,8 @@ public class _5ConnectionsRule2 : BaseRule
             .Match(() => island, x => x.MaxConnections == 5 && !x.MaxConnectionsReached)
             .Query(() => connectionManager, q => q.Match<IConnectionManagerViewModel>())
             .Let(() => neighbors, () => island.GetAllVisibleNeighbors())
-            .Having(() => neighbors.Count == 3)
             .Let(() => restrictedNeighbors, () => GetMaxedOutConnectedNeighbors(island, neighbors, 1))
-            .Having(() => restrictedNeighbors.Count == 1);
+            .Having(() => restrictedNeighbors.Count == 1 && neighbors.Count - restrictedNeighbors.Count == 3);
 
         Then()
             .Do(ctx => AddMultipleConnections(island, neighbors.Except(restrictedNeighbors).ToList(), connectionManager));

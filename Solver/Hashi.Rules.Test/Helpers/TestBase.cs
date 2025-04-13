@@ -68,7 +68,7 @@ namespace Hashi.Rules.Test.Helpers
             islandMock.Setup(mock => mock.MaxConnectionsReached).Returns(maxConnectionsReached || maxConnections == 0);
             islandMock.Setup(mock => mock.GetAllVisibleNeighbors()).Returns([]);
             islandMock.Setup(mock => mock.AllConnections).Returns([]);
-            islandMock.Setup(mock => mock.RemainingConnections);
+            islandMock.Setup(mock => mock.RemainingConnections).Returns(maxConnectionsReached ? 0 : maxConnections);
             islandMock.Setup(mock => mock.RefreshIslandColor());
             return islandMock;
         }
