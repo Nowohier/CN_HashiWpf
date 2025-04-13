@@ -1,4 +1,6 @@
+using Hashi.Gui.Interfaces.Models;
 using Hashi.Rules.Test.Helpers;
+using System.Collections.ObjectModel;
 using Times = NRules.Testing.Times;
 
 namespace Hashi.Rules.Test
@@ -12,16 +14,23 @@ namespace Hashi.Rules.Test
         }
 
         [Test]
-        public void _5ConnectionsRule3_WhenFourNeighborsWithTwoRestricted_ShouldTriggerRule()
+        [TestCase(2, 1, true)]
+        [TestCase(1, 1, true)]
+        [TestCase(0, 1, false)]
+        [TestCase(2, 2, false)]
+        public void _5ConnectionsRule3_WhenFourNeighborsWithTwoRestricted_ShouldTriggerRule(int amountRestrictedConnectionsToSource1, int amountRestrictedConnectionsToSource2, bool ruleIsFired)
         {
             // arrange
+            var hashiPointMocks = new List<IHashiPoint>([CreateHashiPointMock(1, 1).Object, CreateHashiPointMock(1, 1).Object]);
 
             // neighbors
             var restrictedNeighbor1 = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
             restrictedNeighbor1.Setup(mock => mock.MaxConnectionsReached).Returns(true);
+            restrictedNeighbor1.Setup(mock => mock.AllConnections).Returns(new ObservableCollection<IHashiPoint>(hashiPointMocks.Take(amountRestrictedConnectionsToSource1).ToList()));
 
             var restrictedNeighbor2 = CreateIslandMock(TestIslandEnum.RightIsland, 3);
             restrictedNeighbor2.Setup(mock => mock.MaxConnectionsReached).Returns(true);
+            restrictedNeighbor2.Setup(mock => mock.AllConnections).Returns(new ObservableCollection<IHashiPoint>(hashiPointMocks.Take(amountRestrictedConnectionsToSource2).ToList()));
 
             var validNeighbor1 = CreateIslandMock(TestIslandEnum.UpIsland, 3);
             validNeighbor1.Setup(mock => mock.MaxConnectionsReached).Returns(false);
@@ -36,9 +45,9 @@ namespace Hashi.Rules.Test
             Session.Fire();
 
             // assert
-            Verify(x => x.Rule().Fired(Times.Once));
-            ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, validNeighbor1.Object, true), Moq.Times.Once);
-            ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, validNeighbor2.Object, true), Moq.Times.Once);
+            Verify(x => x.Rule().Fired(ruleIsFired ? Times.Once : Times.Never));
+            ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, validNeighbor1.Object, true), ruleIsFired ? Moq.Times.Once : Moq.Times.Never);
+            ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, validNeighbor2.Object, true), ruleIsFired ? Moq.Times.Once : Moq.Times.Never);
         }
 
         [Test]

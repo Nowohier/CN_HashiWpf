@@ -100,9 +100,9 @@ namespace Hashi.Rules.Test
         {
             // arrange
             // neighbors
-            var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
-            var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
-            var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 3);
+            var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 3, true);
+            var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3, true);
+            var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 3, true);
 
             var testIsland = SetupTestIsland(5, leftIsland, rightIsland, upIsland);
 

@@ -762,11 +762,16 @@ namespace Hashi.Rules.Test
             var neighborIslandMock1 = new Mock<IIslandViewModel>();
             var neighborIslandMock2 = new Mock<IIslandViewModel>();
             var otherCoordinatesMock = new Mock<IHashiPoint>();
+            var sourceCoordinatesMock = new Mock<IHashiPoint>();
+            sourceCoordinatesMock.Setup(x => x.X).Returns(1);
+            sourceCoordinatesMock.Setup(x => x.Y).Returns(1);
 
             neighborIslandMock1.Setup(x => x.AllConnections).Returns([otherCoordinatesMock.Object]);
             neighborIslandMock2.Setup(x => x.AllConnections).Returns([otherCoordinatesMock.Object]);
 
             var neighbors = new List<IIslandViewModel> { neighborIslandMock1.Object, neighborIslandMock2.Object };
+
+            sourceIslandMock.Setup(x => x.Coordinates).Returns(sourceCoordinatesMock.Object);
 
             // act
             var result = testableBaseRule.CountConnectionsToNeighbors(sourceIslandMock.Object, neighbors);

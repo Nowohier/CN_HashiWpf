@@ -18,7 +18,8 @@ public class _4ConnectionsRule2 : BaseRule
         IConnectionManagerViewModel connectionManager = null!;
 
         When()
-            .Match(() => island, x => x.MaxConnections == 4 && AreRemainingConnectionsWithinRange(island, 2, 3))
+            .Match(() => island, x => x.MaxConnections == 4)
+            .Having(() => AreRemainingConnectionsWithinRange(island, 2, 4))
             .Query(() => connectionManager, q => q.Match<IConnectionManagerViewModel>())
             .Let(() => allNeighbors, () => island.GetAllVisibleNeighbors())
             .Having(() => allNeighbors.Count == 3)

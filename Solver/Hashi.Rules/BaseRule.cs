@@ -1,4 +1,5 @@
-﻿using Hashi.Gui.Interfaces.ViewModels;
+﻿using Hashi.Gui.Interfaces.Models;
+using Hashi.Gui.Interfaces.ViewModels;
 using NRules.Fluent.Dsl;
 
 namespace Hashi.Rules;
@@ -119,7 +120,7 @@ public abstract class BaseRule : Rule
     /// <returns>connectable neighbors of the source island that do not have a connection set to the source island.</returns>
     internal List<IIslandViewModel> GetConnectableNeighborsWithoutConnection(IIslandViewModel source, IEnumerable<IIslandViewModel> allNeighbors)
     {
-        return allNeighbors.Where(x => !x.MaxConnectionsReached && !x.AllConnections.Any(y => y.Equals(source.Coordinates))).ToList();
+        return allNeighbors.Where(x => !x.MaxConnectionsReached && !x.AllConnections.Any(y => y.X == source.Coordinates.X && y.Y == source.Coordinates.Y)).ToList();
     }
 
     /// <summary>
@@ -142,11 +143,18 @@ public abstract class BaseRule : Rule
     /// <returns>the islands connected by one connection to the source island.</returns>
     internal List<IIslandViewModel> GetConnectedNeighbors(IIslandViewModel source, IEnumerable<IIslandViewModel> allNeighbors, int? amountConnections)
     {
-        return amountConnections == null
-            ? allNeighbors.Where(x => x.AllConnections.Any(y => y.Equals(source.Coordinates))).ToList()
-            : allNeighbors
-                .Where(x => x.AllConnections.Count(y => y.Equals(source.Coordinates)) == (int)amountConnections)
+        if (amountConnections == null)
+        {
+            var result = allNeighbors.Where(x => x.AllConnections.Any(y => DoCoordinatesMatch(source.Coordinates, y))).ToList();
+            return result;
+        }
+        else
+        {
+            var result = allNeighbors
+                .Where(x => x.AllConnections.Count(y => DoCoordinatesMatch(source.Coordinates, y)) == (int)amountConnections)
                 .ToList();
+            return result;
+        }
     }
 
     /// <summary>
@@ -157,7 +165,8 @@ public abstract class BaseRule : Rule
     /// <returns></returns>
     internal int CountConnectionsToNeighbors(IIslandViewModel source, IEnumerable<IIslandViewModel> neighbors)
     {
-        return neighbors.Sum(x => x.AllConnections.Count(y => y.Equals(source.Coordinates)));
+        var result = neighbors.Sum(x => x.AllConnections.Count(y => DoCoordinatesMatch(source.Coordinates, y)));
+        return result;
     }
 
     /// <summary>
@@ -169,7 +178,8 @@ public abstract class BaseRule : Rule
     /// <returns></returns>
     internal bool AreRemainingConnectionsWithinRange(IIslandViewModel source, int minValue, int maxValue)
     {
-        return source.RemainingConnections >= minValue && source.RemainingConnections <= maxValue;
+        var result = source.RemainingConnections >= minValue && source.RemainingConnections <= maxValue;
+        return result;
     }
 
     /// <summary>
@@ -181,6 +191,13 @@ public abstract class BaseRule : Rule
     /// <returns>the islands connected to the source island which have reached the maximum connections.</returns>
     internal List<IIslandViewModel> GetMaxedOutConnectedNeighbors(IIslandViewModel source, IEnumerable<IIslandViewModel> allNeighbors, int? amountConnections)
     {
-        return GetConnectedNeighbors(source, allNeighbors, amountConnections).Where(x => x.MaxConnectionsReached).ToList();
+        var result = GetConnectedNeighbors(source, allNeighbors, amountConnections).Where(x => x.MaxConnectionsReached)
+            .ToList();
+        return result;
+    }
+
+    private bool DoCoordinatesMatch(IHashiPoint source, IHashiPoint target)
+    {
+        return source.X == target.X && source.Y == target.Y;
     }
 }
