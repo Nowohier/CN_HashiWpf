@@ -23,6 +23,7 @@ public class _5ConnectionsRule2 : BaseRule
             .Having(() => restrictedNeighbors.Count == 1 && neighbors.Count - restrictedNeighbors.Count == 3);
 
         Then()
-            .Do(ctx => AddMultipleConnections(island, neighbors.Except(restrictedNeighbors).ToList(), connectionManager));
+            .Do(ctx => AddMultipleConnections(island, neighbors.Except(restrictedNeighbors).ToList(),
+                connectionManager));
     }
 }

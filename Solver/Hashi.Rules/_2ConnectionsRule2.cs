@@ -22,7 +22,9 @@ public class _2ConnectionsRule2 : BaseRule
             .Query(() => connectionManager, q => q.Match<IConnectionManagerViewModel>())
             .Let(() => allNeighbors, () => island.GetAllVisibleNeighbors())
             .Let(() => validNeighbors, () => allNeighbors.Where(x => x.MaxConnections > 1).ToList())
-            .Let(() => isSingleConnectionSetToMaxOneNeighbor, () => allNeighbors.Count(x => x.AllConnections.Contains(island.Coordinates) && x.MaxConnections == 1) == 1)
+            .Let(() => isSingleConnectionSetToMaxOneNeighbor,
+                () => allNeighbors.Count(x => x.AllConnections.Contains(island.Coordinates) && x.MaxConnections == 1) ==
+                      1)
             .Having(() => allNeighbors.Count > 1 && validNeighbors.Count == 1 && isSingleConnectionSetToMaxOneNeighbor);
 
         Then()

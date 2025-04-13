@@ -1,5 +1,5 @@
-﻿using Hashi.Generator.Interfaces.Models;
-using System.Drawing;
+﻿using System.Drawing;
+using Hashi.Generator.Interfaces.Models;
 
 namespace Hashi.Generator.Models;
 

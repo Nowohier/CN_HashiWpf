@@ -25,9 +25,7 @@ public abstract class BaseRule : Rule
         IConnectionManagerViewModel connectionManager)
     {
         if (EnsureRulesAreBeingApplied(connectionManager) && ExecuteAddConnection(source, target, connectionManager))
-        {
             FinalizeConnection(source, target);
-        }
     }
 
     /// <summary>
@@ -42,12 +40,8 @@ public abstract class BaseRule : Rule
         if (!EnsureRulesAreBeingApplied(connectionManager)) return;
 
         foreach (var target in targets)
-        {
             if (ExecuteAddConnection(source, target, connectionManager))
-            {
                 FinalizeConnection(source, target);
-            }
-        }
     }
 
     /// <summary>
@@ -64,9 +58,8 @@ public abstract class BaseRule : Rule
         foreach (var target in targets)
         {
             for (var i = 0; i < 2; i++)
-            {
-                if (!ExecuteAddConnection(source, target, connectionManager)) break;
-            }
+                if (!ExecuteAddConnection(source, target, connectionManager))
+                    break;
             FinalizeConnection(source, target);
         }
     }
@@ -85,14 +78,13 @@ public abstract class BaseRule : Rule
         if (!EnsureRulesAreBeingApplied(connectionManager)) return;
 
         for (var i = 0; i < missingConnectionsCount; i++)
-        {
-            if (!ExecuteAddConnection(source, target, connectionManager)) break;
-        }
+            if (!ExecuteAddConnection(source, target, connectionManager))
+                break;
         FinalizeConnection(source, target);
     }
 
     /// <summary>
-    /// Finalizes the connection by refreshing the colors of the source and target islands.
+    ///     Finalizes the connection by refreshing the colors of the source and target islands.
     /// </summary>
     internal void FinalizeConnection(IIslandViewModel? source, IIslandViewModel? target)
     {
@@ -103,7 +95,8 @@ public abstract class BaseRule : Rule
     internal bool ExecuteAddConnection(IIslandViewModel? source, IIslandViewModel? target,
         IConnectionManagerViewModel? connectionManager)
     {
-        if (source == null || target == null || source == target || connectionManager == null || source.MaxConnectionsReached ||
+        if (source == null || target == null || source == target || connectionManager == null ||
+            source.MaxConnectionsReached ||
             target.MaxConnectionsReached ||
             target.AllConnections.Count(x => source.Coordinates.Equals(x)) == 2 ||
             source.AllConnections.Count(x => target.Coordinates.Equals(x)) == 2) return false;
@@ -113,7 +106,7 @@ public abstract class BaseRule : Rule
     }
 
     /// <summary>
-    ///   Gets the connectable neighbors of the source island that do not have a connection set to the source island.
+    ///     Gets the connectable neighbors of the source island that do not have a connection set to the source island.
     /// </summary>
     /// <param name="allNeighbors">The visible neighbor islands.</param>
     /// <returns>connectable neighbors of the source island that do not have a connection set to the source island.</returns>
@@ -123,18 +116,20 @@ public abstract class BaseRule : Rule
     }
 
     /// <summary>
-    ///   Gets the connectable neighbors of the source island that do not have a connection set to the source island.
+    ///     Gets the connectable neighbors of the source island that do not have a connection set to the source island.
     /// </summary>
     /// <param name="source">The source island.</param>
     /// <param name="allNeighbors">The visible neighbor islands.</param>
     /// <returns>connectable neighbors of the source island that do not have a connection set to the source island.</returns>
-    internal List<IIslandViewModel> GetConnectableNeighborsWithoutConnection(IIslandViewModel source, IEnumerable<IIslandViewModel> allNeighbors)
+    internal List<IIslandViewModel> GetConnectableNeighborsWithoutConnection(IIslandViewModel source,
+        IEnumerable<IIslandViewModel> allNeighbors)
     {
-        return GetConnectableNeighbors(allNeighbors).Where(x => !x.AllConnections.Any(y => y.X == source.Coordinates.X && y.Y == source.Coordinates.Y)).ToList();
+        return GetConnectableNeighbors(allNeighbors).Where(x =>
+            !x.AllConnections.Any(y => y.X == source.Coordinates.X && y.Y == source.Coordinates.Y)).ToList();
     }
 
     /// <summary>
-    ///   Checks if all islands are connected to the source island.
+    ///     Checks if all islands are connected to the source island.
     /// </summary>
     /// <param name="source">The source island.</param>
     /// <param name="allNeighbors">The visible neighbor islands.</param>
@@ -145,30 +140,33 @@ public abstract class BaseRule : Rule
     }
 
     /// <summary>
-    ///   Gets the islands connected to the source island.
+    ///     Gets the islands connected to the source island.
     /// </summary>
     /// <param name="source">The source island.</param>
     /// <param name="allNeighbors">The visible neighbor islands.</param>
     /// <param name="amountConnections">(optional) The amount of connections per neighbor to the source island.</param>
     /// <returns>the islands connected by one connection to the source island.</returns>
-    internal List<IIslandViewModel> GetConnectedNeighbors(IIslandViewModel source, IEnumerable<IIslandViewModel> allNeighbors, int? amountConnections)
+    internal List<IIslandViewModel> GetConnectedNeighbors(IIslandViewModel source,
+        IEnumerable<IIslandViewModel> allNeighbors, int? amountConnections)
     {
         if (amountConnections == null)
         {
-            var result = allNeighbors.Where(x => x.AllConnections.Any(y => DoCoordinatesMatch(source.Coordinates, y))).ToList();
+            var result = allNeighbors.Where(x => x.AllConnections.Any(y => DoCoordinatesMatch(source.Coordinates, y)))
+                .ToList();
             return result;
         }
         else
         {
             var result = allNeighbors
-                .Where(x => x.AllConnections.Count(y => DoCoordinatesMatch(source.Coordinates, y)) == (int)amountConnections)
+                .Where(x => x.AllConnections.Count(y => DoCoordinatesMatch(source.Coordinates, y)) ==
+                            (int)amountConnections)
                 .ToList();
             return result;
         }
     }
 
     /// <summary>
-    ///  Gets the amount of connections to the source island from the neighbors.
+    ///     Gets the amount of connections to the source island from the neighbors.
     /// </summary>
     /// <param name="source">The source island.</param>
     /// <param name="neighbors">The visible neighbor islands.</param>
@@ -180,7 +178,7 @@ public abstract class BaseRule : Rule
     }
 
     /// <summary>
-    /// Checks if the remaining connections of the island are within the range of the two values.
+    ///     Checks if the remaining connections of the island are within the range of the two values.
     /// </summary>
     /// <param name="source">The source island.</param>
     /// <param name="minValue">The first value.</param>
@@ -193,13 +191,14 @@ public abstract class BaseRule : Rule
     }
 
     /// <summary>
-    ///   Gets the islands connected to the source island which have reached the maximum connections.
+    ///     Gets the islands connected to the source island which have reached the maximum connections.
     /// </summary>
     /// <param name="source">The source island.</param>
     /// <param name="allNeighbors">The visible neighbor islands.</param>
     /// <param name="amountConnections">The amount of connections per neighbor to the source island.</param>
     /// <returns>the islands connected to the source island which have reached the maximum connections.</returns>
-    internal List<IIslandViewModel> GetMaxedOutConnectedNeighbors(IIslandViewModel source, IEnumerable<IIslandViewModel> allNeighbors, int? amountConnections)
+    internal List<IIslandViewModel> GetMaxedOutConnectedNeighbors(IIslandViewModel source,
+        IEnumerable<IIslandViewModel> allNeighbors, int? amountConnections)
     {
         var result = GetConnectedNeighbors(source, allNeighbors, amountConnections).Where(x => x.MaxConnectionsReached)
             .ToList();

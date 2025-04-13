@@ -18,10 +18,12 @@ public class _9GeneralRule1 : BaseRule
         When()
             .Match(() => island, x => x.MaxConnectionsReached == false)
             .Query(() => connectionManager, q => q.Match<IConnectionManagerViewModel>())
-            .Let(() => validNeighbors, () => island.GetAllVisibleNeighbors().Where(x => x.MaxConnectionsReached == false).ToList())
+            .Let(() => validNeighbors,
+                () => island.GetAllVisibleNeighbors().Where(x => x.MaxConnectionsReached == false).ToList())
             .Having(() => validNeighbors.Count == 1);
 
         Then()
-            .Do(ctx => AddMissingConnectionsToOneTarget(island, validNeighbors.First(), island.MaxConnections - island.AllConnections.Count, connectionManager));
+            .Do(ctx => AddMissingConnectionsToOneTarget(island, validNeighbors.First(),
+                island.MaxConnections - island.AllConnections.Count, connectionManager));
     }
 }

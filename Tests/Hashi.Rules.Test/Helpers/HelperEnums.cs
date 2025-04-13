@@ -1,11 +1,10 @@
-﻿namespace Hashi.Rules.Test.Helpers
+﻿namespace Hashi.Rules.Test.Helpers;
+
+public enum TestIslandEnum
 {
-    public enum TestIslandEnum
-    {
-        TestIsland,
-        LeftIsland,
-        RightIsland,
-        UpIsland,
-        DownIsland
-    }
+    TestIsland,
+    LeftIsland,
+    RightIsland,
+    UpIsland,
+    DownIsland
 }

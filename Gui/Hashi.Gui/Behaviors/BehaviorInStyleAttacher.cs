@@ -1,6 +1,6 @@
-﻿using Microsoft.Xaml.Behaviors;
-using System.Collections;
+﻿using System.Collections;
 using System.Windows;
+using Microsoft.Xaml.Behaviors;
 
 namespace Hashi.Gui.Behaviors;
 

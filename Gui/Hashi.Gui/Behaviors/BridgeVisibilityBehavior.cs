@@ -1,17 +1,17 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
-using Hashi.Enums;
-using Hashi.Gui.Helpers;
-using Hashi.Gui.Interfaces.Models;
-using Hashi.Gui.Interfaces.ViewModels;
-using Hashi.Gui.Messages;
-using Microsoft.Xaml.Behaviors;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Effects;
 using System.Windows.Shapes;
+using CommunityToolkit.Mvvm.Messaging;
+using Hashi.Enums;
+using Hashi.Gui.Helpers;
+using Hashi.Gui.Interfaces.Models;
+using Hashi.Gui.Interfaces.ViewModels;
+using Hashi.Gui.Messages;
+using Microsoft.Xaml.Behaviors;
 
 namespace Hashi.Gui.Behaviors;
 
