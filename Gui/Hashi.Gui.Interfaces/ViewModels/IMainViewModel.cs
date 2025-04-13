@@ -1,4 +1,5 @@
 ﻿using Hashi.Gui.Interfaces.Messages;
+using Hashi.Gui.Interfaces.Providers;
 
 namespace Hashi.Gui.Interfaces.ViewModels;
 
@@ -8,9 +9,14 @@ namespace Hashi.Gui.Interfaces.ViewModels;
 public interface IMainViewModel
 {
     /// <summary>
-    ///     Saves the settings to the JSON file.
+    /// The timer provider for the Hashi game.
     /// </summary>
-    void SaveSettings();
+    ITimerProvider TimerProvider { get; }
+
+    /// <summary>
+    /// The settings provider for the Hashi game.
+    /// </summary>
+    IHashiSettingsProvider SettingsProvider { get; }
 
     /// <summary>
     ///     Creates a new game.
