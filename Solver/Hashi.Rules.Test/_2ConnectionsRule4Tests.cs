@@ -12,9 +12,9 @@ namespace Hashi.Rules.Test
         }
 
         [Test]
-        [TestCase(3, 3, true)] // Same MaxConnections, should trigger
-        [TestCase(3, 2, false)] // Different MaxConnections, should not trigger
-        public void _2ConnectionsRule4_ShouldTriggerBasedOnNeighborMaxConnections(int leftMaxConnections, int rightMaxConnections, bool shouldTrigger)
+        [TestCase(3, 1, true)]
+        [TestCase(3, 2, false)]
+        public void _2ConnectionsRule4_WhenTwoNeighbors_ShouldTriggerBasedOnNeighborMaxConnections(int leftMaxConnections, int rightMaxConnections, bool shouldTrigger)
         {
             // arrange
             var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, leftMaxConnections);
@@ -42,30 +42,20 @@ namespace Hashi.Rules.Test
         }
 
         [Test]
-        public void _2ConnectionsRule4_WhenNoValidNeighbors_ShouldNotTriggerRule()
+        [TestCase(3, 1, 1, true)]
+        [TestCase(3, 2, 1, false)]
+        public void _2ConnectionsRule4_WhenThreeNeighbors_ShouldTriggerBasedOnNeighborMaxConnections(int leftMaxConnections, int rightMaxConnections, int upMaxConnections, bool shouldTrigger)
         {
             // arrange
-            // invalid neighbors
-            var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 2);
-            var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 2);
-            var testIsland = SetupTestIsland(2, leftIsland, rightIsland);
+            var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, leftMaxConnections);
+            leftIsland.Setup(mock => mock.MaxConnectionsReached).Returns(false);
 
-            // act
-            Session.Insert(testIsland.Object);
-            Session.Fire();
+            var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, rightMaxConnections);
+            rightIsland.Setup(mock => mock.MaxConnectionsReached).Returns(false);
 
-            // assert
-            Verify(x => x.Rule().Fired(Times.Never));
-        }
+            var upIsland = CreateIslandMock(TestIslandEnum.RightIsland, upMaxConnections);
+            upIsland.Setup(mock => mock.MaxConnectionsReached).Returns(false);
 
-        [Test]
-        public void _2ConnectionsRule4_WhenMoreThanTwoNeighbors_ShouldNotTriggerRule()
-        {
-            // arrange
-            // valid neighbors
-            var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
-            var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
-            var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 3);
             var testIsland = SetupTestIsland(2, leftIsland, rightIsland, upIsland);
 
             // act
@@ -73,37 +63,61 @@ namespace Hashi.Rules.Test
             Session.Fire();
 
             // assert
-            Verify(x => x.Rule().Fired(Times.Never));
+            if (shouldTrigger)
+            {
+                Verify(x => x.Rule().Fired(Times.Once));
+                ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, leftIsland.Object, true), Moq.Times.Once);
+            }
+            else
+            {
+                Verify(x => x.Rule().Fired(Times.Never));
+            }
         }
 
         [Test]
-        public void _2ConnectionsRule4_WhenMixedValidAndInvalidNeighbors_ShouldTriggerRule()
+        [TestCase(3, 1, 1, 1, true)]
+        [TestCase(3, 2, 1, 1, false)]
+        [TestCase(3, 2, 2, 1, false)]
+        public void _2ConnectionsRule4_WhenFourNeighbors_ShouldTriggerBasedOnNeighborMaxConnections(int leftMaxConnections, int rightMaxConnections, int upMaxConnections, int downMaxConnections, bool shouldTrigger)
         {
             // arrange
-            var validNeighbor = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
-            validNeighbor.Setup(mock => mock.MaxConnectionsReached).Returns(false);
+            var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, leftMaxConnections);
+            leftIsland.Setup(mock => mock.MaxConnectionsReached).Returns(false);
 
-            var invalidNeighbor = CreateIslandMock(TestIslandEnum.RightIsland, 2);
-            invalidNeighbor.Setup(mock => mock.MaxConnectionsReached).Returns(true);
+            var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, rightMaxConnections);
+            rightIsland.Setup(mock => mock.MaxConnectionsReached).Returns(false);
 
-            var testIsland = SetupTestIsland(2, validNeighbor, invalidNeighbor);
+            var upIsland = CreateIslandMock(TestIslandEnum.RightIsland, upMaxConnections);
+            upIsland.Setup(mock => mock.MaxConnectionsReached).Returns(false);
+
+            var downIsland = CreateIslandMock(TestIslandEnum.RightIsland, downMaxConnections);
+            downIsland.Setup(mock => mock.MaxConnectionsReached).Returns(false);
+
+            var testIsland = SetupTestIsland(2, leftIsland, rightIsland, upIsland, downIsland);
 
             // act
             Session.Insert(testIsland.Object);
             Session.Fire();
 
             // assert
-            Verify(x => x.Rule().Fired(Times.Once));
-            ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, validNeighbor.Object, true), Moq.Times.Once);
+            if (shouldTrigger)
+            {
+                Verify(x => x.Rule().Fired(Times.Once));
+                ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, leftIsland.Object, true), Moq.Times.Once);
+            }
+            else
+            {
+                Verify(x => x.Rule().Fired(Times.Never));
+            }
         }
 
         [Test]
-        public void _2ConnectionsRule4_WhenIslandAlreadyHasConnections_ShouldNotTriggerRule()
+        public void _2ConnectionsRule4_WhenMoreThanOneNeighborsBiggerMaxConnectionsOne_ShouldNotTriggerRule()
         {
             // arrange
-            // valid neighbors
-            var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
-            var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
+            // invalid neighbors
+            var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 2);
+            var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 2);
             var testIsland = SetupTestIsland(2, leftIsland, rightIsland);
 
             // act
