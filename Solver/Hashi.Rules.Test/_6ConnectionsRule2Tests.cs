@@ -16,13 +16,14 @@ namespace Hashi.Rules.Test
         {
             // arrange
             // neighbors
-            var restrictedNeighbor = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
-            restrictedNeighbor.Setup(mock => mock.MaxConnectionsReached).Returns(true);
+            var restrictedNeighbor = CreateIslandMock(TestIslandEnum.LeftIsland, 1, true);
+            restrictedNeighbor.Setup(mock => mock.AllConnections).Returns([CreateHashiPointMock(1, 1).Object]);
             var validNeighbor1 = CreateIslandMock(TestIslandEnum.RightIsland, 3);
             var validNeighbor2 = CreateIslandMock(TestIslandEnum.UpIsland, 3);
             var validNeighbor3 = CreateIslandMock(TestIslandEnum.DownIsland, 3);
 
             var testIsland = SetupTestIsland(6, restrictedNeighbor, validNeighbor1, validNeighbor2, validNeighbor3);
+            testIsland.Setup(mock => mock.AllConnections).Returns([CreateHashiPointMock(1, 1).Object]);
 
             // act
             Session.Insert(testIsland.Object);

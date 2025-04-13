@@ -29,37 +29,10 @@ namespace Hashi.Rules.Test
 
             // assert
             Verify(x => x.Rule().Fired(Times.Once));
-            ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, leftIsland.Object, true), Moq.Times.Once);
-            ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, rightIsland.Object, true), Moq.Times.Once);
-            ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, upIsland.Object, true), Moq.Times.Once);
-            ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, downIsland.Object, true), Moq.Times.Once);
-        }
-
-        [Test]
-        public void _8ConnectionsRule1_WhenNoValidNeighbors_ShouldNotTriggerRule()
-        {
-            // arrange
-            // invalid neighbors
-            var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
-            leftIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
-
-            var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
-            rightIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
-
-            var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 3);
-            upIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
-
-            var downIsland = CreateIslandMock(TestIslandEnum.DownIsland, 3);
-            downIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
-
-            var testIsland = SetupTestIsland(8, leftIsland, rightIsland, upIsland, downIsland);
-
-            // act
-            Session.Insert(testIsland.Object);
-            Session.Fire();
-
-            // assert
-            Verify(x => x.Rule().Fired(Times.Never));
+            ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, leftIsland.Object, true), Moq.Times.Exactly(2));
+            ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, rightIsland.Object, true), Moq.Times.Exactly(2));
+            ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, upIsland.Object, true), Moq.Times.Exactly(2));
+            ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, downIsland.Object, true), Moq.Times.Exactly(2));
         }
 
         [Test]

@@ -118,9 +118,20 @@ public abstract class BaseRule : Rule
     /// <param name="source">The source island.</param>
     /// <param name="allNeighbors">The visible neighbor islands.</param>
     /// <returns>connectable neighbors of the source island that do not have a connection set to the source island.</returns>
+    internal List<IIslandViewModel> GetConnectableNeighbors(IEnumerable<IIslandViewModel> allNeighbors)
+    {
+        return allNeighbors.Where(x => !x.MaxConnectionsReached).ToList();
+    }
+
+    /// <summary>
+    ///   Gets the connectable neighbors of the source island that do not have a connection set to the source island.
+    /// </summary>
+    /// <param name="source">The source island.</param>
+    /// <param name="allNeighbors">The visible neighbor islands.</param>
+    /// <returns>connectable neighbors of the source island that do not have a connection set to the source island.</returns>
     internal List<IIslandViewModel> GetConnectableNeighborsWithoutConnection(IIslandViewModel source, IEnumerable<IIslandViewModel> allNeighbors)
     {
-        return allNeighbors.Where(x => !x.MaxConnectionsReached && !x.AllConnections.Any(y => y.X == source.Coordinates.X && y.Y == source.Coordinates.Y)).ToList();
+        return GetConnectableNeighbors(allNeighbors).Where(x => !x.AllConnections.Any(y => y.X == source.Coordinates.X && y.Y == source.Coordinates.Y)).ToList();
     }
 
     /// <summary>

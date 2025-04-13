@@ -20,7 +20,8 @@ public class _7ConnectionsRule1 : BaseRule
             .Match(() => island, x => x.MaxConnections == 7 && !x.MaxConnectionsReached)
             .Let(() => allNeighbors, () => island.GetAllVisibleNeighbors())
             .Having(() => allNeighbors.Count == 4 && !AreAllNeighborsConnected(island, allNeighbors))
-            .Let(() => validNeighbors, () => GetConnectableNeighborsWithoutConnection(island, allNeighbors));
+            .Let(() => validNeighbors, () => GetConnectableNeighborsWithoutConnection(island, allNeighbors))
+            .Having(() => validNeighbors.Count > 0);
 
         Then()
             .Do(ctx => AddConnections(island, validNeighbors, connectionManager));
