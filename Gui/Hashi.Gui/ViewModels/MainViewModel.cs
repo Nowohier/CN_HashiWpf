@@ -266,8 +266,9 @@ public class MainViewModel : AsyncObservableRecipient,
     /// <inheritdoc cref="IMainViewModel.ReceiveAsync(IAllConnectionsSetMessage,CancellationToken)" />
     public async Task ReceiveAsync(IAllConnectionsSetMessage message, CancellationToken cancellationToken)
     {
-        var caption = "Game Over";
-        var dialogMessage = "All connections are set!";
+        var caption = TranslationSource.Instance["MessageGameOverCaption"]!;
+        var dialogMessage = TranslationSource.Instance["MessageGameOverText"]!;
+        var actualScore = TimerProvider.Timer.Elapsed;
         TimerProvider.StopTimer();
 
         //ToDo: Check if all islands are connected
@@ -280,19 +281,18 @@ public class MainViewModel : AsyncObservableRecipient,
         }
 
         //Check if highscore - if yes, write highscore to json and show message
-        var actualScore = TimerProvider.Timer.Elapsed;
         var currentSettingForSetDifficulty =
             SettingsProvider.Settings.HighScores.FirstOrDefault(x => x.Difficulty == SelectedDifficulty);
         var currentHighScore = currentSettingForSetDifficulty?.HighScoreTime;
         if (currentSettingForSetDifficulty != null && (currentHighScore == null || actualScore < currentHighScore))
         {
-            caption = "New Highscore";
-            dialogMessage += $"\n\nCongratulations! You have achieved a new highscore for {SelectedDifficulty}.\n" +
-                             $"Your time: {actualScore:hh\\:mm\\:ss}\n" +
-                             $"Previous highscore: {currentHighScore:hh\\:mm\\:ss}";
+            caption = TranslationSource.Instance["MessageNewHighscoreCaption"]!;
+            dialogMessage += string.Format(
+                TranslationSource.Instance["MessageNewHighscoreText"]!.Replace(@"\n", Environment.NewLine),
+                SelectedDifficulty.ToString(), actualScore.ToString(@"hh\:mm\:ss"),
+                currentHighScore == null ? "-" : ((TimeSpan)currentHighScore).ToString(@"hh\:mm\:ss"));
             currentSettingForSetDifficulty.HighScoreTime = actualScore;
             SettingsProvider.SaveSettings();
-            OnPropertyChanged(nameof(HighscoreForSelectedDifficulty));
             OnPropertyChanged(nameof(HighscoreForSelectedDifficulty));
         }
 
@@ -365,7 +365,13 @@ public class MainViewModel : AsyncObservableRecipient,
             session.Update(ConnectionManager);
         }
 
-        session.Fire();
+        var rulesFired = session.Fire();
+
+        if (rulesFired == 0)
+        {
+            dialogWrapper.Show(TranslationSource.Instance["MessageNoHintsCaption"]!, TranslationSource.Instance["MessageNoHintsText"]!, DialogButton.Ok, DialogImage.Information);
+        }
+
         ConnectionManager.AreRulesBeingApplied = false;
     }
 

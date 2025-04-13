@@ -207,4 +207,34 @@
   <data name="_0AllRules" xml:space="preserve">
     <value>Alle Regeln werden jetzt angewendet um Hinweise zu generieren.</value>
   </data>
+  <data name="MessageNoHintsCaption" xml:space="preserve">
+    <value>Keine Hinweise verfügbar</value>
+  </data>
+  <data name="MessageNoHintsText" xml:space="preserve">
+    <value>Es sind gerade keine weiteren Hinweise verfügbar.</value>
+  </data>
+  <data name="MessageNewHighscoreCaption" xml:space="preserve">
+    <value>Neuer Highscore</value>
+  </data>
+  <data name="MessageNewHighscoreText" xml:space="preserve">
+    <value>\n\nHerzlichen Glückwunsch! Du hast einen neuen Highscore für {0} erreicht.\n\nDeine Zeit: {1}\nVorheriger Highscore: {2}</value>
+  </data>
+  <data name="MessageGameOverCaption" xml:space="preserve">
+    <value>Spiel zu Ende</value>
+  </data>
+  <data name="MessageGameOverText" xml:space="preserve">
+    <value>Alle Verbindungen sind gesetzt!</value>
+  </data>
+  <data name="DialogYes" xml:space="preserve">
+    <value>JA</value>
+  </data>
+  <data name="DialogNo" xml:space="preserve">
+    <value>NEIN</value>
+  </data>
+  <data name="DialogConfirm" xml:space="preserve">
+    <value>BESTÄTIGEN</value>
+  </data>
+  <data name="DialogAbort" xml:space="preserve">
+    <value>ABBRECHEN</value>
+  </data>
 </root>

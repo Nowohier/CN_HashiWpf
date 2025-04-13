@@ -207,4 +207,34 @@
   <data name="_0AllRules" xml:space="preserve">
     <value>All rules will now be used to generate hints.</value>
   </data>
+  <data name="MessageNoHintsCaption" xml:space="preserve">
+    <value>No hints available</value>
+  </data>
+  <data name="MessageNoHintsText" xml:space="preserve">
+    <value>There are currently no hints available.</value>
+  </data>
+  <data name="MessageNewHighscoreCaption" xml:space="preserve">
+    <value>New Highscore</value>
+  </data>
+  <data name="MessageNewHighscoreText" xml:space="preserve">
+    <value>\n\nCongratulations! You have achieved a new high score for {0}.\n\nYour time: {1}\nPrevious high score: {2}</value>
+  </data>
+  <data name="MessageGameOverCaption" xml:space="preserve">
+    <value>Game Over</value>
+  </data>
+  <data name="MessageGameOverText" xml:space="preserve">
+    <value>All connections are set!</value>
+  </data>
+  <data name="DialogYes" xml:space="preserve">
+    <value>YES</value>
+  </data>
+  <data name="DialogNo" xml:space="preserve">
+    <value>NO</value>
+  </data>
+  <data name="DialogConfirm" xml:space="preserve">
+    <value>CONFIRM</value>
+  </data>
+  <data name="DialogAbort" xml:space="preserve">
+    <value>ABORT</value>
+  </data>
 </root>
