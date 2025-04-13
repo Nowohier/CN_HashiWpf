@@ -19,7 +19,7 @@ namespace Hashi.Rules.Test
             var validNeighbor = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
             validNeighbor.Setup(mock => mock.MaxConnectionsReached).Returns(false);
 
-            var testIsland = SetupTestee(4, validNeighbor);
+            var testIsland = SetupTestIsland(4, validNeighbor);
             testIsland.Setup(mock => mock.AllConnections.Count).Returns(1);
 
             var missingConnections = testIsland.Object.MaxConnections - testIsland.Object.AllConnections.Count;
@@ -41,7 +41,7 @@ namespace Hashi.Rules.Test
             var invalidNeighbor = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
             invalidNeighbor.Setup(mock => mock.MaxConnectionsReached).Returns(true);
 
-            var testIsland = SetupTestee(4, invalidNeighbor);
+            var testIsland = SetupTestIsland(4, invalidNeighbor);
 
             // act
             Session.Insert(testIsland.Object);
@@ -62,7 +62,7 @@ namespace Hashi.Rules.Test
             var validNeighbor2 = CreateIslandMock(TestIslandEnum.RightIsland, 3);
             validNeighbor2.Setup(mock => mock.MaxConnectionsReached).Returns(false);
 
-            var testIsland = SetupTestee(4, validNeighbor1, validNeighbor2);
+            var testIsland = SetupTestIsland(4, validNeighbor1, validNeighbor2);
 
             // act
             Session.Insert(testIsland.Object);
@@ -80,7 +80,7 @@ namespace Hashi.Rules.Test
             var validNeighbor = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
             validNeighbor.Setup(mock => mock.MaxConnectionsReached).Returns(false);
 
-            var testIsland = SetupTestee(4, validNeighbor);
+            var testIsland = SetupTestIsland(4, validNeighbor);
             testIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
 
             // act
@@ -95,7 +95,7 @@ namespace Hashi.Rules.Test
         public void _9GeneralRule1_WhenNoNeighbors_ShouldNotTriggerRule()
         {
             // arrange
-            var testIsland = SetupTestee(4);
+            var testIsland = SetupTestIsland(4);
 
             // act
             Session.Insert(testIsland.Object);

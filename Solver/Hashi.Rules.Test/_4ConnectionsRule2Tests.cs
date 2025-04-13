@@ -28,7 +28,7 @@ namespace Hashi.Rules.Test
             var validNeighbor2 = CreateIslandMock(TestIslandEnum.UpIsland, 3);
             validNeighbor2.Setup(mock => mock.MaxConnectionsReached).Returns(false);
 
-            var testIsland = SetupTestee(4, restrictedNeighbor, validNeighbor1, validNeighbor2);
+            var testIsland = SetupTestIsland(4, restrictedNeighbor, validNeighbor1, validNeighbor2);
             testIsland.Setup(mock => mock.AreRemainingConnectionsWithinRange(2, 3)).Returns(true);
             testIsland.Setup(mock => mock.GetMaxedOutConnectedNeighbors(It.IsAny<List<IIslandViewModel>>(), null))
                 .Returns([restrictedNeighbor.Object]);
@@ -63,7 +63,7 @@ namespace Hashi.Rules.Test
             var validNeighbor3 = CreateIslandMock(TestIslandEnum.DownIsland, 3);
             validNeighbor3.Setup(mock => mock.MaxConnectionsReached).Returns(false);
 
-            var testIsland = SetupTestee(4, validNeighbor1, validNeighbor2, validNeighbor3);
+            var testIsland = SetupTestIsland(4, validNeighbor1, validNeighbor2, validNeighbor3);
             testIsland.Setup(mock => mock.AreRemainingConnectionsWithinRange(2, 3)).Returns(true);
             testIsland.Setup(mock => mock.GetMaxedOutConnectedNeighbors(It.IsAny<List<IIslandViewModel>>(), null))
                 .Returns([]);
@@ -90,7 +90,7 @@ namespace Hashi.Rules.Test
             var validNeighbor = CreateIslandMock(TestIslandEnum.UpIsland, 3);
             validNeighbor.Setup(mock => mock.MaxConnectionsReached).Returns(false);
 
-            var testIsland = SetupTestee(4, restrictedNeighbor1, restrictedNeighbor2, validNeighbor);
+            var testIsland = SetupTestIsland(4, restrictedNeighbor1, restrictedNeighbor2, validNeighbor);
             testIsland.Setup(mock => mock.AreRemainingConnectionsWithinRange(2, 3)).Returns(true);
             testIsland.Setup(mock => mock.GetMaxedOutConnectedNeighbors(It.IsAny<List<IIslandViewModel>>(), null))
                 .Returns([restrictedNeighbor1.Object, restrictedNeighbor2.Object]);
@@ -117,7 +117,7 @@ namespace Hashi.Rules.Test
             var validNeighbor2 = CreateIslandMock(TestIslandEnum.UpIsland, 3);
             validNeighbor2.Setup(mock => mock.MaxConnectionsReached).Returns(false);
 
-            var testIsland = SetupTestee(4, restrictedNeighbor, validNeighbor1, validNeighbor2);
+            var testIsland = SetupTestIsland(4, restrictedNeighbor, validNeighbor1, validNeighbor2);
             testIsland.Setup(mock => mock.AreRemainingConnectionsWithinRange(2, 3)).Returns(false);
             testIsland.Setup(mock => mock.GetMaxedOutConnectedNeighbors(It.IsAny<List<IIslandViewModel>>(), null))
                 .Returns([restrictedNeighbor.Object]);
@@ -144,7 +144,7 @@ namespace Hashi.Rules.Test
             var invalidNeighbor2 = CreateIslandMock(TestIslandEnum.UpIsland, 3);
             invalidNeighbor2.Setup(mock => mock.MaxConnectionsReached).Returns(true);
 
-            var testIsland = SetupTestee(4, restrictedNeighbor, invalidNeighbor1, invalidNeighbor2);
+            var testIsland = SetupTestIsland(4, restrictedNeighbor, invalidNeighbor1, invalidNeighbor2);
             testIsland.Setup(mock => mock.AreRemainingConnectionsWithinRange(2, 3)).Returns(true);
             testIsland.Setup(mock => mock.GetMaxedOutConnectedNeighbors(It.IsAny<List<IIslandViewModel>>(), null))
                 .Returns([restrictedNeighbor.Object]);
@@ -163,7 +163,7 @@ namespace Hashi.Rules.Test
         public void _4ConnectionsRule2_WhenNoNeighbors_ShouldNotTriggerRule()
         {
             // arrange
-            var testIsland = SetupTestee(4);
+            var testIsland = SetupTestIsland(4);
             testIsland.Setup(mock => mock.AreRemainingConnectionsWithinRange(2, 3)).Returns(true);
 
             // act
@@ -187,7 +187,7 @@ namespace Hashi.Rules.Test
             var restrictedNeighbor3 = CreateIslandMock(TestIslandEnum.UpIsland, 3);
             restrictedNeighbor3.Setup(mock => mock.MaxConnectionsReached).Returns(true);
 
-            var testIsland = SetupTestee(4, restrictedNeighbor1, restrictedNeighbor2, restrictedNeighbor3);
+            var testIsland = SetupTestIsland(4, restrictedNeighbor1, restrictedNeighbor2, restrictedNeighbor3);
             testIsland.Setup(mock => mock.AreRemainingConnectionsWithinRange(2, 3)).Returns(true);
             testIsland.Setup(mock => mock.GetMaxedOutConnectedNeighbors(It.IsAny<List<IIslandViewModel>>(), null))
                 .Returns([restrictedNeighbor1.Object, restrictedNeighbor2.Object, restrictedNeighbor3.Object]);
@@ -213,7 +213,7 @@ namespace Hashi.Rules.Test
             var invalidNeighbor = CreateIslandMock(TestIslandEnum.UpIsland, 3);
             invalidNeighbor.Setup(mock => mock.MaxConnectionsReached).Returns(true);
 
-            var testIsland = SetupTestee(4, restrictedNeighbor, validNeighbor1, invalidNeighbor);
+            var testIsland = SetupTestIsland(4, restrictedNeighbor, validNeighbor1, invalidNeighbor);
             testIsland.Setup(mock => mock.AreRemainingConnectionsWithinRange(2, 3)).Returns(true);
             testIsland.Setup(mock => mock.GetMaxedOutConnectedNeighbors(It.IsAny<List<IIslandViewModel>>(), null))
                 .Returns([restrictedNeighbor.Object]);
@@ -242,7 +242,7 @@ namespace Hashi.Rules.Test
             var validNeighbor2 = CreateIslandMock(TestIslandEnum.UpIsland, 3);
             validNeighbor2.Setup(mock => mock.MaxConnectionsReached).Returns(false);
 
-            var testIsland = SetupTestee(4, restrictedNeighbor, validNeighbor1, validNeighbor2);
+            var testIsland = SetupTestIsland(4, restrictedNeighbor, validNeighbor1, validNeighbor2);
             testIsland.Setup(mock => mock.AreRemainingConnectionsWithinRange(2, 3)).Returns(false);
             testIsland.Setup(mock => mock.GetMaxedOutConnectedNeighbors(It.IsAny<List<IIslandViewModel>>(), null))
                 .Returns([restrictedNeighbor.Object]);
