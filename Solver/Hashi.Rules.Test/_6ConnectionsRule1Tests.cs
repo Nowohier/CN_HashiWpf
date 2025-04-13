@@ -20,7 +20,7 @@ namespace Hashi.Rules.Test
             var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
             var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 3);
 
-            var testIsland = SetupTestee(6, leftIsland, rightIsland, upIsland);
+            var testIsland = SetupTestIsland(6, leftIsland, rightIsland, upIsland);
 
             // act
             Session.Insert(testIsland.Object);
@@ -47,7 +47,7 @@ namespace Hashi.Rules.Test
             var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 3);
             upIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
 
-            var testIsland = SetupTestee(6, leftIsland, rightIsland, upIsland);
+            var testIsland = SetupTestIsland(6, leftIsland, rightIsland, upIsland);
 
             // act
             Session.Insert(testIsland.Object);
@@ -65,7 +65,7 @@ namespace Hashi.Rules.Test
             var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
             var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
 
-            var testIsland = SetupTestee(6, leftIsland, rightIsland);
+            var testIsland = SetupTestIsland(6, leftIsland, rightIsland);
 
             // act
             Session.Insert(testIsland.Object);
@@ -84,7 +84,7 @@ namespace Hashi.Rules.Test
             var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
             var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 3);
 
-            var testIsland = SetupTestee(6, leftIsland, rightIsland, upIsland);
+            var testIsland = SetupTestIsland(6, leftIsland, rightIsland, upIsland);
             testIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
 
             // act
@@ -99,7 +99,7 @@ namespace Hashi.Rules.Test
         public void _6ConnectionsRule1_WhenNoNeighbors_ShouldNotTriggerRule()
         {
             // arrange
-            var testIsland = SetupTestee(6);
+            var testIsland = SetupTestIsland(6);
             testIsland.Setup(mock => mock.GetAllVisibleNeighbors())
                 .Returns([]);
 

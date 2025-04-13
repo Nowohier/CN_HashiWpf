@@ -21,7 +21,7 @@ namespace Hashi.Rules.Test
             var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 3);
             var downIsland = CreateIslandMock(TestIslandEnum.DownIsland, 3);
 
-            var testIsland = SetupTestee(8, leftIsland, rightIsland, upIsland, downIsland);
+            var testIsland = SetupTestIsland(8, leftIsland, rightIsland, upIsland, downIsland);
 
             // act
             Session.Insert(testIsland.Object);
@@ -52,7 +52,7 @@ namespace Hashi.Rules.Test
             var downIsland = CreateIslandMock(TestIslandEnum.DownIsland, 3);
             downIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
 
-            var testIsland = SetupTestee(8, leftIsland, rightIsland, upIsland, downIsland);
+            var testIsland = SetupTestIsland(8, leftIsland, rightIsland, upIsland, downIsland);
 
             // act
             Session.Insert(testIsland.Object);
@@ -71,7 +71,7 @@ namespace Hashi.Rules.Test
             var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
             var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 3);
 
-            var testIsland = SetupTestee(8, leftIsland, rightIsland, upIsland);
+            var testIsland = SetupTestIsland(8, leftIsland, rightIsland, upIsland);
 
             // act
             Session.Insert(testIsland.Object);
@@ -91,7 +91,7 @@ namespace Hashi.Rules.Test
             var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 3);
             var downIsland = CreateIslandMock(TestIslandEnum.DownIsland, 3);
 
-            var testIsland = SetupTestee(8, leftIsland, rightIsland, upIsland, downIsland);
+            var testIsland = SetupTestIsland(8, leftIsland, rightIsland, upIsland, downIsland);
             testIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
 
             // act
@@ -106,7 +106,7 @@ namespace Hashi.Rules.Test
         public void _8ConnectionsRule1_WhenNoNeighbors_ShouldNotTriggerRule()
         {
             // arrange
-            var testIsland = SetupTestee(8);
+            var testIsland = SetupTestIsland(8);
 
             // act
             Session.Insert(testIsland.Object);

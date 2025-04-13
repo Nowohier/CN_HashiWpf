@@ -23,7 +23,7 @@ namespace Hashi.Rules.Test
             var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
             var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 3);
 
-            var testIsland = SetupTestee(5, leftIsland, rightIsland, upIsland);
+            var testIsland = SetupTestIsland(5, leftIsland, rightIsland, upIsland);
             testIsland.Setup(mock => mock.GetConnectableNeighborsWithoutConnection(It.IsAny<List<IIslandViewModel>>()))
                 .Returns([leftIsland.Object, rightIsland.Object, upIsland.Object]);
 
@@ -52,7 +52,7 @@ namespace Hashi.Rules.Test
             var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 3);
             upIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
 
-            var testIsland = SetupTestee(5, leftIsland, rightIsland, upIsland);
+            var testIsland = SetupTestIsland(5, leftIsland, rightIsland, upIsland);
             testIsland.Setup(mock => mock.GetConnectableNeighborsWithoutConnection(It.IsAny<List<IIslandViewModel>>()))
                 .Returns([]);
 
@@ -72,7 +72,7 @@ namespace Hashi.Rules.Test
             var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
             var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
 
-            var testIsland = SetupTestee(5, leftIsland, rightIsland);
+            var testIsland = SetupTestIsland(5, leftIsland, rightIsland);
             testIsland.Setup(mock => mock.GetConnectableNeighborsWithoutConnection(It.IsAny<List<IIslandViewModel>>()))
                 .Returns([leftIsland.Object, rightIsland.Object]);
 
@@ -93,7 +93,7 @@ namespace Hashi.Rules.Test
             var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
             var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 3);
 
-            var testIsland = SetupTestee(5, leftIsland, rightIsland, upIsland);
+            var testIsland = SetupTestIsland(5, leftIsland, rightIsland, upIsland);
             testIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
             testIsland.Setup(mock => mock.GetConnectableNeighborsWithoutConnection(It.IsAny<List<IIslandViewModel>>()))
                 .Returns([leftIsland.Object, rightIsland.Object, upIsland.Object]);
@@ -115,7 +115,7 @@ namespace Hashi.Rules.Test
             var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
             var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 3);
 
-            var testIsland = SetupTestee(5, leftIsland, rightIsland, upIsland);
+            var testIsland = SetupTestIsland(5, leftIsland, rightIsland, upIsland);
             testIsland.Setup(mock => mock.GetConnectableNeighborsWithoutConnection(It.IsAny<List<IIslandViewModel>>()))
                 .Returns([]);
 

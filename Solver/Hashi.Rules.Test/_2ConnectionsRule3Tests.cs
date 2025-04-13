@@ -23,7 +23,7 @@ namespace Hashi.Rules.Test
             var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 2);
             rightIsland.Setup(mock => mock.MaxConnectionsReached).Returns(false);
 
-            var testIsland = SetupTestee(2, leftIsland, rightIsland);
+            var testIsland = SetupTestIsland(2, leftIsland, rightIsland);
 
             // act
             Session.Insert(testIsland.Object);
@@ -42,7 +42,7 @@ namespace Hashi.Rules.Test
             var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 2);
             var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 2);
 
-            var testIsland = SetupTestee(2, leftIsland, rightIsland);
+            var testIsland = SetupTestIsland(2, leftIsland, rightIsland);
 
             // act
             Session.Insert(testIsland.Object);
@@ -61,7 +61,7 @@ namespace Hashi.Rules.Test
             var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
             var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 3);
 
-            var testIsland = SetupTestee(2, leftIsland, rightIsland, upIsland);
+            var testIsland = SetupTestIsland(2, leftIsland, rightIsland, upIsland);
 
             // act
             Session.Insert(testIsland.Object);
@@ -83,7 +83,7 @@ namespace Hashi.Rules.Test
             var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
             rightIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
 
-            var testIsland = SetupTestee(2, leftIsland, rightIsland);
+            var testIsland = SetupTestIsland(2, leftIsland, rightIsland);
 
             // act
             Session.Insert(testIsland.Object);
@@ -101,7 +101,7 @@ namespace Hashi.Rules.Test
             var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
             var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
 
-            var testIsland = SetupTestee(2, leftIsland, rightIsland);
+            var testIsland = SetupTestIsland(2, leftIsland, rightIsland);
             testIsland.Setup(mock => mock.AllConnections).Returns([CreateHashiPointMock(0, 1).Object]);
 
             // act
