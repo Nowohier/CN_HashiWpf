@@ -1,6 +1,5 @@
 ﻿using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Translation;
-using Hashi.Rules.Extensions;
 using NRules.Fluent.Dsl;
 
 namespace Hashi.Rules;
@@ -11,17 +10,17 @@ public class _7ConnectionsRule1 : BaseRule
 
     public override void Define()
     {
-        IIslandViewModel island = null!;
-        List<IIslandViewModel> allNeighbors = null!;
-        List<IIslandViewModel> validNeighbors = null!;
-        IConnectionManagerViewModel connectionManager = null!;
+        IIslandViewModel? island = null!;
+        List<IIslandViewModel?> allNeighbors = null!;
+        List<IIslandViewModel?> validNeighbors = null!;
+        IConnectionManagerViewModel? connectionManager = null!;
 
         When()
             .Query(() => connectionManager, q => q.Match<IConnectionManagerViewModel>())
             .Match(() => island, x => x.MaxConnections == 7 && !x.MaxConnectionsReached)
             .Let(() => allNeighbors, () => island.GetAllVisibleNeighbors())
-            .Having(() => allNeighbors.Count == 4 && !island.AreAllNeighborsConnected(allNeighbors))
-            .Let(() => validNeighbors, () => island.GetConnectableNeighborsWithoutConnection(allNeighbors));
+            .Having(() => allNeighbors.Count == 4 && !AreAllNeighborsConnected(island, allNeighbors))
+            .Let(() => validNeighbors, () => GetConnectableNeighborsWithoutConnection(island, allNeighbors));
 
         Then()
             .Do(ctx => AddConnections(island, validNeighbors, connectionManager));
