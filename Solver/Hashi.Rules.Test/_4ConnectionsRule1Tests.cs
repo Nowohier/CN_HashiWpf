@@ -19,7 +19,7 @@ namespace Hashi.Rules.Test
             var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
             var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
 
-            var testIsland = SetupTestee(4, leftIsland, rightIsland);
+            var testIsland = SetupTestIsland(4, leftIsland, rightIsland);
 
             // act
             Session.Insert(testIsland.Object);
@@ -42,7 +42,7 @@ namespace Hashi.Rules.Test
             var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
             rightIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
 
-            var testIsland = SetupTestee(4, leftIsland, rightIsland);
+            var testIsland = SetupTestIsland(4, leftIsland, rightIsland);
 
             // act
             Session.Insert(testIsland.Object);
@@ -61,7 +61,7 @@ namespace Hashi.Rules.Test
             var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
             var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 3);
 
-            var testIsland = SetupTestee(4, leftIsland, rightIsland, upIsland);
+            var testIsland = SetupTestIsland(4, leftIsland, rightIsland, upIsland);
 
             // act
             Session.Insert(testIsland.Object);
@@ -79,7 +79,7 @@ namespace Hashi.Rules.Test
             var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
             var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 3);
 
-            var testIsland = SetupTestee(4, leftIsland, rightIsland);
+            var testIsland = SetupTestIsland(4, leftIsland, rightIsland);
             testIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);
 
             // act
@@ -97,7 +97,7 @@ namespace Hashi.Rules.Test
             // valid neighbor
             var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
 
-            var testIsland = SetupTestee(4, leftIsland);
+            var testIsland = SetupTestIsland(4, leftIsland);
 
             // act
             Session.Insert(testIsland.Object);

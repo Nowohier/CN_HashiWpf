@@ -22,7 +22,7 @@ namespace Hashi.Rules.Test
             var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 2, true);
             var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 2, true);
 
-            var testIsland = SetupTestee(2, leftIsland, rightIsland, upIsland);
+            var testIsland = SetupTestIsland(2, leftIsland, rightIsland, upIsland);
 
             // act
             Session.Insert(testIsland.Object);
@@ -46,7 +46,7 @@ namespace Hashi.Rules.Test
             // invalid neighbor
             var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 2, true);
 
-            var testIsland = SetupTestee(2, leftIsland, rightIsland, upIsland);
+            var testIsland = SetupTestIsland(2, leftIsland, rightIsland, upIsland);
 
             // act
             Session.Insert(testIsland.Object);
@@ -64,7 +64,7 @@ namespace Hashi.Rules.Test
             var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 2, true);
             var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 1);
             var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 2, true);
-            var testIsland = SetupTestee(2, leftIsland, rightIsland, upIsland);
+            var testIsland = SetupTestIsland(2, leftIsland, rightIsland, upIsland);
 
             // act
             Session.Insert(testIsland.Object);

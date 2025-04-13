@@ -19,7 +19,7 @@ namespace Hashi.Rules.Test
             var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 2);
             var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 1);
 
-            var testIsland = SetupTestee(2, leftIsland, upIsland);
+            var testIsland = SetupTestIsland(2, leftIsland, upIsland);
             testIsland.Setup(mock => mock.AllConnections).Returns([CreateHashiPointMock(0, 1).Object]);
 
             // neighbor with MaxConnections == 1 and already connected
@@ -43,7 +43,7 @@ namespace Hashi.Rules.Test
             var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 2);
             var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 2);
 
-            var testIsland = SetupTestee(2, leftIsland, upIsland);
+            var testIsland = SetupTestIsland(2, leftIsland, upIsland);
             testIsland.Setup(mock => mock.AllConnections).Returns([CreateHashiPointMock(0, 1).Object]);
 
             // act

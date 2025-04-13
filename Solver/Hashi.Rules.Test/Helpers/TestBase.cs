@@ -22,7 +22,7 @@ namespace Hashi.Rules.Test.Helpers
         [SetUp]
         public void SetUp()
         {
-
+            Recorder.Clear();
         }
 
         [TearDown]
@@ -31,7 +31,7 @@ namespace Hashi.Rules.Test.Helpers
             Session.RetractAll(Session.Query<IIslandViewModel>());
         }
 
-        protected Mock<IIslandViewModel> SetupTestee(int maxConnections, params Mock<IIslandViewModel>[] neighbors)
+        protected Mock<IIslandViewModel> SetupTestIsland(int maxConnections, params Mock<IIslandViewModel>[] neighbors)
         {
             var testIsland = CreateIslandMock(TestIslandEnum.TestIsland, maxConnections);
             testIsland.Setup(mock => mock.GetAllVisibleNeighbors()).Returns(neighbors.Select(n => n.Object).ToList());
