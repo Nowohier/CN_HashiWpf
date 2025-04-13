@@ -17,10 +17,13 @@ namespace Hashi.Rules.Test
             // arrange
             // valid neighbor
             var validNeighbor = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
-            validNeighbor.Setup(mock => mock.MaxConnectionsReached).Returns(false);
+            var maxNeighbor1 = CreateIslandMock(TestIslandEnum.LeftIsland, 2, true);
+            var maxNeighbor2 = CreateIslandMock(TestIslandEnum.LeftIsland, 2, true);
+            var maxNeighbor3 = CreateIslandMock(TestIslandEnum.LeftIsland, 2, true);
 
-            var testIsland = SetupTestIsland(4, validNeighbor);
-            testIsland.Setup(mock => mock.AllConnections.Count).Returns(1);
+            var testIsland = SetupTestIsland(4, validNeighbor, maxNeighbor1, maxNeighbor2, maxNeighbor3);
+            testIsland.Setup(x => x.AllConnections)
+                .Returns([CreateHashiPointMock(0, 1).Object, CreateHashiPointMock(0, 1).Object]);
 
             var missingConnections = testIsland.Object.MaxConnections - testIsland.Object.AllConnections.Count;
 
