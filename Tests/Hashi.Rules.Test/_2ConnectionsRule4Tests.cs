@@ -1,3 +1,4 @@
+using Hashi.Enums;
 using Hashi.Rules.Test.Helpers;
 using Times = NRules.Testing.Times;
 
@@ -29,7 +30,7 @@ public class _2ConnectionsRule4Tests : TestBase<_2ConnectionsRule4>
         if (shouldTrigger)
         {
             Verify(x => x.Rule().Fired(Times.Once));
-            IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, leftIsland.Object, true),
+            IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, leftIsland.Object, HashiPointTypeEnum.Hint),
                 Moq.Times.Once);
         }
         else
@@ -64,7 +65,7 @@ public class _2ConnectionsRule4Tests : TestBase<_2ConnectionsRule4>
         if (shouldTrigger)
         {
             Verify(x => x.Rule().Fired(Times.Once));
-            IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, leftIsland.Object, true),
+            IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, leftIsland.Object, HashiPointTypeEnum.Hint),
                 Moq.Times.Once);
         }
         else
@@ -103,7 +104,7 @@ public class _2ConnectionsRule4Tests : TestBase<_2ConnectionsRule4>
         if (shouldTrigger)
         {
             Verify(x => x.Rule().Fired(Times.Once));
-            IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, leftIsland.Object, true),
+            IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, leftIsland.Object, HashiPointTypeEnum.Hint),
                 Moq.Times.Once);
         }
         else

@@ -1,5 +1,5 @@
-﻿using System.Drawing;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Hashi.Enums;
 using Hashi.Gui.Interfaces.Models;
 
 namespace Hashi.Gui.Models;
@@ -8,19 +8,19 @@ namespace Hashi.Gui.Models;
 public class HashiPoint : ObservableRecipient, IHashiPoint
 {
     private string hintMessage = string.Empty;
-    private bool isHint;
+    private HashiPointTypeEnum pointType;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="HashiPoint" /> class.
     /// </summary>
     /// <param name="x">The x coordinate.</param>
     /// <param name="y">The y coordinate.</param>
-    /// <param name="isHint"></param>
-    public HashiPoint(int x, int y, bool isHint = false)
+    /// <param name="pointType">The point type.</param>
+    public HashiPoint(int x, int y, HashiPointTypeEnum pointType = HashiPointTypeEnum.Normal)
     {
         X = x;
         Y = y;
-        IsHint = isHint;
+        PointType = pointType;
     }
 
     /// <inheritdoc />
@@ -30,16 +30,16 @@ public class HashiPoint : ObservableRecipient, IHashiPoint
     public int Y { get; }
 
     /// <inheritdoc />
-    public bool IsHint
+    public HashiPointTypeEnum PointType
     {
-        get => isHint;
-        set => SetProperty(ref isHint, value);
+        get => pointType;
+        set => SetProperty(ref pointType, value);
     }
 
     /// <inheritdoc />
     public object Clone()
     {
-        var clone = new HashiPoint(X, Y, IsHint)
+        var clone = new HashiPoint(X, Y, PointType)
         {
             hintMessage = hintMessage
         };
@@ -47,47 +47,8 @@ public class HashiPoint : ObservableRecipient, IHashiPoint
     }
 
     /// <inheritdoc />
-    public override bool Equals(object? obj)
-    {
-        if (obj is not IHashiPoint item) return false;
-
-        return X.Equals(item.X) && Y.Equals(item.Y);
-    }
-
-    /// <inheritdoc />
-    public override int GetHashCode()
-    {
-        unchecked
-        {
-            var hash = 17;
-            hash = hash * 23 + X.GetHashCode();
-            hash = hash * 23 + Y.GetHashCode();
-            return hash;
-        }
-    }
-
-
-    /// <summary>
-    ///     Converts a <see cref="HashiPoint" /> to a <see cref="Point" />.
-    /// </summary>
-    /// <param name="hashiPoint"></param>
-    public static implicit operator Point(HashiPoint hashiPoint)
-    {
-        return new Point(hashiPoint.X, hashiPoint.Y);
-    }
-
-    /// <summary>
-    ///     Converts a <see cref="Point" /> to a <see cref="HashiPoint" />.
-    /// </summary>
-    /// <param name="point"></param>
-    public static implicit operator HashiPoint(Point point)
-    {
-        return new HashiPoint(point.X, point.Y);
-    }
-
-    /// <inheritdoc />
     public override string ToString()
     {
-        return $"Coordinate (X = {X}, Y = {Y}), IsHint = {IsHint}";
+        return $"Coordinate (X = {X}, Y = {Y}), PointType = {PointType}";
     }
 }

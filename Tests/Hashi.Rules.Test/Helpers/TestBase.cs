@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Hashi.Enums;
 using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Interfaces.ViewModels;
@@ -21,7 +22,7 @@ public abstract class TestBase<T> : RulesTestFixture
     {
         // Create rule instance with mocks and add rule to the setup
         IslandProviderMock = new Mock<IIslandProvider>(MockBehavior.Strict);
-        IslandProviderMock.Setup(mock => mock.AddConnection(It.IsAny<IIslandViewModel>(), It.IsAny<IIslandViewModel>(), true));
+        IslandProviderMock.Setup(mock => mock.AddConnection(It.IsAny<IIslandViewModel>(), It.IsAny<IIslandViewModel>(), HashiPointTypeEnum.Hint));
 
         RuleInfoProviderMock = new Mock<IRuleInfoProvider>(MockBehavior.Strict);
         RuleInfoProviderMock.SetupProperty(mock => mock.AreRulesBeingApplied, true);
@@ -57,7 +58,9 @@ public abstract class TestBase<T> : RulesTestFixture
         var islandProviderMockObject = isIslandProviderNull ? null : IslandProviderMock.Object;
         var ruleInfoProviderMockObject = isRuleInfoProviderNull ? null : RuleInfoProviderMock.Object;
 
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
         var action = () => { var test = (T)Activator.CreateInstance(typeof(T), ruleInfoProviderMockObject!, islandProviderMockObject!); };
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 
         // act, assert
         if (throwsException)

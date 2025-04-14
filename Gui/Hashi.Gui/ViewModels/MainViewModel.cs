@@ -12,6 +12,7 @@ using Hashi.Gui.Interfaces.Wrappers;
 using Hashi.Gui.Messages;
 using Hashi.Gui.Messaging;
 using Hashi.Gui.Translation;
+using System.Diagnostics;
 using System.Globalization;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -202,6 +203,7 @@ public class MainViewModel : AsyncObservableRecipient,
 
         IslandProvider.RemoveAllHighlights();
         IslandProvider.ClearTemporaryDropTargets();
+        Debug.WriteLine($"Isolated Groups: {IslandProvider.CountIsolatedIslandGroups()}");
     }
 
     /// <inheritdoc cref="IMainViewModel.Receive(IUpdateAllIslandColorsMessage)" />
@@ -271,7 +273,7 @@ public class MainViewModel : AsyncObservableRecipient,
     /// </summary>
     public void RemoveAllBridgesExecute()
     {
-        IslandProvider.RemoveAllBridges();
+        IslandProvider.RemoveAllBridges(HashiPointTypeEnum.All);
         TimerProvider.StopTimer();
 
         IsCheating = false;

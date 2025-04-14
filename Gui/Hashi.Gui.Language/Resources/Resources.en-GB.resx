@@ -237,4 +237,10 @@
   <data name="DialogAbort" xml:space="preserve">
     <value>ABORT</value>
   </data>
+  <data name="MessageIsolatedGroupCaption" xml:space="preserve">
+    <value>Careful</value>
+  </data>
+  <data name="MessageIsolatedGroupText" xml:space="preserve">
+    <value>You have created an isolated group of islands. This results in an invalid bridge constellation. By the end of the game, all connections must be set and all islands must be connected.</value>
+  </data>
 </root>
