@@ -1,7 +1,7 @@
 ﻿using Hashi.Enums;
-using Hashi.Gui.Helpers;
 using Hashi.Gui.Interfaces.General;
 using Hashi.Gui.ViewModels;
+using System.Windows;
 
 namespace Hashi.Gui.Views;
 
@@ -19,14 +19,12 @@ public partial class Dialog : ICloseable, IDialogResult
     public static DialogResult Show(string caption, string message, DialogButton button = DialogButton.Ok,
         DialogImage image = DialogImage.None)
     {
-        var res = DialogResult.Cancel;
-        //Always run dialog in an sta thread
-        GeneralHelper.StartStaTask(() =>
+        var window = new Dialog(caption, message, button, image)
         {
-            var window = new Dialog(caption, message, button, image);
-            window.ShowDialog();
-            res = window.DialogResult;
-        }).GetAwaiter().GetResult();
+            Owner = Application.Current.MainWindow
+        };
+        window.ShowDialog();
+        var res = window.DialogResult;
 
         return res;
     }
