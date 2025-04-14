@@ -1,6 +1,6 @@
-﻿using System.Collections.ObjectModel;
-using Hashi.Enums;
+﻿using Hashi.Enums;
 using Hashi.Gui.Interfaces.Models;
+using System.Collections.ObjectModel;
 
 namespace Hashi.Gui.Interfaces.ViewModels;
 
@@ -113,13 +113,6 @@ public interface IIslandViewModel
     IIslandViewModel? GetVisibleNeighbor(IIslandViewModel potentialTargetIsland);
 
     /// <summary>
-    ///     Gets the visible neighbor of the current island in the given direction.
-    /// </summary>
-    /// <param name="direction">The direction.</param>
-    /// <returns>the visible neighbor of the current island in the given direction. Null if not found.</returns>
-    IIslandViewModel? GetVisibleNeighbor(DirectionEnum direction);
-
-    /// <summary>
     ///     Notifies the bridge connections.
     /// </summary>
     void NotifyBridgeConnections();
@@ -135,4 +128,18 @@ public interface IIslandViewModel
     /// </summary>
     /// <param name="connection">The connection to remove.</param>
     void RemoveAllConnectionsMatchingCoordinates(IHashiPoint connection);
+
+    /// <summary>
+    /// Determines if the island is a valid drop target.
+    /// </summary>
+    /// <param name="target"></param>
+    /// <returns></returns>
+    bool IsValidDropTarget(IIslandViewModel? target);
+
+    /// <summary>
+    /// Determines if the maximum number of bridges has been reached to the target island. Returns null if target is null.
+    /// </summary>
+    /// <param name="target">The target island.</param>
+    /// <returns>a boolean value if the maximum number of bridges has been reached to the target island. Returns null if target is null.</returns>
+    bool? MaxBridgesReachedToTarget(IIslandViewModel? target);
 }

@@ -50,9 +50,9 @@ public class _5ConnectionsRule3Tests : TestBase
 
         // assert
         Verify(x => x.Rule().Fired(ruleIsFired ? Times.Once : Times.Never));
-        ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, validNeighbor1.Object, true),
+        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, validNeighbor1.Object, true),
             ruleIsFired ? Moq.Times.Once : Moq.Times.Never);
-        ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, validNeighbor2.Object, true),
+        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, validNeighbor2.Object, true),
             ruleIsFired ? Moq.Times.Once : Moq.Times.Never);
     }
 

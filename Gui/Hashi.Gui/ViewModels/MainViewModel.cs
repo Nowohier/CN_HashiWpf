@@ -45,23 +45,23 @@ public class MainViewModel : AsyncObservableRecipient,
     ///     Initializes a new instance of the <see cref="MainViewModel" /> class.
     /// </summary>
     /// <param name="brushFactory">The solid color brush factory.</param>
-    /// <param name="connectionManager">The connection manager.</param>
     /// <param name="dialogWrapper">The dialog wrapper.</param>
     /// <param name="hashiGenerator">The hashi generator.</param>
     /// <param name="settingsProvider">The settings provider.</param>
     /// <param name="timerProvider">The timer provider.</param>
+    /// <param name="islandProvider"></param>
     public MainViewModel(
         Func<SolidColorBrush, IHashiBrush> brushFactory,
-        IConnectionManagerViewModel connectionManager,
         IDialogWrapper dialogWrapper,
         IHashiGenerator hashiGenerator,
         IHashiSettingsProvider settingsProvider,
-        ITimerProvider timerProvider)
+        ITimerProvider timerProvider,
+        IIslandProvider islandProvider)
     {
         this.brushFactory = brushFactory;
-        ConnectionManager = connectionManager;
         SettingsProvider = settingsProvider;
         TimerProvider = timerProvider;
+        IslandProvider = islandProvider;
         this.dialogWrapper = dialogWrapper;
         this.hashiGenerator = hashiGenerator;
 
@@ -75,16 +75,17 @@ public class MainViewModel : AsyncObservableRecipient,
         GenerateHintCommand = new RelayCommand(GenerateHintCommandExecute);
         UndoCommand = new RelayCommand(UndoCommandExecute, UndoCommandCanExecute);
         RedoCommand = new RelayCommand(RedoCommandExecute, RedoCommandCanExecute);
-        WindowMouseClickedCommand = new RelayCommand(() => ConnectionManager.RuleMessage = string.Empty);
+        WindowMouseClickedCommand = new RelayCommand(() => IslandProvider.RuleMessage = string.Empty);
         ChangeLanguageCommand = new RelayCommand<string>(ChangeLanguageCommandExecute);
 
         selectedRule = Rules.First();
     }
 
-    /// <summary>
-    ///     Gets the connection manager view model.
-    /// </summary>
-    public IConnectionManagerViewModel ConnectionManager { get; }
+    /// <inheritdoc />
+    public ITimerProvider TimerProvider { get; }
+
+    /// <inheritdoc />
+    public IIslandProvider IslandProvider { get; }
 
     /// <summary>
     ///     Gets the highscore for the selected difficulty.
@@ -126,8 +127,8 @@ public class MainViewModel : AsyncObservableRecipient,
         {
             if (!SetProperty(ref selectedRule, value)) return;
 
-            ConnectionManager.RuleMessage = TranslationSource.Instance[selectedRule.Name] ?? string.Empty;
-            ConnectionManager.AreRulesBeingApplied = false;
+            IslandProvider.RuleMessage = TranslationSource.Instance[selectedRule.Name] ?? string.Empty;
+            IslandProvider.AreRulesBeingApplied = false;
 
             if (session == null) return;
             session.Events.RhsExpressionEvaluatedEvent -= OnRhsExpressionEvaluated;
@@ -186,9 +187,6 @@ public class MainViewModel : AsyncObservableRecipient,
     public IHashiSettingsProvider SettingsProvider { get; }
 
     /// <inheritdoc />
-    public ITimerProvider TimerProvider { get; }
-
-    /// <inheritdoc />
     public async Task CreateNewGameAsync()
     {
         IsGeneratingHashiPuzzle = true;
@@ -197,12 +195,12 @@ public class MainViewModel : AsyncObservableRecipient,
 
         if (session != null)
         {
-            ConnectionManager.AreRulesBeingApplied = false;
+            IslandProvider.AreRulesBeingApplied = false;
             session.Events.RhsExpressionEvaluatedEvent -= OnRhsExpressionEvaluated;
             session = null;
         }
 
-        ConnectionManager.InitializeNewSolution(solutionContainer);
+        IslandProvider.InitializeNewSolution(solutionContainer);
 
         TimerProvider.StopTimer();
         IsGeneratingHashiPuzzle = false;
@@ -216,7 +214,7 @@ public class MainViewModel : AsyncObservableRecipient,
         var targetIsland = message.Value.TargetIsland;
 
         if (bridgeOperationType == BridgeOperationTypeEnum.Add &&
-            !ConnectionManager.IsValidDropTarget(sourceIsland, targetIsland))
+            !sourceIsland.IsValidDropTarget(targetIsland))
             return;
 
         Action bridgeAction = bridgeOperationType switch
@@ -224,10 +222,10 @@ public class MainViewModel : AsyncObservableRecipient,
             BridgeOperationTypeEnum.Add => () =>
             {
                 TimerProvider.StartTimer();
-                ConnectionManager.AddConnection(sourceIsland, targetIsland);
+                IslandProvider.AddConnection(sourceIsland, targetIsland);
             }
             ,
-            BridgeOperationTypeEnum.RemoveAll => () => ConnectionManager.RemoveAllConnections(sourceIsland, null),
+            BridgeOperationTypeEnum.RemoveAll => () => IslandProvider.RemoveAllConnections(sourceIsland, null),
             _ => throw new ArgumentOutOfRangeException()
         };
 
@@ -236,14 +234,14 @@ public class MainViewModel : AsyncObservableRecipient,
         sourceIsland.RefreshIslandColor();
         targetIsland?.RefreshIslandColor();
 
-        ConnectionManager.RemoveAllHighlights();
-        ConnectionManager.ClearTemporaryDropTargets();
+        IslandProvider.RemoveAllHighlights();
+        IslandProvider.ClearTemporaryDropTargets();
     }
 
     /// <inheritdoc cref="IMainViewModel.Receive(IUpdateAllIslandColorsMessage)" />
     public void Receive(IUpdateAllIslandColorsMessage message)
     {
-        ConnectionManager.RefreshIslandColors();
+        IslandProvider.RefreshIslandColors();
     }
 
     /// <inheritdoc cref="IMainViewModel.ReceiveAsync(IAllConnectionsSetMessage,CancellationToken)" />
@@ -291,15 +289,15 @@ public class MainViewModel : AsyncObservableRecipient,
             islandChangedMessage.Value.TargetIsland is not { } dropTargetIsland ||
             sourceIsland.GetVisibleNeighbor(dropTargetIsland) is not { } targetIsland)
         {
-            ConnectionManager.RemoveAllHighlights();
-            ConnectionManager.ClearTemporaryDropTargets();
+            IslandProvider.RemoveAllHighlights();
+            IslandProvider.ClearTemporaryDropTargets();
             return;
         }
 
         targetIsland.IslandColor = brushFactory.Invoke(HashiColorHelper.GreenIslandBrush);
 
-        ConnectionManager.RemoveAllHighlights();
-        ConnectionManager.HighlightPathToTargetIsland(sourceIsland, targetIsland);
+        IslandProvider.RemoveAllHighlights();
+        IslandProvider.HighlightPathToTargetIsland(sourceIsland, targetIsland);
     }
 
     /// <summary>
@@ -307,13 +305,7 @@ public class MainViewModel : AsyncObservableRecipient,
     /// </summary>
     public void RemoveAllBridgesExecute()
     {
-        foreach (var row in ConnectionManager.Islands)
-            foreach (var island in row)
-            {
-                island.AllConnections.Clear();
-                island.NotifyBridgeConnections();
-            }
-
+        IslandProvider.RemoveAllBridges();
         TimerProvider.StopTimer();
 
         IsCheating = false;
@@ -330,9 +322,9 @@ public class MainViewModel : AsyncObservableRecipient,
     private void GenerateHint()
     {
         // ToDo Move to HintProvider and inject in ConnectionManager
-        if (ConnectionManager.AreRulesBeingApplied) return;
+        if (IslandProvider.AreRulesBeingApplied) return;
 
-        ConnectionManager.AreRulesBeingApplied = true;
+        IslandProvider.AreRulesBeingApplied = true;
 
         if (session == null)
         {
@@ -351,13 +343,13 @@ public class MainViewModel : AsyncObservableRecipient,
             session = factory.CreateSession();
             session.Events.RhsExpressionEvaluatedEvent += OnRhsExpressionEvaluated;
 
-            session.InsertAll(ConnectionManager.Islands.SelectMany(x => x));
-            session.Insert(ConnectionManager);
+            session.InsertAll(IslandProvider.IslandsFlat);
+            session.Insert(IslandProvider);
         }
         else
         {
-            session.UpdateAll(ConnectionManager.Islands.SelectMany(x => x));
-            session.Update(ConnectionManager);
+            session.UpdateAll(IslandProvider.IslandsFlat);
+            session.Update(IslandProvider);
         }
 
         var rulesFired = session.Fire();
@@ -366,12 +358,12 @@ public class MainViewModel : AsyncObservableRecipient,
             dialogWrapper.Show(TranslationSource.Instance["MessageNoHintsCaption"]!,
                 TranslationSource.Instance["MessageNoHintsText"]!, DialogButton.Ok, DialogImage.Information);
 
-        ConnectionManager.AreRulesBeingApplied = false;
+        IslandProvider.AreRulesBeingApplied = false;
     }
 
     private void OnRhsExpressionEvaluated(object? sender, RhsExpressionEventArgs e)
     {
-        ConnectionManager.AreRulesBeingApplied = false;
+        IslandProvider.AreRulesBeingApplied = false;
     }
 
     private void ChangeLanguageCommandExecute(string? culture)
@@ -383,7 +375,7 @@ public class MainViewModel : AsyncObservableRecipient,
 
     private void UndoCommandExecute()
     {
-        ConnectionManager.UndoConnection();
+        IslandProvider.UndoConnection();
     }
 
     private bool UndoCommandCanExecute()

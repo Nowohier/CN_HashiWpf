@@ -3,6 +3,7 @@ using System.Drawing;
 using Hashi.Enums;
 using Hashi.Generator.Interfaces;
 using Hashi.Generator.Interfaces.Models;
+using Hashi.Generator.Interfaces.Providers;
 using Hashi.Generator.Models;
 using Hashi.LinearSolver.Interfaces;
 
@@ -19,11 +20,11 @@ public class HashiGenerator : IHashiGenerator
     private readonly List<IIsland> islands = new();
     private readonly ILinearSolutionSolverWithIterativ linearSolutionSolverWithIterativ;
     private readonly Random random = new();
-    private readonly Func<int[][], IList<IBridgeCoordinates>, ISolutionContainer> solutionContainerFactory;
+    private readonly Func<int[][], IList<IBridgeCoordinates>, ISolutionProvider> solutionContainerFactory;
 
     public HashiGenerator(Func<int, int, int, IIsland> islandFactory,
         Func<IIsland, IIsland, int, IBridge> bridgeFactory,
-        Func<int[][], IList<IBridgeCoordinates>, ISolutionContainer> solutionContainerFactory,
+        Func<int[][], IList<IBridgeCoordinates>, ISolutionProvider> solutionContainerFactory,
         ILinearSolutionSolverWithIterativ linearSolutionSolverWithIterativ)
     {
         this.islandFactory = islandFactory;
@@ -32,7 +33,7 @@ public class HashiGenerator : IHashiGenerator
         this.linearSolutionSolverWithIterativ = linearSolutionSolverWithIterativ;
     }
 
-    public async Task<ISolutionContainer> GenerateHashAsync(int difficulty = -1, int amountNodes = 10, int width = 0,
+    public async Task<ISolutionProvider> GenerateHashAsync(int difficulty = -1, int amountNodes = 10, int width = 0,
         int length = 0, int alpha = 0,
         int beta = 0)
     {
@@ -154,7 +155,7 @@ public class HashiGenerator : IHashiGenerator
     /// <param name="beta">The beta value.</param>
     /// <param name="checkDifficulty">Determines if the difficulty should be checked.</param>
     /// <returns>a valid hashi field array with one possible solution.</returns>
-    private async Task<ISolutionContainer> GenerateHashAsync(int numberOfIslands, int sizeLength, int sizeWidth,
+    private async Task<ISolutionProvider> GenerateHashAsync(int numberOfIslands, int sizeLength, int sizeWidth,
         int difficulty, int beta,
         bool checkDifficulty)
     {

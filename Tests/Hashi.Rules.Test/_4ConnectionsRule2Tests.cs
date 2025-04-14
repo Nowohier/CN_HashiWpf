@@ -35,9 +35,9 @@ public class _4ConnectionsRule2Tests : TestBase
 
         // assert
         Verify(x => x.Rule().Fired(Times.Once));
-        ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, validNeighbor1.Object, true),
+        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, validNeighbor1.Object, true),
             Moq.Times.Once);
-        ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, validNeighbor2.Object, true),
+        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, validNeighbor2.Object, true),
             Moq.Times.Once);
     }
 
@@ -194,7 +194,7 @@ public class _4ConnectionsRule2Tests : TestBase
 
         // assert
         Verify(x => x.Rule().Fired(Times.Once));
-        ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, validNeighbor1.Object, true),
+        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, validNeighbor1.Object, true),
             Moq.Times.Once);
     }
 
