@@ -1,4 +1,5 @@
-﻿using Hashi.Generator.Interfaces.Providers;
+﻿using Hashi.Enums;
+using Hashi.Generator.Interfaces.Providers;
 using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.ViewModels;
 using System.Collections.ObjectModel;
@@ -57,6 +58,12 @@ namespace Hashi.Gui.Interfaces.Providers
         void HighlightPathToTargetIsland(IIslandViewModel source, IIslandViewModel target);
 
         /// <summary>
+        /// Counts the number of isolated island groups in the game.
+        /// </summary>
+        /// <returns></returns>
+        int CountIsolatedIslandGroups();
+
+        /// <summary>
         /// Undo the last connection made in the game.
         /// </summary>
         void UndoConnection();
@@ -64,7 +71,8 @@ namespace Hashi.Gui.Interfaces.Providers
         /// <summary>
         /// Removes all bridges from the islands.
         /// </summary>
-        void RemoveAllBridges();
+        /// <param name="pointType">The point type. Default is <see cref="HashiPointTypeEnum.All"/>.</param>
+        void RemoveAllBridges(HashiPointTypeEnum pointType);
 
         /// <summary>
         ///   Gets the visible neighbor of the source island depending on the direction to the potential target island. The potential target is not necessarily a visible neighbor.
@@ -86,8 +94,8 @@ namespace Hashi.Gui.Interfaces.Providers
         /// </summary>
         /// <param name="sourceIsland">The source island.</param>
         /// <param name="targetIsland">The target island.</param>
-        /// <param name="isHint">Determines if the connection is a hint.</param>
-        void AddConnection(IIslandViewModel? sourceIsland, IIslandViewModel? targetIsland, bool isHint = false);
+        /// <param name="pointType">Determines the point type.</param>
+        void AddConnection(IIslandViewModel? sourceIsland, IIslandViewModel? targetIsland, HashiPointTypeEnum pointType = HashiPointTypeEnum.Normal);
 
         /// <summary>
         ///     Removes a connection between two islands.

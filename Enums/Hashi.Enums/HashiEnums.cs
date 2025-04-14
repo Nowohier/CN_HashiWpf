@@ -14,6 +14,17 @@ public enum BridgeOperationTypeEnum
 }
 
 /// <summary>
+///    Represents the type of point in the Hashi puzzle.
+/// </summary>
+public enum HashiPointTypeEnum
+{
+    Normal,
+    Hint,
+    Test,
+    All
+}
+
+/// <summary>
 ///     Represents the type of connection for the bridge.
 /// </summary>
 public enum ConnectionTypeEnum

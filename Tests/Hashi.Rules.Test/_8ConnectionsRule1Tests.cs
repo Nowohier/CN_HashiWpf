@@ -1,3 +1,4 @@
+using Hashi.Enums;
 using Hashi.Rules.Test.Helpers;
 using Times = NRules.Testing.Times;
 
@@ -24,13 +25,13 @@ public class _8ConnectionsRule1Tests : TestBase<_8ConnectionsRule1>
 
         // assert
         Verify(x => x.Rule().Fired(Times.Once));
-        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, leftIsland.Object, true),
+        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, leftIsland.Object, HashiPointTypeEnum.Hint),
             Moq.Times.Exactly(2));
-        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, rightIsland.Object, true),
+        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, rightIsland.Object, HashiPointTypeEnum.Hint),
             Moq.Times.Exactly(2));
-        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, upIsland.Object, true),
+        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, upIsland.Object, HashiPointTypeEnum.Hint),
             Moq.Times.Exactly(2));
-        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, downIsland.Object, true),
+        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, downIsland.Object, HashiPointTypeEnum.Hint),
             Moq.Times.Exactly(2));
     }
 

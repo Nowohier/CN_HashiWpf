@@ -1,4 +1,5 @@
-﻿using Hashi.Rules.Test.Helpers;
+﻿using Hashi.Enums;
+using Hashi.Rules.Test.Helpers;
 using Times = NRules.Testing.Times;
 
 namespace Hashi.Rules.Test;
@@ -22,9 +23,9 @@ public class _2ConnectionsRule1Tests : TestBase<_2ConnectionsRule1>
 
         // assert
         Verify(x => x.Rule().Fired(Times.Once));
-        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, leftIsland.Object, true),
+        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, leftIsland.Object, HashiPointTypeEnum.Hint),
             Moq.Times.Once);
-        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, rightIsland.Object, true),
+        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, rightIsland.Object, HashiPointTypeEnum.Hint),
             Moq.Times.Once);
     }
 

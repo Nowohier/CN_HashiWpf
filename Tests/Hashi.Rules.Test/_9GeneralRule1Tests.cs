@@ -1,3 +1,4 @@
+using Hashi.Enums;
 using Hashi.Rules.Test.Helpers;
 using Times = NRules.Testing.Times;
 
@@ -28,7 +29,7 @@ public class _9GeneralRule1Tests : TestBase<_9GeneralRule1>
 
         // assert
         Verify(x => x.Rule().Fired(Times.Once));
-        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, validNeighbor.Object, true),
+        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, validNeighbor.Object, HashiPointTypeEnum.Hint),
             Moq.Times.Exactly(missingConnections));
     }
 

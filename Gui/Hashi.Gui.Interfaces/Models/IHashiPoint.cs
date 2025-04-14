@@ -1,4 +1,6 @@
-﻿namespace Hashi.Gui.Interfaces.Models;
+﻿using Hashi.Enums;
+
+namespace Hashi.Gui.Interfaces.Models;
 
 /// <summary>
 ///     A point containing x and y coordinates.
@@ -16,7 +18,7 @@ public interface IHashiPoint : ICloneable
     public int Y { get; }
 
     /// <summary>
-    ///     Indicates whether the point is a hint.
+    /// Determines the type of point in the Hashi puzzle.
     /// </summary>
-    bool IsHint { get; set; }
+    HashiPointTypeEnum PointType { get; set; }
 }

@@ -6,13 +6,16 @@ using Hashi.Gui.Extensions;
 using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Interfaces.ViewModels;
+using Hashi.Gui.Interfaces.Wrappers;
 using Hashi.Gui.Messages;
+using Hashi.Gui.Translation;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace Hashi.Gui.Providers
 {
     /// <inheritdoc cref="IIslandProvider" />
-    public class IslandProvider(Func<int, int, int, IIslandViewModel> islandFactory, Func<BridgeOperationTypeEnum, IHashiPoint, IHashiPoint, IHashiBridge> bridgeFactory) : ObservableObject, IIslandProvider
+    public class IslandProvider(Func<int, int, int, IIslandViewModel> islandFactory, Func<BridgeOperationTypeEnum, IHashiPoint, IHashiPoint, IHashiBridge> bridgeFactory, IDialogWrapper dialogWrapper) : ObservableObject, IIslandProvider
     {
         /// <inheritdoc />
         public ObservableCollection<ObservableCollection<IIslandViewModel>> Islands { get; } = [];
@@ -48,7 +51,7 @@ namespace Hashi.Gui.Providers
         }
 
         /// <inheritdoc />
-        public void AddConnection(IIslandViewModel? sourceIsland, IIslandViewModel? targetIsland, bool isHint = false)
+        public void AddConnection(IIslandViewModel? sourceIsland, IIslandViewModel? targetIsland, HashiPointTypeEnum pointType = HashiPointTypeEnum.Normal)
         {
             ArgumentNullException.ThrowIfNull(sourceIsland, nameof(sourceIsland));
             ArgumentNullException.ThrowIfNull(targetIsland, nameof(targetIsland));
@@ -64,8 +67,13 @@ namespace Hashi.Gui.Providers
                 targetIsland.Coordinates));
 
             ManageConnections(sourceIsland, targetIsland, (island, coordinates) => island.AddConnection(coordinates),
-                isHint);
+                pointType);
             if (AreAllConnectionsSet) WeakReferenceMessenger.Default.SendAsync(new AllConnectionsSetMessage());
+
+            if (CountIsolatedIslandGroups() > 0)
+            {
+                dialogWrapper.Show(TranslationSource.Instance["MessageIsolatedGroupCaption"]!, TranslationSource.Instance["MessageIsolatedGroupText"]!, DialogButton.Ok, DialogImage.Warning);
+            }
         }
 
         /// <inheritdoc />
@@ -159,11 +167,20 @@ namespace Hashi.Gui.Providers
         }
 
         /// <inheritdoc />
-        public void RemoveAllBridges()
+        public void RemoveAllBridges(HashiPointTypeEnum pointType)
         {
             foreach (var island in IslandsFlat)
             {
-                island.AllConnections.Clear();
+                var connectionsToRemove = pointType.Equals(HashiPointTypeEnum.All)
+                    ? island.AllConnections
+                    : island.AllConnections
+                        .Where(x => x.PointType == pointType);
+
+                foreach (var hashiPoint in connectionsToRemove.ToList())
+                {
+                    island.AllConnections.Remove(hashiPoint);
+                }
+
                 island.NotifyBridgeConnections();
             }
         }
@@ -229,6 +246,60 @@ namespace Hashi.Gui.Providers
                 neighbors.Add(right);
 
             return neighbors;
+        }
+
+        /// <inheritdoc />
+        public int CountIsolatedIslandGroups()
+        {
+            // Set to track visited islands
+            var visited = new HashSet<IIslandViewModel>();
+            var groupCount = 0;
+
+            // Filter islands with connections and MaxConnections > 0
+            var validIslands = IslandsFlat.Where(island => island.AllConnections.Any() && island.MaxConnections > 0).ToList();
+
+            // Iterate through all valid islands
+            foreach (var island in validIslands)
+            {
+                // Skip already visited islands
+                if (visited.Contains(island))
+                    continue;
+
+                // Recursively find all connected islands in the group
+                var group = new List<IIslandViewModel>();
+                FindConnectedIslands(island, group, visited);
+
+                Debug.WriteLine($"GroupCount: {group.Count} | Islands: {string.Join("|", group.Select(x => x.Coordinates))}");
+
+                // Count the group as isolated if all islands in the group have MaxConnectionsReached
+                if (group.All(i => i.MaxConnectionsReached) && group.Count > 1)
+                    groupCount++;
+            }
+
+            return groupCount;
+        }
+
+        private void FindConnectedIslands(IIslandViewModel island, List<IIslandViewModel> group, HashSet<IIslandViewModel> visited)
+        {
+            // Add the current island to the group and mark it as visited
+            group.Add(island);
+            visited.Add(island);
+
+            // Recursively check all connected neighbors
+            foreach (var neighbor in GetConnectedNeighbors(island))
+            {
+                if (!visited.Contains(neighbor))
+                {
+                    FindConnectedIslands(neighbor, group, visited);
+                }
+            }
+        }
+
+        private IEnumerable<IIslandViewModel> GetConnectedNeighbors(IIslandViewModel island)
+        {
+            var result = GetAllVisibleNeighbors(island)
+                .Where(neighbor => neighbor.AllConnections.Any(connection => island.Coordinates.X == connection.X && island.Coordinates.Y == connection.Y));
+            return result;
         }
 
         private IEnumerable<IIslandViewModel> GetAllIslandsInvolvedInConnection(IIslandViewModel source,
@@ -398,7 +469,7 @@ namespace Hashi.Gui.Providers
         }
 
         private void ManageConnections(IIslandViewModel? source, IIslandViewModel? target,
-            Action<IIslandViewModel, IHashiPoint> connectionAction, bool isHint = false)
+            Action<IIslandViewModel, IHashiPoint> connectionAction, HashiPointTypeEnum pointType = HashiPointTypeEnum.Normal)
         {
             if (source == null) throw new ArgumentNullException(nameof(source), @"Source island cannot be null.");
 
@@ -408,9 +479,9 @@ namespace Hashi.Gui.Providers
                 throw new InvalidOperationException("Diagonal connections are not allowed.");
 
             var sourceCoordinates = (IHashiPoint)source.Coordinates.Clone();
-            sourceCoordinates.IsHint = isHint;
+            sourceCoordinates.PointType = pointType;
             var targetCoordinates = (IHashiPoint)target.Coordinates.Clone();
-            targetCoordinates.IsHint = isHint;
+            targetCoordinates.PointType = pointType;
 
             var islandsToConnect = GetAllIslandsInvolvedInConnection(source, target).ToList();
 
