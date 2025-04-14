@@ -12,7 +12,6 @@ using Hashi.Gui.Interfaces.Wrappers;
 using Hashi.Gui.Messages;
 using Hashi.Gui.Messaging;
 using Hashi.Gui.Translation;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -20,7 +19,6 @@ using System.Windows.Media;
 namespace Hashi.Gui.ViewModels;
 
 /// <inheritdoc cref="IMainViewModel" />
-[SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
 public class MainViewModel : AsyncObservableRecipient,
     IMainViewModel,
     IRecipient<IBridgeConnectionChangedMessage>,
