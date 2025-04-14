@@ -1,6 +1,6 @@
-﻿using System.Collections.ObjectModel;
-using Hashi.Generator.Interfaces.Models;
+﻿using Hashi.Generator.Interfaces.Models;
 using Hashi.Gui.Interfaces.Models;
+using System.Collections.ObjectModel;
 
 namespace Hashi.Gui.Interfaces.ViewModels;
 
@@ -104,4 +104,9 @@ public interface IConnectionManagerViewModel
     /// <param name="target">The target island.</param>
     /// <returns>a boolean value if drop target is valid.</returns>
     bool IsValidDropTarget(IIslandViewModel? source, IIslandViewModel? target);
+
+    /// <summary>
+    /// Undoes the last connection made in the game.
+    /// </summary>
+    void UndoConnection();
 }
