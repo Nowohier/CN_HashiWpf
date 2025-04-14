@@ -1,4 +1,5 @@
 using FluentAssertions;
+using Hashi.Enums;
 using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Interfaces.ViewModels;
@@ -43,7 +44,7 @@ public class BaseRuleTests
 
         // assert
         islandProviderMock.Verify(
-            cm => cm.AddConnection(It.IsAny<IIslandViewModel>(), It.IsAny<IIslandViewModel>(), true),
+            cm => cm.AddConnection(It.IsAny<IIslandViewModel>(), It.IsAny<IIslandViewModel>(), HashiPointTypeEnum.Hint),
             shouldAdd ? Times.Once() : Times.Never());
     }
 
@@ -61,7 +62,7 @@ public class BaseRuleTests
         testableBaseRule.AddConnection(sourceIslandMock.Object, targetIslandMock.Object);
 
         // assert
-        islandProviderMock.Verify(cm => cm.AddConnection(sourceIslandMock.Object, targetIslandMock.Object, true),
+        islandProviderMock.Verify(cm => cm.AddConnection(sourceIslandMock.Object, targetIslandMock.Object, HashiPointTypeEnum.Hint),
             Times.Once);
     }
 
@@ -80,7 +81,7 @@ public class BaseRuleTests
         testableBaseRule.AddConnections(sourceIslandMock.Object, targetIslands!);
 
         // assert
-        islandProviderMock.Verify(cm => cm.AddConnection(sourceIslandMock.Object, targetIslandMock.Object, true),
+        islandProviderMock.Verify(cm => cm.AddConnection(sourceIslandMock.Object, targetIslandMock.Object, HashiPointTypeEnum.Hint),
             Times.Once);
     }
 
@@ -99,7 +100,7 @@ public class BaseRuleTests
         testableBaseRule.AddMultipleConnections(sourceIslandMock.Object, targetIslands!);
 
         // assert
-        islandProviderMock.Verify(cm => cm.AddConnection(sourceIslandMock.Object, targetIslandMock.Object, true),
+        islandProviderMock.Verify(cm => cm.AddConnection(sourceIslandMock.Object, targetIslandMock.Object, HashiPointTypeEnum.Hint),
             Times.Exactly(2));
     }
 
@@ -117,7 +118,7 @@ public class BaseRuleTests
         testableBaseRule.AddMissingConnectionsToOneTarget(sourceIslandMock.Object, targetIslandMock.Object, 2);
 
         // assert
-        islandProviderMock.Verify(cm => cm.AddConnection(sourceIslandMock.Object, targetIslandMock.Object, true),
+        islandProviderMock.Verify(cm => cm.AddConnection(sourceIslandMock.Object, targetIslandMock.Object, HashiPointTypeEnum.Hint),
             Times.Exactly(2));
     }
 
@@ -430,7 +431,7 @@ public class BaseRuleTests
         // assert
         result.Should().BeFalse();
         islandProviderMock.Verify(
-            cm => cm.AddConnection(It.IsAny<IIslandViewModel>(), It.IsAny<IIslandViewModel>(), true), Times.Never);
+            cm => cm.AddConnection(It.IsAny<IIslandViewModel>(), It.IsAny<IIslandViewModel>(), HashiPointTypeEnum.Hint), Times.Never);
     }
 
     [Test]
@@ -579,7 +580,7 @@ public class BaseRuleTests
 
         // assert
         islandProviderMock.Verify(
-            cm => cm.AddConnection(It.IsAny<IIslandViewModel>(), It.IsAny<IIslandViewModel>(), true), Times.Never);
+            cm => cm.AddConnection(It.IsAny<IIslandViewModel>(), It.IsAny<IIslandViewModel>(), HashiPointTypeEnum.Hint), Times.Never);
     }
 
     [Test]
@@ -615,7 +616,7 @@ public class BaseRuleTests
         testableBaseRule.AddConnections(sourceIslandMock.Object, targetIslands);
 
         // assert
-        islandProviderMock.Verify(cm => cm.AddConnection(sourceIslandMock.Object, targetIslandMock.Object, true),
+        islandProviderMock.Verify(cm => cm.AddConnection(sourceIslandMock.Object, targetIslandMock.Object, HashiPointTypeEnum.Hint),
             Times.Exactly(2));
     }
 
@@ -645,7 +646,7 @@ public class BaseRuleTests
 
         // assert
         islandProviderMock.Verify(
-            cm => cm.AddConnection(It.IsAny<IIslandViewModel>(), It.IsAny<IIslandViewModel>(), true), Times.Never);
+            cm => cm.AddConnection(It.IsAny<IIslandViewModel>(), It.IsAny<IIslandViewModel>(), HashiPointTypeEnum.Hint), Times.Never);
     }
 
     [Test]
@@ -669,7 +670,7 @@ public class BaseRuleTests
 
         // assert
         islandProviderMock.Verify(
-            cm => cm.AddConnection(It.IsAny<IIslandViewModel>(), It.IsAny<IIslandViewModel>(), true), Times.Never);
+            cm => cm.AddConnection(It.IsAny<IIslandViewModel>(), It.IsAny<IIslandViewModel>(), HashiPointTypeEnum.Hint), Times.Never);
     }
 
     [Test]
@@ -860,7 +861,7 @@ public class BaseRuleTests
 
         // assert
         islandProviderMock.Verify(
-            cm => cm.AddConnection(It.IsAny<IIslandViewModel>(), It.IsAny<IIslandViewModel>(), true), Times.Never);
+            cm => cm.AddConnection(It.IsAny<IIslandViewModel>(), It.IsAny<IIslandViewModel>(), HashiPointTypeEnum.Hint), Times.Never);
     }
 
     [Test]
@@ -886,9 +887,9 @@ public class BaseRuleTests
         testableBaseRule.AddMultipleConnections(sourceIslandMock.Object, targetIslands);
 
         // assert
-        islandProviderMock.Verify(cm => cm.AddConnection(sourceIslandMock.Object, targetIslandMock1.Object, true),
+        islandProviderMock.Verify(cm => cm.AddConnection(sourceIslandMock.Object, targetIslandMock1.Object, HashiPointTypeEnum.Hint),
             Times.Exactly(2));
-        islandProviderMock.Verify(cm => cm.AddConnection(sourceIslandMock.Object, targetIslandMock2.Object, true),
+        islandProviderMock.Verify(cm => cm.AddConnection(sourceIslandMock.Object, targetIslandMock2.Object, HashiPointTypeEnum.Hint),
             Times.Never);
     }
 }

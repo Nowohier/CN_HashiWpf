@@ -1,4 +1,5 @@
-﻿using Hashi.Gui.Interfaces.Models;
+﻿using Hashi.Enums;
+using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Interfaces.ViewModels;
 using NRules.Fluent.Dsl;
@@ -115,7 +116,7 @@ public abstract class BaseRule : Rule
             target.AllConnections.Count(x => source.Coordinates.Equals(x)) == 2 ||
             source.AllConnections.Count(x => target.Coordinates.Equals(x)) == 2) return false;
 
-        islandProvider.AddConnection(source, target, true);
+        islandProvider.AddConnection(source, target, HashiPointTypeEnum.Hint);
         return true;
     }
 

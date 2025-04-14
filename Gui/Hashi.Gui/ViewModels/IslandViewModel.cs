@@ -192,9 +192,9 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
     }
 
     /// <inheritdoc />
-    public void RemoveAllConnectionsMatchingCoordinates(IHashiPoint connection)
+    public void RemoveAllConnectionsMatchingCoordinates(IHashiPoint sourceSonnection)
     {
-        AllConnections.RemoveAll(x => x.Equals(connection));
+        AllConnections.RemoveAll(connection => sourceSonnection.X == connection.X && sourceSonnection.Y == connection.Y);
         NotifyBridgeConnections();
     }
 

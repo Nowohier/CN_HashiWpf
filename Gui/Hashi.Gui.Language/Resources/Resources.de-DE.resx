@@ -237,4 +237,10 @@
   <data name="DialogAbort" xml:space="preserve">
     <value>ABBRECHEN</value>
   </data>
+  <data name="MessageIsolatedGroupCaption" xml:space="preserve">
+    <value>Vorsicht</value>
+  </data>
+  <data name="MessageIsolatedGroupText" xml:space="preserve">
+    <value>Es wurde eine isolierte Inselgruppe erstellt. Dies führt zu einer ungültigen Brückenkonstellation. Am Ende des Spiels müssen alle Verbindungen gesetzt und alle Inseln miteinander verbunden sein.</value>
+  </data>
 </root>

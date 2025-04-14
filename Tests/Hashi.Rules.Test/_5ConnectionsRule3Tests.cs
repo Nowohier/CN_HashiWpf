@@ -1,3 +1,4 @@
+using Hashi.Enums;
 using Hashi.Gui.Interfaces.Models;
 using Hashi.Rules.Test.Helpers;
 using System.Collections.ObjectModel;
@@ -45,9 +46,9 @@ public class _5ConnectionsRule3Tests : TestBase<_5ConnectionsRule3>
 
         // assert
         Verify(x => x.Rule().Fired(ruleIsFired ? Times.Once : Times.Never));
-        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, validNeighbor1.Object, true),
+        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, validNeighbor1.Object, HashiPointTypeEnum.Hint),
             ruleIsFired ? Moq.Times.Once : Moq.Times.Never);
-        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, validNeighbor2.Object, true),
+        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, validNeighbor2.Object, HashiPointTypeEnum.Hint),
             ruleIsFired ? Moq.Times.Once : Moq.Times.Never);
     }
 
