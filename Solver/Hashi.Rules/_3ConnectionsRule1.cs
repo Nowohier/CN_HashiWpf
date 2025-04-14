@@ -1,4 +1,5 @@
-﻿using Hashi.Gui.Interfaces.ViewModels;
+﻿using Hashi.Gui.Interfaces.Providers;
+using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Translation;
 using NRules.Fluent.Dsl;
 
@@ -17,16 +18,16 @@ public class _3ConnectionsRule1 : BaseRule
         IIslandViewModel island = null!;
         List<IIslandViewModel> allNeighbors = null!;
         List<IIslandViewModel> validNeighbors = null!;
-        IConnectionManagerViewModel connectionManager = null!;
+        IIslandProvider islandProvider = null!;
 
         When()
             .Match(() => island, x => x.MaxConnections == 3 && x.AllConnections.Count < 2)
-            .Query(() => connectionManager, q => q.Match<IConnectionManagerViewModel>())
+            .Query(() => islandProvider, q => q.Match<IIslandProvider>())
             .Let(() => allNeighbors, () => island.GetAllVisibleNeighbors())
             .Let(() => validNeighbors, () => GetConnectableNeighborsWithoutConnection(island, allNeighbors))
             .Having(() => allNeighbors.Count == 2 && validNeighbors.Count > 0);
 
         Then()
-            .Do(ctx => AddConnections(island, validNeighbors, connectionManager));
+            .Do(ctx => AddConnections(island, validNeighbors, islandProvider));
     }
 }

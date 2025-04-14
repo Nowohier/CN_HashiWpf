@@ -30,11 +30,11 @@ public class _1ConnectionRule1Tests : TestBase
 
         // assert
         Verify(x => x.Rule().Fired(Times.Once));
-        ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, upIsland.Object, true),
+        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, upIsland.Object, true),
             Moq.Times.Once);
-        ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, leftIsland.Object, true),
+        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, leftIsland.Object, true),
             Moq.Times.Never);
-        ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, rightIsland.Object, true),
+        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, rightIsland.Object, true),
             Moq.Times.Never);
     }
 

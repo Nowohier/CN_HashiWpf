@@ -14,6 +14,11 @@ public interface IMainViewModel
     ITimerProvider TimerProvider { get; }
 
     /// <summary>
+    /// The island provider for the Hashi game.
+    /// </summary>
+    IIslandProvider IslandProvider { get; }
+
+    /// <summary>
     ///     The settings provider for the Hashi game.
     /// </summary>
     IHashiSettingsProvider SettingsProvider { get; }

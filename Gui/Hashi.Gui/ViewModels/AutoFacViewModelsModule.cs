@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Interfaces.ViewModels;
 
 namespace Hashi.Gui.ViewModels;
@@ -15,7 +16,6 @@ public class AutoFacViewModelsModule : Module
         builder.RegisterType<LanguageViewModel>().As<ILanguageViewModel>().InstancePerDependency();
         builder.RegisterType<HighScorePerDifficultyViewModel>().As<IHighScorePerDifficultyViewModel>()
             .InstancePerDependency();
-        builder.RegisterType<ConnectionManagerViewModel>().As<IConnectionManagerViewModel>().SingleInstance();
         builder.RegisterType<MainViewModel>().As<IMainViewModel>().SingleInstance();
 
         builder.Register<Func<int, int, int, IIslandViewModel>>(context =>
@@ -24,7 +24,8 @@ public class AutoFacViewModelsModule : Module
             return (x, y, maxConnections) => c.Resolve<IIslandViewModel>(
                 new NamedParameter("x", x),
                 new NamedParameter("y", y),
-                new NamedParameter("maxConnections", maxConnections));
+                new NamedParameter("maxConnections", maxConnections),
+                new NamedParameter("islandProvider", c.Resolve<IIslandProvider>()));
         });
     }
 }

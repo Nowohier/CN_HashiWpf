@@ -17,6 +17,5 @@ public class AutoFacMessagesModule : Module
             .InstancePerDependency();
         builder.RegisterType<UpdateAllIslandColorsMessage>().As<IUpdateAllIslandColorsMessage>()
             .InstancePerDependency();
-        builder.RegisterType<AllIslandsRequestMessage>().As<IAllIslandsRequestMessage>().InstancePerDependency();
     }
 }

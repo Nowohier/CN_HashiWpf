@@ -1,25 +1,26 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Hashi.Gui.Interfaces.Models;
+﻿using Hashi.Gui.Interfaces.Models;
+using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Interfaces.ViewModels;
 using Moq;
 using NRules.Testing;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Hashi.Rules.Test.Helpers;
 
 [ExcludeFromCodeCoverage]
 public abstract class TestBase : RulesTestFixture
 {
-    protected Mock<IConnectionManagerViewModel> ConnectionManagerMock;
+    protected Mock<IIslandProvider> IslandProviderMock;
 
     [OneTimeSetUp]
     public void OneTimeSetup()
     {
-        ConnectionManagerMock = new Mock<IConnectionManagerViewModel>(MockBehavior.Strict);
-        ConnectionManagerMock.SetupProperty(mock => mock.AreRulesBeingApplied, true);
-        ConnectionManagerMock.SetupProperty(mock => mock.RuleMessage, string.Empty);
-        ConnectionManagerMock.Setup(mock =>
+        IslandProviderMock = new Mock<IIslandProvider>(MockBehavior.Strict);
+        IslandProviderMock.SetupProperty(mock => mock.AreRulesBeingApplied, true);
+        IslandProviderMock.SetupProperty(mock => mock.RuleMessage, string.Empty);
+        IslandProviderMock.Setup(mock =>
             mock.AddConnection(It.IsAny<IIslandViewModel>(), It.IsAny<IIslandViewModel>(), true));
-        Session.Insert(ConnectionManagerMock.Object);
+        Session.Insert(IslandProviderMock.Object);
     }
 
     [SetUp]
