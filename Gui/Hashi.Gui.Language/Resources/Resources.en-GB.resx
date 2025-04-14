@@ -246,4 +246,7 @@
   <data name="_3ConnectionsRule2" xml:space="preserve">
     <value>If an island with a maximum of three bridges has three neighbors, and one is a 1-connection and another a 2-connection island then a connection must be set to the remaining neighbor.</value>
   </data>
+  <data name="_9GeneralRule2" xml:space="preserve">
+    <value>If setting a connection to any neighbor would result in a maximum connection reached for the island and a max connection count for all connected neighbors, check if the whole group is isolated. If it is, set the connection to the remaining neighbor.</value>
+  </data>
 </root>

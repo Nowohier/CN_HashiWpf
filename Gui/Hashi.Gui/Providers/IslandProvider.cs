@@ -169,6 +169,8 @@ namespace Hashi.Gui.Providers
         /// <inheritdoc />
         public void RemoveAllBridges(HashiPointTypeEnum pointType)
         {
+            // ToDo: Handle test connections here
+
             foreach (var island in IslandsFlat)
             {
                 var connectionsToRemove = pointType.Equals(HashiPointTypeEnum.All)
@@ -409,17 +411,7 @@ namespace Hashi.Gui.Providers
         {
             var connectionType = source.GetConnectionType(target);
             var islands = GetAllIslandsInvolvedInConnection(source, target).Where(x => x.MaxConnections == 0);
-
-            return connectionType switch
-            {
-                ConnectionTypeEnum.Horizontal => islands.Any(island =>
-                    island.BridgesUp.Count > 0 || island.BridgesDown.Count > 0),
-                ConnectionTypeEnum.Vertical => islands.Any(island =>
-                    island.BridgesLeft.Count > 0 || island.BridgesRight.Count > 0),
-                ConnectionTypeEnum.Diagonal => throw new InvalidOperationException(
-                    "Invalid connection type. Diagonal connections are not allowed here."),
-                _ => true
-            };
+            return islands.Any(island => IsCollidingConnection(island, connectionType));
         }
 
         private IIslandViewModel? GetVisibleNeighbor(IIslandViewModel source, DirectionEnum direction)
