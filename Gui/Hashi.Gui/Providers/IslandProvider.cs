@@ -14,9 +14,6 @@ namespace Hashi.Gui.Providers
     /// <inheritdoc cref="IIslandProvider" />
     public class IslandProvider(Func<int, int, int, IIslandViewModel> islandFactory, Func<BridgeOperationTypeEnum, IHashiPoint, IHashiPoint, IHashiBridge> bridgeFactory) : ObservableObject, IIslandProvider
     {
-        internal const string SourceIslandNullErrorMessage = @"Source island cannot be null.";
-        internal const string TargetIslandNullErrorMessage = @"Target island cannot be null.";
-
         /// <inheritdoc />
         public ObservableCollection<ObservableCollection<IIslandViewModel>> Islands { get; } = [];
 
@@ -34,6 +31,8 @@ namespace Hashi.Gui.Providers
         /// <inheritdoc />
         public void InitializeNewSolution(ISolutionProvider solutionProvider)
         {
+            ArgumentNullException.ThrowIfNull(solutionProvider, nameof(solutionProvider));
+
             var hashiField = solutionProvider.HashiField;
             Islands.Clear();
             History.Clear();
@@ -51,11 +50,8 @@ namespace Hashi.Gui.Providers
         /// <inheritdoc />
         public void AddConnection(IIslandViewModel? sourceIsland, IIslandViewModel? targetIsland, bool isHint = false)
         {
-            if (sourceIsland == null)
-                throw new ArgumentNullException(nameof(sourceIsland), SourceIslandNullErrorMessage);
-
-            if (targetIsland == null)
-                throw new ArgumentNullException(nameof(targetIsland), TargetIslandNullErrorMessage);
+            ArgumentNullException.ThrowIfNull(sourceIsland, nameof(sourceIsland));
+            ArgumentNullException.ThrowIfNull(targetIsland, nameof(targetIsland));
 
             if (!IsValidConnectionBetweenSourceAndTarget(sourceIsland, targetIsland)) return;
             if (sourceIsland.MaxBridgesReachedToTarget(targetIsland) is true)
@@ -75,8 +71,7 @@ namespace Hashi.Gui.Providers
         /// <inheritdoc />
         public void RemoveAllConnections(IIslandViewModel? sourceIsland, IIslandViewModel? targetIsland)
         {
-            if (sourceIsland == null)
-                throw new ArgumentNullException(nameof(sourceIsland), SourceIslandNullErrorMessage);
+            ArgumentNullException.ThrowIfNull(sourceIsland, nameof(sourceIsland));
 
             if (targetIsland == null)
             {
@@ -179,24 +174,19 @@ namespace Hashi.Gui.Providers
             if (!History.Any()) return;
 
             var lastEntry = History.Last();
-            var island1 = Islands.SelectMany(x => x).First(x => x.Coordinates.Equals(lastEntry.Point1));
-            var island2 = Islands.SelectMany(x => x).First(x => x.Coordinates.Equals(lastEntry.Point2));
+            var island1 = GetIslandByCoordinates(lastEntry.Point1);
+            var island2 = GetIslandByCoordinates(lastEntry.Point2);
 
             var islands = GetAllIslandsInvolvedInConnection(island1, island2);
 
             foreach (var island in islands.Where(x => x.MaxConnections == 0))
             {
-                var firstConnection = island.AllConnections.First(x => x.Equals(lastEntry.Point2));
-                var secondConnection = island.AllConnections.First(x => x.Equals(lastEntry.Point1));
-
-                island.AllConnections.Remove(firstConnection);
-                island.AllConnections.Remove(secondConnection);
+                RemoveConnectionFromIsland(island, lastEntry.Point1, lastEntry.Point2);
             }
 
-            var firstConnection1 = island1.AllConnections.First(x => x.Equals(lastEntry.Point2));
-            var secondConnection1 = island2.AllConnections.First(x => x.Equals(lastEntry.Point1));
-            island1.AllConnections.Remove(firstConnection1);
-            island2.AllConnections.Remove(secondConnection1);
+            RemoveConnectionFromIsland(island1, lastEntry.Point1, lastEntry.Point2);
+            RemoveConnectionFromIsland(island2, lastEntry.Point2, lastEntry.Point1);
+
             island1.RefreshIslandColor();
             island2.RefreshIslandColor();
             History.Remove(lastEntry);
@@ -436,6 +426,15 @@ namespace Hashi.Gui.Providers
 
                 if (island == target) connectionAction(island, sourceCoordinates);
             }
+        }
+
+        private void RemoveConnectionFromIsland(IIslandViewModel island, IHashiPoint point1, IHashiPoint point2)
+        {
+            var firstConnection = island.AllConnections.FirstOrDefault(x => x.Equals(point1));
+            var secondConnection = island.AllConnections.FirstOrDefault(x => x.Equals(point2));
+
+            if (firstConnection != null) island.AllConnections.Remove(firstConnection);
+            if (secondConnection != null) island.AllConnections.Remove(secondConnection);
         }
     }
 }
