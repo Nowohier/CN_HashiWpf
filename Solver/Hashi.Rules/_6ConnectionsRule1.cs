@@ -4,6 +4,9 @@ using NRules.Fluent.Dsl;
 
 namespace Hashi.Rules;
 
+/// <summary>
+/// If an island with a maximum of six connections has three neighbors then set all connections.
+/// </summary>
 public class _6ConnectionsRule1 : BaseRule
 {
     protected override string RuleMessage => TranslationSource.Instance[nameof(_6ConnectionsRule1)]!;

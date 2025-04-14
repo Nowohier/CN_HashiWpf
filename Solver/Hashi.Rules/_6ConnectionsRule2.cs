@@ -4,6 +4,9 @@ using NRules.Fluent.Dsl;
 
 namespace Hashi.Rules;
 
+/// <summary>
+/// If a 6-connection island has four neighbors and already has a 1-connection to one of these islands, which no longer allows further connections, then every other island must receive at least one connection.
+/// </summary>
 public class _6ConnectionsRule2 : BaseRule
 {
     protected override string RuleMessage => TranslationSource.Instance[nameof(_6ConnectionsRule2)]!;
