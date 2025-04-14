@@ -113,8 +113,8 @@ public abstract class BaseRule : Rule
         if (source == null || target == null || source == target ||
             source.MaxConnectionsReached ||
             target.MaxConnectionsReached ||
-            target.AllConnections.Count(x => source.Coordinates.Equals(x)) == 2 ||
-            source.AllConnections.Count(x => target.Coordinates.Equals(x)) == 2) return false;
+            target.AllConnections.Count(x => DoCoordinatesMatch(source.Coordinates, x)) == 2 ||
+            source.AllConnections.Count(x => DoCoordinatesMatch(target.Coordinates, x)) == 2) return false;
 
         islandProvider.AddConnection(source, target, HashiPointTypeEnum.Hint);
         return true;
@@ -140,7 +140,7 @@ public abstract class BaseRule : Rule
         IEnumerable<IIslandViewModel> allNeighbors)
     {
         return GetConnectableNeighbors(allNeighbors).Where(x =>
-            !x.AllConnections.Any(y => y.X == source.Coordinates.X && y.Y == source.Coordinates.Y)).ToList();
+            !x.AllConnections.Any(connection => DoCoordinatesMatch(source.Coordinates, connection))).ToList();
     }
 
     /// <summary>

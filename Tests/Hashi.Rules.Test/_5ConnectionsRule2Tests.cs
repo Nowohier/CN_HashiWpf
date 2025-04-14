@@ -8,17 +8,16 @@ namespace Hashi.Rules.Test;
 public class _5ConnectionsRule2Tests : TestBase<_5ConnectionsRule2>
 {
     [Test]
-    public void _5ConnectionsRule2_WhenFourNeighborsWithOneConnectedRestrictedNeighbor_ShouldTriggerRule()
+    public void _5ConnectionsRule2_WhenThreeNeighborsWithOneConnectedRestrictedNeighbor_ShouldTriggerRule()
     {
         // arrange
         // neighbors
-        var restrictedNeighbor1 = CreateIslandMock(TestIslandEnum.LeftIsland, 3, true);
-        var restrictedNeighbor2 = CreateIslandMock(TestIslandEnum.DownIsland, 1, true);
-        restrictedNeighbor2.Setup(mock => mock.AllConnections).Returns([CreateHashiPointMock(1, 1).Object]);
+        var restrictedNeighbor1 = CreateIslandMock(TestIslandEnum.DownIsland, 1, true);
+        restrictedNeighbor1.Setup(mock => mock.AllConnections).Returns([CreateHashiPointMock(1, 1).Object]);
         var validNeighbor1 = CreateIslandMock(TestIslandEnum.RightIsland, 3);
         var validNeighbor2 = CreateIslandMock(TestIslandEnum.UpIsland, 3);
 
-        var testIsland = SetupTestIsland(5, restrictedNeighbor1, restrictedNeighbor2, validNeighbor1, validNeighbor2);
+        var testIsland = SetupTestIsland(5, restrictedNeighbor1, validNeighbor1, validNeighbor2);
         testIsland.Setup(mock => mock.AllConnections).Returns([CreateHashiPointMock(1, 1).Object]);
 
         // act
