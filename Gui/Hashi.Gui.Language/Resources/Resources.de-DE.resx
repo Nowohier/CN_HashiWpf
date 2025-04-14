@@ -246,4 +246,7 @@
   <data name="_3ConnectionsRule2" xml:space="preserve">
     <value>Wenn eine Insel mit maximal drei Brücken drei Nachbarn hat und eine davon eine 1er Insel und eine andere eine 2er Insel ist, dann muss eine Verbindung zum verbleibenden Nachbarn hergestellt werden.</value>
   </data>
+  <data name="_9GeneralRule2" xml:space="preserve">
+    <value>Wenn das Herstellen einer Verbindung zu einem beliebigen freien Nachbarn dazu führen würde, dass die maximale Anzahl an Verbindungen für die Urspungsinsel erreicht wird und alle verbundenen Nachbarn die maximale Anzahl an Verbindungen erreichen, prüfen, ob die gesamte Gruppe isoliert ist und es noch einen freien Nachbarn gibt. Wenn ja, wird eine Verbindung zum verbleibenden Nachbarn hergestellt.</value>
+  </data>
 </root>

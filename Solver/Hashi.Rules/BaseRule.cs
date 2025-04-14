@@ -192,6 +192,11 @@ public abstract class BaseRule : Rule
         return result;
     }
 
+    internal IIslandViewModel? SetTestConnectionAndIfGroupIsIsolatedReturnValidNeighbor(IIslandViewModel source, IEnumerable<IIslandViewModel> neighbors)
+    {
+        return null;
+    }
+
     /// <summary>
     ///     Checks if the remaining connections of the island are within the range of the two values.
     /// </summary>
