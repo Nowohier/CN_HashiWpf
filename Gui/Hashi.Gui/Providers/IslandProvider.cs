@@ -16,7 +16,6 @@ namespace Hashi.Gui.Providers
     {
         internal const string SourceIslandNullErrorMessage = @"Source island cannot be null.";
         internal const string TargetIslandNullErrorMessage = @"Target island cannot be null.";
-        private string ruleMessage = string.Empty;
 
         /// <inheritdoc />
         public ObservableCollection<ObservableCollection<IIslandViewModel>> Islands { get; } = [];
@@ -28,25 +27,9 @@ namespace Hashi.Gui.Providers
         public ISolutionProvider? Solution { get; private set; }
 
         /// <inheritdoc />
-        public bool AreAllConnectionsSet => IslandsFlat.All(island => island.MaxConnections == 0 || island.MaxConnectionsReached);
-
-        /// <inheritdoc />
         public IEnumerable<IIslandViewModel> IslandsFlat => Islands.SelectMany(row => row);
 
-        /// <inheritdoc />
-        public bool AreRulesBeingApplied { get; set; }
-
-        /// <inheritdoc />
-        public string RuleMessage
-        {
-            get => ruleMessage;
-            set
-            {
-                if (!SetProperty(ref ruleMessage, value) || ruleMessage != string.Empty) return;
-                WeakReferenceMessenger.Default.Send(new HintPopupClosedMessage());
-                RefreshIslandColors();
-            }
-        }
+        private bool AreAllConnectionsSet => IslandsFlat.All(island => island.MaxConnections == 0 || island.MaxConnectionsReached);
 
         /// <inheritdoc />
         public void InitializeNewSolution(ISolutionProvider solutionProvider)
@@ -110,71 +93,6 @@ namespace Hashi.Gui.Providers
         }
 
         /// <inheritdoc />
-        public IEnumerable<IIslandViewModel> GetAllIslandsInvolvedInConnection(IIslandViewModel source,
-            IIslandViewModel target)
-        {
-            var islandsBetween = new List<IIslandViewModel>();
-            var connectionType = source.GetConnectionType(target);
-
-            switch (connectionType)
-            {
-                case ConnectionTypeEnum.Vertical:
-                    {
-                        var minY = Math.Min(source.Coordinates.Y, target.Coordinates.Y);
-                        var maxY = Math.Max(source.Coordinates.Y, target.Coordinates.Y);
-                        for (var y = minY; y <= maxY; y++)
-                        {
-                            var island = Islands[y][source.Coordinates.X];
-                            islandsBetween.Add(island);
-                        }
-
-                        break;
-                    }
-                case ConnectionTypeEnum.Horizontal:
-                    {
-                        var minX = Math.Min(source.Coordinates.X, target.Coordinates.X);
-                        var maxX = Math.Max(source.Coordinates.X, target.Coordinates.X);
-                        for (var x = minX; x <= maxX; x++)
-                        {
-                            var island = Islands[source.Coordinates.Y][x];
-                            islandsBetween.Add(island);
-                        }
-
-                        break;
-                    }
-                case ConnectionTypeEnum.Diagonal:
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            return islandsBetween;
-        }
-
-        /// <inheritdoc />
-        public bool IsValidConnectionBetweenSourceAndTarget(IIslandViewModel? source, IIslandViewModel? target)
-        {
-            // Check if the source and/or target islands are null -> invalid
-            if (source == null || target == null) return false;
-
-            // Check if the source and target coordinates are the same -> invalid
-            if (source == target) return false;
-
-            // Check if the source and target coordinates are not on the same axis -> invalid
-            if (source.GetConnectionType(target) == ConnectionTypeEnum.Diagonal) return false;
-
-            // Check if an island is in between the source and target coordinates -> invalid
-            if (IsIslandInBetweenSourceAndTarget(source, target)) return false;
-
-            // Check if the source or target island has reached its maximum connections -> invalid
-            if (source.MaxConnectionsReached || target.MaxConnectionsReached) return false;
-
-            // Check if potential connection would collide with existing connections
-            if (WouldConnectionCollide(source, target)) return false;
-
-            return true;
-        }
-
-        /// <inheritdoc />
         public void HighlightPathToTargetIsland(IIslandViewModel source, IIslandViewModel target)
         {
             var islands = GetAllIslandsInvolvedInConnection(source, target);
@@ -228,15 +146,6 @@ namespace Hashi.Gui.Providers
         }
 
         /// <inheritdoc />
-        public void ResetAllHintConnections()
-        {
-            foreach (var connection in IslandsFlat.SelectMany(x => x.AllConnections))
-            {
-                connection.IsHint = false;
-            }
-        }
-
-        /// <inheritdoc />
         public void RefreshIslandColors()
         {
             foreach (var island in IslandsFlat)
@@ -262,12 +171,6 @@ namespace Hashi.Gui.Providers
                 island.AllConnections.Clear();
                 island.NotifyBridgeConnections();
             }
-        }
-
-        /// <inheritdoc />
-        public IIslandViewModel GetIslandByCoordinates(IHashiPoint coordinates)
-        {
-            return Islands[coordinates.Y][coordinates.X];
         }
 
         /// <inheritdoc />
@@ -336,6 +239,74 @@ namespace Hashi.Gui.Providers
                 neighbors.Add(right);
 
             return neighbors;
+        }
+
+        private IEnumerable<IIslandViewModel> GetAllIslandsInvolvedInConnection(IIslandViewModel source,
+            IIslandViewModel target)
+        {
+            var islandsBetween = new List<IIslandViewModel>();
+            var connectionType = source.GetConnectionType(target);
+
+            switch (connectionType)
+            {
+                case ConnectionTypeEnum.Vertical:
+                    {
+                        var minY = Math.Min(source.Coordinates.Y, target.Coordinates.Y);
+                        var maxY = Math.Max(source.Coordinates.Y, target.Coordinates.Y);
+                        for (var y = minY; y <= maxY; y++)
+                        {
+                            var island = Islands[y][source.Coordinates.X];
+                            islandsBetween.Add(island);
+                        }
+
+                        break;
+                    }
+                case ConnectionTypeEnum.Horizontal:
+                    {
+                        var minX = Math.Min(source.Coordinates.X, target.Coordinates.X);
+                        var maxX = Math.Max(source.Coordinates.X, target.Coordinates.X);
+                        for (var x = minX; x <= maxX; x++)
+                        {
+                            var island = Islands[source.Coordinates.Y][x];
+                            islandsBetween.Add(island);
+                        }
+
+                        break;
+                    }
+                case ConnectionTypeEnum.Diagonal:
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            return islandsBetween;
+        }
+
+        private bool IsValidConnectionBetweenSourceAndTarget(IIslandViewModel? source, IIslandViewModel? target)
+        {
+            // Check if the source and/or target islands are null -> invalid
+            if (source == null || target == null) return false;
+
+            // Check if the source and target coordinates are the same -> invalid
+            if (source == target) return false;
+
+            // Check if the source and target coordinates are not on the same axis -> invalid
+            if (source.GetConnectionType(target) == ConnectionTypeEnum.Diagonal) return false;
+
+            // Check if an island is in between the source and target coordinates -> invalid
+            if (IsIslandInBetweenSourceAndTarget(source, target)) return false;
+
+            // Check if the source or target island has reached its maximum connections -> invalid
+            if (source.MaxConnectionsReached || target.MaxConnectionsReached) return false;
+
+            // Check if potential connection would collide with existing connections
+            if (WouldConnectionCollide(source, target)) return false;
+
+            return true;
+        }
+
+        private IIslandViewModel GetIslandByCoordinates(IHashiPoint coordinates)
+        {
+            return Islands[coordinates.Y][coordinates.X];
         }
 
         private bool IsIslandInBetweenSourceAndTarget(IIslandViewModel source, IIslandViewModel target)

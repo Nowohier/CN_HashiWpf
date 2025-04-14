@@ -29,34 +29,15 @@ namespace Hashi.Gui.Interfaces.Providers
         ISolutionProvider? Solution { get; }
 
         /// <summary>
-        /// Determines if all connections are set.
-        /// </summary>
-        bool AreAllConnectionsSet { get; }
-
-        /// <summary>
         ///     Rebuilds the island collection with a new solution container.
         /// </summary>
         /// <param name="solutionProvider"></param>
         void InitializeNewSolution(ISolutionProvider solutionProvider);
 
         /// <summary>
-        /// Gets all islands involved in a connection between two islands.
-        /// </summary>
-        /// <param name="source">The source island.</param>
-        /// <param name="target">The target island.</param>
-        /// <returns>a list of islands involved in the connection between source and target. Source and target are included.</returns>
-        IEnumerable<IIslandViewModel> GetAllIslandsInvolvedInConnection(IIslandViewModel source,
-            IIslandViewModel target);
-
-        /// <summary>
         /// Removes all island highlights.
         /// </summary>
         void RemoveAllHighlights();
-
-        /// <summary>
-        /// Resets all hint connections.
-        /// </summary>
-        void ResetAllHintConnections();
 
         /// <summary>
         ///  Refreshes the island colors.
@@ -69,26 +50,11 @@ namespace Hashi.Gui.Interfaces.Providers
         void ClearTemporaryDropTargets();
 
         /// <summary>
-        ///    Gets the island by coordinates.
-        /// </summary>
-        /// <param name="coordinates">The coordinates.</param>
-        /// <returns>an island.</returns>
-        IIslandViewModel GetIslandByCoordinates(IHashiPoint coordinates);
-
-        /// <summary>
         ///     Highlights the path to the target island.
         /// </summary>
         /// <param name="source">The source island.</param>
         /// <param name="target">The target island.</param>
         void HighlightPathToTargetIsland(IIslandViewModel source, IIslandViewModel target);
-
-        /// <summary>
-        ///     Checks if the connection between the source and target islands is valid.
-        /// </summary>
-        /// <param name="source">The source island.</param>
-        /// <param name="target">The target island.</param>
-        /// <returns></returns>
-        bool IsValidConnectionBetweenSourceAndTarget(IIslandViewModel? source, IIslandViewModel? target);
 
         /// <summary>
         /// Undo the last connection made in the game.
@@ -129,15 +95,5 @@ namespace Hashi.Gui.Interfaces.Providers
         /// <param name="sourceIsland">The source island.</param>
         /// <param name="targetIsland">The target island.</param>
         void RemoveAllConnections(IIslandViewModel? sourceIsland, IIslandViewModel? targetIsland);
-
-        /// <summary>
-        ///     Gets the rule message.
-        /// </summary>
-        string RuleMessage { get; set; }
-
-        /// <summary>
-        ///     Determines if the rules are being applied.
-        /// </summary>
-        bool AreRulesBeingApplied { get; set; }
     }
 }

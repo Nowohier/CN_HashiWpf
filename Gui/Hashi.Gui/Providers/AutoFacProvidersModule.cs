@@ -12,5 +12,7 @@ public class AutoFacProvidersModule : Module
         builder.RegisterType<HashiSettingsProvider>().As<IHashiSettingsProvider>().SingleInstance();
         builder.RegisterType<TimerProvider>().As<ITimerProvider>().SingleInstance();
         builder.RegisterType<IslandProvider>().As<IIslandProvider>().SingleInstance();
+        builder.RegisterType<HintProvider>().As<IHintProvider>().SingleInstance();
+        builder.RegisterType<RuleInfoProvider>().As<IRuleInfoProvider>().SingleInstance();
     }
 }

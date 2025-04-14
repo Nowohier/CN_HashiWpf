@@ -5,13 +5,8 @@ namespace Hashi.Rules.Test;
 
 [TestFixture]
 [NonParallelizable]
-public class _2ConnectionsRule1Tests : TestBase
+public class _2ConnectionsRule1Tests : TestBase<_2ConnectionsRule1>
 {
-    public _2ConnectionsRule1Tests()
-    {
-        Setup.Rule<_2ConnectionsRule1>();
-    }
-
     [Test]
     public void _2ConnectionsRule1_WhenTwoValidNeighbors_ShouldTriggerRule()
     {

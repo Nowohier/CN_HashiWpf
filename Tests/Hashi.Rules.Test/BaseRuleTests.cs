@@ -11,6 +11,7 @@ namespace Hashi.Rules.Test;
 public class BaseRuleTests
 {
     private Mock<IIslandProvider> islandProviderMock;
+    private Mock<IRuleInfoProvider> ruleInfoProviderMock;
     private Mock<IIslandViewModel> sourceIslandMock;
     private Mock<IIslandViewModel> targetIslandMock;
     private TestableBaseRule testableBaseRule;
@@ -18,10 +19,11 @@ public class BaseRuleTests
     [SetUp]
     public void SetUp()
     {
+        ruleInfoProviderMock = new Mock<IRuleInfoProvider>();
         islandProviderMock = new Mock<IIslandProvider>();
         sourceIslandMock = new Mock<IIslandViewModel>();
         targetIslandMock = new Mock<IIslandViewModel>();
-        testableBaseRule = new TestableBaseRule();
+        testableBaseRule = new TestableBaseRule(ruleInfoProviderMock.Object, islandProviderMock.Object);
     }
 
     [TestCase(false, true, false)] // Rules not being applied
@@ -31,13 +33,13 @@ public class BaseRuleTests
         bool shouldAdd)
     {
         // arrange
-        islandProviderMock.Setup(cm => cm.AreRulesBeingApplied).Returns(areRulesApplied);
+        ruleInfoProviderMock.Setup(cm => cm.AreRulesBeingApplied).Returns(areRulesApplied);
         sourceIslandMock.Setup(si => si.MaxConnectionsReached).Returns(maxConnectionsReached);
         sourceIslandMock.Setup(x => x.AllConnections).Returns([]);
         targetIslandMock.Setup(x => x.AllConnections).Returns([]);
 
         // act
-        testableBaseRule.AddConnection(sourceIslandMock.Object, targetIslandMock.Object, islandProviderMock.Object);
+        testableBaseRule.AddConnection(sourceIslandMock.Object, targetIslandMock.Object);
 
         // assert
         islandProviderMock.Verify(
@@ -49,15 +51,14 @@ public class BaseRuleTests
     public void AddConnection_WhenValid_ShouldAddConnection()
     {
         // arrange
-        islandProviderMock.Setup(cm => cm.AreRulesBeingApplied).Returns(true);
+        ruleInfoProviderMock.Setup(cm => cm.AreRulesBeingApplied).Returns(true);
         sourceIslandMock.Setup(si => si.MaxConnectionsReached).Returns(false);
         targetIslandMock.Setup(ti => ti.MaxConnectionsReached).Returns(false);
         sourceIslandMock.Setup(si => si.AllConnections).Returns([]);
         targetIslandMock.Setup(ti => ti.AllConnections).Returns([]);
 
         // act
-        testableBaseRule.AddConnection(sourceIslandMock.Object, targetIslandMock.Object,
-            islandProviderMock.Object);
+        testableBaseRule.AddConnection(sourceIslandMock.Object, targetIslandMock.Object);
 
         // assert
         islandProviderMock.Verify(cm => cm.AddConnection(sourceIslandMock.Object, targetIslandMock.Object, true),
@@ -69,14 +70,14 @@ public class BaseRuleTests
     {
         // arrange
         var targetIslands = new List<IIslandViewModel?> { targetIslandMock.Object };
-        islandProviderMock.Setup(cm => cm.AreRulesBeingApplied).Returns(true);
+        ruleInfoProviderMock.Setup(cm => cm.AreRulesBeingApplied).Returns(true);
         sourceIslandMock.Setup(si => si.MaxConnectionsReached).Returns(false);
         targetIslandMock.Setup(ti => ti.MaxConnectionsReached).Returns(false);
         sourceIslandMock.Setup(si => si.AllConnections).Returns([]);
         targetIslandMock.Setup(ti => ti.AllConnections).Returns([]);
 
         // act
-        testableBaseRule.AddConnections(sourceIslandMock.Object, targetIslands!, islandProviderMock.Object);
+        testableBaseRule.AddConnections(sourceIslandMock.Object, targetIslands!);
 
         // assert
         islandProviderMock.Verify(cm => cm.AddConnection(sourceIslandMock.Object, targetIslandMock.Object, true),
@@ -88,15 +89,14 @@ public class BaseRuleTests
     {
         // arrange
         var targetIslands = new List<IIslandViewModel?> { targetIslandMock.Object };
-        islandProviderMock.Setup(cm => cm.AreRulesBeingApplied).Returns(true);
+        ruleInfoProviderMock.Setup(cm => cm.AreRulesBeingApplied).Returns(true);
         sourceIslandMock.Setup(si => si.MaxConnectionsReached).Returns(false);
         targetIslandMock.Setup(ti => ti.MaxConnectionsReached).Returns(false);
         sourceIslandMock.Setup(si => si.AllConnections).Returns([]);
         targetIslandMock.Setup(ti => ti.AllConnections).Returns([]);
 
         // act
-        testableBaseRule.AddMultipleConnections(sourceIslandMock.Object, targetIslands!,
-            islandProviderMock.Object);
+        testableBaseRule.AddMultipleConnections(sourceIslandMock.Object, targetIslands!);
 
         // assert
         islandProviderMock.Verify(cm => cm.AddConnection(sourceIslandMock.Object, targetIslandMock.Object, true),
@@ -107,15 +107,14 @@ public class BaseRuleTests
     public void AddMissingConnectionsToOneTarget_WhenValid_ShouldAddMissingConnections()
     {
         // arrange
-        islandProviderMock.Setup(cm => cm.AreRulesBeingApplied).Returns(true);
+        ruleInfoProviderMock.Setup(cm => cm.AreRulesBeingApplied).Returns(true);
         sourceIslandMock.Setup(si => si.MaxConnectionsReached).Returns(false);
         targetIslandMock.Setup(ti => ti.MaxConnectionsReached).Returns(false);
         sourceIslandMock.Setup(si => si.AllConnections).Returns([]);
         targetIslandMock.Setup(ti => ti.AllConnections).Returns([]);
 
         // act
-        testableBaseRule.AddMissingConnectionsToOneTarget(sourceIslandMock.Object, targetIslandMock.Object, 2,
-            islandProviderMock.Object);
+        testableBaseRule.AddMissingConnectionsToOneTarget(sourceIslandMock.Object, targetIslandMock.Object, 2);
 
         // assert
         islandProviderMock.Verify(cm => cm.AddConnection(sourceIslandMock.Object, targetIslandMock.Object, true),
@@ -399,8 +398,7 @@ public class BaseRuleTests
         targetIsland.Setup(x => x.MaxConnectionsReached).Returns(true);
 
         // act
-        var result = testableBaseRule.ExecuteAddConnection(sourceIsland.Object, targetIsland.Object,
-            islandProviderMock.Object);
+        var result = testableBaseRule.ExecuteAddConnection(sourceIsland.Object, targetIsland.Object);
 
         // assert
         result.Should().BeFalse();
@@ -427,8 +425,7 @@ public class BaseRuleTests
         ]);
 
         // act
-        var result = testableBaseRule.ExecuteAddConnection(sourceIslandMock.Object, targetIslandMock.Object,
-            islandProviderMock.Object);
+        var result = testableBaseRule.ExecuteAddConnection(sourceIslandMock.Object, targetIslandMock.Object);
 
         // assert
         result.Should().BeFalse();
@@ -449,8 +446,7 @@ public class BaseRuleTests
         targetIslandMock.Setup(x => x.AllConnections).Returns([]);
 
         // act
-        var result = testableBaseRule.ExecuteAddConnection(sourceIslandMock.Object, targetIslandMock.Object,
-            islandProviderMock.Object);
+        var result = testableBaseRule.ExecuteAddConnection(sourceIslandMock.Object, targetIslandMock.Object);
 
         // assert
         result.Should().BeTrue();
@@ -469,8 +465,7 @@ public class BaseRuleTests
         targetIslandMock.Setup(x => x.AllConnections).Returns([sourceCoordinatesMock.Object]);
 
         // act
-        var result = testableBaseRule.ExecuteAddConnection(sourceIslandMock.Object, targetIslandMock.Object,
-            islandProviderMock.Object);
+        var result = testableBaseRule.ExecuteAddConnection(sourceIslandMock.Object, targetIslandMock.Object);
 
         // assert
         result.Should().BeTrue();
@@ -496,8 +491,7 @@ public class BaseRuleTests
         targetIslandMock.Setup(x => x.AllConnections).Returns(connections);
 
         // act
-        var result = testableBaseRule.ExecuteAddConnection(sourceIslandMock.Object, targetIslandMock.Object,
-            islandProviderMock.Object);
+        var result = testableBaseRule.ExecuteAddConnection(sourceIslandMock.Object, targetIslandMock.Object);
 
         // assert
         result.Should().Be(expectedResult);
@@ -507,10 +501,10 @@ public class BaseRuleTests
     public void EnsureRulesAreBeingApplied_ShouldReturnFalse_WhenRulesAreNotBeingApplied()
     {
         // arrange
-        islandProviderMock.Setup(cm => cm.AreRulesBeingApplied).Returns(false);
+        ruleInfoProviderMock.Setup(cm => cm.AreRulesBeingApplied).Returns(false);
 
         // act
-        var result = testableBaseRule.EnsureRulesAreBeingApplied(islandProviderMock.Object);
+        var result = testableBaseRule.EnsureRulesAreBeingApplied();
 
         // assert
         result.Should().BeFalse();
@@ -520,14 +514,14 @@ public class BaseRuleTests
     public void EnsureRulesAreBeingApplied_ShouldSetRuleMessage_WhenRulesAreBeingApplied()
     {
         // arrange
-        islandProviderMock.Setup(cm => cm.AreRulesBeingApplied).Returns(true);
+        ruleInfoProviderMock.Setup(cm => cm.AreRulesBeingApplied).Returns(true);
 
         // act
-        var result = testableBaseRule.EnsureRulesAreBeingApplied(islandProviderMock.Object);
+        var result = testableBaseRule.EnsureRulesAreBeingApplied();
 
         // assert
         result.Should().BeTrue();
-        islandProviderMock.VerifySet(cm => cm.RuleMessage = "Test Rule Message", Times.Once);
+        ruleInfoProviderMock.VerifySet(cm => cm.RuleMessage = "Test Rule Message", Times.Once);
     }
 
     [Test]
@@ -562,26 +556,18 @@ public class BaseRuleTests
     public void AddConnection_ShouldNotThrow_WhenSourceOrTargetIsNull()
     {
         // act & assert
-        testableBaseRule.Invoking(x => x.AddConnection(null!, targetIslandMock.Object, islandProviderMock.Object))
+        testableBaseRule.Invoking(x => x.AddConnection(null!, targetIslandMock.Object))
             .Should().NotThrow();
 
-        testableBaseRule.Invoking(x => x.AddConnection(sourceIslandMock.Object, null!, islandProviderMock.Object))
+        testableBaseRule.Invoking(x => x.AddConnection(sourceIslandMock.Object, null!))
             .Should().NotThrow();
-    }
-
-    [Test]
-    public void AddConnection_ShouldNotThrow_WhenConnectionManagerIsNull()
-    {
-        // act & assert
-        testableBaseRule.Invoking(x => x.AddConnection(sourceIslandMock.Object, targetIslandMock.Object, null!))
-            .Should().Throw<NullReferenceException>();
     }
 
     [Test]
     public void AddConnection_ShouldNotAddConnection_WhenSourceAndTargetAreSame()
     {
         // arrange
-        islandProviderMock.Setup(cm => cm.AreRulesBeingApplied).Returns(true);
+        ruleInfoProviderMock.Setup(cm => cm.AreRulesBeingApplied).Returns(true);
 
         sourceIslandMock.Setup(x => x.AllConnections).Returns([]);
         sourceIslandMock.Setup(x => x.MaxConnectionsReached).Returns(false);
@@ -589,7 +575,7 @@ public class BaseRuleTests
         targetIslandMock.Setup(x => x.AllConnections).Returns([]);
 
         // act
-        testableBaseRule.AddConnection(sourceIslandMock.Object, sourceIslandMock.Object, islandProviderMock.Object);
+        testableBaseRule.AddConnection(sourceIslandMock.Object, sourceIslandMock.Object);
 
         // assert
         islandProviderMock.Verify(
@@ -601,11 +587,11 @@ public class BaseRuleTests
     {
         // arrange
         var targetIslands = new List<IIslandViewModel>();
-        islandProviderMock.Setup(cm => cm.AreRulesBeingApplied).Returns(true);
+        ruleInfoProviderMock.Setup(cm => cm.AreRulesBeingApplied).Returns(true);
 
         // act & assert
         testableBaseRule.Invoking(x =>
-                x.AddConnections(sourceIslandMock.Object, targetIslands, islandProviderMock.Object))
+                x.AddConnections(sourceIslandMock.Object, targetIslands))
             .Should().NotThrow();
     }
 
@@ -614,7 +600,7 @@ public class BaseRuleTests
     {
         // arrange
         var targetIslands = new List<IIslandViewModel> { targetIslandMock.Object, targetIslandMock.Object };
-        islandProviderMock.Setup(cm => cm.AreRulesBeingApplied).Returns(true);
+        ruleInfoProviderMock.Setup(cm => cm.AreRulesBeingApplied).Returns(true);
         var hashPointMock = new Mock<IHashiPoint>(MockBehavior.Strict);
         hashPointMock.Setup(mock => mock.X).Returns(1);
         hashPointMock.Setup(mock => mock.Y).Returns(1);
@@ -626,7 +612,7 @@ public class BaseRuleTests
         targetIslandMock.Setup(x => x.AllConnections).Returns([]);
 
         // act
-        testableBaseRule.AddConnections(sourceIslandMock.Object, targetIslands, islandProviderMock.Object);
+        testableBaseRule.AddConnections(sourceIslandMock.Object, targetIslands);
 
         // assert
         islandProviderMock.Verify(cm => cm.AddConnection(sourceIslandMock.Object, targetIslandMock.Object, true),
@@ -638,11 +624,11 @@ public class BaseRuleTests
     {
         // arrange
         var targetIslands = new List<IIslandViewModel?>();
-        islandProviderMock.Setup(cm => cm.AreRulesBeingApplied).Returns(true);
+        ruleInfoProviderMock.Setup(cm => cm.AreRulesBeingApplied).Returns(true);
 
         // act & assert
         testableBaseRule.Invoking(x =>
-                x.AddMultipleConnections(sourceIslandMock.Object, targetIslands!, islandProviderMock.Object))
+                x.AddMultipleConnections(sourceIslandMock.Object, targetIslands!))
             .Should().NotThrow();
     }
 
@@ -651,11 +637,11 @@ public class BaseRuleTests
     {
         // arrange
         var targetIslands = new List<IIslandViewModel?> { targetIslandMock.Object };
-        islandProviderMock.Setup(cm => cm.AreRulesBeingApplied).Returns(true);
+        ruleInfoProviderMock.Setup(cm => cm.AreRulesBeingApplied).Returns(true);
         sourceIslandMock.Setup(x => x.MaxConnectionsReached).Returns(true);
 
         // act
-        testableBaseRule.AddMultipleConnections(sourceIslandMock.Object, targetIslands!, islandProviderMock.Object);
+        testableBaseRule.AddMultipleConnections(sourceIslandMock.Object, targetIslands!);
 
         // assert
         islandProviderMock.Verify(
@@ -667,8 +653,7 @@ public class BaseRuleTests
     {
         // act & assert
         testableBaseRule.Invoking(x =>
-                x.AddMissingConnectionsToOneTarget(sourceIslandMock.Object, targetIslandMock.Object, 0,
-                    islandProviderMock.Object))
+                x.AddMissingConnectionsToOneTarget(sourceIslandMock.Object, targetIslandMock.Object, 0))
             .Should().NotThrow();
     }
 
@@ -676,12 +661,11 @@ public class BaseRuleTests
     public void AddMissingConnectionsToOneTarget_ShouldNotAdd_WhenTargetHasMaxConnections()
     {
         // arrange
-        islandProviderMock.Setup(cm => cm.AreRulesBeingApplied).Returns(true);
+        ruleInfoProviderMock.Setup(cm => cm.AreRulesBeingApplied).Returns(true);
         targetIslandMock.Setup(x => x.MaxConnectionsReached).Returns(true);
 
         // act
-        testableBaseRule.AddMissingConnectionsToOneTarget(sourceIslandMock.Object, targetIslandMock.Object, 2,
-            islandProviderMock.Object);
+        testableBaseRule.AddMissingConnectionsToOneTarget(sourceIslandMock.Object, targetIslandMock.Object, 2);
 
         // assert
         islandProviderMock.Verify(
@@ -847,11 +831,11 @@ public class BaseRuleTests
     {
         // act & assert
         testableBaseRule.Invoking(x =>
-                x.ExecuteAddConnection(null!, targetIslandMock.Object, islandProviderMock.Object))
+                x.ExecuteAddConnection(null!, targetIslandMock.Object))
             .Should().NotThrow();
 
         testableBaseRule.Invoking(x =>
-                x.ExecuteAddConnection(sourceIslandMock.Object, null!, islandProviderMock.Object))
+                x.ExecuteAddConnection(sourceIslandMock.Object, null!))
             .Should().NotThrow();
     }
 
@@ -864,23 +848,15 @@ public class BaseRuleTests
     }
 
     [Test]
-    public void EnsureRulesAreBeingApplied_ShouldNotThrow_WhenConnectionManagerIsNull()
-    {
-        // act & assert
-        testableBaseRule.Invoking(x => x.EnsureRulesAreBeingApplied(null!))
-            .Should().Throw<NullReferenceException>();
-    }
-
-    [Test]
     public void AddMultipleConnections_ShouldSkipTarget_WhenTargetHasMaxConnections()
     {
         // arrange
         var targetIslands = new List<IIslandViewModel> { targetIslandMock.Object };
-        islandProviderMock.Setup(cm => cm.AreRulesBeingApplied).Returns(true);
+        ruleInfoProviderMock.Setup(cm => cm.AreRulesBeingApplied).Returns(true);
         targetIslandMock.Setup(x => x.MaxConnectionsReached).Returns(true);
 
         // act
-        testableBaseRule.AddMultipleConnections(sourceIslandMock.Object, targetIslands, islandProviderMock.Object);
+        testableBaseRule.AddMultipleConnections(sourceIslandMock.Object, targetIslands);
 
         // assert
         islandProviderMock.Verify(
@@ -903,11 +879,11 @@ public class BaseRuleTests
 
         var targetIslands = new List<IIslandViewModel> { targetIslandMock1.Object, targetIslandMock2.Object };
 
-        islandProviderMock.Setup(x => x.AreRulesBeingApplied).Returns(true);
+        ruleInfoProviderMock.Setup(x => x.AreRulesBeingApplied).Returns(true);
         sourceIslandMock.Setup(x => x.AllConnections).Returns([]);
 
         // act
-        testableBaseRule.AddMultipleConnections(sourceIslandMock.Object, targetIslands, islandProviderMock.Object);
+        testableBaseRule.AddMultipleConnections(sourceIslandMock.Object, targetIslands);
 
         // assert
         islandProviderMock.Verify(cm => cm.AddConnection(sourceIslandMock.Object, targetIslandMock1.Object, true),
@@ -921,7 +897,7 @@ public class BaseRuleTests
 ///     A concrete implementation of BaseRule for testing purposes.
 /// </summary>
 [ExcludeFromCodeCoverage]
-public class TestableBaseRule : BaseRule
+public class TestableBaseRule(IRuleInfoProvider ruleInfoProvider, IIslandProvider islandProvider) : BaseRule(ruleInfoProvider, islandProvider)
 {
     /// <summary>
     ///     Provides a test-specific rule message.
@@ -938,9 +914,9 @@ public class TestableBaseRule : BaseRule
     ///     Overrides the EnsureRulesAreBeingApplied method for testing.
     /// </summary>
     [ExcludeFromCodeCoverage]
-    internal override bool EnsureRulesAreBeingApplied(IIslandProvider islandProvider)
+    internal override bool EnsureRulesAreBeingApplied()
     {
-        return EnsureRulesAreBeingAppliedOverride && base.EnsureRulesAreBeingApplied(islandProvider);
+        return EnsureRulesAreBeingAppliedOverride && base.EnsureRulesAreBeingApplied();
     }
 
     [ExcludeFromCodeCoverage]
