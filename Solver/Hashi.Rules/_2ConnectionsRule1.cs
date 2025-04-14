@@ -1,14 +1,13 @@
 ﻿using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Translation;
-using NRules.Fluent.Dsl;
 
 namespace Hashi.Rules;
 
 /// <summary>
 /// If an island with a maximum of two bridges has two neighbor islands with also a maximum of two bridges, then a connection to each neighbor must be set.
 /// </summary>
-public class _2ConnectionsRule1 : BaseRule
+public class _2ConnectionsRule1(IRuleInfoProvider ruleInfoProvider, IIslandProvider islandProvider) : BaseRule(ruleInfoProvider, islandProvider)
 {
     protected override string RuleMessage => TranslationSource.Instance[nameof(_2ConnectionsRule1)]!;
 
@@ -19,11 +18,9 @@ public class _2ConnectionsRule1 : BaseRule
         List<IIslandViewModel> allNeighbors = null!;
         List<IIslandViewModel> validNeighbors = null!;
         List<IIslandViewModel> invalidNeighbors = null!;
-        IIslandProvider islandProvider = null!;
 
         When()
             .Match(() => island, x => x.AllConnections.Count == 0 && x.MaxConnections == 2)
-            .Query(() => islandProvider, q => q.Match<IIslandProvider>())
             .Let(() => allNeighbors, () => island.GetAllVisibleNeighbors())
             .Let(() => invalidNeighbors,
                 () => allNeighbors.Where(x => !x.MaxConnectionsReached && x.MaxConnections != 2).ToList())
@@ -32,6 +29,6 @@ public class _2ConnectionsRule1 : BaseRule
             .Having(() => invalidNeighbors.Count == 0 && validNeighbors.Count == 2);
 
         Then()
-            .Do(ctx => AddConnections(island, validNeighbors, islandProvider));
+            .Do(ctx => AddConnections(island, validNeighbors));
     }
 }

@@ -4,13 +4,8 @@ using Times = NRules.Testing.Times;
 namespace Hashi.Rules.Test;
 
 [TestFixture]
-public class _2ConnectionsRule4Tests : TestBase
+public class _2ConnectionsRule4Tests : TestBase<_2ConnectionsRule4>
 {
-    public _2ConnectionsRule4Tests()
-    {
-        Setup.Rule<_2ConnectionsRule4>();
-    }
-
     [Test]
     [TestCase(3, 1, true)]
     [TestCase(3, 2, false)]

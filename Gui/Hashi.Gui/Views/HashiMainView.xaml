@@ -37,8 +37,8 @@
             <StackPanel Orientation="Horizontal"
                         Visibility="{Binding Source={x:Static helpers:DebugHelper.IsDebugBuild}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
                 <TextBlock Text="Rules:" VerticalAlignment="Center" />
-                <ComboBox Height="26" BorderThickness="1" ItemsSource="{Binding Rules}"
-                          SelectedItem="{Binding SelectedRule}" DisplayMemberPath="Name" Margin="5,0,10,0" />
+                <ComboBox Height="26" BorderThickness="1" ItemsSource="{Binding  HintProvider.Rules}"
+                          SelectedItem="{Binding  HintProvider.SelectedRule}" DisplayMemberPath="Name" Margin="5,0,10,0" />
             </StackPanel>
             <mah:DropDownButton Padding="5,0,5,0" Margin="10,0,0,0" DockPanel.Dock="Right"
                                 ToolTip="{ns:Loc Language}" ItemsSource="{Binding SettingsProvider.Settings.Languages}"
@@ -186,9 +186,9 @@
                       Background="{StaticResource GreenIslandBrush}">
                 <TextBlock FontSize="16" TextWrapping="WrapWithOverflow"
                            MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=GroupBox}, Converter={StaticResource MaxMessageTextWidthConverter}}"
-                           Visibility="{Binding IslandProvider.RuleMessage, Converter={StaticResource EmptyStringToVisibilityConverter}}">
+                           Visibility="{Binding HintProvider.RuleInfoProvider.RuleMessage, Converter={StaticResource EmptyStringToVisibilityConverter}}">
                     <Run FontWeight="Bold" Text="{ns:Loc HintText}" />
-                    <Run Text="{Binding IslandProvider.RuleMessage, Mode=OneWay}" />
+                    <Run Text="{Binding HintProvider.RuleInfoProvider.RuleMessage, Mode=OneWay}" />
                 </TextBlock>
             </GroupBox>
         </Grid>

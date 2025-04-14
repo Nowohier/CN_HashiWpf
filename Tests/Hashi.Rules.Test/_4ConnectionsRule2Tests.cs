@@ -4,13 +4,8 @@ using Times = NRules.Testing.Times;
 namespace Hashi.Rules.Test;
 
 [TestFixture]
-public class _4ConnectionsRule2Tests : TestBase
+public class _4ConnectionsRule2Tests : TestBase<_4ConnectionsRule2>
 {
-    public _4ConnectionsRule2Tests()
-    {
-        Setup.Rule<_4ConnectionsRule2>();
-    }
-
     [Test]
     public void _4ConnectionsRule2_WhenThreeNeighborsWithOneRestrictedNeighbor_ShouldTriggerRule()
     {
