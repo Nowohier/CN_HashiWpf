@@ -4,13 +4,8 @@ using Times = NRules.Testing.Times;
 namespace Hashi.Rules.Test;
 
 [TestFixture]
-public class _9GeneralRule1Tests : TestBase
+public class _9GeneralRule1Tests : TestBase<_9GeneralRule1>
 {
-    public _9GeneralRule1Tests()
-    {
-        Setup.Rule<_9GeneralRule1>();
-    }
-
     [Test]
     public void _9GeneralRule1_WhenOneValidNeighbor_ShouldTriggerRule()
     {

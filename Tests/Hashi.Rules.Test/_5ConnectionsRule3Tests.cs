@@ -1,18 +1,13 @@
-using System.Collections.ObjectModel;
 using Hashi.Gui.Interfaces.Models;
 using Hashi.Rules.Test.Helpers;
+using System.Collections.ObjectModel;
 using Times = NRules.Testing.Times;
 
 namespace Hashi.Rules.Test;
 
 [TestFixture]
-public class _5ConnectionsRule3Tests : TestBase
+public class _5ConnectionsRule3Tests : TestBase<_5ConnectionsRule3>
 {
-    public _5ConnectionsRule3Tests()
-    {
-        Setup.Rule<_5ConnectionsRule3>();
-    }
-
     [Test]
     [TestCase(2, 1, true)]
     [TestCase(1, 1, true)]

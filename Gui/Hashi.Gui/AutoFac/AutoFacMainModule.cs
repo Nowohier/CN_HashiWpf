@@ -8,6 +8,7 @@ using Hashi.Gui.ViewModels;
 using Hashi.Gui.Views;
 using Hashi.Gui.Wrappers;
 using Hashi.LinearSolver;
+using Hashi.Rules;
 
 namespace Hashi.Gui.AutoFac;
 
@@ -28,5 +29,6 @@ public class AutoFacMainModule : Module
         builder.RegisterModule<AutoFacLinearSolverModule>();
         builder.RegisterModule<AutoFacHelpersModule>();
         builder.RegisterModule<AutoFacProvidersModule>();
+        builder.RegisterModule<AutoFacRulesModule>();
     }
 }

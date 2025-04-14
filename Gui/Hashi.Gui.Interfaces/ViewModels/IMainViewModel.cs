@@ -19,6 +19,11 @@ public interface IMainViewModel
     IIslandProvider IslandProvider { get; }
 
     /// <summary>
+    ///    The hint provider for the Hashi game.
+    /// </summary>
+    IHintProvider HintProvider { get; }
+
+    /// <summary>
     ///     The settings provider for the Hashi game.
     /// </summary>
     IHashiSettingsProvider SettingsProvider { get; }

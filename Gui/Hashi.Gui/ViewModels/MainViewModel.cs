@@ -12,10 +12,6 @@ using Hashi.Gui.Interfaces.Wrappers;
 using Hashi.Gui.Messages;
 using Hashi.Gui.Messaging;
 using Hashi.Gui.Translation;
-using Hashi.Rules;
-using NRules;
-using NRules.Diagnostics;
-using NRules.Fluent;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Windows.Input;
@@ -38,8 +34,7 @@ public class MainViewModel : AsyncObservableRecipient,
     private bool isCheating;
     private bool isGeneratingHashiPuzzle;
     private DifficultyEnum selectedDifficulty = DifficultyEnum.Easy3;
-    private Type selectedRule;
-    private ISession? session;
+
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="MainViewModel" /> class.
@@ -49,19 +44,22 @@ public class MainViewModel : AsyncObservableRecipient,
     /// <param name="hashiGenerator">The hashi generator.</param>
     /// <param name="settingsProvider">The settings provider.</param>
     /// <param name="timerProvider">The timer provider.</param>
-    /// <param name="islandProvider"></param>
+    /// <param name="islandProvider">The islands provider.</param>
+    /// <param name="hintProvider">The hint provider.</param>
     public MainViewModel(
         Func<SolidColorBrush, IHashiBrush> brushFactory,
         IDialogWrapper dialogWrapper,
         IHashiGenerator hashiGenerator,
         IHashiSettingsProvider settingsProvider,
         ITimerProvider timerProvider,
-        IIslandProvider islandProvider)
+        IIslandProvider islandProvider,
+        IHintProvider hintProvider)
     {
         this.brushFactory = brushFactory;
         SettingsProvider = settingsProvider;
         TimerProvider = timerProvider;
         IslandProvider = islandProvider;
+        HintProvider = hintProvider;
         this.dialogWrapper = dialogWrapper;
         this.hashiGenerator = hashiGenerator;
 
@@ -75,10 +73,8 @@ public class MainViewModel : AsyncObservableRecipient,
         GenerateHintCommand = new RelayCommand(GenerateHintCommandExecute);
         UndoCommand = new RelayCommand(UndoCommandExecute, UndoCommandCanExecute);
         RedoCommand = new RelayCommand(RedoCommandExecute, RedoCommandCanExecute);
-        WindowMouseClickedCommand = new RelayCommand(() => IslandProvider.RuleMessage = string.Empty);
+        WindowMouseClickedCommand = new RelayCommand(() => HintProvider.RuleInfoProvider.RuleMessage = string.Empty);
         ChangeLanguageCommand = new RelayCommand<string>(ChangeLanguageCommandExecute);
-
-        selectedRule = Rules.First();
     }
 
     /// <inheritdoc />
@@ -86,6 +82,9 @@ public class MainViewModel : AsyncObservableRecipient,
 
     /// <inheritdoc />
     public IIslandProvider IslandProvider { get; }
+
+    /// <inheritdoc />
+    public IHintProvider HintProvider { get; }
 
     /// <summary>
     ///     Gets the highscore for the selected difficulty.
@@ -109,31 +108,6 @@ public class MainViewModel : AsyncObservableRecipient,
     {
         get => isGeneratingHashiPuzzle;
         set => SetProperty(ref isGeneratingHashiPuzzle, value);
-    }
-
-    /// <summary>
-    ///     Gets the list of rules available for the game.
-    /// </summary>
-    public IList<Type> Rules { get; } = typeof(_1ConnectionRule1).Assembly.GetTypes()
-        .Where(static x => x.Name.StartsWith('_')).ToList();
-
-    /// <summary>
-    ///     Gets or sets the selected rule for the game.
-    /// </summary>
-    public Type SelectedRule
-    {
-        get => selectedRule;
-        set
-        {
-            if (!SetProperty(ref selectedRule, value)) return;
-
-            IslandProvider.RuleMessage = TranslationSource.Instance[selectedRule.Name] ?? string.Empty;
-            IslandProvider.AreRulesBeingApplied = false;
-
-            if (session == null) return;
-            session.Events.RhsExpressionEvaluatedEvent -= OnRhsExpressionEvaluated;
-            session = null;
-        }
     }
 
     /// <summary>
@@ -193,16 +167,10 @@ public class MainViewModel : AsyncObservableRecipient,
         IsCheating = false;
         var solutionContainer = await hashiGenerator.GenerateHashAsync((int)SelectedDifficulty);
 
-        if (session != null)
-        {
-            IslandProvider.AreRulesBeingApplied = false;
-            session.Events.RhsExpressionEvaluatedEvent -= OnRhsExpressionEvaluated;
-            session = null;
-        }
-
+        HintProvider.ResetSession();
         IslandProvider.InitializeNewSolution(solutionContainer);
-
         TimerProvider.StopTimer();
+
         IsGeneratingHashiPuzzle = false;
     }
 
@@ -316,54 +284,7 @@ public class MainViewModel : AsyncObservableRecipient,
     {
         IsCheating = true;
         TimerProvider.StartTimer();
-        GenerateHint();
-    }
-
-    private void GenerateHint()
-    {
-        // ToDo Move to HintProvider and inject in ConnectionManager
-        if (IslandProvider.AreRulesBeingApplied) return;
-
-        IslandProvider.AreRulesBeingApplied = true;
-
-        if (session == null)
-        {
-            //Load rules
-            var repository = new RuleRepository();
-
-            if (SelectedRule != typeof(_0AllRules))
-                repository.Load(x => x.From(SelectedRule));
-            else
-                repository.Load(x => x.From(Rules));
-
-            //Compile rules
-            var factory = repository.Compile();
-
-            //Create rules session
-            session = factory.CreateSession();
-            session.Events.RhsExpressionEvaluatedEvent += OnRhsExpressionEvaluated;
-
-            session.InsertAll(IslandProvider.IslandsFlat);
-            session.Insert(IslandProvider);
-        }
-        else
-        {
-            session.UpdateAll(IslandProvider.IslandsFlat);
-            session.Update(IslandProvider);
-        }
-
-        var rulesFired = session.Fire();
-
-        if (rulesFired == 0)
-            dialogWrapper.Show(TranslationSource.Instance["MessageNoHintsCaption"]!,
-                TranslationSource.Instance["MessageNoHintsText"]!, DialogButton.Ok, DialogImage.Information);
-
-        IslandProvider.AreRulesBeingApplied = false;
-    }
-
-    private void OnRhsExpressionEvaluated(object? sender, RhsExpressionEventArgs e)
-    {
-        IslandProvider.AreRulesBeingApplied = false;
+        HintProvider.GenerateHint();
     }
 
     private void ChangeLanguageCommandExecute(string? culture)
