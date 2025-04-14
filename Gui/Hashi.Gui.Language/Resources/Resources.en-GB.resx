@@ -243,4 +243,7 @@
   <data name="MessageIsolatedGroupText" xml:space="preserve">
     <value>You have created an isolated group of islands. This results in an invalid bridge constellation. By the end of the game, all connections must be set and all islands must be connected.</value>
   </data>
+  <data name="_3ConnectionsRule2" xml:space="preserve">
+    <value>If an island with a maximum of three bridges has three neighbors, and one is a 1-connection and another a 2-connection island then a connection must be set to the remaining neighbor.</value>
+  </data>
 </root>
