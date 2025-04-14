@@ -104,4 +104,18 @@ public class _2ConnectionsRule1Tests : TestBase<_2ConnectionsRule1>
         // assert
         Verify(x => x.Rule().Fired(Times.Never));
     }
+
+    [Test]
+    public void _2ConnectionsRule1_WhenIslandHasNoNeighbors_ShouldNotTriggerRule()
+    {
+        // arrange
+        var testIsland = SetupTestIsland(2);
+
+        // act
+        Session.Insert(testIsland.Object);
+        Session.Fire();
+
+        // assert
+        Verify(x => x.Rule().Fired(Times.Never));
+    }
 }

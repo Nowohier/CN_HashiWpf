@@ -98,4 +98,20 @@ public class _2ConnectionsRule2Tests : TestBase<_2ConnectionsRule2>
         // assert
         Verify(x => x.Rule().Fired(Times.Never));
     }
+
+    [Test]
+    public void _2ConnectionsRule2_WhenNeighborsHaveMaxConnections_ShouldNotTriggerRule()
+    {
+        // arrange
+        var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 2, true);
+        var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 2, true);
+        var testIsland = SetupTestIsland(2, leftIsland, rightIsland);
+
+        // act
+        Session.Insert(testIsland.Object);
+        Session.Fire();
+
+        // assert
+        Verify(x => x.Rule().Fired(Times.Never));
+    }
 }
