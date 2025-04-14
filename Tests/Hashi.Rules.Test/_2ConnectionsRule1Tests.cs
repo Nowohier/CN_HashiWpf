@@ -27,9 +27,9 @@ public class _2ConnectionsRule1Tests : TestBase
 
         // assert
         Verify(x => x.Rule().Fired(Times.Once));
-        ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, leftIsland.Object, true),
+        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, leftIsland.Object, true),
             Moq.Times.Once);
-        ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, rightIsland.Object, true),
+        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, rightIsland.Object, true),
             Moq.Times.Once);
     }
 

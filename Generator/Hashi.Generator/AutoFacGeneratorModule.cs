@@ -2,7 +2,9 @@
 using Autofac;
 using Hashi.Generator.Interfaces;
 using Hashi.Generator.Interfaces.Models;
+using Hashi.Generator.Interfaces.Providers;
 using Hashi.Generator.Models;
+using Hashi.Generator.Providers;
 
 namespace Hashi.Generator;
 
@@ -16,7 +18,7 @@ public class AutoFacGeneratorModule : Module
         builder.RegisterType<Island>().As<IIsland>().InstancePerDependency();
         builder.RegisterType<Bridge>().As<IBridge>().InstancePerDependency();
         builder.RegisterType<BridgeCoordinates>().As<IBridgeCoordinates>().InstancePerDependency();
-        builder.RegisterType<SolutionContainer>().As<ISolutionContainer>().InstancePerDependency();
+        builder.RegisterType<SolutionProvider>().As<ISolutionProvider>().InstancePerDependency();
 
         builder.Register<Func<int, int, int, IIsland>>(context =>
         {
@@ -34,10 +36,10 @@ public class AutoFacGeneratorModule : Module
                 new NamedParameter("amountBridges", amountBridges));
         });
 
-        builder.Register<Func<int[][], IList<IBridgeCoordinates>, ISolutionContainer>>(context =>
+        builder.Register<Func<int[][], IList<IBridgeCoordinates>, ISolutionProvider>>(context =>
         {
             var c = context.Resolve<IComponentContext>();
-            return (hashiField, bridgeCoordinates) => c.Resolve<ISolutionContainer>(
+            return (hashiField, bridgeCoordinates) => c.Resolve<ISolutionProvider>(
                 new NamedParameter("hashiField", hashiField),
                 new NamedParameter("bridgeCoordinates", bridgeCoordinates));
         });

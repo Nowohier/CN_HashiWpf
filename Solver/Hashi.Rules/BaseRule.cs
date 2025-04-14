@@ -1,4 +1,5 @@
 ﻿using Hashi.Gui.Interfaces.Models;
+using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Interfaces.ViewModels;
 using NRules.Fluent.Dsl;
 
@@ -14,10 +15,10 @@ public abstract class BaseRule : Rule
     /// </summary>
     protected abstract string RuleMessage { get; }
 
-    internal virtual bool EnsureRulesAreBeingApplied(IConnectionManagerViewModel connectionManager)
+    internal virtual bool EnsureRulesAreBeingApplied(IIslandProvider islandProvider)
     {
-        if (connectionManager.AreRulesBeingApplied == false) return false;
-        connectionManager.RuleMessage = RuleMessage;
+        if (islandProvider.AreRulesBeingApplied == false) return false;
+        islandProvider.RuleMessage = RuleMessage;
         return true;
     }
 
@@ -26,11 +27,11 @@ public abstract class BaseRule : Rule
     /// </summary>
     /// <param name="source">The source island.</param>
     /// <param name="target">The target island.</param>
-    /// <param name="connectionManager">The connection manager.</param>
+    /// <param name="islandProvider">The island provider.</param>
     internal virtual void AddConnection(IIslandViewModel source, IIslandViewModel target,
-        IConnectionManagerViewModel connectionManager)
+        IIslandProvider islandProvider)
     {
-        if (EnsureRulesAreBeingApplied(connectionManager) && ExecuteAddConnection(source, target, connectionManager))
+        if (EnsureRulesAreBeingApplied(islandProvider) && ExecuteAddConnection(source, target, islandProvider))
             FinalizeConnection(source, target);
     }
 
@@ -39,14 +40,14 @@ public abstract class BaseRule : Rule
     /// </summary>
     /// <param name="source">The source island.</param>
     /// <param name="targets">The target islands.</param>
-    /// <param name="connectionManager">The connection manager.</param>
+    /// <param name="islandProvider">The island provider.</param>
     internal virtual void AddConnections(IIslandViewModel source, List<IIslandViewModel> targets,
-        IConnectionManagerViewModel connectionManager)
+        IIslandProvider islandProvider)
     {
-        if (!EnsureRulesAreBeingApplied(connectionManager)) return;
+        if (!EnsureRulesAreBeingApplied(islandProvider)) return;
 
         foreach (var target in targets)
-            if (ExecuteAddConnection(source, target, connectionManager))
+            if (ExecuteAddConnection(source, target, islandProvider))
                 FinalizeConnection(source, target);
     }
 
@@ -55,16 +56,16 @@ public abstract class BaseRule : Rule
     /// </summary>
     /// <param name="source">The source island.</param>
     /// <param name="targets">The target islands.</param>
-    /// <param name="connectionManager">The connection manager.</param>
+    /// <param name="islandProvider">The island provider.</param>
     internal virtual void AddMultipleConnections(IIslandViewModel source, List<IIslandViewModel> targets,
-        IConnectionManagerViewModel connectionManager)
+        IIslandProvider islandProvider)
     {
-        if (!EnsureRulesAreBeingApplied(connectionManager)) return;
+        if (!EnsureRulesAreBeingApplied(islandProvider)) return;
 
         foreach (var target in targets)
         {
             for (var i = 0; i < 2; i++)
-                if (!ExecuteAddConnection(source, target, connectionManager))
+                if (!ExecuteAddConnection(source, target, islandProvider))
                     break;
             FinalizeConnection(source, target);
         }
@@ -76,15 +77,15 @@ public abstract class BaseRule : Rule
     /// <param name="source">The source island.</param>
     /// <param name="target">The target island.</param>
     /// <param name="missingConnectionsCount">Amount of connections missing.</param>
-    /// <param name="connectionManager">The connection manager.</param>
+    /// <param name="islandProvider">The island provider.</param>
     internal virtual void AddMissingConnectionsToOneTarget(IIslandViewModel? source, IIslandViewModel? target,
         int missingConnectionsCount,
-        IConnectionManagerViewModel connectionManager)
+        IIslandProvider islandProvider)
     {
-        if (!EnsureRulesAreBeingApplied(connectionManager)) return;
+        if (!EnsureRulesAreBeingApplied(islandProvider)) return;
 
         for (var i = 0; i < missingConnectionsCount; i++)
-            if (!ExecuteAddConnection(source, target, connectionManager))
+            if (!ExecuteAddConnection(source, target, islandProvider))
                 break;
         FinalizeConnection(source, target);
     }
@@ -99,15 +100,15 @@ public abstract class BaseRule : Rule
     }
 
     internal bool ExecuteAddConnection(IIslandViewModel? source, IIslandViewModel? target,
-        IConnectionManagerViewModel? connectionManager)
+        IIslandProvider? islandProvider)
     {
-        if (source == null || target == null || source == target || connectionManager == null ||
+        if (source == null || target == null || source == target || islandProvider == null ||
             source.MaxConnectionsReached ||
             target.MaxConnectionsReached ||
             target.AllConnections.Count(x => source.Coordinates.Equals(x)) == 2 ||
             source.AllConnections.Count(x => target.Coordinates.Equals(x)) == 2) return false;
 
-        connectionManager.AddConnection(source, target, true);
+        islandProvider.AddConnection(source, target, true);
         return true;
     }
 

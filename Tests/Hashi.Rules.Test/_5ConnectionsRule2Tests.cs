@@ -31,9 +31,9 @@ public class _5ConnectionsRule2Tests : TestBase
 
         // assert
         Verify(x => x.Rule().Fired(Times.Once));
-        ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, validNeighbor1.Object, true),
+        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, validNeighbor1.Object, true),
             Moq.Times.Exactly(2));
-        ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, validNeighbor2.Object, true),
+        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, validNeighbor2.Object, true),
             Moq.Times.Exactly(2));
     }
 

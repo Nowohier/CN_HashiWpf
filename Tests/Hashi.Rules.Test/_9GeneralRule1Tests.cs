@@ -33,7 +33,7 @@ public class _9GeneralRule1Tests : TestBase
 
         // assert
         Verify(x => x.Rule().Fired(Times.Once));
-        ConnectionManagerMock.Verify(mock => mock.AddConnection(testIsland.Object, validNeighbor.Object, true),
+        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, validNeighbor.Object, true),
             Moq.Times.Exactly(missingConnections));
     }
 

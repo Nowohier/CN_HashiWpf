@@ -1,9 +1,11 @@
-﻿namespace Hashi.Generator.Interfaces.Models;
+﻿using Hashi.Generator.Interfaces.Models;
+
+namespace Hashi.Generator.Interfaces.Providers;
 
 /// <summary>
 ///     Represents a solution container for the Hashi game.
 /// </summary>
-public interface ISolutionContainer
+public interface ISolutionProvider
 {
     /// <summary>
     ///     The Hashi field represented as a 2D array of integers.

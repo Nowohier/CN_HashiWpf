@@ -162,7 +162,7 @@
                 <Viewbox x:Name="HashiViewBox" Stretch="Uniform">
                     <ItemsControl Margin="5" IsHitTestVisible="True"
                                   ItemTemplate="{StaticResource DataTemplateLevel1}"
-                                  ItemsSource="{Binding ConnectionManager.Islands}" HorizontalAlignment="Stretch"
+                                  ItemsSource="{Binding IslandProvider.Islands}" HorizontalAlignment="Stretch"
                                   VerticalAlignment="Stretch" />
                 </Viewbox>
             </Border>
@@ -186,9 +186,9 @@
                       Background="{StaticResource GreenIslandBrush}">
                 <TextBlock FontSize="16" TextWrapping="WrapWithOverflow"
                            MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=GroupBox}, Converter={StaticResource MaxMessageTextWidthConverter}}"
-                           Visibility="{Binding ConnectionManager.RuleMessage, Converter={StaticResource EmptyStringToVisibilityConverter}}">
+                           Visibility="{Binding IslandProvider.RuleMessage, Converter={StaticResource EmptyStringToVisibilityConverter}}">
                     <Run FontWeight="Bold" Text="{ns:Loc HintText}" />
-                    <Run Text="{Binding ConnectionManager.RuleMessage, Mode=OneWay}" />
+                    <Run Text="{Binding IslandProvider.RuleMessage, Mode=OneWay}" />
                 </TextBlock>
             </GroupBox>
         </Grid>
