@@ -4,6 +4,9 @@ using NRules.Fluent.Dsl;
 
 namespace Hashi.Rules;
 
+/// <summary>
+/// Islands with only one active neighbor can set their remaining connections to that neighbor.
+/// </summary>
 public class _9GeneralRule1 : BaseRule
 {
     protected override string RuleMessage => TranslationSource.Instance[nameof(_9GeneralRule1)]!;

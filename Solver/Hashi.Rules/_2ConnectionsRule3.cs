@@ -4,6 +4,9 @@ using NRules.Fluent.Dsl;
 
 namespace Hashi.Rules;
 
+/// <summary>
+/// If an island with a maximum of two connections has two neighbor islands and one of them is an island with a maximum of two connections, a connection must be established to the other island.
+/// </summary>
 public class _2ConnectionsRule3 : BaseRule
 {
     protected override string RuleMessage => TranslationSource.Instance[nameof(_2ConnectionsRule3)]!;
