@@ -4,6 +4,9 @@ using NRules.Fluent.Dsl;
 
 namespace Hashi.Rules;
 
+/// <summary>
+/// If a 5-connection island has four neighbors and two full neighbors have a total of no more than three connections to the island, a connection must be drawn to each of the remaining neighbors if no connection has already been established.
+/// </summary>
 public class _5ConnectionsRule3 : BaseRule
 {
     protected override string RuleMessage => TranslationSource.Instance[nameof(_5ConnectionsRule3)]!;

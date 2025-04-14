@@ -4,10 +4,14 @@ using NRules.Fluent.Dsl;
 
 namespace Hashi.Rules;
 
+/// <summary>
+/// If an island with a maximum of three bridges has only two neighbors, then a connection must be set to each neighbor.
+/// </summary>
 public class _3ConnectionsRule1 : BaseRule
 {
     protected override string RuleMessage => TranslationSource.Instance[nameof(_3ConnectionsRule1)]!;
 
+    /// <inheritdoc />
     public override void Define()
     {
         IIslandViewModel island = null!;

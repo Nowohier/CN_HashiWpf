@@ -4,8 +4,14 @@ using NRules.Fluent.Dsl;
 
 namespace Hashi.Rules;
 
+/// <summary>
+/// Base class for all rules.
+/// </summary>
 public abstract class BaseRule : Rule
 {
+    /// <summary>
+    ///   The message to be displayed when the rule is applied.
+    /// </summary>
     protected abstract string RuleMessage { get; }
 
     internal virtual bool EnsureRulesAreBeingApplied(IConnectionManagerViewModel connectionManager)

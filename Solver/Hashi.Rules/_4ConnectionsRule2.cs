@@ -4,6 +4,9 @@ using NRules.Fluent.Dsl;
 
 namespace Hashi.Rules;
 
+/// <summary>
+/// Islands with a maximum of four bridges and three neighbors can set one connection to each neighbor if one of the neighbors already has a connection to the island and has max connections.
+/// </summary>
 public class _4ConnectionsRule2 : BaseRule
 {
     protected override string RuleMessage => TranslationSource.Instance[nameof(_4ConnectionsRule2)]!;
