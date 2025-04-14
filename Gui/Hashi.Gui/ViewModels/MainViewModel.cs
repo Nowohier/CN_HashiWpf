@@ -329,6 +329,7 @@ public class MainViewModel : AsyncObservableRecipient,
 
     private void GenerateHint()
     {
+        // ToDo Move to HintProvider and inject in ConnectionManager
         if (ConnectionManager.AreRulesBeingApplied) return;
 
         ConnectionManager.AreRulesBeingApplied = true;
@@ -382,30 +383,7 @@ public class MainViewModel : AsyncObservableRecipient,
 
     private void UndoCommandExecute()
     {
-        if (!ConnectionManager.History.Any()) return;
-
-        var lastEntry = ConnectionManager.History.Last();
-        var island1 = ConnectionManager.Islands.SelectMany(x => x).First(x => x.Coordinates.Equals(lastEntry.Point1));
-        var island2 = ConnectionManager.Islands.SelectMany(x => x).First(x => x.Coordinates.Equals(lastEntry.Point2));
-
-        var islands = ConnectionManager.GetAllIslandsInvolvedInConnection(island1, island2);
-
-        foreach (var island in islands.Where(x => x.MaxConnections == 0))
-        {
-            var firstConnection = island.AllConnections.First(x => x.Equals(lastEntry.Point2));
-            var secondConnection = island.AllConnections.First(x => x.Equals(lastEntry.Point1));
-
-            island.AllConnections.Remove(firstConnection);
-            island.AllConnections.Remove(secondConnection);
-        }
-
-        var firstConnection1 = island1.AllConnections.First(x => x.Equals(lastEntry.Point2));
-        var secondConnection1 = island2.AllConnections.First(x => x.Equals(lastEntry.Point1));
-        island1.AllConnections.Remove(firstConnection1);
-        island2.AllConnections.Remove(secondConnection1);
-        island1.RefreshIslandColor();
-        island2.RefreshIslandColor();
-        ConnectionManager.History.Remove(lastEntry);
+        ConnectionManager.UndoConnection();
     }
 
     private bool UndoCommandCanExecute()

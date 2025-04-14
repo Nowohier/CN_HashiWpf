@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Enums;
 using Hashi.Generator.Interfaces.Models;
@@ -7,12 +6,15 @@ using Hashi.Gui.Extensions;
 using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Messages;
+using System.Collections.ObjectModel;
 
 namespace Hashi.Gui.ViewModels;
 
 /// <inheritdoc cref="IConnectionManagerViewModel" />
 public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerViewModel
 {
+    internal const string SourceIslandNullErrorMessage = @"Source island cannot be null.";
+    internal const string TargetIslandNullErrorMessage = @"Target island cannot be null.";
     private readonly Func<BridgeOperationTypeEnum, IHashiPoint, IHashiPoint, IHashiBridge> bridgeFactory;
     private readonly Func<int, int, int, IIslandViewModel> islandFactory;
     private string ruleMessage = string.Empty;
@@ -33,7 +35,7 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
     }
 
     /// <inheritdoc />
-    public ObservableCollection<ObservableCollection<IIslandViewModel>> Islands { get; } = new();
+    public ObservableCollection<ObservableCollection<IIslandViewModel>> Islands { get; } = [];
 
     /// <inheritdoc />
     public IList<IHashiBridge> History { get; } = new List<IHashiBridge>();
@@ -47,11 +49,9 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
         get => ruleMessage;
         set
         {
-            if (SetProperty(ref ruleMessage, value) && ruleMessage == string.Empty)
-            {
-                WeakReferenceMessenger.Default.Send(new HintPopupClosedMessage());
-                RefreshIslandColors();
-            }
+            if (!SetProperty(ref ruleMessage, value) || ruleMessage != string.Empty) return;
+            WeakReferenceMessenger.Default.Send(new HintPopupClosedMessage());
+            RefreshIslandColors();
         }
     }
 
@@ -79,10 +79,10 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
     public void AddConnection(IIslandViewModel? sourceIsland, IIslandViewModel? targetIsland, bool isHint = false)
     {
         if (sourceIsland == null)
-            throw new ArgumentNullException(nameof(sourceIsland), @"Source island cannot be null.");
+            throw new ArgumentNullException(nameof(sourceIsland), SourceIslandNullErrorMessage);
 
         if (targetIsland == null)
-            throw new ArgumentNullException(nameof(targetIsland), @"Target island cannot be null.");
+            throw new ArgumentNullException(nameof(targetIsland), TargetIslandNullErrorMessage);
 
         if (!IsValidConnection(sourceIsland, targetIsland)) return;
         if (MaxBridgesReachedBetweenSourceAndTarget(sourceIsland, targetIsland) is true)
@@ -103,7 +103,7 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
     public void RemoveAllConnections(IIslandViewModel? sourceIsland, IIslandViewModel? targetIsland)
     {
         if (sourceIsland == null)
-            throw new ArgumentNullException(nameof(sourceIsland), @"Source island cannot be null.");
+            throw new ArgumentNullException(nameof(sourceIsland), SourceIslandNullErrorMessage);
 
         if (targetIsland == null)
         {
@@ -170,29 +170,29 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
         switch (connectionType)
         {
             case ConnectionTypeEnum.Vertical:
-            {
-                var minY = Math.Min(source.Coordinates.Y, target.Coordinates.Y);
-                var maxY = Math.Max(source.Coordinates.Y, target.Coordinates.Y);
-                for (var y = minY; y <= maxY; y++)
                 {
-                    var island = Islands[y][source.Coordinates.X];
-                    islandsBetween.Add(island);
-                }
+                    var minY = Math.Min(source.Coordinates.Y, target.Coordinates.Y);
+                    var maxY = Math.Max(source.Coordinates.Y, target.Coordinates.Y);
+                    for (var y = minY; y <= maxY; y++)
+                    {
+                        var island = Islands[y][source.Coordinates.X];
+                        islandsBetween.Add(island);
+                    }
 
-                break;
-            }
+                    break;
+                }
             case ConnectionTypeEnum.Horizontal:
-            {
-                var minX = Math.Min(source.Coordinates.X, target.Coordinates.X);
-                var maxX = Math.Max(source.Coordinates.X, target.Coordinates.X);
-                for (var x = minX; x <= maxX; x++)
                 {
-                    var island = Islands[source.Coordinates.Y][x];
-                    islandsBetween.Add(island);
-                }
+                    var minX = Math.Min(source.Coordinates.X, target.Coordinates.X);
+                    var maxX = Math.Max(source.Coordinates.X, target.Coordinates.X);
+                    for (var x = minX; x <= maxX; x++)
+                    {
+                        var island = Islands[source.Coordinates.Y][x];
+                        islandsBetween.Add(island);
+                    }
 
-                break;
-            }
+                    break;
+                }
             case ConnectionTypeEnum.Diagonal:
             default:
                 throw new ArgumentOutOfRangeException();
@@ -205,38 +205,38 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
     public void RemoveAllHighlights()
     {
         foreach (var row in Islands)
-        foreach (var island in row)
-        {
-            island.IsHighlightHorizontalLeft = false;
-            island.IsHighlightHorizontalRight = false;
-            island.IsHighlightVerticalTop = false;
-            island.IsHighlightVerticalBottom = false;
-        }
+            foreach (var island in row)
+            {
+                island.IsHighlightHorizontalLeft = false;
+                island.IsHighlightHorizontalRight = false;
+                island.IsHighlightVerticalTop = false;
+                island.IsHighlightVerticalBottom = false;
+            }
     }
 
     /// <inheritdoc />
     public void ResetAllHintConnections()
     {
         foreach (var row in Islands)
-        foreach (var island in row)
-        foreach (var connection in island.AllConnections)
-            connection.IsHint = false;
+            foreach (var island in row)
+                foreach (var connection in island.AllConnections)
+                    connection.IsHint = false;
     }
 
     /// <inheritdoc />
     public void RefreshIslandColors()
     {
         foreach (var row in Islands)
-        foreach (var island in row)
-            island.RefreshIslandColor();
+            foreach (var island in row)
+                island.RefreshIslandColor();
     }
 
     /// <inheritdoc />
     public void ClearTemporaryDropTargets()
     {
         foreach (var row in Islands)
-        foreach (var island in row)
-            island.ResetDropTarget();
+            foreach (var island in row)
+                island.ResetDropTarget();
     }
 
     /// <inheritdoc />
@@ -251,6 +251,35 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
     public IIslandViewModel GetIslandByCoordinates(IHashiPoint coordinates)
     {
         return Islands[coordinates.Y][coordinates.X];
+    }
+
+    /// <inheritdoc />
+    public void UndoConnection()
+    {
+        if (!History.Any()) return;
+
+        var lastEntry = History.Last();
+        var island1 = Islands.SelectMany(x => x).First(x => x.Coordinates.Equals(lastEntry.Point1));
+        var island2 = Islands.SelectMany(x => x).First(x => x.Coordinates.Equals(lastEntry.Point2));
+
+        var islands = GetAllIslandsInvolvedInConnection(island1, island2);
+
+        foreach (var island in islands.Where(x => x.MaxConnections == 0))
+        {
+            var firstConnection = island.AllConnections.First(x => x.Equals(lastEntry.Point2));
+            var secondConnection = island.AllConnections.First(x => x.Equals(lastEntry.Point1));
+
+            island.AllConnections.Remove(firstConnection);
+            island.AllConnections.Remove(secondConnection);
+        }
+
+        var firstConnection1 = island1.AllConnections.First(x => x.Equals(lastEntry.Point2));
+        var secondConnection1 = island2.AllConnections.First(x => x.Equals(lastEntry.Point1));
+        island1.AllConnections.Remove(firstConnection1);
+        island2.AllConnections.Remove(secondConnection1);
+        island1.RefreshIslandColor();
+        island2.RefreshIslandColor();
+        History.Remove(lastEntry);
     }
 
 
@@ -290,12 +319,6 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
         }
     }
 
-    /// <summary>
-    ///     Checks if the maximum number of bridges has been reached between the source or target islands.
-    /// </summary>
-    /// <param name="source">The source Island.</param>
-    /// <param name="target">The target island.</param>
-    /// <returns>a boolean value indicating if max bridges have been reached.</returns>
     private bool? MaxBridgesReachedBetweenSourceAndTarget(IIslandViewModel? source, IIslandViewModel? target)
     {
         return source == null || target == null
@@ -304,12 +327,6 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
               target.AllConnections.Count(c => c.Equals(source.Coordinates)) >= 2;
     }
 
-    /// <summary>
-    ///     Checks if the potential connection between the source and target islands is valid.
-    /// </summary>
-    /// <param name="source">The source island.</param>
-    /// <param name="target">The target island.</param>
-    /// <returns></returns>
     private bool IsValidConnection(IIslandViewModel? source, IIslandViewModel? target)
     {
         // Check if the source and/or target islands are null -> invalid
@@ -333,15 +350,6 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
         return true;
     }
 
-    /// <summary>
-    ///     Checks if an island with MaxConnections > 0 is in between the source and target coordinates.
-    /// </summary>
-    /// <param name="source">The source island.</param>
-    /// <param name="target">The target island.</param>
-    /// <returns>
-    ///     a boolean value indicating if if an island with MaxConnections > 0 is in between the source and target
-    ///     coordinates.
-    /// </returns>
     private bool IsIslandInBetweenSourceAndTarget(IIslandViewModel source, IIslandViewModel target)
     {
         var connectionType = source.GetConnectionType(target);
@@ -349,25 +357,25 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
         switch (connectionType)
         {
             case ConnectionTypeEnum.Vertical:
-            {
-                var minY = Math.Min(source.Coordinates.Y, target.Coordinates.Y);
-                var maxY = Math.Max(source.Coordinates.Y, target.Coordinates.Y);
-                for (var y = minY + 1; y < maxY; y++)
-                    if (Islands[y][source.Coordinates.X].MaxConnections > 0)
-                        return true;
+                {
+                    var minY = Math.Min(source.Coordinates.Y, target.Coordinates.Y);
+                    var maxY = Math.Max(source.Coordinates.Y, target.Coordinates.Y);
+                    for (var y = minY + 1; y < maxY; y++)
+                        if (Islands[y][source.Coordinates.X].MaxConnections > 0)
+                            return true;
 
-                break;
-            }
+                    break;
+                }
             case ConnectionTypeEnum.Horizontal:
-            {
-                var minX = Math.Min(source.Coordinates.X, target.Coordinates.X);
-                var maxX = Math.Max(source.Coordinates.X, target.Coordinates.X);
-                for (var x = minX + 1; x < maxX; x++)
-                    if (Islands[source.Coordinates.Y][x].MaxConnections > 0)
-                        return true;
+                {
+                    var minX = Math.Min(source.Coordinates.X, target.Coordinates.X);
+                    var maxX = Math.Max(source.Coordinates.X, target.Coordinates.X);
+                    for (var x = minX + 1; x < maxX; x++)
+                        if (Islands[source.Coordinates.Y][x].MaxConnections > 0)
+                            return true;
 
-                break;
-            }
+                    break;
+                }
             case ConnectionTypeEnum.Diagonal:
             default:
                 throw new InvalidOperationException(
@@ -377,12 +385,6 @@ public class ConnectionManagerViewModel : ObservableObject, IConnectionManagerVi
         return false;
     }
 
-    /// <summary>
-    ///     Checks if the potential connection between the source and target islands would collide with existing connections.
-    /// </summary>
-    /// <param name="source">The source island.</param>
-    /// <param name="target">The target island.</param>
-    /// <returns>a boolean value indicating if the connection would collide.</returns>
     private bool WouldConnectionCollide(IIslandViewModel source, IIslandViewModel target)
     {
         var connectionType = source.GetConnectionType(target);
