@@ -21,7 +21,7 @@ public class _5ConnectionsRule2(IRuleInfoProvider ruleInfoProvider, IIslandProvi
             .Match(() => island, x => x.MaxConnections == 5 && !x.MaxConnectionsReached)
             .Let(() => neighbors, () => island.GetAllVisibleNeighbors())
             .Let(() => restrictedNeighbors, () => GetMaxedOutConnectedNeighbors(island, neighbors, 1))
-            .Having(() => restrictedNeighbors.Count == 1 && neighbors.Count - restrictedNeighbors.Count == 3);
+            .Having(() => restrictedNeighbors.Count == 1 && neighbors.Count - restrictedNeighbors.Count == 2);
 
         Then()
             .Do(ctx => AddMultipleConnections(island, neighbors.Except(restrictedNeighbors).ToList()));

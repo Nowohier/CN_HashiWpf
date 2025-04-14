@@ -17,7 +17,7 @@ public class _9GeneralRule1Tests : TestBase<_9GeneralRule1>
         var maxNeighbor2 = CreateIslandMock(TestIslandEnum.LeftIsland, 2, true);
         var maxNeighbor3 = CreateIslandMock(TestIslandEnum.LeftIsland, 2, true);
 
-        var testIsland = SetupTestIsland(4, validNeighbor, maxNeighbor1, maxNeighbor2, maxNeighbor3);
+        var testIsland = SetupTestIsland(2, validNeighbor, maxNeighbor1, maxNeighbor2, maxNeighbor3);
         testIsland.Setup(x => x.AllConnections)
             .Returns([CreateHashiPointMock(0, 1).Object, CreateHashiPointMock(0, 1).Object]);
 
