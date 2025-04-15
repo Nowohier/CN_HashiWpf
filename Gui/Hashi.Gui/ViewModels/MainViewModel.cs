@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Enums;
 using Hashi.Generator.Interfaces;
+using Hashi.Generator.Interfaces.Models;
 using Hashi.Generator.Interfaces.Providers;
 using Hashi.Gui.Extensions;
 using Hashi.Gui.Helpers;
@@ -10,6 +11,7 @@ using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Interfaces.Resources.SolutionProviders;
 using Hashi.Gui.Interfaces.ViewModels;
+using Hashi.Gui.Interfaces.Views;
 using Hashi.Gui.Interfaces.Wrappers;
 using Hashi.Gui.Messages;
 using Hashi.Gui.Messaging;
@@ -32,6 +34,8 @@ public class MainViewModel : AsyncObservableRecipient,
     private readonly Func<SolidColorBrush, IHashiBrush> brushFactory;
     private readonly IDialogWrapper dialogWrapper;
     private readonly IHashiGenerator hashiGenerator;
+    private readonly Func<IGenerateTestFieldView> generateTestFieldViewFactory;
+    private readonly Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider> solutionProviderFactory;
     private bool isCheating;
     private bool isGeneratingHashiPuzzle;
     private DifficultyEnum selectedDifficulty = DifficultyEnum.Easy3;
@@ -49,6 +53,8 @@ public class MainViewModel : AsyncObservableRecipient,
     /// <param name="islandProvider">The islands provider.</param>
     /// <param name="hintProvider">The hint provider.</param>
     /// <param name="testSolutionProvider">The test solution provider.</param>
+    /// <param name="generateTestFieldViewFactory">The generate test files view factory.</param>
+    /// <param name="solutionProviderFactory">The solution provider factory.</param>
     public MainViewModel(
         Func<SolidColorBrush, IHashiBrush> brushFactory,
         IDialogWrapper dialogWrapper,
@@ -57,7 +63,9 @@ public class MainViewModel : AsyncObservableRecipient,
         ITimerProvider timerProvider,
         IIslandProvider islandProvider,
         IHintProvider hintProvider,
-        ITestSolutionProvider testSolutionProvider)
+        ITestSolutionProvider testSolutionProvider,
+        Func<IGenerateTestFieldView> generateTestFieldViewFactory,
+        Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider> solutionProviderFactory)
     {
         this.brushFactory = brushFactory;
         SettingsProvider = settingsProvider;
@@ -67,6 +75,8 @@ public class MainViewModel : AsyncObservableRecipient,
         TestSolutionProvider = testSolutionProvider;
         this.dialogWrapper = dialogWrapper;
         this.hashiGenerator = hashiGenerator;
+        this.generateTestFieldViewFactory = generateTestFieldViewFactory;
+        this.solutionProviderFactory = solutionProviderFactory;
 
         WeakReferenceMessenger.Default.Register<BridgeConnectionChangedMessage>(this);
         WeakReferenceMessenger.Default.Register<UpdateAllIslandColorsMessage>(this);
@@ -80,7 +90,7 @@ public class MainViewModel : AsyncObservableRecipient,
         RedoCommand = new RelayCommand(RedoCommandExecute, RedoCommandCanExecute);
         WindowMouseClickedCommand = new RelayCommand(() => HintProvider.RuleInfoProvider.RuleMessage = string.Empty);
         ChangeLanguageCommand = new RelayCommand<string>(ChangeLanguageCommandExecute);
-
+        GenerateTestFieldCommand = new RelayCommand(GenerateTestFieldCommandExecute);
         selectedTestSolutionProvider = TestSolutionProvider.SolutionProviders.FirstOrDefault();
     }
 
@@ -128,9 +138,9 @@ public class MainViewModel : AsyncObservableRecipient,
         get => selectedTestSolutionProvider;
         set
         {
-            if (SetProperty(ref selectedTestSolutionProvider, value))
+            if (SetProperty(ref selectedTestSolutionProvider, value) && selectedTestSolutionProvider != null)
             {
-                SetTestSolution();
+                SetTestSolution(selectedTestSolutionProvider);
             }
         }
     }
@@ -182,6 +192,11 @@ public class MainViewModel : AsyncObservableRecipient,
     /// </summary>
     public ICommand ChangeLanguageCommand { get; }
 
+    /// <summary>
+    /// Opens the generate test field window.
+    /// </summary>
+    public ICommand GenerateTestFieldCommand { get; }
+
     /// <inheritdoc />
     public IHashiSettingsProvider SettingsProvider { get; }
 
@@ -194,6 +209,25 @@ public class MainViewModel : AsyncObservableRecipient,
 
         HintProvider.ResetSession();
         IslandProvider.InitializeNewSolution(solutionContainer);
+        TimerProvider.StopTimer();
+
+        IsGeneratingHashiPuzzle = false;
+    }
+
+    /// <inheritdoc />
+    public void SetTestSolution(ISolutionProvider solutionProvider)
+    {
+        if (solutionProvider is not { BridgeCoordinates: not null, HashiField: not null })
+        {
+            CreateNewGameCommand.Execute(null);
+            return;
+        }
+
+        IsGeneratingHashiPuzzle = true;
+        IsCheating = false;
+
+        HintProvider.ResetSession();
+        IslandProvider.InitializeNewSolutionAndSetBridges(solutionProvider!);
         TimerProvider.StopTimer();
 
         IsGeneratingHashiPuzzle = false;
@@ -306,29 +340,24 @@ public class MainViewModel : AsyncObservableRecipient,
         WeakReferenceMessenger.Default.Send(new UpdateAllIslandColorsMessage());
     }
 
-    private void SetTestSolution()
-    {
-        if (selectedTestSolutionProvider is not { BridgeCoordinates: not null, HashiField: not null })
-        {
-            CreateNewGameCommand.Execute(null);
-            return;
-        }
-
-        IsGeneratingHashiPuzzle = true;
-        IsCheating = false;
-
-        HintProvider.ResetSession();
-        IslandProvider.InitializeNewSolutionAndSetBridges(selectedTestSolutionProvider!);
-        TimerProvider.StopTimer();
-
-        IsGeneratingHashiPuzzle = false;
-    }
-
     private void GenerateHintCommandExecute()
     {
         IsCheating = true;
         TimerProvider.StartTimer();
         HintProvider.GenerateHint();
+    }
+
+    private void GenerateTestFieldCommandExecute()
+    {
+        var view = generateTestFieldViewFactory.Invoke();
+        if (view.DataContext is not IMainViewModel main)
+        {
+            return;
+        }
+
+        main.SetTestSolution(solutionProviderFactory.Invoke(TestSolutionProvider.HashiFieldReference, [], null));
+        view.ShowDialog();
+
     }
 
     private void ChangeLanguageCommandExecute(string? culture)

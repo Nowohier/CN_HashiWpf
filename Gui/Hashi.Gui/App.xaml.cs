@@ -51,7 +51,7 @@ public partial class App
 
         var gui = scope.Resolve<IHashiMainView>();
         gui.DataContext = mainViewModel;
-        gui.Show();
+        gui.ShowDialog();
     }
 
     /// <summary>
