@@ -11,11 +11,7 @@ public interface IHashiMainView : IViewBoxControl
     public object DataContext { get; set; }
 
     /// <summary>
-    ///     Show the window
+    ///     Show the window as dialog.
     /// </summary>
-    /// <remarks>
-    ///     Calling Show on window is the same as setting the
-    ///     Visibility property to Visibility.Visible.
-    /// </remarks>
-    public void Show();
+    public bool? ShowDialog();
 }
