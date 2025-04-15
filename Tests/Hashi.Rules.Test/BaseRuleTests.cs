@@ -892,6 +892,106 @@ public class BaseRuleTests
         islandProviderMock.Verify(cm => cm.AddConnection(sourceIslandMock.Object, targetIslandMock2.Object, HashiPointTypeEnum.Hint),
             Times.Never);
     }
+
+    [Test]
+    public void SetTestConnectionAndIfGroupIsIsolatedReturnValidNeighbor_ShouldReturnValidNeighbor_WhenGroupIsIsolated()
+    {
+        // arrange
+        var connectableNeighbor1 = new Mock<IIslandViewModel>();
+        var connectableNeighbor2 = new Mock<IIslandViewModel>();
+        var allNeighbors = new List<IIslandViewModel> { connectableNeighbor1.Object, connectableNeighbor2.Object };
+
+        sourceIslandMock.Setup(x => x.MaxConnectionsReached).Returns(true);
+        connectableNeighbor1.Setup(x => x.MaxConnectionsReached).Returns(true);
+        connectableNeighbor2.Setup(x => x.MaxConnectionsReached).Returns(true);
+
+        islandProviderMock.Setup(x => x.CountIsolatedIslandGroups()).Returns(1);
+        islandProviderMock.Setup(x => x.GetAllVisibleNeighbors(sourceIslandMock.Object)).Returns(allNeighbors);
+
+        // act
+        var result = testableBaseRule.SetTestConnectionAndIfGroupIsIsolatedReturnValidNeighbor(
+            sourceIslandMock.Object,
+            new List<IIslandViewModel> { connectableNeighbor1.Object, connectableNeighbor2.Object },
+            allNeighbors);
+
+        // assert
+        result.Should().NotBeNull();
+        islandProviderMock.Verify(x => x.AddConnection(sourceIslandMock.Object, connectableNeighbor1.Object, HashiPointTypeEnum.Test), Times.Once);
+        islandProviderMock.Verify(x => x.RemoveAllBridges(HashiPointTypeEnum.Test), Times.Exactly(2));
+    }
+
+    [Test]
+    public void SetTestConnectionAndIfGroupIsIsolatedReturnValidNeighbor_ShouldReturnNull_WhenGroupIsNotIsolated()
+    {
+        // arrange
+        var connectableNeighbor1 = new Mock<IIslandViewModel>();
+        var connectableNeighbor2 = new Mock<IIslandViewModel>();
+        var allNeighbors = new List<IIslandViewModel> { connectableNeighbor1.Object, connectableNeighbor2.Object };
+
+        sourceIslandMock.Setup(x => x.MaxConnectionsReached).Returns(true);
+        connectableNeighbor1.Setup(x => x.MaxConnectionsReached).Returns(true);
+        connectableNeighbor2.Setup(x => x.MaxConnectionsReached).Returns(true);
+
+        islandProviderMock.Setup(x => x.CountIsolatedIslandGroups()).Returns(0);
+        islandProviderMock.Setup(x => x.GetAllVisibleNeighbors(sourceIslandMock.Object)).Returns(allNeighbors);
+
+        // act
+        var result = testableBaseRule.SetTestConnectionAndIfGroupIsIsolatedReturnValidNeighbor(
+            sourceIslandMock.Object,
+            new List<IIslandViewModel> { connectableNeighbor1.Object, connectableNeighbor2.Object },
+            allNeighbors);
+
+        // assert
+        result.Should().BeNull();
+        islandProviderMock.Verify(x => x.AddConnection(sourceIslandMock.Object, connectableNeighbor1.Object, HashiPointTypeEnum.Test), Times.Once);
+        islandProviderMock.Verify(x => x.RemoveAllBridges(HashiPointTypeEnum.Test), Times.Exactly(2));
+    }
+
+    [Test]
+    public void SetTestConnectionAndIfGroupIsIsolatedReturnValidNeighbor_ShouldReturnNull_WhenNoConnectableNeighborsExist()
+    {
+        // arrange
+        var allNeighbors = new List<IIslandViewModel>();
+
+        sourceIslandMock.Setup(x => x.MaxConnectionsReached).Returns(false);
+        islandProviderMock.Setup(x => x.CountIsolatedIslandGroups()).Returns(0);
+
+        // act
+        var result = testableBaseRule.SetTestConnectionAndIfGroupIsIsolatedReturnValidNeighbor(
+            sourceIslandMock.Object,
+            new List<IIslandViewModel>(),
+            allNeighbors);
+
+        // assert
+        result.Should().BeNull();
+        islandProviderMock.Verify(x => x.AddConnection(It.IsAny<IIslandViewModel>(), It.IsAny<IIslandViewModel>(), HashiPointTypeEnum.Test), Times.Never);
+        islandProviderMock.Verify(x => x.RemoveAllBridges(HashiPointTypeEnum.Test), Times.Never);
+    }
+
+    [Test]
+    public void SetTestConnectionAndIfGroupIsIsolatedReturnValidNeighbor_ShouldRemoveTestConnections_WhenNoValidNeighborFound()
+    {
+        // arrange
+        var connectableNeighbor = new Mock<IIslandViewModel>();
+        var allNeighbors = new List<IIslandViewModel> { connectableNeighbor.Object };
+
+        sourceIslandMock.Setup(x => x.MaxConnectionsReached).Returns(false);
+        connectableNeighbor.Setup(x => x.MaxConnectionsReached).Returns(false);
+
+        islandProviderMock.Setup(x => x.CountIsolatedIslandGroups()).Returns(0);
+
+        // act
+        var result = testableBaseRule.SetTestConnectionAndIfGroupIsIsolatedReturnValidNeighbor(
+            sourceIslandMock.Object,
+            new List<IIslandViewModel> { connectableNeighbor.Object },
+            allNeighbors);
+
+        // assert
+        result.Should().BeNull();
+        islandProviderMock.Verify(x => x.AddConnection(sourceIslandMock.Object, connectableNeighbor.Object, HashiPointTypeEnum.Test), Times.Once);
+        islandProviderMock.Verify(x => x.RemoveAllBridges(HashiPointTypeEnum.Test), Times.Once);
+    }
+
 }
 
 /// <summary>
