@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Interfaces.ViewModels;
+using Hashi.Gui.ViewModels.Settings;
 
 namespace Hashi.Gui.ViewModels;
 

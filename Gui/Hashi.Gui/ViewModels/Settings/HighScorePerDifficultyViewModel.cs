@@ -3,7 +3,7 @@ using Hashi.Enums;
 using Hashi.Gui.Interfaces.ViewModels;
 using Newtonsoft.Json;
 
-namespace Hashi.Gui.ViewModels;
+namespace Hashi.Gui.ViewModels.Settings;
 
 /// <summary>
 ///     Represents a view model for displaying high scores per difficulty level.
