@@ -1,12 +1,12 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Messaging;
+﻿using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Messages;
+using Hashi.Gui.ViewModels;
 
 namespace Hashi.Gui.Providers
 {
     /// <inheritdoc cref="IRuleInfoProvider"/>
-    public class RuleInfoProvider(IIslandProvider islandProvider) : ObservableRecipient, IRuleInfoProvider
+    public class RuleInfoProvider(IIslandProvider islandProvider) : NotifyPropertyChangedBase, IRuleInfoProvider
     {
         private string ruleMessage = string.Empty;
 
@@ -20,7 +20,7 @@ namespace Hashi.Gui.Providers
             set
             {
                 if (!SetProperty(ref ruleMessage, value) || ruleMessage != string.Empty) return;
-                WeakReferenceMessenger.Default.Send(new HintPopupClosedMessage());
+                WeakReferenceMessenger.Default.Send(new RuleMessageClearedMessage());
                 islandProvider.RefreshIslandColors();
             }
         }

@@ -192,8 +192,41 @@ public abstract class BaseRule : Rule
         return result;
     }
 
-    internal IIslandViewModel? SetTestConnectionAndIfGroupIsIsolatedReturnValidNeighbor(IIslandViewModel source, IEnumerable<IIslandViewModel> neighbors)
+    /// <summary>
+    ///    Sets a test connection between the source island and its connectable neighbors. If the source island and its connected neighbors are maxed out, it checks if there are isolated groups. If so, it returns a free neighbor.
+    /// </summary>
+    /// <param name="source">The source island.</param>
+    /// <param name="connectableNeighbors">The connectable neighbors.</param>
+    /// <param name="allNeighbors">All neighbors.</param>
+    /// <returns>a free neighbor if found.</returns>
+    internal IIslandViewModel? SetTestConnectionAndIfGroupIsIsolatedReturnValidNeighbor(
+        IIslandViewModel source,
+        List<IIslandViewModel> connectableNeighbors,
+        List<IIslandViewModel> allNeighbors)
     {
+        foreach (var neighbor in connectableNeighbors)
+        {
+            // Add a test connection
+            islandProvider.AddConnection(source, neighbor, HashiPointTypeEnum.Test);
+
+            // Check if the source and its connected neighbors are maxed out
+            var connectedNeighbors = GetConnectedNeighbors(source, allNeighbors, null);
+            if (source.MaxConnectionsReached && connectedNeighbors.All(x => x.MaxConnectionsReached))
+            {
+                // Check if there are isolated groups
+                if (islandProvider.CountIsolatedIslandGroups() > 0)
+                {
+                    // Find a free neighbor
+                    var freeNeighbor = GetConnectableNeighbors(allNeighbors).FirstOrDefault();
+                    islandProvider.RemoveAllBridges(HashiPointTypeEnum.Test);
+                    return freeNeighbor;
+                }
+            }
+
+            // Remove the test connection
+            islandProvider.RemoveAllBridges(HashiPointTypeEnum.Test);
+        }
+
         return null;
     }
 

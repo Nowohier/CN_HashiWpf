@@ -1,5 +1,6 @@
 ﻿using Hashi.Gui.Interfaces.Messages;
 using Hashi.Gui.Interfaces.Providers;
+using Hashi.Gui.Interfaces.Resources.SolutionProviders;
 
 namespace Hashi.Gui.Interfaces.ViewModels;
 
@@ -22,6 +23,11 @@ public interface IMainViewModel
     ///    The hint provider for the Hashi game.
     /// </summary>
     IHintProvider HintProvider { get; }
+
+    /// <summary>
+    /// The test solution provider for the Hashi game.
+    /// </summary>
+    ITestSolutionProvider TestSolutionProvider { get; }
 
     /// <summary>
     ///     The settings provider for the Hashi game.

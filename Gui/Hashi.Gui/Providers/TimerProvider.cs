@@ -1,12 +1,12 @@
-﻿using System.Diagnostics;
+﻿using Hashi.Gui.Interfaces.Providers;
+using Hashi.Gui.ViewModels;
+using System.Diagnostics;
 using System.Windows.Threading;
-using CommunityToolkit.Mvvm.ComponentModel;
-using Hashi.Gui.Interfaces.Providers;
 
 namespace Hashi.Gui.Providers;
 
 /// <inheritdoc cref="ITimerProvider" />
-public class TimerProvider : ObservableRecipient, ITimerProvider
+public class TimerProvider : NotifyPropertyChangedBase, ITimerProvider
 {
     private readonly DispatcherTimer dispatcherTimer = new() { Interval = TimeSpan.FromSeconds(1) };
 
