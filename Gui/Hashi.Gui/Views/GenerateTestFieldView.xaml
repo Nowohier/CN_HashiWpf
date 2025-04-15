@@ -7,15 +7,11 @@
                  xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
                  xmlns:ns="clr-namespace:Hashi.Gui.Localization"
                  xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-                 xmlns:helpers="clr-namespace:Hashi.Gui.Helpers"
-                 xmlns:enums="clr-namespace:Hashi.Enums;assembly=Hashi.Enums"
-                 xmlns:system="clr-namespace:System;assembly=System.Runtime"
                  xmlns:viewModels="clr-namespace:Hashi.Gui.ViewModels"
                  mc:Ignorable="d"
-                 d:DataContext="{d:DesignInstance {x:Type viewModels:MainViewModel}, IsDesignTimeCreatable=False}"
-                 Title="Testfield generator" Height="450" Width="800" WindowStartupLocation="CenterScreen"
-                 WindowTitleBrush="{StaticResource BasicBrush}"
-                 ResizeMode="NoResize">
+                 d:DataContext="{d:DesignInstance {x:Type viewModels:GenerateTestFieldViewModel}, IsDesignTimeCreatable=False}"
+                 Title="Testfield Generator" Height="851" Width="715" WindowStartupLocation="CenterScreen"
+                 WindowTitleBrush="{StaticResource BasicBrush}" ResizeMode="NoResize">
     <mah:MetroWindow.IconTemplate>
         <DataTemplate>
             <Grid>
@@ -23,13 +19,6 @@
             </Grid>
         </DataTemplate>
     </mah:MetroWindow.IconTemplate>
-    <Window.Resources>
-        <ObjectDataProvider x:Key="DifficultyEnums" MethodName="GetValues" ObjectType="{x:Type system:Enum}">
-            <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="enums:DifficultyEnum" />
-            </ObjectDataProvider.MethodParameters>
-        </ObjectDataProvider>
-    </Window.Resources>
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -43,35 +32,45 @@
             </Grid.RowDefinitions>
             <Border Grid.Row="0" BorderThickness="0,0,0,0" BorderBrush="{StaticResource BasicBrush}" Margin="0,0,0,0">
                 <GroupBox Header="{ns:Loc OptionsTitle}" Padding="5" Style="{x:Null}"
-      BorderThickness="0,1,0,0"
-      BorderBrush="{StaticResource BasicBrush}"
-      Background="{StaticResource MenuBackgroundBrush}">
+                          BorderThickness="0,1,0,0"
+                          BorderBrush="{StaticResource BasicBrush}"
+                          Background="{StaticResource MenuBackgroundBrush}">
                     <DockPanel LastChildFill="False">
-                        <Button Style="{StaticResource MenuButtonStyle}" Padding="3,0,3,0" Width="30"
-            HorizontalAlignment="Left" ToolTip="{ns:Loc RemoveAllBridgesTooltip}"
-            ToolTipService.InitialShowDelay="0"
-            Command="{Binding RemoveAllBridgesCommand}" DockPanel.Dock="Left">
+                        <Button Style="{StaticResource MenuButtonGenerateStyle}" Padding="3,0,3,0" Width="30"
+                                HorizontalAlignment="Left" ToolTip="{ns:Loc RemoveAllBridgesTooltip}"
+                                ToolTipService.InitialShowDelay="0"
+                                Command="{Binding RemoveAllBridgesCommand}" DockPanel.Dock="Left">
                             <Grid>
                                 <iconPacks:PackIconPhosphorIcons Kind="BridgeThin" Width="16" Height="16"
-                                             HorizontalAlignment="Center"
-                                             VerticalAlignment="Center" />
+                                                                 HorizontalAlignment="Center"
+                                                                 VerticalAlignment="Center" />
                                 <iconPacks:PackIconPhosphorIcons Kind="ProhibitInsetThin" Width="22" Height="22"
-                                             HorizontalAlignment="Center"
-                                             VerticalAlignment="Center" Foreground="Red" />
+                                                                 HorizontalAlignment="Center"
+                                                                 VerticalAlignment="Center" Foreground="Red" />
                             </Grid>
                         </Button>
-                        <Button Style="{StaticResource MenuButtonStyle}" Command="{Binding GenerateHintCommand}"
-            DockPanel.Dock="Left" Width="30" Padding="3,0,3,0" Margin="10,0,0,0"
-            HorizontalAlignment="Left" ToolTip="{ns:Loc ShowHintTooltip}"
-            ToolTipService.InitialShowDelay="0">
+                        <Button Style="{StaticResource MenuButtonGenerateStyle}" Command="{Binding GenerateHintCommand}"
+                                DockPanel.Dock="Left" Width="30" Padding="3,0,3,0" Margin="10,0,0,0"
+                                HorizontalAlignment="Left" ToolTip="{ns:Loc ShowHintTooltip}"
+                                ToolTipService.InitialShowDelay="0">
                             <StackPanel Orientation="Horizontal">
                                 <iconPacks:PackIconPhosphorIcons Kind="LightbulbThin" Width="18" Height="18" />
                             </StackPanel>
                         </Button>
-                        <ToggleButton Style="{StaticResource MenuGridToggleButtonStyle}" Padding="5,0,5,0"
-                  IsChecked="{Binding SettingsProvider.Settings.AreGridLinesEnabled}"
-                  Margin="10,0,0,0"
-                  HorizontalAlignment="Left" DockPanel.Dock="Left" />
+                        <ToggleButton Style="{StaticResource MenuGenerateGridToggleButtonStyle}" Padding="5,0,5,0"
+                                      IsChecked="{Binding AreGridLinesEnabled}"
+                                      Margin="10,0,0,0"
+                                      HorizontalAlignment="Left" DockPanel.Dock="Left" />
+                        <TextBlock Text="Testfield Name:" VerticalAlignment="Center" Margin="10,0,0,0" DockPanel.Dock="Left"/>
+                        <TextBox Margin="10,0,0,0" Width="200" Height="30" Text="{Binding TestFieldName}"/>
+                        <Button Style="{StaticResource MenuButtonGenerateStyle}" Command="{Binding ResetTestFieldCommand}"
+                                DockPanel.Dock="Right" Width="30" Padding="3,0,3,0" Margin="10,0,0,0"
+                                HorizontalAlignment="Left" ToolTip="{ns:Loc ShowHintTooltip}"
+                                ToolTipService.InitialShowDelay="0">
+                            <StackPanel Orientation="Horizontal">
+                                <iconPacks:PackIconPhosphorIcons Kind="ArrowsCounterClockwiseThin" Width="14" Height="14" />
+                            </StackPanel>
+                        </Button>
                     </DockPanel>
                 </GroupBox>
             </Border>
@@ -79,12 +78,12 @@
 
         <Grid x:Name="HashiGrid" Grid.Row="1" Margin="0,10,0,0">
             <Border BorderThickness="1" BorderBrush="{StaticResource BasicBrush}" CornerRadius="2"
-                Background="{StaticResource BackgroundBrush}">
+                    Background="{StaticResource BackgroundBrush}">
                 <Viewbox x:Name="HashiViewBox" Stretch="Uniform">
                     <ItemsControl Margin="5" IsHitTestVisible="True"
-                              ItemTemplate="{StaticResource DataTemplateLevel1}"
-                              ItemsSource="{Binding IslandProvider.Islands}" HorizontalAlignment="Stretch"
-                              VerticalAlignment="Stretch" />
+                                  ItemTemplate="{StaticResource DataTemplateLevel1}"
+                                  ItemsSource="{Binding IslandProvider.Islands}" HorizontalAlignment="Stretch"
+                                  VerticalAlignment="Stretch" />
                 </Viewbox>
             </Border>
         </Grid>
@@ -98,8 +97,9 @@
             </Button>
             <Button Margin="5,0,0,0" Height="26" IsCancel="True">
                 <StackPanel Orientation="Horizontal">
-                    <iconPacks:PackIconPhosphorIcons Kind="XThin" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                Height="14" Width="14" Foreground="Red" />
+                    <iconPacks:PackIconPhosphorIcons Kind="XThin" HorizontalAlignment="Center"
+                                                     VerticalAlignment="Center"
+                                                     Height="14" Width="14" Foreground="Red" />
                     <Label Padding="5,0,5,0" Content="{ns:Loc DialogAbort}" FontWeight="Normal" />
                 </StackPanel>
             </Button>
