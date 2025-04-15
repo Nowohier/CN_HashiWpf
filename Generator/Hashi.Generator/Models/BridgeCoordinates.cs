@@ -1,9 +1,11 @@
-﻿using System.Drawing;
-using Hashi.Generator.Interfaces.Models;
+﻿using Hashi.Generator.Interfaces.Models;
+using Newtonsoft.Json;
+using System.Drawing;
 
 namespace Hashi.Generator.Models;
 
 /// <inheritdoc cref="IBridgeCoordinates" />
+[JsonObject(MemberSerialization.OptIn)]
 public class BridgeCoordinates : IBridgeCoordinates
 {
     /// <summary>
@@ -20,12 +22,15 @@ public class BridgeCoordinates : IBridgeCoordinates
     }
 
     /// <inheritdoc />
+    [JsonProperty(nameof(Location1))]
     public Point Location1 { get; }
 
     /// <inheritdoc />
+    [JsonProperty(nameof(Location2))]
     public Point Location2 { get; }
 
     /// <inheritdoc />
+    [JsonProperty(nameof(AmountBridges))]
     public int AmountBridges { get; }
 
     /// <inheritdoc />

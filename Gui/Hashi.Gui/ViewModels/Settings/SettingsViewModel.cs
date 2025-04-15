@@ -6,7 +6,7 @@ using Hashi.Gui.Extensions;
 using Hashi.Gui.Interfaces.ViewModels;
 using Newtonsoft.Json;
 
-namespace Hashi.Gui.ViewModels;
+namespace Hashi.Gui.ViewModels.Settings;
 
 /// <inheritdoc cref="ISettingsViewModel" />
 [JsonObject(MemberSerialization.OptIn)]
