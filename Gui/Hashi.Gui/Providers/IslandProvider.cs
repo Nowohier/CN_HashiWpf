@@ -35,6 +35,7 @@ namespace Hashi.Gui.Providers
         public void InitializeNewSolution(ISolutionProvider solutionProvider)
         {
             ArgumentNullException.ThrowIfNull(solutionProvider, nameof(solutionProvider));
+            ArgumentNullException.ThrowIfNull(solutionProvider.HashiField, nameof(solutionProvider.HashiField));
 
             var hashiField = solutionProvider.HashiField;
             Islands.Clear();
@@ -47,6 +48,30 @@ namespace Hashi.Gui.Providers
                 for (var column = 0; column < hashiField[0].Length; column++)
                     rowCollection.Add(islandFactory.Invoke(column, row, hashiField[row][column]));
                 Islands.Add(rowCollection);
+            }
+        }
+
+        /// <inheritdoc />
+        public void InitializeNewSolutionAndSetBridges(ISolutionProvider solutionProvider)
+        {
+            ArgumentNullException.ThrowIfNull(solutionProvider, nameof(solutionProvider));
+            ArgumentNullException.ThrowIfNull(solutionProvider.HashiField, nameof(solutionProvider.HashiField));
+            ArgumentNullException.ThrowIfNull(solutionProvider.BridgeCoordinates, nameof(solutionProvider.BridgeCoordinates));
+
+            InitializeNewSolution(solutionProvider);
+
+            foreach (var bridge in solutionProvider.BridgeCoordinates)
+            {
+                for (var i = 0; i < bridge.AmountBridges; i++)
+                {
+                    var sourceIsland = GetIslandByCoordinates(bridge.Location1.ToHashiPoint());
+                    var targetIsland = GetIslandByCoordinates(bridge.Location2.ToHashiPoint());
+                    if (sourceIsland.MaxConnections == 0 && targetIsland.MaxConnections == 0)
+                        continue;
+                    AddConnection(sourceIsland, targetIsland);
+                    sourceIsland.RefreshIslandColor();
+                    targetIsland.RefreshIslandColor();
+                }
             }
         }
 
@@ -70,7 +95,7 @@ namespace Hashi.Gui.Providers
                 pointType);
             if (AreAllConnectionsSet) WeakReferenceMessenger.Default.SendAsync(new AllConnectionsSetMessage());
 
-            if (CountIsolatedIslandGroups() > 0)
+            if (CountIsolatedIslandGroups() > 0 && !pointType.Equals(HashiPointTypeEnum.Test))
             {
                 dialogWrapper.Show(TranslationSource.Instance["MessageIsolatedGroupCaption"]!, TranslationSource.Instance["MessageIsolatedGroupText"]!, DialogButton.Ok, DialogImage.Warning);
             }
@@ -169,14 +194,16 @@ namespace Hashi.Gui.Providers
         /// <inheritdoc />
         public void RemoveAllBridges(HashiPointTypeEnum pointType)
         {
-            // ToDo: Handle test connections here
-
             foreach (var island in IslandsFlat)
             {
-                var connectionsToRemove = pointType.Equals(HashiPointTypeEnum.All)
-                    ? island.AllConnections
-                    : island.AllConnections
-                        .Where(x => x.PointType == pointType);
+                var connectionsToRemove = pointType switch
+                {
+                    HashiPointTypeEnum.All => island.AllConnections,
+                    HashiPointTypeEnum.Hint => island.AllConnections.Where(x => x.PointType == HashiPointTypeEnum.Hint),
+                    HashiPointTypeEnum.Test => island.AllConnections.Where(x => x.PointType == HashiPointTypeEnum.Test),
+                    HashiPointTypeEnum.Normal => island.AllConnections.Where(x => x.PointType == HashiPointTypeEnum.Normal),
+                    _ => throw new ArgumentOutOfRangeException(nameof(pointType), pointType, @"Invalid point type.")
+                };
 
                 foreach (var hashiPoint in connectionsToRemove.ToList())
                 {

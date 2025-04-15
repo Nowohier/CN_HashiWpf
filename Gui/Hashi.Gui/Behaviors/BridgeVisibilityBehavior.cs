@@ -18,7 +18,7 @@ namespace Hashi.Gui.Behaviors;
 /// <summary>
 ///     A behavior that controls the visibility of a bridge based on the number of connections in a Hashi game.
 /// </summary>
-public class BridgeVisibilityBehavior : Behavior<Line>, IRecipient<HintPopupClosedMessage>
+public class BridgeVisibilityBehavior : Behavior<Line>, IRecipient<RuleMessageClearedMessage>
 {
     /// <summary>
     ///     Identifies the <see cref="AllConnections" /> dependency property.
@@ -69,10 +69,10 @@ public class BridgeVisibilityBehavior : Behavior<Line>, IRecipient<HintPopupClos
     }
 
     /// <summary>
-    ///     Receives the <see cref="HintPopupClosedMessage" />.
+    ///     Receives the <see cref="RuleMessageClearedMessage" />.
     /// </summary>
-    /// <param name="message">The message.</param>
-    public void Receive(HintPopupClosedMessage message)
+    /// <param name="messageClearedMessage">The message.</param>
+    public void Receive(RuleMessageClearedMessage messageClearedMessage)
     {
         if (AssociatedObject is not { Stroke: SolidColorBrush solidColorBrush } line) return;
 
@@ -114,32 +114,52 @@ public class BridgeVisibilityBehavior : Behavior<Line>, IRecipient<HintPopupClos
 
         line.Visibility = BridgeType switch
         {
-            BridgeTypeEnum.Horizontal => island.BridgesLeft.Count == 1 && island.BridgesRight.Count == 1
-                ? Visibility.Visible
-                : Visibility.Hidden,
-            BridgeTypeEnum.HorizontalDouble => island.BridgesLeft.Count == 2 && island.BridgesRight.Count == 2
-                ? Visibility.Visible
-                : Visibility.Hidden,
-            BridgeTypeEnum.Vertical => island.BridgesUp.Count == 1 && island.BridgesDown.Count == 1
-                ? Visibility.Visible
-                : Visibility.Hidden,
-            BridgeTypeEnum.VerticalDouble => island.BridgesUp.Count == 2 && island.BridgesDown.Count == 2
-                ? Visibility.Visible
-                : Visibility.Hidden,
-            BridgeTypeEnum.HorizontalLeft => island.BridgesLeft.Count == 1 ? Visibility.Visible : Visibility.Hidden,
-            BridgeTypeEnum.HorizontalDoubleLeft => island.BridgesLeft.Count == 2
-                ? Visibility.Visible
-                : Visibility.Hidden,
-            BridgeTypeEnum.HorizontalRight => island.BridgesRight.Count == 1 ? Visibility.Visible : Visibility.Hidden,
-            BridgeTypeEnum.HorizontalDoubleRight => island.BridgesRight.Count == 2
-                ? Visibility.Visible
-                : Visibility.Hidden,
-            BridgeTypeEnum.VerticalUp => island.BridgesUp.Count == 1 ? Visibility.Visible : Visibility.Hidden,
-            BridgeTypeEnum.VerticalDoubleUp => island.BridgesUp.Count == 2 ? Visibility.Visible : Visibility.Hidden,
-            BridgeTypeEnum.VerticalDown => island.BridgesDown.Count == 1 ? Visibility.Visible : Visibility.Hidden,
-            BridgeTypeEnum.VerticalDoubleDown => island.BridgesDown.Count == 2 ? Visibility.Visible : Visibility.Hidden,
+            BridgeTypeEnum.Horizontal => DetermineVisibility(1, island.BridgesLeft, island.BridgesRight),
+            BridgeTypeEnum.HorizontalDouble => DetermineVisibility(2, island.BridgesLeft, island.BridgesRight),
+            BridgeTypeEnum.Vertical => DetermineVisibility(1, island.BridgesUp, island.BridgesDown),
+            BridgeTypeEnum.VerticalDouble => DetermineVisibility(2, island.BridgesUp, island.BridgesDown),
+            BridgeTypeEnum.HorizontalLeft => DetermineVisibility(1, island.BridgesLeft),
+            BridgeTypeEnum.HorizontalDoubleLeft => DetermineVisibility(2, island.BridgesLeft),
+            BridgeTypeEnum.HorizontalRight => DetermineVisibility(1, island.BridgesRight),
+            BridgeTypeEnum.HorizontalDoubleRight => DetermineVisibility(2, island.BridgesRight),
+            BridgeTypeEnum.VerticalUp => DetermineVisibility(1, island.BridgesUp),
+            BridgeTypeEnum.VerticalDoubleUp => DetermineVisibility(2, island.BridgesUp),
+            BridgeTypeEnum.VerticalDown => DetermineVisibility(1, island.BridgesDown),
+            BridgeTypeEnum.VerticalDoubleDown => DetermineVisibility(2, island.BridgesDown),
             _ => Visibility.Hidden
         };
+    }
+
+    private Visibility DetermineVisibility(int expected, List<IHashiPoint> values1, List<IHashiPoint>? values2 = null)
+    {
+        // Take test connections into account when determining visibility
+        // Test connections are not visible
+
+        // Handle the case with two value lists
+        if (values2 != null)
+        {
+            if ((values1.Count == 1 && values2.Count == 1) || AnyPointIsTest(values1) || AnyPointIsTest(values2))
+            {
+                if (AllPointsAreTest(values1) || AllPointsAreTest(values2))
+                    return Visibility.Hidden;
+            }
+
+            return (values1.Count == expected && values2.Count == expected) ? Visibility.Visible : Visibility.Hidden;
+        }
+
+        // Handle the case with a single value list
+        if (values1.Count == 1 || AnyPointIsTest(values1))
+        {
+            if (AllPointsAreTest(values1))
+                return Visibility.Hidden;
+        }
+
+        return values1.Count == expected ? Visibility.Visible : Visibility.Hidden;
+
+
+        bool AnyPointIsTest(List<IHashiPoint> values) => values.Any(x => x.PointType == HashiPointTypeEnum.Test);
+
+        bool AllPointsAreTest(List<IHashiPoint> values) => values.All(x => x.PointType == HashiPointTypeEnum.Test);
     }
 
     private void AssociatedObject_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)

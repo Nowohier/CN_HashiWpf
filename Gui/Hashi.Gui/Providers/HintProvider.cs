@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using Hashi.Enums;
+﻿using Hashi.Enums;
 using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Interfaces.Wrappers;
 using Hashi.Gui.Translation;
@@ -12,7 +11,7 @@ using NRules.RuleModel;
 namespace Hashi.Gui.Providers
 {
     /// <inheritdoc cref="IHintProvider"/>
-    public class HintProvider : ObservableRecipient, IHintProvider
+    public class HintProvider : IHintProvider
     {
         private readonly IIslandProvider islandProvider;
         private readonly IDialogWrapper dialogWrapper;
@@ -49,7 +48,8 @@ namespace Hashi.Gui.Providers
             get => selectedRule;
             set
             {
-                if (!SetProperty(ref selectedRule, value)) return;
+                if (selectedRule == value) return;
+                selectedRule = value;
 
                 RuleInfoProvider.RuleMessage = TranslationSource.Instance[selectedRule.Name] ?? string.Empty;
                 RuleInfoProvider.AreRulesBeingApplied = false;

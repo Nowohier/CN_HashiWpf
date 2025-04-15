@@ -32,8 +32,14 @@ namespace Hashi.Gui.Interfaces.Providers
         /// <summary>
         ///     Rebuilds the island collection with a new solution container.
         /// </summary>
-        /// <param name="solutionProvider"></param>
+        /// <param name="solutionProvider">The solution provider.</param>
         void InitializeNewSolution(ISolutionProvider solutionProvider);
+
+        /// <summary>
+        ///    Rebuilds the island collection with a new solution container. and sets the bridges.
+        /// </summary>
+        /// <param name="solutionProvider">The solution provider.</param>
+        void InitializeNewSolutionAndSetBridges(ISolutionProvider solutionProvider);
 
         /// <summary>
         /// Removes all island highlights.

@@ -2,11 +2,13 @@
 using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Enums;
 using Hashi.Generator.Interfaces;
+using Hashi.Generator.Interfaces.Providers;
 using Hashi.Gui.Extensions;
 using Hashi.Gui.Helpers;
 using Hashi.Gui.Interfaces.Messages;
 using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.Providers;
+using Hashi.Gui.Interfaces.Resources.SolutionProviders;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Wrappers;
 using Hashi.Gui.Messages;
@@ -33,6 +35,7 @@ public class MainViewModel : AsyncObservableRecipient,
     private bool isCheating;
     private bool isGeneratingHashiPuzzle;
     private DifficultyEnum selectedDifficulty = DifficultyEnum.Easy3;
+    private ISolutionProvider? selectedTestSolutionProvider;
 
 
     /// <summary>
@@ -45,6 +48,7 @@ public class MainViewModel : AsyncObservableRecipient,
     /// <param name="timerProvider">The timer provider.</param>
     /// <param name="islandProvider">The islands provider.</param>
     /// <param name="hintProvider">The hint provider.</param>
+    /// <param name="testSolutionProvider">The test solution provider.</param>
     public MainViewModel(
         Func<SolidColorBrush, IHashiBrush> brushFactory,
         IDialogWrapper dialogWrapper,
@@ -52,13 +56,15 @@ public class MainViewModel : AsyncObservableRecipient,
         IHashiSettingsProvider settingsProvider,
         ITimerProvider timerProvider,
         IIslandProvider islandProvider,
-        IHintProvider hintProvider)
+        IHintProvider hintProvider,
+        ITestSolutionProvider testSolutionProvider)
     {
         this.brushFactory = brushFactory;
         SettingsProvider = settingsProvider;
         TimerProvider = timerProvider;
         IslandProvider = islandProvider;
         HintProvider = hintProvider;
+        TestSolutionProvider = testSolutionProvider;
         this.dialogWrapper = dialogWrapper;
         this.hashiGenerator = hashiGenerator;
 
@@ -74,6 +80,8 @@ public class MainViewModel : AsyncObservableRecipient,
         RedoCommand = new RelayCommand(RedoCommandExecute, RedoCommandCanExecute);
         WindowMouseClickedCommand = new RelayCommand(() => HintProvider.RuleInfoProvider.RuleMessage = string.Empty);
         ChangeLanguageCommand = new RelayCommand<string>(ChangeLanguageCommandExecute);
+
+        selectedTestSolutionProvider = TestSolutionProvider.SolutionProviders.FirstOrDefault();
     }
 
     /// <inheritdoc />
@@ -84,6 +92,9 @@ public class MainViewModel : AsyncObservableRecipient,
 
     /// <inheritdoc />
     public IHintProvider HintProvider { get; }
+
+    /// <inheritdoc />
+    public ITestSolutionProvider TestSolutionProvider { get; }
 
     /// <summary>
     ///     Gets the highscore for the selected difficulty.
@@ -107,6 +118,21 @@ public class MainViewModel : AsyncObservableRecipient,
     {
         get => isGeneratingHashiPuzzle;
         set => SetProperty(ref isGeneratingHashiPuzzle, value);
+    }
+
+    /// <summary>
+    ///    Gets or sets the selected test solution provider.
+    /// </summary>
+    public ISolutionProvider? SelectedTestSolutionProvider
+    {
+        get => selectedTestSolutionProvider;
+        set
+        {
+            if (SetProperty(ref selectedTestSolutionProvider, value))
+            {
+                SetTestSolution();
+            }
+        }
     }
 
     /// <summary>
@@ -278,6 +304,24 @@ public class MainViewModel : AsyncObservableRecipient,
 
         IsCheating = false;
         WeakReferenceMessenger.Default.Send(new UpdateAllIslandColorsMessage());
+    }
+
+    private void SetTestSolution()
+    {
+        if (selectedTestSolutionProvider is not { BridgeCoordinates: not null, HashiField: not null })
+        {
+            CreateNewGameCommand.Execute(null);
+            return;
+        }
+
+        IsGeneratingHashiPuzzle = true;
+        IsCheating = false;
+
+        HintProvider.ResetSession();
+        IslandProvider.InitializeNewSolutionAndSetBridges(selectedTestSolutionProvider!);
+        TimerProvider.StopTimer();
+
+        IsGeneratingHashiPuzzle = false;
     }
 
     private void GenerateHintCommandExecute()
