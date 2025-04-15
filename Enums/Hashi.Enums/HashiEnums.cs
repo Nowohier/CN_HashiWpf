@@ -14,6 +14,15 @@ public enum BridgeOperationTypeEnum
 }
 
 /// <summary>
+///   Represents the type of window.
+/// </summary>
+public enum WindowType
+{
+    Main,
+    GenerateTestField
+}
+
+/// <summary>
 ///    Represents the type of point in the Hashi puzzle.
 /// </summary>
 public enum HashiPointTypeEnum

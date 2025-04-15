@@ -55,7 +55,8 @@ public class MainViewModel : AsyncObservableRecipient,
     /// <param name="testSolutionProvider">The test solution provider.</param>
     /// <param name="generateTestFieldViewFactory">The generate test files view factory.</param>
     /// <param name="solutionProviderFactory">The solution provider factory.</param>
-    public MainViewModel(
+    public MainViewModel
+    (
         Func<SolidColorBrush, IHashiBrush> brushFactory,
         IDialogWrapper dialogWrapper,
         IHashiGenerator hashiGenerator,
@@ -119,6 +120,19 @@ public class MainViewModel : AsyncObservableRecipient,
     {
         get => isCheating;
         set => SetProperty(ref isCheating, value);
+    }
+
+    /// <summary>
+    /// Determines whether the grid lines are enabled.
+    /// </summary>
+    public bool AreGridLinesEnabled
+    {
+        get => SettingsProvider.Settings.AreGridLinesEnabled;
+        set
+        {
+            SettingsProvider.Settings.AreGridLinesEnabled = value;
+            OnPropertyChanged();
+        }
     }
 
     /// <summary>
@@ -350,12 +364,12 @@ public class MainViewModel : AsyncObservableRecipient,
     private void GenerateTestFieldCommandExecute()
     {
         var view = generateTestFieldViewFactory.Invoke();
-        if (view.DataContext is not IMainViewModel main)
+        if (view.DataContext is not IGenerateTestFieldViewModel testfieldGeneratorViewModel)
         {
             return;
         }
 
-        main.SetTestSolution(solutionProviderFactory.Invoke(TestSolutionProvider.HashiFieldReference, [], null));
+        testfieldGeneratorViewModel.SetTestSolution(solutionProviderFactory.Invoke(TestSolutionProvider.HashiFieldReference, [], null));
         view.ShowDialog();
 
     }
