@@ -17,12 +17,15 @@
         <Setter Property="Foreground" Value="White" />
     </Style>
 
-    <Style x:Key="MenuButtonStyle" TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
+    <Style x:Key="MenuButtonGenerateStyle" TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
         <Setter Property="Focusable" Value="False" />
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="Background" Value="White" />
         <Setter Property="Height" Value="30" />
         <Setter Property="IsEnabled" Value="True" />
+    </Style>
+
+    <Style x:Key="MenuButtonStyle" TargetType="Button" BasedOn="{StaticResource MenuButtonGenerateStyle}">
         <Style.Triggers>
             <DataTrigger
                 Binding="{Binding Path=DataContext.(viewModels:MainViewModel.IsGeneratingHashiPuzzle), RelativeSource={RelativeSource AncestorType=mah:MetroWindow, Mode=FindAncestor}}"
@@ -32,8 +35,9 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="MenuGridToggleButtonStyle" TargetType="ToggleButton"
-           BasedOn="{StaticResource MahApps.Styles.ToggleButton}">
+    
+
+    <Style x:Key="MenuGenerateGridToggleButtonStyle" TargetType="ToggleButton" BasedOn="{StaticResource MahApps.Styles.ToggleButton}">
         <Setter Property="Focusable" Value="False" />
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="FontSize" Value="10" />
@@ -47,26 +51,21 @@
             <Setter.Value>
                 <ControlTemplate TargetType="ToggleButton">
                     <Border BorderBrush="{TemplateBinding BorderBrush}"
-                            Background="{TemplateBinding Background}" BorderThickness="1" CornerRadius="2"
-                            Padding="3,0,3,0">
+                    Background="{TemplateBinding Background}" BorderThickness="1" CornerRadius="2"
+                    Padding="3,0,3,0">
                         <ContentPresenter HorizontalAlignment="Center"
-                                          VerticalAlignment="Center" />
+                                  VerticalAlignment="Center" />
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
         <Style.Triggers>
-            <DataTrigger
-                Binding="{Binding Path=DataContext.(viewModels:MainViewModel.IsGeneratingHashiPuzzle), RelativeSource={RelativeSource AncestorType=mah:MetroWindow, Mode=FindAncestor}}"
-                Value="True">
-                <Setter Property="IsEnabled" Value="False" />
-            </DataTrigger>
             <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource Mode=Self}}" Value="True">
                 <Setter Property="Foreground" Value="White" />
                 <Setter Property="Content">
                     <Setter.Value>
                         <iconPacks:PackIconVaadinIcons Kind="Grid" Width="14" Height="14" VerticalAlignment="Center"
-                                                       HorizontalAlignment="Center" />
+                                               HorizontalAlignment="Center" />
                     </Setter.Value>
                 </Setter>
             </DataTrigger>
@@ -76,10 +75,10 @@
                     <Setter.Value>
                         <Grid>
                             <iconPacks:PackIconVaadinIcons Kind="Grid" Width="14" Height="14"
-                                                           VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                                   VerticalAlignment="Center" HorizontalAlignment="Center" />
                             <iconPacks:PackIconPhosphorIcons Kind="ProhibitInsetThin" Width="22" Height="22"
-                                                             HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                             Foreground="Red" />
+                                                     HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                     Foreground="Red" />
                         </Grid>
                     </Setter.Value>
                 </Setter>
@@ -88,6 +87,16 @@
                 <Setter Property="Background" Value="White" />
                 <Setter Property="Foreground" Value="Black" />
             </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="MenuGridToggleButtonStyle" TargetType="ToggleButton" BasedOn="{StaticResource MenuGenerateGridToggleButtonStyle}">
+        <Style.Triggers>
+            <DataTrigger
+            Binding="{Binding Path=DataContext.(viewModels:MainViewModel.IsGeneratingHashiPuzzle), RelativeSource={RelativeSource AncestorType=mah:MetroWindow, Mode=FindAncestor}}"
+            Value="True">
+                <Setter Property="IsEnabled" Value="False" />
+            </DataTrigger>
         </Style.Triggers>
     </Style>
 

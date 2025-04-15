@@ -3,7 +3,7 @@
     /// <summary>
     ///   Interface for the view that generates test fields.
     /// </summary>
-    public interface IGenerateTestFieldView
+    public interface IGenerateTestFieldView : IViewBoxControl
     {
         /// <summary>
         ///     Gets or sets the view model for the main view.

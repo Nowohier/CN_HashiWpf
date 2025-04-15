@@ -5,9 +5,9 @@ namespace Hashi.Gui.Views
 {
     public partial class GenerateTestFieldView : IGenerateTestFieldView
     {
-        public GenerateTestFieldView(IMainViewModel mainViewModel)
+        public GenerateTestFieldView(IGenerateTestFieldViewModel generateTestFieldViewModel)
         {
-            DataContext = mainViewModel;
+            DataContext = generateTestFieldViewModel;
             InitializeComponent();
             ViewBoxControl = HashiViewBox;
         }
