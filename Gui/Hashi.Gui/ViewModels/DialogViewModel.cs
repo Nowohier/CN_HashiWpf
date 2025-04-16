@@ -1,15 +1,15 @@
-﻿using System.Windows.Input;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Hashi.Enums;
 using Hashi.Gui.Interfaces.General;
+using System.Windows.Input;
 
 namespace Hashi.Gui.ViewModels;
 
 /// <summary>
 ///     This view model handles all dialogs that are displayed from within the program.
 /// </summary>
-public class DialogViewModel : ObservableRecipient
+public class DialogViewModel : ObservableObject
 {
     private string? caption, message;
 

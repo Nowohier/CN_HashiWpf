@@ -1,12 +1,12 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Messages;
-using Hashi.Gui.ViewModels;
 
 namespace Hashi.Gui.Providers
 {
     /// <inheritdoc cref="IRuleInfoProvider"/>
-    public class RuleInfoProvider(IIslandProvider islandProvider) : NotifyPropertyChangedBase, IRuleInfoProvider
+    public class RuleInfoProvider(IIslandProvider islandProvider) : ObservableObject, IRuleInfoProvider
     {
         private string ruleMessage = string.Empty;
 

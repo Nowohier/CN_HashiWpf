@@ -1,17 +1,17 @@
-﻿using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Hashi.Enums;
 using Hashi.Gui.Extensions;
 using Hashi.Gui.Interfaces.ViewModels;
 using Newtonsoft.Json;
+using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Hashi.Gui.ViewModels.Settings;
 
 /// <inheritdoc cref="ISettingsViewModel" />
 [JsonObject(MemberSerialization.OptIn)]
 [SuppressMessage("ReSharper", "StringLiteralTypo")]
-public class SettingsViewModel : ObservableRecipient, ISettingsViewModel
+public class SettingsViewModel : ObservableObject, ISettingsViewModel
 {
     private bool areGridLinesEnabled;
     private string? selectedLanguage;
