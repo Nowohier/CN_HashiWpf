@@ -21,6 +21,7 @@ public class AutoFacMessagesModule : Module
         builder.RegisterType<UpdateAllIslandColorsMessage>().As<IUpdateAllIslandColorsMessage>().InstancePerDependency();
         builder.RegisterType<GetVisibleNeighborRequestMessage>().As<IGetVisibleNeighborRequestMessage>().InstancePerDependency();
         builder.RegisterType<RuleMessageClearedMessage>().As<IRuleMessageClearedMessage>().InstancePerDependency();
+        builder.RegisterType<IsTestModeRequestMessage>().As<IIsTestModeRequestMessage>().InstancePerDependency();
 
         builder.Register<Func<IIslandViewModel, IIslandViewModel, IGetVisibleNeighborRequestMessage>>(context =>
         {
@@ -65,6 +66,13 @@ public class AutoFacMessagesModule : Module
             var c = context.Resolve<IComponentContext>();
             return (islandInfos) => c.Resolve<IBridgeConnectionChangedMessage>(
                 new NamedParameter("islandInfos", islandInfos));
+        });
+
+        builder.Register<Func<bool?, IAllConnectionsSetMessage>>(context =>
+        {
+            var c = context.Resolve<IComponentContext>();
+            return (value) => c.Resolve<IAllConnectionsSetMessage>(
+                new NamedParameter("value", value));
         });
     }
 }

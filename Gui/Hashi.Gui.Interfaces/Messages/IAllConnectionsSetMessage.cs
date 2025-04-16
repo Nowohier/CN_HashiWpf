@@ -3,6 +3,6 @@
 /// <summary>
 ///     Represents the message sent when all connections are set.
 /// </summary>
-public interface IAllConnectionsSetMessage : IAsyncMessage
+public interface IAllConnectionsSetMessage : IValueChangedMessage<bool?>
 {
 }

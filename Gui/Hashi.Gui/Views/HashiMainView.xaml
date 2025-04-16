@@ -17,7 +17,7 @@
                  d:DataContext="{d:DesignInstance {x:Type viewModels:MainViewModel}, IsDesignTimeCreatable=False}"
                  Title="{Binding Title}" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen"
                  ResizeMode="NoResize"
-                 AllowDrop="True" WindowTitleBrush="{StaticResource BasicBrush}">
+                 AllowDrop="True" WindowTitleBrush="{Binding WindowColorBrush.Brush}">
     <mah:MetroWindow.IconTemplate>
         <DataTemplate>
             <Grid>
