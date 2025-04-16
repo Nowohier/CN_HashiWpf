@@ -99,7 +99,7 @@ public class _6ConnectionsRule1Tests : TestBase<_6ConnectionsRule1>
     {
         // arrange
         var testIsland = SetupTestIsland(6);
-        testIsland.Setup(mock => mock.GetAllVisibleNeighbors())
+        IslandProviderMock.Setup(mock => mock.GetAllVisibleNeighbors(testIsland.Object))
             .Returns([]);
 
         // act

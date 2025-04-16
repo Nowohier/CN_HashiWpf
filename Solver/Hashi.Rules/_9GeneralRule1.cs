@@ -20,7 +20,7 @@ public class _9GeneralRule1(IRuleInfoProvider ruleInfoProvider, IIslandProvider 
         When()
             .Match(() => island, x => x.MaxConnectionsReached == false)
             .Let(() => validNeighbors,
-                () => island.GetAllVisibleNeighbors().Where(x => x.MaxConnectionsReached == false).ToList())
+                () => GetAllVisibleNeighbors(island).Where(x => x.MaxConnectionsReached == false).ToList())
             .Having(() => validNeighbors.Count == 1);
 
         Then()

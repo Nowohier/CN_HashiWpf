@@ -97,22 +97,6 @@ public interface IIslandViewModel
     ConnectionTypeEnum GetConnectionType(IIslandViewModel targetIsland);
 
     /// <summary>
-    ///     Gets all neighbors with MaxConnections > 0 and no colliding connections.
-    /// </summary>
-    /// <returns>a list of visible neighbor islands.</returns>
-    List<IIslandViewModel> GetAllVisibleNeighbors();
-
-    /// <summary>
-    ///     Gets the visible neighbor of the current island in the given direction of potential target island.
-    /// </summary>
-    /// <param name="potentialTargetIsland">The potential target island to give a hint in which direction to search.</param>
-    /// <returns>
-    ///     the visible neighbor of the current island in the given direction of potential target island. Null if not
-    ///     found.
-    /// </returns>
-    IIslandViewModel? GetVisibleNeighbor(IIslandViewModel potentialTargetIsland);
-
-    /// <summary>
     ///     Notifies the bridge connections.
     /// </summary>
     void NotifyBridgeConnections();

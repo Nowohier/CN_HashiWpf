@@ -67,7 +67,7 @@ public class _2ConnectionsRule2Tests : TestBase<_2ConnectionsRule2>
         var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 1);
         upIsland.Setup(mock => mock.AllConnections).Returns([testIsland.Object.Coordinates]);
 
-        testIsland.Setup(mock => mock.GetAllVisibleNeighbors())
+        IslandProviderMock.Setup(mock => mock.GetAllVisibleNeighbors(testIsland.Object))
             .Returns([leftIsland.Object, rightIsland.Object, upIsland.Object]);
 
         // act
@@ -89,7 +89,7 @@ public class _2ConnectionsRule2Tests : TestBase<_2ConnectionsRule2>
         var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 1);
         var upIsland = CreateIslandMock(TestIslandEnum.UpIsland, 1);
 
-        testIsland.Setup(mock => mock.GetAllVisibleNeighbors())
+        IslandProviderMock.Setup(mock => mock.GetAllVisibleNeighbors(testIsland.Object))
             .Returns([leftIsland.Object, upIsland.Object]);
 
         // act
