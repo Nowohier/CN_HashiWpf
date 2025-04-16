@@ -4,7 +4,7 @@ using Hashi.Gui.Interfaces.ViewModels;
 namespace Hashi.Gui.ViewModels;
 
 /// <inheritdoc cref="ILanguageViewModel" />
-public class LanguageViewModel : ObservableRecipient, ILanguageViewModel
+public class LanguageViewModel : ObservableObject, ILanguageViewModel
 {
     private string culture;
     private string languageNameEnglish;

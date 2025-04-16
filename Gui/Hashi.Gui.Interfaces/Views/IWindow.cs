@@ -1,9 +1,6 @@
 ﻿namespace Hashi.Gui.Interfaces.Views
 {
-    /// <summary>
-    ///   Interface for the view that generates test fields.
-    /// </summary>
-    public interface IGenerateTestFieldView : IViewBoxControl
+    public interface IWindow<T> : IViewBoxControl
     {
         /// <summary>
         ///     Gets or sets the view model for the main view.

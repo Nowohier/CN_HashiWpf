@@ -16,7 +16,7 @@ public enum BridgeOperationTypeEnum
 /// <summary>
 ///   Represents the type of window.
 /// </summary>
-public enum WindowType
+public enum WindowTypeEnum
 {
     Main,
     GenerateTestField
