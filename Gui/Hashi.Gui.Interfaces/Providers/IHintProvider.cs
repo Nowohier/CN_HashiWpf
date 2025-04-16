@@ -11,11 +11,6 @@
         IRuleInfoProvider RuleInfoProvider { get; }
 
         /// <summary>
-        ///     Gets or sets the selected rule for the game.
-        /// </summary>
-        Type SelectedRule { get; set; }
-
-        /// <summary>
         ///     Gets the list of rules available for the game.
         /// </summary>
         IList<Type> Rules { get; }
@@ -28,6 +23,7 @@
         /// <summary>
         ///    Generates a hint based on the selected rule.
         /// </summary>
-        void GenerateHint();
+        /// <param name="selectedRule">The selected rule.</param>
+        void GenerateHint(Type selectedRule);
     }
 }

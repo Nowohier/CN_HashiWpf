@@ -15,7 +15,7 @@
                  mc:Ignorable="d"
                  Loaded="Window_Loaded"
                  d:DataContext="{d:DesignInstance {x:Type viewModels:MainViewModel}, IsDesignTimeCreatable=False}"
-                 Title="Hashiwokakero" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen"
+                 Title="{Binding Title}" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen"
                  ResizeMode="NoResize"
                  AllowDrop="True" WindowTitleBrush="{StaticResource BasicBrush}">
     <mah:MetroWindow.IconTemplate>
@@ -34,24 +34,25 @@
     </Window.Resources>
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands>
-            <StackPanel Orientation="Horizontal" Margin="0,0,10,0" Visibility="{Binding Source={x:Static helpers:DebugHelper.IsDebugBuild}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-                <TextBlock Text="Test Solutions:" VerticalAlignment="Center" />
-                <ComboBox Padding="5,0,5,0" Margin="5,0,0,0" Focusable="False"
-                          ToolTip="{ns:Loc Language}" ItemsSource="{Binding TestSolutionProvider.SolutionProviders}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedTestSolutionProvider}"
-                          ToolTipService.InitialShowDelay="0" Height="26"
-                          BorderThickness="0">
-                </ComboBox>
-            </StackPanel>
             <StackPanel Orientation="Horizontal"
                         Visibility="{Binding Source={x:Static helpers:DebugHelper.IsDebugBuild}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
                 <TextBlock Text="Rules:" VerticalAlignment="Center" />
                 <ComboBox Height="26" BorderThickness="1" ItemsSource="{Binding  HintProvider.Rules}"
-                          SelectedItem="{Binding  HintProvider.SelectedRule}" DisplayMemberPath="Name" Margin="5,0,10,0" />
+                          BorderBrush="{StaticResource MahApps.Brushes.Gray5}"
+                          SelectedItem="{Binding  SelectedRule}" DisplayMemberPath="Name"
+                          Margin="5,0,10,0" />
             </StackPanel>
+            <Button Height="26" Command="{Binding ToggleTestFieldCommand}"
+                    Padding="5,0,5,0" Margin="10,0,0,0" DockPanel.Dock="Right"
+                    ToolTip="{ns:Loc Undo}" ToolTipService.InitialShowDelay="0"
+                    Visibility="{Binding Source={x:Static helpers:DebugHelper.IsDebugBuild}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                <iconPacks:PackIconPhosphorIcons Kind="TestTube" Width="18"
+                                                 Height="18" />
+            </Button>
             <mah:DropDownButton Padding="5,0,5,0"
                                 ToolTip="{ns:Loc Language}" ItemsSource="{Binding SettingsProvider.Settings.Languages}"
                                 ToolTipService.InitialShowDelay="0" Height="26"
-                                BorderBrush="{StaticResource MahApps.Brushes.Button.Border}">
+                                BorderBrush="{StaticResource MahApps.Brushes.Gray5}">
                 <mah:DropDownButton.Icon>
                     <iconPacks:PackIconPhosphorIcons Kind="GlobeHemisphereWest" Width="18"
                                                      Height="18" />
@@ -68,16 +69,17 @@
     </mah:MetroWindow.RightWindowCommands>
     <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="70" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
+        <Grid Grid.Row="0"
+              Visibility="{Binding IsTestFieldMode, Converter={StaticResource InvertedBoolToVisibilityConverter}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <Border Grid.Row="0" BorderThickness="0,0,0,0" BorderBrush="{StaticResource BasicBrush}" Margin="0,0,0,0">
+            <Border Grid.Row="0">
                 <DockPanel LastChildFill="True">
                     <GroupBox Header="{ns:Loc CreateTitle}" Padding="5" Style="{x:Null}" DockPanel.Dock="Left"
                               BorderThickness="0,1,0,0" Margin="0,0,0,0" BorderBrush="{StaticResource BasicBrush}"
@@ -158,12 +160,75 @@
                             </Button>
                             <Border DockPanel.Dock="Right" BorderThickness="0,0,1,0" Height="35" BorderBrush="Black"
                                     Margin="10,0,0,0" />
-                            <Button Style="{StaticResource MenuButtonStyle}" Command="{Binding GenerateTestFieldCommand}"
-                                    Padding="5,0,5,0" Margin="10,0,0,0" DockPanel.Dock="Right"
-                                    ToolTip="{ns:Loc Undo}" ToolTipService.InitialShowDelay="0"
-                                    Visibility="{Binding Source={x:Static helpers:DebugHelper.IsDebugBuild}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-                                <iconPacks:PackIconPhosphorIcons Kind="TestTubeThin" Width="18"
-                                                                 Height="18" />
+                        </DockPanel>
+                    </GroupBox>
+                </DockPanel>
+            </Border>
+        </Grid>
+        <Grid Grid.Row="0" Visibility="{Binding IsTestFieldMode, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Border Grid.Row="0">
+                <DockPanel LastChildFill="True">
+                    <GroupBox Header="{ns:Loc OptionsTitle}" Padding="5" Style="{x:Null}"
+                              BorderThickness="0,1,0,0"
+                              BorderBrush="{StaticResource BasicBrush}"
+                              Background="{StaticResource MenuBackgroundBrush}">
+                        <DockPanel LastChildFill="False">
+                            <Button Style="{StaticResource MenuButtonGenerateStyle}" Padding="3,0,3,0" Width="30"
+                                    HorizontalAlignment="Left" ToolTip="{ns:Loc RemoveAllBridgesTooltip}"
+                                    ToolTipService.InitialShowDelay="0"
+                                    Command="{Binding RemoveAllBridgesCommand}" DockPanel.Dock="Left">
+                                <Grid>
+                                    <iconPacks:PackIconPhosphorIcons Kind="BridgeThin" Width="16" Height="16"
+                                                                     HorizontalAlignment="Center"
+                                                                     VerticalAlignment="Center" />
+                                    <iconPacks:PackIconPhosphorIcons Kind="ProhibitInsetThin" Width="22" Height="22"
+                                                                     HorizontalAlignment="Center"
+                                                                     VerticalAlignment="Center" Foreground="Red" />
+                                </Grid>
+                            </Button>
+                            <Button Style="{StaticResource MenuButtonGenerateStyle}"
+                                    Command="{Binding GenerateHintCommand}"
+                                    DockPanel.Dock="Left" Width="30" Padding="3,0,3,0" Margin="10,0,0,0"
+                                    HorizontalAlignment="Left" ToolTip="{ns:Loc ShowHintTooltip}"
+                                    ToolTipService.InitialShowDelay="0">
+                                <StackPanel Orientation="Horizontal">
+                                    <iconPacks:PackIconPhosphorIcons Kind="LightbulbThin" Width="18" Height="18" />
+                                </StackPanel>
+                            </Button>
+                            <ToggleButton Style="{StaticResource MenuGenerateGridToggleButtonStyle}" Padding="5,0,5,0"
+                                          IsChecked="{Binding AreGridLinesEnabled}"
+                                          Margin="10,0,0,0"
+                                          HorizontalAlignment="Left" DockPanel.Dock="Left" />
+                            <TextBlock Text="Testfield Name:" VerticalAlignment="Center" Margin="10,0,0,0"
+                                       DockPanel.Dock="Left" />
+                            <ComboBox Height="26" BorderThickness="1"
+                                      BorderBrush="{StaticResource MahApps.Brushes.Gray5}"
+                                      ItemsSource="{Binding  HintProvider.Rules}" Focusable="False"
+                                      SelectedItem="{Binding  SelectedRule}" DisplayMemberPath="Name"
+                                      Margin="5,0,10,0" />
+                            <Button Style="{StaticResource MenuButtonGenerateStyle}"
+                                    Command="{Binding ResetTestFieldCommand}"
+                                    DockPanel.Dock="Right" Width="30" Padding="3,0,3,0" Margin="10,0,0,0"
+                                    HorizontalAlignment="Left" ToolTip="{ns:Loc ShowHintTooltip}"
+                                    ToolTipService.InitialShowDelay="0">
+                                <StackPanel Orientation="Horizontal">
+                                    <iconPacks:PackIconPhosphorIcons Kind="ArrowsCounterClockwiseThin" Width="14"
+                                                                     Height="14" />
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource MenuButtonGenerateStyle}"
+                                    Command="{Binding ResetTestFieldCommand}"
+                                    DockPanel.Dock="Right" Width="30" Padding="3,0,3,0" Margin="10,0,0,0"
+                                    HorizontalAlignment="Left" ToolTip="{ns:Loc ShowHintTooltip}"
+                                    ToolTipService.InitialShowDelay="0">
+                                <StackPanel Orientation="Horizontal">
+                                    <iconPacks:PackIconPhosphorIcons Kind="FloppyDiskThin" Width="18" Height="18"
+                                                                     Foreground="Red" />
+                                </StackPanel>
                             </Button>
                         </DockPanel>
                     </GroupBox>

@@ -51,6 +51,8 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
         MouseMoveCommand = new RelayCommand<MouseEventArgsWithCorrectViewBoxPosition>(MouseMoveCommandExecute);
         MouseLeftButtonDownCommand = new RelayCommand<MouseButtonEventArgs>(MouseLeftButtonDownCommandExecute);
         MouseLeftButtonUpCommand = new RelayCommand<MouseButtonEventArgs>(MouseLeftButtonUpCommandExecute);
+        MouseRightButtonDownCommand = new RelayCommand<MouseButtonEventArgs>(MouseRightButtonDownCommandExecute);
+        MouseRightButtonUpCommand = new RelayCommand<MouseButtonEventArgs>(MouseRightButtonUpCommandExecute);
     }
 
     /// <summary>
@@ -87,6 +89,16 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
     ///     Gets or sets the command that is executed when the mouse moves.
     /// </summary>
     public ICommand MouseMoveCommand { get; }
+
+    /// <summary>
+    ///     Gets or sets the command that is executed when the right mouse button is pressed.
+    /// </summary>
+    public ICommand MouseRightButtonDownCommand { get; }
+
+    /// <summary>
+    ///     Gets or sets the command that is executed when the right mouse button is released.
+    /// </summary>
+    public ICommand MouseRightButtonUpCommand { get; }
 
     /// <inheritdoc />
     public ObservableCollection<IHashiPoint> AllConnections { get; } = new();
@@ -146,7 +158,7 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
     }
 
     /// <inheritdoc />
-    public int MaxConnections { get; }
+    public int MaxConnections { get; private set; }
 
     /// <inheritdoc />
     public int RemainingConnections => MaxConnections - AllConnections.Count;
@@ -322,6 +334,7 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
     protected virtual void MouseLeftButtonDownCommandExecute(MouseButtonEventArgs? e)
     {
         isDragging = false;
+        OnPropertyChanged(nameof(MaxConnections));
         IslandColor = new HashiBrush(HashiColorHelper.GreenIslandBrush);
     }
 
@@ -333,8 +346,38 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
     protected virtual void MouseLeftButtonUpCommandExecute(MouseButtonEventArgs? e)
     {
         if (!isDragging)
+        {
             WeakReferenceMessenger.Default.Send(new BridgeConnectionChangedMessage(
                 new BridgeConnectionInformationContainer(BridgeOperationTypeEnum.RemoveAll, this)));
+            MaxConnections = MaxConnections == 8 ? 0 : MaxConnections + 1;
+            OnPropertyChanged(nameof(MaxConnections));
+        }
+
+        WeakReferenceMessenger.Default.Send(new UpdateAllIslandColorsMessage());
+    }
+
+    /// <summary>
+    ///     Handles the mouse right button down event.
+    /// </summary>
+    /// <param name="e">The <see cref="MouseButtonEventArgs" />.</param>
+    /// <exception cref="ArgumentNullException">Throws an exception if e is null.</exception>
+    protected virtual void MouseRightButtonDownCommandExecute(MouseButtonEventArgs? e)
+    {
+
+    }
+
+    /// <summary>
+    ///     Handles the mouse right button up event.
+    /// </summary>
+    /// <param name="e">The <see cref="MouseButtonEventArgs" />.</param>
+    /// <exception cref="ArgumentNullException">Throws an exception if e is null.</exception>
+    protected virtual void MouseRightButtonUpCommandExecute(MouseButtonEventArgs? e)
+    {
+        if (!isDragging)
+        {
+            MaxConnections = MaxConnections == 0 ? 0 : MaxConnections - 1;
+            OnPropertyChanged(nameof(MaxConnections));
+        }
 
         WeakReferenceMessenger.Default.Send(new UpdateAllIslandColorsMessage());
     }
