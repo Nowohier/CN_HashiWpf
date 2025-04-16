@@ -12,5 +12,6 @@ public class AutoFacViewsModule : Module
     {
         // Register your views here
         builder.RegisterType<HashiMainView>().As<IWindow<IMainViewModel>>().SingleInstance();
+        builder.Register<IViewBoxControl>(context => context.Resolve<IComponentContext>().Resolve<IWindow<IMainViewModel>>());
     }
 }

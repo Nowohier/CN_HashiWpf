@@ -21,7 +21,7 @@ public class _1ConnectionRule1(IRuleInfoProvider ruleInfoProvider, IIslandProvid
         When()
             .Match(() => island, x => !x.MaxConnectionsReached && x.MaxConnections == 1)
             .Let(() => validNeighbors,
-                () => island.GetAllVisibleNeighbors().Where(x => x.MaxConnections != 1 && !x.MaxConnectionsReached)
+                () => GetAllVisibleNeighbors(island).Where(x => x.MaxConnections != 1 && !x.MaxConnectionsReached)
                     .ToList())
             .Having(() => validNeighbors.Count == 1);
 

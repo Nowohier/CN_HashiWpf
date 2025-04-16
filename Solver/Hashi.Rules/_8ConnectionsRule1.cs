@@ -18,7 +18,7 @@ public class _8ConnectionsRule1(IRuleInfoProvider ruleInfoProvider, IIslandProvi
 
         When()
             .Match(() => island, x => x.MaxConnections == 8 && !x.MaxConnectionsReached)
-            .Let(() => allNeighbors, () => island.GetAllVisibleNeighbors())
+            .Let(() => allNeighbors, () => GetAllVisibleNeighbors(island))
             .Having(() => allNeighbors.Count == 4);
 
         Then()

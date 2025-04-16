@@ -5,13 +5,13 @@ using Hashi.Enums;
 using Hashi.Gui.EventArgs;
 using Hashi.Gui.Extensions;
 using Hashi.Gui.Helpers;
+using Hashi.Gui.Interfaces.Messages;
+using Hashi.Gui.Interfaces.Messages.MessageContainers;
 using Hashi.Gui.Interfaces.Models;
-using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Views;
 using Hashi.Gui.Messages;
 using Hashi.Gui.Messages.MessageContainers;
-using Hashi.Gui.Models;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
@@ -21,15 +21,22 @@ namespace Hashi.Gui.ViewModels;
 
 public class IslandViewModel : ObservableRecipient, IIslandViewModel
 {
-    private readonly IIslandProvider islandProvider;
-    private readonly IHashiPoint mouseDownPosition = new HashiPoint(0, 0);
+    private readonly IViewBoxControl viewBoxControl;
+    private readonly Func<int, int, HashiPointTypeEnum, IHashiPoint> hashiPointFactory;
+    private readonly Func<SolidColorBrush, IHashiBrush> brushFactory;
+    private readonly Func<IIslandViewModel, IIslandViewModel, IGetVisibleNeighborRequestMessage> getVisibleNeighborRequestFactory;
+    private readonly Func<bool?, IUpdateAllIslandColorsMessage> updateAllIslandColorsMessageFactory;
+    private readonly Func<BridgeOperationTypeEnum, IIslandViewModel, IIslandViewModel?, IBridgeConnectionInformationContainer> connectionInformationContainerFactory;
+    private readonly Func<IBridgeConnectionInformationContainer, IDropTargetIslandChangedMessage> dropTargetIslandChangedMessageFactory;
+    private readonly Func<IBridgeConnectionInformationContainer, IBridgeConnectionChangedMessage> bridgeConnectionChangedMessageFactory;
+    private readonly IHashiPoint mouseDownPosition;
     private IIslandViewModel? dropTargetIsland;
     private bool isDragging;
     private bool isHighlightHorizontalLeft;
     private bool isHighlightHorizontalRight;
     private bool isHighlightVerticalBottom;
     private bool isHighlightVerticalTop;
-    private IHashiBrush islandColor = new HashiBrush(Brushes.LightBlue);
+    private IHashiBrush islandColor;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="IslandViewModel" /> class.
@@ -37,12 +44,38 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
     /// <param name="x">The x coordinate.</param>
     /// <param name="y">The y coordinate.</param>
     /// <param name="maxConnections">The max connections of the otherIsland.</param>
-    /// <param name="islandProvider">The island provider.</param>
-    public IslandViewModel(int x, int y, int maxConnections, IIslandProvider islandProvider)
+    /// <param name="viewBoxControl">The viewBox.</param>
+    /// <param name="hashiPointFactory">The hashi point factory.</param>
+    /// <param name="brushFactory">The brush factory.</param>
+    /// <param name="getVisibleNeighborRequestFactory">The get visible neighbors request message factory.</param>
+    /// <param name="updateAllIslandColorsMessageFactory">The update all island colors message factory.</param>
+    /// <param name="connectionInformationContainerFactory">The bridge connection information container factory.</param>
+    /// <param name="dropTargetIslandChangedMessageFactory">The drop target island changed factory.</param>
+    /// <param name="bridgeConnectionChangedMessageFactory">The bridge connection changed message factory.</param>
+    public IslandViewModel
+        (
+            int x,
+            int y,
+            int maxConnections,
+            IViewBoxControl viewBoxControl,
+            Func<int, int, HashiPointTypeEnum, IHashiPoint> hashiPointFactory,
+            Func<SolidColorBrush, IHashiBrush> brushFactory,
+            Func<IIslandViewModel, IIslandViewModel, IGetVisibleNeighborRequestMessage> getVisibleNeighborRequestFactory,
+            Func<bool?, IUpdateAllIslandColorsMessage> updateAllIslandColorsMessageFactory,
+            Func<BridgeOperationTypeEnum, IIslandViewModel, IIslandViewModel?, IBridgeConnectionInformationContainer> connectionInformationContainerFactory,
+            Func<IBridgeConnectionInformationContainer, IDropTargetIslandChangedMessage> dropTargetIslandChangedMessageFactory,
+            Func<IBridgeConnectionInformationContainer, IBridgeConnectionChangedMessage> bridgeConnectionChangedMessageFactory)
     {
-        this.islandProvider = islandProvider;
         MaxConnections = maxConnections;
-        Coordinates = new HashiPoint(x, y);
+        Coordinates = hashiPointFactory.Invoke(x, y, HashiPointTypeEnum.Normal);
+        this.viewBoxControl = viewBoxControl;
+        this.hashiPointFactory = hashiPointFactory;
+        this.brushFactory = brushFactory;
+        this.getVisibleNeighborRequestFactory = getVisibleNeighborRequestFactory;
+        this.updateAllIslandColorsMessageFactory = updateAllIslandColorsMessageFactory;
+        this.connectionInformationContainerFactory = connectionInformationContainerFactory;
+        this.dropTargetIslandChangedMessageFactory = dropTargetIslandChangedMessageFactory;
+        this.bridgeConnectionChangedMessageFactory = bridgeConnectionChangedMessageFactory;
 
         DragEnterCommand = new RelayCommand<DragEventArgs>(DragEnterCommandExecute);
         DropCommand = new RelayCommand<DragEventArgs>(DropCommandExecute);
@@ -53,6 +86,9 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
         MouseLeftButtonUpCommand = new RelayCommand<MouseButtonEventArgs>(MouseLeftButtonUpCommandExecute);
         MouseRightButtonDownCommand = new RelayCommand<MouseButtonEventArgs>(MouseRightButtonDownCommandExecute);
         MouseRightButtonUpCommand = new RelayCommand<MouseButtonEventArgs>(MouseRightButtonUpCommandExecute);
+
+        islandColor = brushFactory.Invoke(Brushes.LightBlue);
+        mouseDownPosition = hashiPointFactory.Invoke(0, 0, HashiPointTypeEnum.Normal);
     }
 
     /// <summary>
@@ -176,18 +212,6 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
     }
 
     /// <inheritdoc />
-    public List<IIslandViewModel> GetAllVisibleNeighbors()
-    {
-        return islandProvider.GetAllVisibleNeighbors(this);
-    }
-
-    /// <inheritdoc />
-    public IIslandViewModel? GetVisibleNeighbor(IIslandViewModel potentialTargetIsland)
-    {
-        return islandProvider.GetVisibleNeighbor(this, potentialTargetIsland);
-    }
-
-    /// <inheritdoc />
     public void NotifyBridgeConnections()
     {
         OnPropertyChanged(nameof(BridgesLeft));
@@ -237,8 +261,8 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
     public void RefreshIslandColor()
     {
         IslandColor = MaxConnectionsReached
-            ? new HashiBrush(HashiColorHelper.MaxBridgesReachedBrush)
-            : new HashiBrush(HashiColorHelper.BasicIslandBrush);
+            ? brushFactory.Invoke(HashiColorHelper.MaxBridgesReachedBrush)
+            : brushFactory.Invoke(HashiColorHelper.BasicIslandBrush);
     }
 
     /// <inheritdoc />
@@ -257,7 +281,7 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
     {
         if (e == null) throw new ArgumentNullException(nameof(e));
 
-        IslandColor = new HashiBrush(HashiColorHelper.GreenIslandBrush);
+        IslandColor = brushFactory.Invoke(HashiColorHelper.GreenIslandBrush);
     }
 
     /// <summary>
@@ -300,7 +324,7 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
             e.Data.GetData(typeof(IslandViewModel)) is not IslandViewModel islandToConnectWith ||
             islandToConnectWith == this) return;
 
-        WeakReferenceMessenger.Default.Send(new UpdateAllIslandColorsMessage());
+        WeakReferenceMessenger.Default.Send(updateAllIslandColorsMessageFactory.Invoke(null));
     }
 
     /// <summary>
@@ -335,7 +359,7 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
     {
         isDragging = false;
         OnPropertyChanged(nameof(MaxConnections));
-        IslandColor = new HashiBrush(HashiColorHelper.GreenIslandBrush);
+        IslandColor = brushFactory.Invoke(HashiColorHelper.GreenIslandBrush);
     }
 
     /// <summary>
@@ -353,7 +377,7 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
             OnPropertyChanged(nameof(MaxConnections));
         }
 
-        WeakReferenceMessenger.Default.Send(new UpdateAllIslandColorsMessage());
+        WeakReferenceMessenger.Default.Send(updateAllIslandColorsMessageFactory.Invoke(null));
     }
 
     /// <summary>
@@ -379,14 +403,12 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
             OnPropertyChanged(nameof(MaxConnections));
         }
 
-        WeakReferenceMessenger.Default.Send(new UpdateAllIslandColorsMessage());
+        WeakReferenceMessenger.Default.Send(updateAllIslandColorsMessageFactory.Invoke(null));
     }
 
     private void QueryContinueDragHandler(object sender, QueryContinueDragEventArgs e)
     {
-        var window = Application.Current.MainWindow as IViewBoxControl;
-
-        if (window?.ViewBoxControl is not FrameworkElement viewBox)
+        if (viewBoxControl.ViewBoxControl is not FrameworkElement viewBox)
             throw new InvalidOperationException("ViewBoxControl is not available.");
 
         var currentPosition = CursorHelper.GetCurrentCursorPosition(viewBox);
@@ -396,8 +418,10 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
                 potentialIsland != dropTargetIsland)
             {
                 dropTargetIsland = potentialIsland;
-                WeakReferenceMessenger.Default.Send(new DropTargetIslandChangedMessage(
-                    new BridgeConnectionInformationContainer(BridgeOperationTypeEnum.None, this, dropTargetIsland)));
+
+                var container = connectionInformationContainerFactory.Invoke(BridgeOperationTypeEnum.None, this, dropTargetIsland);
+                var dropMessage = dropTargetIslandChangedMessageFactory.Invoke(container);
+                WeakReferenceMessenger.Default.Send(dropMessage);
             }
 
         if (e.KeyStates != DragDropKeyStates.None) return;
@@ -406,10 +430,11 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
 
         if (dropTargetIsland == null) return;
 
-        var potentialTarget = GetVisibleNeighbor(dropTargetIsland);
+        var potentialTarget = WeakReferenceMessenger.Default.Send(getVisibleNeighborRequestFactory.Invoke(this, dropTargetIsland)).Response;
+        var islandInfos = connectionInformationContainerFactory.Invoke(BridgeOperationTypeEnum.Add, this, potentialTarget);
+        var addMessage = bridgeConnectionChangedMessageFactory.Invoke(islandInfos);
 
-        WeakReferenceMessenger.Default.Send(new BridgeConnectionChangedMessage(
-            new BridgeConnectionInformationContainer(BridgeOperationTypeEnum.Add, this, potentialTarget)));
-        WeakReferenceMessenger.Default.Send(new UpdateAllIslandColorsMessage());
+        WeakReferenceMessenger.Default.Send(addMessage);
+        WeakReferenceMessenger.Default.Send(updateAllIslandColorsMessageFactory.Invoke(null));
     }
 }

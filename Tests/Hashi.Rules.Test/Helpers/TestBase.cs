@@ -23,7 +23,7 @@ public abstract class TestBase<T> : RulesTestFixture
         // Create rule instance with mocks and add rule to the setup
         IslandProviderMock = new Mock<IIslandProvider>(MockBehavior.Strict);
         IslandProviderMock.Setup(mock => mock.AddConnection(It.IsAny<IIslandViewModel>(), It.IsAny<IIslandViewModel>(), HashiPointTypeEnum.Hint));
-
+        IslandProviderMock.Setup(mock => mock.GetAllVisibleNeighbors(It.IsAny<IIslandViewModel>())).Returns([]);
         RuleInfoProviderMock = new Mock<IRuleInfoProvider>(MockBehavior.Strict);
         RuleInfoProviderMock.SetupProperty(mock => mock.AreRulesBeingApplied, true);
         RuleInfoProviderMock.SetupProperty(mock => mock.RuleMessage, string.Empty);
@@ -77,7 +77,7 @@ public abstract class TestBase<T> : RulesTestFixture
     protected Mock<IIslandViewModel> SetupTestIsland(int maxConnections, params Mock<IIslandViewModel>[] neighbors)
     {
         var testIsland = CreateIslandMock(TestIslandEnum.TestIsland, maxConnections);
-        testIsland.Setup(mock => mock.GetAllVisibleNeighbors()).Returns(neighbors.Select(n => n.Object).ToList());
+        IslandProviderMock.Setup(mock => mock.GetAllVisibleNeighbors(testIsland.Object)).Returns(neighbors.Select(n => n.Object).ToList());
         return testIsland;
     }
 
@@ -110,7 +110,6 @@ public abstract class TestBase<T> : RulesTestFixture
         islandMock.Setup(mock => mock.Coordinates).Returns(CreateHashiPointMock(x, y).Object);
         islandMock.Setup(mock => mock.MaxConnections).Returns(maxConnections);
         islandMock.Setup(mock => mock.MaxConnectionsReached).Returns(maxConnectionsReached || maxConnections == 0);
-        islandMock.Setup(mock => mock.GetAllVisibleNeighbors()).Returns([]);
         islandMock.Setup(mock => mock.AllConnections).Returns([]);
         islandMock.Setup(mock => mock.RemainingConnections).Returns(maxConnectionsReached ? 0 : maxConnections);
         islandMock.Setup(mock => mock.RefreshIslandColor());

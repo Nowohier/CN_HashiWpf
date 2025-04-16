@@ -76,10 +76,10 @@ public class MainViewModel : AsyncObservableRecipient,
         this.hashiGenerator = hashiGenerator;
         this.solutionProviderFactory = solutionProviderFactory;
 
-        WeakReferenceMessenger.Default.Register<BridgeConnectionChangedMessage>(this);
-        WeakReferenceMessenger.Default.Register<UpdateAllIslandColorsMessage>(this);
+        WeakReferenceMessenger.Default.Register<IBridgeConnectionChangedMessage>(this);
+        WeakReferenceMessenger.Default.Register<IUpdateAllIslandColorsMessage>(this);
         WeakReferenceMessenger.Default.Register<AllConnectionsSetMessage>(this);
-        WeakReferenceMessenger.Default.Register<DropTargetIslandChangedMessage>(this);
+        WeakReferenceMessenger.Default.Register<IDropTargetIslandChangedMessage>(this);
 
         CreateNewGameCommand = new AsyncRelayCommand(CreateNewGameAsync);
         RemoveAllBridgesCommand = new RelayCommand(RemoveAllBridgesExecute);
@@ -336,7 +336,7 @@ public class MainViewModel : AsyncObservableRecipient,
     {
         if (islandChangedMessage.Value is not { SourceIsland: { } sourceIsland } ||
             islandChangedMessage.Value.TargetIsland is not { } dropTargetIsland ||
-            sourceIsland.GetVisibleNeighbor(dropTargetIsland) is not { } targetIsland)
+            IslandProvider.GetVisibleNeighbor(sourceIsland, dropTargetIsland) is not { } targetIsland)
         {
             IslandProvider.RemoveAllHighlights();
             IslandProvider.ClearTemporaryDropTargets();

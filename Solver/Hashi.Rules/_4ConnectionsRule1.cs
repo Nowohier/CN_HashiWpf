@@ -20,7 +20,7 @@ public class _4ConnectionsRule1(IRuleInfoProvider ruleInfoProvider, IIslandProvi
 
         When()
             .Match(() => island, x => !x.MaxConnectionsReached && x.MaxConnections == 4)
-            .Let(() => allNeighbors, () => island.GetAllVisibleNeighbors())
+            .Let(() => allNeighbors, () => GetAllVisibleNeighbors(island))
             .Let(() => validNeighbors, () => allNeighbors.Where(x => !x.MaxConnectionsReached).ToList())
             .Having(() => allNeighbors.Count == 2 && validNeighbors.Count > 0);
 

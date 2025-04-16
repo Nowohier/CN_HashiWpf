@@ -19,7 +19,7 @@ public class _6ConnectionsRule1(IRuleInfoProvider ruleInfoProvider, IIslandProvi
 
         When()
             .Match(() => island, x => x.MaxConnections == 6 && !x.MaxConnectionsReached)
-            .Let(() => allNeighbors, () => island.GetAllVisibleNeighbors())
+            .Let(() => allNeighbors, () => GetAllVisibleNeighbors(island))
             .Having(() => allNeighbors.Count == 3)
             .Let(() => validNeighbors, () => GetConnectableNeighbors(allNeighbors))
             .Having(() => validNeighbors.Count > 0);
