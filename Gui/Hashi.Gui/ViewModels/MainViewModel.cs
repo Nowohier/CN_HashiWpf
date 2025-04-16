@@ -4,7 +4,6 @@ using Hashi.Enums;
 using Hashi.Generator.Interfaces;
 using Hashi.Generator.Interfaces.Models;
 using Hashi.Generator.Interfaces.Providers;
-using Hashi.Gui.Extensions;
 using Hashi.Gui.Helpers;
 using Hashi.Gui.Interfaces.Messages;
 using Hashi.Gui.Interfaces.Models;
@@ -28,7 +27,7 @@ public class MainViewModel : AsyncObservableRecipient,
     IMainViewModel,
     IRecipient<IBridgeConnectionChangedMessage>,
     IRecipient<IUpdateAllIslandColorsMessage>,
-    IAsyncRecipient<IAllConnectionsSetMessage>,
+    IRecipient<IAllConnectionsSetMessage>,
     IRecipient<IDropTargetIslandChangedMessage>
 {
     private readonly Func<SolidColorBrush, IHashiBrush> brushFactory;
@@ -78,7 +77,7 @@ public class MainViewModel : AsyncObservableRecipient,
 
         WeakReferenceMessenger.Default.Register<IBridgeConnectionChangedMessage>(this);
         WeakReferenceMessenger.Default.Register<IUpdateAllIslandColorsMessage>(this);
-        WeakReferenceMessenger.Default.Register<AllConnectionsSetMessage>(this);
+        WeakReferenceMessenger.Default.Register<IAllConnectionsSetMessage>(this);
         WeakReferenceMessenger.Default.Register<IDropTargetIslandChangedMessage>(this);
 
         CreateNewGameCommand = new AsyncRelayCommand(CreateNewGameAsync);
@@ -92,6 +91,9 @@ public class MainViewModel : AsyncObservableRecipient,
         ResetTestFieldCommand = new AsyncRelayCommand(ResetTestFieldCommandExecute);
         selectedTestSolutionProvider = testSolutionProvider.SolutionProviders.FirstOrDefault();
         selectedRule = HintProvider.Rules.First();
+        WindowColorBrush = brushFactory.Invoke(HashiColorHelper.BasicBrush);
+
+        WeakReferenceMessenger.Default.Register<MainViewModel, IIsTestModeRequestMessage>(this, (_, message) => message.Reply(IsTestFieldMode));
     }
 
     /// <inheritdoc />
@@ -116,6 +118,11 @@ public class MainViewModel : AsyncObservableRecipient,
     ///    Gets the title of the game window.
     /// </summary>
     public string Title => $"Hashiwokakero{(IsTestFieldMode ? " - Testmode" : string.Empty)}";
+
+    /// <summary>
+    ///   Gets the color of the window bar.
+    /// </summary>
+    public IHashiBrush WindowColorBrush { get; private set; }
 
     /// <summary>
     ///    Gets or sets the selected rule for generating hints.
@@ -163,10 +170,12 @@ public class MainViewModel : AsyncObservableRecipient,
         get => isTestFieldMode;
         set
         {
-            if (SetProperty(ref isTestFieldMode, value))
-            {
-                OnPropertyChanged(nameof(Title));
-            }
+            if (!SetProperty(ref isTestFieldMode, value)) return;
+            WindowColorBrush = isTestFieldMode
+                ? brushFactory.Invoke(HashiColorHelper.TestModeBrush)
+                : brushFactory.Invoke(HashiColorHelper.BasicBrush);
+            OnPropertyChanged(nameof(WindowColorBrush));
+            OnPropertyChanged(nameof(Title));
         }
     }
 
@@ -293,8 +302,8 @@ public class MainViewModel : AsyncObservableRecipient,
         IslandProvider.RefreshIslandColors();
     }
 
-    /// <inheritdoc cref="IMainViewModel.ReceiveAsync(IAllConnectionsSetMessage,CancellationToken)" />
-    public async Task ReceiveAsync(IAllConnectionsSetMessage message, CancellationToken cancellationToken)
+    /// <inheritdoc cref="IMainViewModel.Receive(IAllConnectionsSetMessage)" />
+    public void Receive(IAllConnectionsSetMessage message)
     {
         var caption = TranslationSource.Instance["MessageGameOverCaption"]!;
         var dialogMessage = TranslationSource.Instance["MessageGameOverText"]!;
@@ -303,10 +312,13 @@ public class MainViewModel : AsyncObservableRecipient,
 
         //ToDo: Check if all islands are connected
 
-        if (IsCheating)
+        if (IsCheating || IsTestFieldMode)
         {
             dialogWrapper.Show(caption, dialogMessage, DialogButton.Ok, DialogImage.Success);
-            await CreateNewGameAsync();
+            if (!IsTestFieldMode)
+            {
+                CreateNewGameCommand.Execute(null);
+            }
             return;
         }
 
@@ -328,7 +340,7 @@ public class MainViewModel : AsyncObservableRecipient,
 
         dialogWrapper.Show(caption, dialogMessage, DialogButton.Ok, DialogImage.Success);
 
-        await CreateNewGameAsync();
+        CreateNewGameCommand.Execute(null);
     }
 
     /// <inheritdoc cref="IMainViewModel.Receive(IDropTargetIslandChangedMessage)" />

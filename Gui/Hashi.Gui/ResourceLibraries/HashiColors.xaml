@@ -8,6 +8,7 @@
     <SolidColorBrush x:Key="GreenIslandBrush" Color="#ade6bb" />
     <SolidColorBrush x:Key="IntenseGreenBrush" Color="#3abf5b" />
     <SolidColorBrush x:Key="MaxBridgesReachedBrush" Color="#e6bbad" />
+    <SolidColorBrush x:Key="TestModeBrush" Color="#d28982" />
     <SolidColorBrush x:Key="PotentialConnectionBrush" Color="AliceBlue" />
     <SolidColorBrush x:Key="GridLineBrush" Color="LightGray" />
 </ResourceDictionary>

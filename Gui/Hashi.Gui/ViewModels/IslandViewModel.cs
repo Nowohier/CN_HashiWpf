@@ -22,13 +22,13 @@ namespace Hashi.Gui.ViewModels;
 public class IslandViewModel : ObservableRecipient, IIslandViewModel
 {
     private readonly IViewBoxControl viewBoxControl;
-    private readonly Func<int, int, HashiPointTypeEnum, IHashiPoint> hashiPointFactory;
     private readonly Func<SolidColorBrush, IHashiBrush> brushFactory;
     private readonly Func<IIslandViewModel, IIslandViewModel, IGetVisibleNeighborRequestMessage> getVisibleNeighborRequestFactory;
     private readonly Func<bool?, IUpdateAllIslandColorsMessage> updateAllIslandColorsMessageFactory;
     private readonly Func<BridgeOperationTypeEnum, IIslandViewModel, IIslandViewModel?, IBridgeConnectionInformationContainer> connectionInformationContainerFactory;
     private readonly Func<IBridgeConnectionInformationContainer, IDropTargetIslandChangedMessage> dropTargetIslandChangedMessageFactory;
     private readonly Func<IBridgeConnectionInformationContainer, IBridgeConnectionChangedMessage> bridgeConnectionChangedMessageFactory;
+    private readonly Func<IIsTestModeRequestMessage> isTestModeRequestMessageFactory;
     private readonly IHashiPoint mouseDownPosition;
     private IIslandViewModel? dropTargetIsland;
     private bool isDragging;
@@ -52,6 +52,7 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
     /// <param name="connectionInformationContainerFactory">The bridge connection information container factory.</param>
     /// <param name="dropTargetIslandChangedMessageFactory">The drop target island changed factory.</param>
     /// <param name="bridgeConnectionChangedMessageFactory">The bridge connection changed message factory.</param>
+    /// <param name="isTestModeRequestMessageFactory">The is test mode request factory.</param>
     public IslandViewModel
         (
             int x,
@@ -64,18 +65,19 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
             Func<bool?, IUpdateAllIslandColorsMessage> updateAllIslandColorsMessageFactory,
             Func<BridgeOperationTypeEnum, IIslandViewModel, IIslandViewModel?, IBridgeConnectionInformationContainer> connectionInformationContainerFactory,
             Func<IBridgeConnectionInformationContainer, IDropTargetIslandChangedMessage> dropTargetIslandChangedMessageFactory,
-            Func<IBridgeConnectionInformationContainer, IBridgeConnectionChangedMessage> bridgeConnectionChangedMessageFactory)
+            Func<IBridgeConnectionInformationContainer, IBridgeConnectionChangedMessage> bridgeConnectionChangedMessageFactory,
+            Func<IIsTestModeRequestMessage> isTestModeRequestMessageFactory)
     {
         MaxConnections = maxConnections;
         Coordinates = hashiPointFactory.Invoke(x, y, HashiPointTypeEnum.Normal);
         this.viewBoxControl = viewBoxControl;
-        this.hashiPointFactory = hashiPointFactory;
         this.brushFactory = brushFactory;
         this.getVisibleNeighborRequestFactory = getVisibleNeighborRequestFactory;
         this.updateAllIslandColorsMessageFactory = updateAllIslandColorsMessageFactory;
         this.connectionInformationContainerFactory = connectionInformationContainerFactory;
         this.dropTargetIslandChangedMessageFactory = dropTargetIslandChangedMessageFactory;
         this.bridgeConnectionChangedMessageFactory = bridgeConnectionChangedMessageFactory;
+        this.isTestModeRequestMessageFactory = isTestModeRequestMessageFactory;
 
         DragEnterCommand = new RelayCommand<DragEventArgs>(DragEnterCommandExecute);
         DropCommand = new RelayCommand<DragEventArgs>(DropCommandExecute);
@@ -371,10 +373,14 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
     {
         if (!isDragging)
         {
-            WeakReferenceMessenger.Default.Send(new BridgeConnectionChangedMessage(
-                new BridgeConnectionInformationContainer(BridgeOperationTypeEnum.RemoveAll, this)));
-            MaxConnections = MaxConnections == 8 ? 0 : MaxConnections + 1;
-            OnPropertyChanged(nameof(MaxConnections));
+            WeakReferenceMessenger.Default.Send(new BridgeConnectionChangedMessage(new BridgeConnectionInformationContainer(BridgeOperationTypeEnum.RemoveAll, this)));
+
+            var isTestMode = WeakReferenceMessenger.Default.Send(isTestModeRequestMessageFactory.Invoke()).Response;
+            if (isTestMode)
+            {
+                MaxConnections = MaxConnections == 8 ? 0 : MaxConnections + 1;
+                OnPropertyChanged(nameof(MaxConnections));
+            }
         }
 
         WeakReferenceMessenger.Default.Send(updateAllIslandColorsMessageFactory.Invoke(null));
@@ -399,8 +405,12 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
     {
         if (!isDragging)
         {
-            MaxConnections = MaxConnections == 0 ? 0 : MaxConnections - 1;
-            OnPropertyChanged(nameof(MaxConnections));
+            var isTestMode = WeakReferenceMessenger.Default.Send(isTestModeRequestMessageFactory.Invoke()).Response;
+            if (isTestMode)
+            {
+                MaxConnections = MaxConnections == 0 ? 0 : MaxConnections - 1;
+                OnPropertyChanged(nameof(MaxConnections));
+            }
         }
 
         WeakReferenceMessenger.Default.Send(updateAllIslandColorsMessageFactory.Invoke(null));
