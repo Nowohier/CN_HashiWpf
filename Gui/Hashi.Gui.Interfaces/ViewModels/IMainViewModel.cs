@@ -1,5 +1,4 @@
-﻿using Hashi.Generator.Interfaces.Providers;
-using Hashi.Gui.Interfaces.Messages;
+﻿using Hashi.Gui.Interfaces.Messages;
 using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Interfaces.Resources.SolutionProviders;
 
@@ -26,7 +25,7 @@ public interface IMainViewModel
     IHintProvider HintProvider { get; }
 
     /// <summary>
-    /// The test solution provider for the Hashi game.
+    ///   The test solution provider for the Hashi game.
     /// </summary>
     ITestSolutionProvider TestSolutionProvider { get; }
 
@@ -36,15 +35,9 @@ public interface IMainViewModel
     IHashiSettingsProvider SettingsProvider { get; }
 
     /// <summary>
-    ///     Creates a new game.
+    /// Creates a new game asynchronously.
     /// </summary>
     Task CreateNewGameAsync();
-
-    /// <summary>
-    /// Sets the test solution provider for the Hashi game.
-    /// </summary>
-    /// <param name="solutionProvider"></param>
-    void SetTestSolution(ISolutionProvider solutionProvider);
 
     /// <summary>
     ///     Handles the message when a bridge connection is changed.

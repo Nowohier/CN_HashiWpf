@@ -1,8 +1,8 @@
-﻿using System.Windows;
+﻿using Hashi.Gui.EventArgs;
+using Microsoft.Xaml.Behaviors;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Hashi.Gui.EventArgs;
-using Microsoft.Xaml.Behaviors;
 
 namespace Hashi.Gui.Behaviors;
 
@@ -28,6 +28,14 @@ public class IslandDragDropBehavior : Behavior<UIElement>
 
     public static readonly DependencyProperty MouseLeftButtonDownCommandProperty =
         DependencyProperty.Register(nameof(MouseLeftButtonDownCommand), typeof(ICommand),
+            typeof(IslandDragDropBehavior));
+
+    public static readonly DependencyProperty MouseRightButtonDownCommandProperty =
+        DependencyProperty.Register(nameof(MouseRightButtonDownCommand), typeof(ICommand),
+            typeof(IslandDragDropBehavior));
+
+    public static readonly DependencyProperty MouseRightButtonUpCommandProperty =
+        DependencyProperty.Register(nameof(MouseRightButtonUpCommand), typeof(ICommand),
             typeof(IslandDragDropBehavior));
 
     public static readonly DependencyProperty MouseLeftButtonUpCommandProperty =
@@ -100,6 +108,24 @@ public class IslandDragDropBehavior : Behavior<UIElement>
     }
 
     /// <summary>
+    ///     Gets or sets the mouse right button down command.
+    /// </summary>
+    public ICommand MouseRightButtonDownCommand
+    {
+        get => (ICommand)GetValue(MouseRightButtonDownCommandProperty);
+        set => SetValue(MouseRightButtonDownCommandProperty, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets the mouse right button down command.
+    /// </summary>
+    public ICommand MouseRightButtonUpCommand
+    {
+        get => (ICommand)GetValue(MouseRightButtonUpCommandProperty);
+        set => SetValue(MouseRightButtonUpCommandProperty, value);
+    }
+
+    /// <summary>
     ///     Gets or sets the mouse left button up command.
     /// </summary>
     public ICommand MouseLeftButtonUpCommand
@@ -119,6 +145,8 @@ public class IslandDragDropBehavior : Behavior<UIElement>
         AssociatedObject.MouseMove += OnMouseMove;
         AssociatedObject.MouseLeftButtonDown += OnMouseLeftButtonDown;
         AssociatedObject.MouseLeftButtonUp += OnMouseLeftButtonUp;
+        AssociatedObject.MouseRightButtonDown += OnMouseRightButtonDown;
+        AssociatedObject.MouseRightButtonUp += OnMouseRightButtonUp;
         AssociatedObject.DragLeave += OnDragLeave;
     }
 
@@ -132,7 +160,19 @@ public class IslandDragDropBehavior : Behavior<UIElement>
         AssociatedObject.MouseMove -= OnMouseMove;
         AssociatedObject.MouseLeftButtonDown -= OnMouseLeftButtonDown;
         AssociatedObject.MouseLeftButtonUp -= OnMouseLeftButtonUp;
+        AssociatedObject.MouseRightButtonDown -= OnMouseRightButtonDown;
+        AssociatedObject.MouseRightButtonUp -= OnMouseRightButtonUp;
         AssociatedObject.DragLeave -= OnDragLeave;
+    }
+
+    private void OnMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+    {
+        MouseRightButtonUpCommand.Execute(e);
+    }
+
+    private void OnMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        MouseRightButtonDownCommand.Execute(e);
     }
 
     private void OnDragEnter(object sender, DragEventArgs e)

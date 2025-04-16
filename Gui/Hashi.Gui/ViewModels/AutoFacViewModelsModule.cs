@@ -17,7 +17,6 @@ public class AutoFacViewModelsModule : Module
         builder.RegisterType<LanguageViewModel>().As<ILanguageViewModel>().InstancePerDependency();
         builder.RegisterType<HighScorePerDifficultyViewModel>().As<IHighScorePerDifficultyViewModel>().InstancePerDependency();
         builder.RegisterType<MainViewModel>().As<IMainViewModel>().SingleInstance();
-        builder.RegisterType<GenerateTestFieldViewModel>().As<IGenerateTestFieldViewModel>().InstancePerDependency();
 
         builder.Register<Func<int, int, int, IIslandViewModel>>(context =>
         {

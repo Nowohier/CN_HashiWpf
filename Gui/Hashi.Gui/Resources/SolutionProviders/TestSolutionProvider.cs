@@ -26,7 +26,7 @@ namespace Hashi.Gui.Resources.SolutionProviders
         public List<ISolutionProvider> SolutionProviders =>
         [
             None,
-            _1ConnectionsRule1,
+            _1ConnectionRule1,
             _3ConnectionsRule1,
             _4ConnectionsRule1,
             _5ConnectionsRule1,
@@ -40,7 +40,7 @@ namespace Hashi.Gui.Resources.SolutionProviders
 
         private static readonly ISolutionProvider None = new SolutionProvider(null!, null!, nameof(None));
 
-        private static readonly ISolutionProvider _1ConnectionsRule1 = new SolutionProvider(
+        private static readonly ISolutionProvider _1ConnectionRule1 = new SolutionProvider(
             [
                 [0, 1, 0, 0, 2, 0],
                 [0, 0, 4, 0, 0, 0],
@@ -50,7 +50,7 @@ namespace Hashi.Gui.Resources.SolutionProviders
                 [0, 0, 0, 0, 0, 0]
             ],
             [],
-            nameof(_1ConnectionsRule1)
+            nameof(_1ConnectionRule1)
         );
 
         private static readonly ISolutionProvider _3ConnectionsRule1 = new SolutionProvider(

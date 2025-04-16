@@ -9,4 +9,5 @@
     <converters:MaxMessageTextWidthConverter x:Key="MaxMessageTextWidthConverter" />
     <converters:GridStrokeThicknessConverter x:Key="GridStrokeThicknessConverter" />
     <converters:LineStrokeThicknessConverter x:Key="LineStrokeThicknessConverter" />
+    <converters:InvertedBoolToVisibilityConverter x:Key="InvertedBoolToVisibilityConverter" />
 </ResourceDictionary>

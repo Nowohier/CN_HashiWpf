@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Views;
-using System.Windows;
 
 namespace Hashi.Gui.Views;
 
@@ -13,9 +12,5 @@ public class AutoFacViewsModule : Module
     {
         // Register your views here
         builder.RegisterType<HashiMainView>().As<IWindow<IMainViewModel>>().SingleInstance();
-        builder.RegisterType<GenerateTestFieldView>().As<IWindow<IGenerateTestFieldViewModel>>().OnActivating(c =>
-        {
-            c.Instance.Owner = Application.Current.MainWindow;
-        }).InstancePerDependency();
     }
 }
