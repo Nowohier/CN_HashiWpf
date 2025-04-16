@@ -4,9 +4,9 @@
                     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                     xmlns:behaviors="clr-namespace:Hashi.Gui.Behaviors"
                     xmlns:enums="clr-namespace:Hashi.Enums;assembly=Hashi.Enums"
-                    xmlns:viewModels1="clr-namespace:Hashi.Gui.Interfaces.ViewModels;assembly=Hashi.Gui.Interfaces">
+                    xmlns:viewModels="clr-namespace:Hashi.Gui.ViewModels">
 
-    <DataTemplate x:Key="DataTemplateIsland" DataType="{x:Type viewModels1:IIslandViewModel}">
+    <DataTemplate x:Key="DataTemplateIsland" DataType="{x:Type viewModels:IslandViewModel}">
         <Border BorderThickness="0">
             <Grid UseLayoutRounding="True" SnapsToDevicePixels="True">
                 <Rectangle Width="30" Height="15" Style="{StaticResource PotentialConnectionStyle}"
@@ -25,10 +25,10 @@
                 <Line X1="0" Y1="0" X2="60" Y2="0" Style="{StaticResource GridLinesStyle}"
                       HorizontalAlignment="Stretch"
                       VerticalAlignment="Center"
-                      Visibility="{Binding RelativeSource={RelativeSource AncestorType=mah:MetroWindow, Mode=FindAncestor}, Path=DataContext.AreGridLinesEnabled, Converter={StaticResource BoolToVisibilityConverter}}" />
+                      Visibility="{Binding RelativeSource={RelativeSource AncestorType=mah:MetroWindow, Mode=FindAncestor}, Path=DataContext.(viewModels:MainViewModel.AreGridLinesEnabled), Converter={StaticResource BoolToVisibilityConverter}}" />
                 <Line X1="0" Y1="0" X2="0" Y2="60" Style="{StaticResource GridLinesStyle}" HorizontalAlignment="Center"
                       VerticalAlignment="Stretch"
-                      Visibility="{Binding RelativeSource={RelativeSource AncestorType=mah:MetroWindow, Mode=FindAncestor}, Path=DataContext.AreGridLinesEnabled, Converter={StaticResource BoolToVisibilityConverter}}" />
+                      Visibility="{Binding RelativeSource={RelativeSource AncestorType=mah:MetroWindow, Mode=FindAncestor}, Path=DataContext.(viewModels:MainViewModel.AreGridLinesEnabled), Converter={StaticResource BoolToVisibilityConverter}}" />
 
                 <!--Double Lines horizontal-->
                 <Line Style="{StaticResource BridgeStyle}" X1="0" Y1="-3" X2="60" Y2="-3" HorizontalAlignment="Center"
@@ -90,6 +90,7 @@
                 <Line Style="{StaticResource BridgeStyle}" X1="0" Y1="30" X2="0" Y2="60" HorizontalAlignment="Center"
                       VerticalAlignment="Bottom" Tag="{x:Static enums:BridgeTypeEnum.VerticalDown}" />
 
+                <Rectangle Width="40" Height="40" IsHitTestVisible="True" Fill="Transparent"/>
                 <Ellipse Width="40" Height="40" Fill="{Binding IslandColor.Brush}" HorizontalAlignment="Center"
                          VerticalAlignment="Center"
                          Visibility="{Binding MaxConnections, Converter={StaticResource IslandVisibilityConverter}}"
@@ -108,6 +109,8 @@
                         MouseMoveCommand="{Binding MouseMoveCommand}"
                         MouseLeftButtonDownCommand="{Binding MouseLeftButtonDownCommand}"
                         MouseLeftButtonUpCommand="{Binding MouseLeftButtonUpCommand}"
+                        MouseRightButtonUpCommand="{Binding MouseRightButtonUpCommand}"
+                        MouseRightButtonDownCommand="{Binding MouseRightButtonDownCommand}"
                         ConnectedViewBox="{Binding RelativeSource={RelativeSource AncestorType=Viewbox, Mode=FindAncestor}}" />
                 </b:Interaction.Behaviors>
             </Grid>

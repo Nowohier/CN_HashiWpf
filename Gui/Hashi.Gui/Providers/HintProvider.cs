@@ -17,7 +17,6 @@ namespace Hashi.Gui.Providers
         private readonly IDialogWrapper dialogWrapper;
         private readonly IRuleRepository ruleRepository;
         private ISession? session;
-        private Type selectedRule;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HintProvider"/> class.
@@ -32,7 +31,7 @@ namespace Hashi.Gui.Providers
             this.islandProvider = islandProvider;
             this.dialogWrapper = dialogWrapper;
             this.ruleRepository = ruleRepository;
-            selectedRule = Rules.First();
+
         }
 
         /// <inheritdoc />
@@ -41,24 +40,6 @@ namespace Hashi.Gui.Providers
         /// <inheritdoc />
         public IList<Type> Rules { get; } = typeof(_1ConnectionRule1).Assembly.GetTypes()
             .Where(static x => x.Name.StartsWith('_')).ToList();
-
-        /// <inheritdoc />
-        public Type SelectedRule
-        {
-            get => selectedRule;
-            set
-            {
-                if (selectedRule == value) return;
-                selectedRule = value;
-
-                RuleInfoProvider.RuleMessage = TranslationSource.Instance[selectedRule.Name] ?? string.Empty;
-                RuleInfoProvider.AreRulesBeingApplied = false;
-
-                if (session == null) return;
-                session.Events.RhsExpressionEvaluatedEvent -= OnRhsExpressionEvaluated;
-                session = null;
-            }
-        }
 
         /// <inheritdoc />
         public void ResetSession()
@@ -70,8 +51,10 @@ namespace Hashi.Gui.Providers
         }
 
         /// <inheritdoc />
-        public void GenerateHint()
+        public void GenerateHint(Type selectedRule)
         {
+            ArgumentNullException.ThrowIfNull(selectedRule);
+
             if (RuleInfoProvider.AreRulesBeingApplied) return;
 
             RuleInfoProvider.AreRulesBeingApplied = true;
@@ -79,7 +62,7 @@ namespace Hashi.Gui.Providers
             if (session == null)
             {
                 //Compile rules
-                var factory = SelectedRule != typeof(_0AllRules) ? ruleRepository.CompileOne(SelectedRule.FullName!) : ruleRepository.Compile();
+                var factory = selectedRule != typeof(_0AllRules) ? ruleRepository.CompileOne(selectedRule.FullName!) : ruleRepository.Compile();
 
                 //Create rules session
                 session = factory.CreateSession();

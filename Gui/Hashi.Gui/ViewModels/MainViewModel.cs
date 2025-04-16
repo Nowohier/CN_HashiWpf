@@ -11,11 +11,11 @@ using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Interfaces.Resources.SolutionProviders;
 using Hashi.Gui.Interfaces.ViewModels;
-using Hashi.Gui.Interfaces.Views;
 using Hashi.Gui.Interfaces.Wrappers;
 using Hashi.Gui.Messages;
 using Hashi.Gui.Messaging;
 using Hashi.Gui.Translation;
+using Hashi.Rules;
 using System.Diagnostics;
 using System.Globalization;
 using System.Windows.Input;
@@ -34,13 +34,13 @@ public class MainViewModel : AsyncObservableRecipient,
     private readonly Func<SolidColorBrush, IHashiBrush> brushFactory;
     private readonly IDialogWrapper dialogWrapper;
     private readonly IHashiGenerator hashiGenerator;
-    private readonly Func<IGenerateTestFieldView> generateTestFieldViewFactory;
     private readonly Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider> solutionProviderFactory;
     private bool isCheating;
     private bool isGeneratingHashiPuzzle;
     private DifficultyEnum selectedDifficulty = DifficultyEnum.Easy3;
     private ISolutionProvider? selectedTestSolutionProvider;
-
+    private bool isTestFieldMode;
+    private Type selectedRule;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="MainViewModel" /> class.
@@ -53,7 +53,6 @@ public class MainViewModel : AsyncObservableRecipient,
     /// <param name="islandProvider">The islands provider.</param>
     /// <param name="hintProvider">The hint provider.</param>
     /// <param name="testSolutionProvider">The test solution provider.</param>
-    /// <param name="generateTestFieldViewFactory">The generate test files view factory.</param>
     /// <param name="solutionProviderFactory">The solution provider factory.</param>
     public MainViewModel
     (
@@ -65,7 +64,6 @@ public class MainViewModel : AsyncObservableRecipient,
         IIslandProvider islandProvider,
         IHintProvider hintProvider,
         ITestSolutionProvider testSolutionProvider,
-        Func<IGenerateTestFieldView> generateTestFieldViewFactory,
         Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider> solutionProviderFactory)
     {
         this.brushFactory = brushFactory;
@@ -76,7 +74,6 @@ public class MainViewModel : AsyncObservableRecipient,
         TestSolutionProvider = testSolutionProvider;
         this.dialogWrapper = dialogWrapper;
         this.hashiGenerator = hashiGenerator;
-        this.generateTestFieldViewFactory = generateTestFieldViewFactory;
         this.solutionProviderFactory = solutionProviderFactory;
 
         WeakReferenceMessenger.Default.Register<BridgeConnectionChangedMessage>(this);
@@ -89,10 +86,12 @@ public class MainViewModel : AsyncObservableRecipient,
         GenerateHintCommand = new RelayCommand(GenerateHintCommandExecute);
         UndoCommand = new RelayCommand(UndoCommandExecute, UndoCommandCanExecute);
         RedoCommand = new RelayCommand(RedoCommandExecute, RedoCommandCanExecute);
-        WindowMouseClickedCommand = new RelayCommand(() => HintProvider.RuleInfoProvider.RuleMessage = string.Empty);
+        WindowMouseClickedCommand = new RelayCommand(() => hintProvider.RuleInfoProvider.RuleMessage = string.Empty);
         ChangeLanguageCommand = new RelayCommand<string>(ChangeLanguageCommandExecute);
-        GenerateTestFieldCommand = new RelayCommand(GenerateTestFieldCommandExecute);
-        selectedTestSolutionProvider = TestSolutionProvider.SolutionProviders.FirstOrDefault();
+        ToggleTestFieldCommand = new AsyncRelayCommand(ToggleTestFieldCommandExecute);
+        ResetTestFieldCommand = new AsyncRelayCommand(ResetTestFieldCommandExecute);
+        selectedTestSolutionProvider = testSolutionProvider.SolutionProviders.FirstOrDefault();
+        selectedRule = HintProvider.Rules.First();
     }
 
     /// <inheritdoc />
@@ -114,6 +113,30 @@ public class MainViewModel : AsyncObservableRecipient,
         .FirstOrDefault(x => x.Difficulty.Equals(SelectedDifficulty))?.HighScoreTime;
 
     /// <summary>
+    ///    Gets the title of the game window.
+    /// </summary>
+    public string Title => $"Hashiwokakero{(IsTestFieldMode ? " - Testmode" : string.Empty)}";
+
+    /// <summary>
+    ///    Gets or sets the selected rule for generating hints.
+    /// </summary>
+    public Type SelectedRule
+    {
+        get => selectedRule;
+        set
+        {
+            if (!SetProperty(ref selectedRule, value)) return;
+            HintProvider.RuleInfoProvider.RuleMessage = TranslationSource.Instance[selectedRule.Name] ?? string.Empty;
+            HintProvider.RuleInfoProvider.AreRulesBeingApplied = false;
+
+            if (IsTestFieldMode)
+            {
+                SetTestSolution(GetCurrentTestSolution());
+            }
+        }
+    }
+
+    /// <summary>
     ///     Determines if the game is in cheating mode.
     /// </summary>
     public bool IsCheating
@@ -132,6 +155,18 @@ public class MainViewModel : AsyncObservableRecipient,
         {
             SettingsProvider.Settings.AreGridLinesEnabled = value;
             OnPropertyChanged();
+        }
+    }
+
+    public bool IsTestFieldMode
+    {
+        get => isTestFieldMode;
+        set
+        {
+            if (SetProperty(ref isTestFieldMode, value))
+            {
+                OnPropertyChanged(nameof(Title));
+            }
         }
     }
 
@@ -209,43 +244,15 @@ public class MainViewModel : AsyncObservableRecipient,
     /// <summary>
     /// Opens the generate test field window.
     /// </summary>
-    public ICommand GenerateTestFieldCommand { get; }
+    public ICommand ToggleTestFieldCommand { get; }
+
+    /// <summary>
+    ///    Resets the test field to its initial state.
+    /// </summary>
+    public ICommand ResetTestFieldCommand { get; }
 
     /// <inheritdoc />
     public IHashiSettingsProvider SettingsProvider { get; }
-
-    /// <inheritdoc />
-    public async Task CreateNewGameAsync()
-    {
-        IsGeneratingHashiPuzzle = true;
-        IsCheating = false;
-        var solutionContainer = await hashiGenerator.GenerateHashAsync((int)SelectedDifficulty);
-
-        HintProvider.ResetSession();
-        IslandProvider.InitializeNewSolution(solutionContainer);
-        TimerProvider.StopTimer();
-
-        IsGeneratingHashiPuzzle = false;
-    }
-
-    /// <inheritdoc />
-    public void SetTestSolution(ISolutionProvider solutionProvider)
-    {
-        if (solutionProvider is not { BridgeCoordinates: not null, HashiField: not null })
-        {
-            CreateNewGameCommand.Execute(null);
-            return;
-        }
-
-        IsGeneratingHashiPuzzle = true;
-        IsCheating = false;
-
-        HintProvider.ResetSession();
-        IslandProvider.InitializeNewSolutionAndSetBridges(solutionProvider!);
-        TimerProvider.StopTimer();
-
-        IsGeneratingHashiPuzzle = false;
-    }
 
     /// <inheritdoc cref="IMainViewModel.Receive(IBridgeConnectionChangedMessage)" />
     public void Receive(IBridgeConnectionChangedMessage message)
@@ -342,10 +349,21 @@ public class MainViewModel : AsyncObservableRecipient,
         IslandProvider.HighlightPathToTargetIsland(sourceIsland, targetIsland);
     }
 
-    /// <summary>
-    ///     Removes all bridges from the game.
-    /// </summary>
-    public void RemoveAllBridgesExecute()
+    /// <inheritdoc />
+    public async Task CreateNewGameAsync()
+    {
+        IsGeneratingHashiPuzzle = true;
+        IsCheating = false;
+        var solutionContainer = await hashiGenerator.GenerateHashAsync((int)SelectedDifficulty);
+
+        HintProvider.ResetSession();
+        IslandProvider.InitializeNewSolution(solutionContainer);
+        TimerProvider.StopTimer();
+
+        IsGeneratingHashiPuzzle = false;
+    }
+
+    private void RemoveAllBridgesExecute()
     {
         IslandProvider.RemoveAllBridges(HashiPointTypeEnum.All);
         TimerProvider.StopTimer();
@@ -354,24 +372,51 @@ public class MainViewModel : AsyncObservableRecipient,
         WeakReferenceMessenger.Default.Send(new UpdateAllIslandColorsMessage());
     }
 
+    private Task SetTestSolution(ISolutionProvider? solutionProvider)
+    {
+        if (solutionProvider is not { BridgeCoordinates: not null, HashiField: not null })
+        {
+            return Task.CompletedTask;
+        }
+
+        IsGeneratingHashiPuzzle = true;
+        IsCheating = false;
+
+        HintProvider.ResetSession();
+        IslandProvider.InitializeNewSolutionAndSetBridges(solutionProvider);
+        TimerProvider.StopTimer();
+
+        IsGeneratingHashiPuzzle = false;
+
+        return Task.CompletedTask;
+    }
+
+    private ISolutionProvider GetCurrentTestSolution()
+    {
+        return SelectedRule != typeof(_0AllRules) && TestSolutionProvider.SolutionProviders.FirstOrDefault(x => x.Name == SelectedRule.Name) is { } sol
+            ? sol
+            : solutionProviderFactory.Invoke(TestSolutionProvider.HashiFieldReference, [], null);
+    }
+
     private void GenerateHintCommandExecute()
     {
         IsCheating = true;
         TimerProvider.StartTimer();
-        HintProvider.GenerateHint();
+        HintProvider.GenerateHint(SelectedRule);
     }
 
-    private void GenerateTestFieldCommandExecute()
+    private async Task ToggleTestFieldCommandExecute()
     {
-        var view = generateTestFieldViewFactory.Invoke();
-        if (view.DataContext is not IGenerateTestFieldViewModel testfieldGeneratorViewModel)
+        IsTestFieldMode = !IsTestFieldMode;
+
+        if (IsTestFieldMode)
         {
-            return;
+            await SetTestSolution(GetCurrentTestSolution());
         }
-
-        testfieldGeneratorViewModel.SetTestSolution(solutionProviderFactory.Invoke(TestSolutionProvider.HashiFieldReference, [], null));
-        view.ShowDialog();
-
+        else
+        {
+            await CreateNewGameAsync();
+        }
     }
 
     private void ChangeLanguageCommandExecute(string? culture)
@@ -400,5 +445,10 @@ public class MainViewModel : AsyncObservableRecipient,
     private bool RedoCommandCanExecute()
     {
         return false;
+    }
+
+    private async Task ResetTestFieldCommandExecute()
+    {
+        await SetTestSolution(GetCurrentTestSolution());
     }
 }

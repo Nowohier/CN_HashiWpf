@@ -37,7 +37,7 @@
 
     
 
-    <Style x:Key="MenuGenerateGridToggleButtonStyle" TargetType="ToggleButton" BasedOn="{StaticResource MahApps.Styles.ToggleButton}">
+    <Style x:Shared="False" x:Key="MenuGenerateGridToggleButtonStyle" TargetType="ToggleButton" BasedOn="{StaticResource MahApps.Styles.ToggleButton}">
         <Setter Property="Focusable" Value="False" />
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="FontSize" Value="10" />
