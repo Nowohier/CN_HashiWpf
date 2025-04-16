@@ -30,4 +30,7 @@ public static class HashiColorHelper
 
     public static SolidColorBrush GridLineBrush =
         (SolidColorBrush)Application.Current.Resources[nameof(GridLineBrush)]!;
+
+    public static SolidColorBrush TestModeBrush =
+        (SolidColorBrush)Application.Current.Resources[nameof(TestModeBrush)]!;
 }

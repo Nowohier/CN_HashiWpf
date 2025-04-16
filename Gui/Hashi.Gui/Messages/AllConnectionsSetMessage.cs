@@ -1,11 +1,7 @@
-﻿using Hashi.Gui.Interfaces.Messages;
+﻿using CommunityToolkit.Mvvm.Messaging.Messages;
+using Hashi.Gui.Interfaces.Messages;
 
 namespace Hashi.Gui.Messages;
 
 /// <inheritdoc cref="IAllConnectionsSetMessage" />
-public class AllConnectionsSetMessage : AsyncMessage<bool>, IAllConnectionsSetMessage
-{
-    public AllConnectionsSetMessage(bool value = true) : base(value)
-    {
-    }
-}
+public class AllConnectionsSetMessage(bool? value) : ValueChangedMessage<bool?>(value), IAllConnectionsSetMessage;

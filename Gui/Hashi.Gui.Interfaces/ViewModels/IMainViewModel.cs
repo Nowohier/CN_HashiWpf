@@ -56,8 +56,7 @@ public interface IMainViewModel
     ///     Handles the message when all connections are set.
     /// </summary>
     /// <param name="message">The <see cref="IAllConnectionsSetMessage" />.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    Task ReceiveAsync(IAllConnectionsSetMessage message, CancellationToken cancellationToken);
+    void Receive(IAllConnectionsSetMessage message);
 
     /// <summary>
     ///     Handles the message when the potential target island is changed.

@@ -8,7 +8,6 @@ using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Wrappers;
-using Hashi.Gui.Messages;
 using Hashi.Gui.Translation;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -20,6 +19,7 @@ namespace Hashi.Gui.Providers
     {
         private readonly Func<int, int, int, IIslandViewModel> islandFactory;
         private readonly Func<BridgeOperationTypeEnum, IHashiPoint, IHashiPoint, IHashiBridge> bridgeFactory;
+        private readonly Func<bool?, IAllConnectionsSetMessage> allConnectionsSetMessageFactory;
         private readonly IDialogWrapper dialogWrapper;
 
         /// <inheritdoc cref="IIslandProvider" />
@@ -27,11 +27,13 @@ namespace Hashi.Gui.Providers
         (
             Func<int, int, int, IIslandViewModel> islandFactory,
             Func<BridgeOperationTypeEnum, IHashiPoint, IHashiPoint, IHashiBridge> bridgeFactory,
+            Func<bool?, IAllConnectionsSetMessage> allConnectionsSetMessageFactory,
             IDialogWrapper dialogWrapper
         )
         {
             this.islandFactory = islandFactory;
             this.bridgeFactory = bridgeFactory;
+            this.allConnectionsSetMessageFactory = allConnectionsSetMessageFactory;
             this.dialogWrapper = dialogWrapper;
 
             WeakReferenceMessenger.Default.Register<IslandProvider, IGetVisibleNeighborRequestMessage>(this,
@@ -118,7 +120,7 @@ namespace Hashi.Gui.Providers
 
             ManageConnections(sourceIsland, targetIsland, (island, coordinates) => island.AddConnection(coordinates),
                 pointType);
-            if (AreAllConnectionsSet) WeakReferenceMessenger.Default.SendAsync(new AllConnectionsSetMessage());
+            if (AreAllConnectionsSet) WeakReferenceMessenger.Default.Send(allConnectionsSetMessageFactory.Invoke(null));
 
             if (CountIsolatedIslandGroups() > 0 && !pointType.Equals(HashiPointTypeEnum.Test))
             {
