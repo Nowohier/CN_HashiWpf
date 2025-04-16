@@ -22,7 +22,7 @@ public class _4ConnectionsRule2(IRuleInfoProvider ruleInfoProvider, IIslandProvi
         When()
             .Match(() => island, x => x.MaxConnections == 4)
             .Having(() => AreRemainingConnectionsWithinRange(island, 2, 4))
-            .Let(() => allNeighbors, () => island.GetAllVisibleNeighbors())
+            .Let(() => allNeighbors, () => GetAllVisibleNeighbors(island))
             .Having(() => allNeighbors.Count == 3)
             .Let(() => restrictedNeighbors, () => GetMaxedOutConnectedNeighbors(island, allNeighbors, null))
             .Having(() =>

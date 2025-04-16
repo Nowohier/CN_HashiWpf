@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Enums;
 using Hashi.Generator.Interfaces.Providers;
 using Hashi.Gui.Extensions;
+using Hashi.Gui.Interfaces.Messages;
 using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Interfaces.ViewModels;
@@ -15,8 +16,32 @@ using System.Diagnostics;
 namespace Hashi.Gui.Providers
 {
     /// <inheritdoc cref="IIslandProvider" />
-    public class IslandProvider(Func<int, int, int, IIslandViewModel> islandFactory, Func<BridgeOperationTypeEnum, IHashiPoint, IHashiPoint, IHashiBridge> bridgeFactory, IDialogWrapper dialogWrapper) : ObservableObject, IIslandProvider
+    public class IslandProvider : ObservableObject, IIslandProvider
     {
+        private readonly Func<int, int, int, IIslandViewModel> islandFactory;
+        private readonly Func<BridgeOperationTypeEnum, IHashiPoint, IHashiPoint, IHashiBridge> bridgeFactory;
+        private readonly IDialogWrapper dialogWrapper;
+
+        /// <inheritdoc cref="IIslandProvider" />
+        public IslandProvider
+        (
+            Func<int, int, int, IIslandViewModel> islandFactory,
+            Func<BridgeOperationTypeEnum, IHashiPoint, IHashiPoint, IHashiBridge> bridgeFactory,
+            IDialogWrapper dialogWrapper
+        )
+        {
+            this.islandFactory = islandFactory;
+            this.bridgeFactory = bridgeFactory;
+            this.dialogWrapper = dialogWrapper;
+
+            WeakReferenceMessenger.Default.Register<IslandProvider, IGetVisibleNeighborRequestMessage>(this,
+                (provider, message) =>
+                {
+                    var neighbor = provider.GetVisibleNeighbor(message.Source, message.Target);
+                    message.Reply(neighbor);
+                });
+        }
+
         /// <inheritdoc />
         public ObservableCollection<ObservableCollection<IIslandViewModel>> Islands { get; } = [];
 

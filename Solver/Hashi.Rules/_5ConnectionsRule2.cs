@@ -19,7 +19,7 @@ public class _5ConnectionsRule2(IRuleInfoProvider ruleInfoProvider, IIslandProvi
 
         When()
             .Match(() => island, x => x.MaxConnections == 5 && !x.MaxConnectionsReached)
-            .Let(() => neighbors, () => island.GetAllVisibleNeighbors())
+            .Let(() => neighbors, () => GetAllVisibleNeighbors(island))
             .Let(() => restrictedNeighbors, () => GetMaxedOutConnectedNeighbors(island, neighbors, 1))
             .Having(() => restrictedNeighbors.Count == 1 && neighbors.Count - restrictedNeighbors.Count == 2);
 

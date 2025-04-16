@@ -131,6 +131,16 @@ public abstract class BaseRule : Rule
     }
 
     /// <summary>
+    ///    Gets all visible neighbors of the source island.
+    /// </summary>
+    /// <param name="source">The source island.</param>
+    /// <returns>a list of visible neighbors.</returns>
+    internal List<IIslandViewModel> GetAllVisibleNeighbors(IIslandViewModel source)
+    {
+        return islandProvider.GetAllVisibleNeighbors(source);
+    }
+
+    /// <summary>
     ///     Gets the connectable neighbors of the source island that do not have a connection set to the source island.
     /// </summary>
     /// <param name="source">The source island.</param>

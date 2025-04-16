@@ -23,7 +23,7 @@ public class _9GeneralRule2(IRuleInfoProvider ruleInfoProvider, IIslandProvider 
 
         When()
             .Match(() => island, x => !x.MaxConnectionsReached && x.MaxConnections > 0) // Only consider islands that are not maxed out and visible
-            .Let(() => allNeighbors, () => island.GetAllVisibleNeighbors()) // Get all visible neighbors
+            .Let(() => allNeighbors, () => GetAllVisibleNeighbors(island)) // Get all visible neighbors
             .Let(() => connectableNeighbors, () => GetConnectableNeighbors(allNeighbors)) // Get connectable neighbors
             .Having(() =>
                 connectableNeighbors.Count == 2 && // Exactly two connectable neighbors

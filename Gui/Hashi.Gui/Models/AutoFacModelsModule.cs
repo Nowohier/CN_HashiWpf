@@ -13,6 +13,15 @@ public class AutoFacModelsModule : Module
         builder.RegisterType<HashiPoint>().As<IHashiPoint>().InstancePerDependency();
         builder.RegisterType<HashiBridge>().As<IHashiBridge>().InstancePerDependency();
 
+        builder.Register<Func<int, int, HashiPointTypeEnum, IHashiPoint>>(context =>
+        {
+            var c = context.Resolve<IComponentContext>();
+            return (x, y, pointType) => c.Resolve<IHashiPoint>(
+                new NamedParameter("x", x),
+                new NamedParameter("y", y),
+                new NamedParameter("pointType", pointType));
+        });
+
         builder.Register<Func<BridgeOperationTypeEnum, IHashiPoint, IHashiPoint, IHashiBridge>>(context =>
         {
             var c = context.Resolve<IComponentContext>();

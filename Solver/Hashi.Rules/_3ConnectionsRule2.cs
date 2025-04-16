@@ -20,7 +20,7 @@ public class _3ConnectionsRule2(IRuleInfoProvider ruleInfoProvider, IIslandProvi
 
         When()
             .Match(() => island, x => x.MaxConnections == 3 && x.AllConnections.Count <= 2)
-            .Let(() => allNeighbors, () => island.GetAllVisibleNeighbors())
+            .Let(() => allNeighbors, () => GetAllVisibleNeighbors(island))
             .Having(() => allNeighbors.Count == 3 && allNeighbors.Count(x => x.MaxConnections == 1) == 1 && allNeighbors.Count(x => x.MaxConnections == 2) == 1)
             .Let(() => validNeighbors, () => GetConnectableNeighborsWithoutConnection(island, allNeighbors).Where(x => x.MaxConnections > 2).ToList())
             .Having(() => validNeighbors.Count > 0);
