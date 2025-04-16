@@ -9,7 +9,7 @@ namespace Hashi.Gui.ViewModels.Settings;
 ///     Represents a view model for displaying high scores per difficulty level.
 /// </summary>
 [JsonObject(MemberSerialization.OptIn)]
-public class HighScorePerDifficultyViewModel : ObservableRecipient, IHighScorePerDifficultyViewModel
+public class HighScorePerDifficultyViewModel : ObservableObject, IHighScorePerDifficultyViewModel
 {
     private TimeSpan? highScoreTime;
 

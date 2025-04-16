@@ -3,7 +3,7 @@ using Hashi.Gui.Interfaces.Views;
 
 namespace Hashi.Gui.Views
 {
-    public partial class GenerateTestFieldView : IGenerateTestFieldView
+    public partial class GenerateTestFieldView : IWindow<IGenerateTestFieldViewModel>
     {
         public GenerateTestFieldView(IGenerateTestFieldViewModel generateTestFieldViewModel)
         {

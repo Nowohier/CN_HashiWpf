@@ -49,7 +49,7 @@ public partial class App
         mainViewModel = scope.Resolve<IMainViewModel>();
         mainViewModel.CreateNewGameAsync();
 
-        var gui = scope.Resolve<IHashiMainView>();
+        var gui = scope.Resolve<IWindow<IMainViewModel>>();
         gui.DataContext = mainViewModel;
         gui.ShowDialog();
     }
