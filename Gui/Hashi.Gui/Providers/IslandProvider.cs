@@ -527,8 +527,8 @@ public class IslandProvider :
 
     private void RemoveConnectionFromIsland(IIslandViewModel island, IHashiPoint point1, IHashiPoint point2)
     {
-        var firstConnection = island.AllConnections.FirstOrDefault(x => x.Equals(point1));
-        var secondConnection = island.AllConnections.FirstOrDefault(x => x.Equals(point2));
+        var firstConnection = island.AllConnections.FirstOrDefault(x => x.X == point1.X && x.Y == point1.Y);
+        var secondConnection = island.AllConnections.FirstOrDefault(x => x.X == point2.X && x.Y == point2.Y);
 
         if (firstConnection != null) island.AllConnections.Remove(firstConnection);
         if (secondConnection != null) island.AllConnections.Remove(secondConnection);
