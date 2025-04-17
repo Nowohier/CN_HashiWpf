@@ -190,7 +190,7 @@
     <value>Wenn eine 5er Insel drei Nachbarn hat und eine Verbindung maximal eine Brücke erlaubt, dann können die verbleibenden Verbindungen für die 5er Insel gesetzt werden.</value>
   </data>
   <data name="_5ConnectionsRule3" xml:space="preserve">
-    <value>Wenn eine 5er Insel vier Nachbarn hat und zwei volle Nachbarn in Summe nicht mehr als drei Verbindungen zur Insel haben, muss zu den restlichen Nachbarn jeweils eine Verbindung gezogen werden, sofern noch keine Verbindung hergestellt wurde.</value>
+    <value>Wenn eine 5er Insel vier Nachbarn hat und zwei volle Nachbarn in Summe nicht mehr als zwei Verbindungen zur Insel haben, muss zu den restlichen Nachbarn jeweils eine Verbindung gezogen werden, sofern noch keine Verbindung hergestellt wurde.</value>
   </data>
   <data name="_6ConnectionsRule1" xml:space="preserve">
     <value>Wenn eine 6er Insel drei Nachbarn hat, dann können alle Verbindungen gesetzt werden.</value>
