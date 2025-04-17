@@ -15,12 +15,16 @@ public class AutoFacMessagesModule : Module
     {
         // Register your messages here
         builder.RegisterType<AllConnectionsSetMessage>().As<IAllConnectionsSetMessage>().InstancePerDependency();
-        builder.RegisterType<BridgeConnectionInformationContainer>().As<IBridgeConnectionInformationContainer>().InstancePerDependency();
-        builder.RegisterType<BridgeConnectionChangedMessage>().As<IBridgeConnectionChangedMessage>().InstancePerDependency();
-        builder.RegisterType<UpdateAllIslandColorsMessage>().As<IUpdateAllIslandColorsMessage>().InstancePerDependency();
+        builder.RegisterType<BridgeConnectionInformationContainer>().As<IBridgeConnectionInformationContainer>()
+            .InstancePerDependency();
+        builder.RegisterType<BridgeConnectionChangedMessage>().As<IBridgeConnectionChangedMessage>()
+            .InstancePerDependency();
+        builder.RegisterType<UpdateAllIslandColorsMessage>().As<IUpdateAllIslandColorsMessage>()
+            .InstancePerDependency();
         builder.RegisterType<RuleMessageClearedMessage>().As<IRuleMessageClearedMessage>().InstancePerDependency();
         builder.RegisterType<IsTestModeRequestMessage>().As<IIsTestModeRequestMessage>().InstancePerDependency();
-        builder.RegisterType<DragDirectionChangedRequestTargetMessage>().As<IDragDirectionChangedRequestTargetMessage>().InstancePerDependency();
+        builder.RegisterType<DragDirectionChangedRequestTargetMessage>().As<IDragDirectionChangedRequestTargetMessage>()
+            .InstancePerDependency();
 
         builder.Register<Func<IIslandViewModel, DirectionEnum, IDragDirectionChangedRequestTargetMessage>>(context =>
         {
@@ -30,40 +34,43 @@ public class AutoFacMessagesModule : Module
                 new NamedParameter("direction", direction));
         });
 
-        builder.Register<Func<BridgeOperationTypeEnum, IIslandViewModel, IIslandViewModel?, IBridgeConnectionInformationContainer>>(context =>
-        {
-            var c = context.Resolve<IComponentContext>();
-            return (bridgeOperationType, sourceIsland, targetIsland) => c.Resolve<IBridgeConnectionInformationContainer>(
-                new NamedParameter("bridgeOperationType", bridgeOperationType),
-                new NamedParameter("sourceIsland", sourceIsland),
-                new NamedParameter("targetIsland", targetIsland));
-        });
+        builder
+            .Register<Func<BridgeOperationTypeEnum, IIslandViewModel, IIslandViewModel?,
+                IBridgeConnectionInformationContainer>>(context =>
+            {
+                var c = context.Resolve<IComponentContext>();
+                return (bridgeOperationType, sourceIsland, targetIsland) =>
+                    c.Resolve<IBridgeConnectionInformationContainer>(
+                        new NamedParameter("bridgeOperationType", bridgeOperationType),
+                        new NamedParameter("sourceIsland", sourceIsland),
+                        new NamedParameter("targetIsland", targetIsland));
+            });
 
         builder.Register<Func<bool?, IUpdateAllIslandColorsMessage>>(context =>
         {
             var c = context.Resolve<IComponentContext>();
-            return (value) => c.Resolve<IUpdateAllIslandColorsMessage>(
+            return value => c.Resolve<IUpdateAllIslandColorsMessage>(
                 new NamedParameter("value", value));
         });
 
         builder.Register<Func<bool?, IRuleMessageClearedMessage>>(context =>
         {
             var c = context.Resolve<IComponentContext>();
-            return (value) => c.Resolve<IRuleMessageClearedMessage>(
+            return value => c.Resolve<IRuleMessageClearedMessage>(
                 new NamedParameter("value", value));
         });
 
         builder.Register<Func<IBridgeConnectionInformationContainer, IBridgeConnectionChangedMessage>>(context =>
         {
             var c = context.Resolve<IComponentContext>();
-            return (islandInfos) => c.Resolve<IBridgeConnectionChangedMessage>(
+            return islandInfos => c.Resolve<IBridgeConnectionChangedMessage>(
                 new NamedParameter("islandInfos", islandInfos));
         });
 
         builder.Register<Func<bool?, IAllConnectionsSetMessage>>(context =>
         {
             var c = context.Resolve<IComponentContext>();
-            return (value) => c.Resolve<IAllConnectionsSetMessage>(
+            return value => c.Resolve<IAllConnectionsSetMessage>(
                 new NamedParameter("value", value));
         });
     }

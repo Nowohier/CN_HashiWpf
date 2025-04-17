@@ -1,7 +1,7 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using Hashi.Gui.Interfaces.Providers;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Windows.Threading;
+using CommunityToolkit.Mvvm.ComponentModel;
+using Hashi.Gui.Interfaces.Providers;
 
 namespace Hashi.Gui.Providers;
 

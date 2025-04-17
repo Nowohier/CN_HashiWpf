@@ -1,20 +1,19 @@
 ﻿using Hashi.Generator.Interfaces.Providers;
 
-namespace Hashi.Gui.Interfaces.Resources.SolutionProviders
+namespace Hashi.Gui.Interfaces.Resources.SolutionProviders;
+
+/// <summary>
+///     Interface for providing test solutions.
+/// </summary>
+public interface ITestSolutionProvider
 {
     /// <summary>
-    ///   Interface for providing test solutions.
+    ///     Gets the Hashi field reference.
     /// </summary>
-    public interface ITestSolutionProvider
-    {
-        /// <summary>
-        ///  Gets the Hashi field reference.
-        /// </summary>
-        IReadOnlyList<int[]> HashiFieldReference { get; }
+    IReadOnlyList<int[]> HashiFieldReference { get; }
 
-        /// <summary>
-        ///   Gets the test solution providers.
-        /// </summary>
-        List<ISolutionProvider> SolutionProviders { get; }
-    }
+    /// <summary>
+    ///     Gets the test solution providers.
+    /// </summary>
+    List<ISolutionProvider> SolutionProviders { get; }
 }

@@ -25,13 +25,17 @@ public class _7ConnectionsRule1Tests : TestBase<_7ConnectionsRule1>
 
         // assert
         Verify(x => x.Rule().Fired(Times.Once));
-        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, leftIsland.Object, HashiPointTypeEnum.Hint),
+        IslandProviderMock.Verify(
+            mock => mock.AddConnection(testIsland.Object, leftIsland.Object, HashiPointTypeEnum.Hint),
             Moq.Times.Once);
-        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, rightIsland.Object, HashiPointTypeEnum.Hint),
+        IslandProviderMock.Verify(
+            mock => mock.AddConnection(testIsland.Object, rightIsland.Object, HashiPointTypeEnum.Hint),
             Moq.Times.Once);
-        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, upIsland.Object, HashiPointTypeEnum.Hint),
+        IslandProviderMock.Verify(
+            mock => mock.AddConnection(testIsland.Object, upIsland.Object, HashiPointTypeEnum.Hint),
             Moq.Times.Once);
-        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, downIsland.Object, HashiPointTypeEnum.Hint),
+        IslandProviderMock.Verify(
+            mock => mock.AddConnection(testIsland.Object, downIsland.Object, HashiPointTypeEnum.Hint),
             Moq.Times.Once);
     }
 

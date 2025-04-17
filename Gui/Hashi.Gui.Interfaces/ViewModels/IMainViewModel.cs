@@ -15,17 +15,17 @@ public interface IMainViewModel
     ITimerProvider TimerProvider { get; }
 
     /// <summary>
-    /// The island provider for the Hashi game.
+    ///     The island provider for the Hashi game.
     /// </summary>
     IIslandProvider IslandProvider { get; }
 
     /// <summary>
-    ///    The hint provider for the Hashi game.
+    ///     The hint provider for the Hashi game.
     /// </summary>
     IHintProvider HintProvider { get; }
 
     /// <summary>
-    ///   The test solution provider for the Hashi game.
+    ///     The test solution provider for the Hashi game.
     /// </summary>
     ITestSolutionProvider TestSolutionProvider { get; }
 
@@ -35,7 +35,7 @@ public interface IMainViewModel
     IHashiSettingsProvider SettingsProvider { get; }
 
     /// <summary>
-    /// Creates a new game asynchronously.
+    ///     Creates a new game asynchronously.
     /// </summary>
     Task CreateNewGameAsync();
 

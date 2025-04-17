@@ -1,6 +1,6 @@
-﻿using Hashi.Generator.Interfaces.Models;
+﻿using System.Drawing;
+using Hashi.Generator.Interfaces.Models;
 using Newtonsoft.Json;
-using System.Drawing;
 
 namespace Hashi.Generator.Models;
 

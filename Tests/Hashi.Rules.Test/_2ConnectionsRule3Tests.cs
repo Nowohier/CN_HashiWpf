@@ -27,7 +27,8 @@ public class _2ConnectionsRule3Tests : TestBase<_2ConnectionsRule3>
 
         // assert
         Verify(x => x.Rule().Fired(Times.Once));
-        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, leftIsland.Object, HashiPointTypeEnum.Hint),
+        IslandProviderMock.Verify(
+            mock => mock.AddConnection(testIsland.Object, leftIsland.Object, HashiPointTypeEnum.Hint),
             Moq.Times.Once);
     }
 

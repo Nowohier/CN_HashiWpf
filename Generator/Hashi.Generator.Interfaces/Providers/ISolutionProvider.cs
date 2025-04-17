@@ -19,7 +19,7 @@ public interface ISolutionProvider
     List<IBridgeCoordinates>? BridgeCoordinates { get; }
 
     /// <summary>
-    /// The solution provider name.
+    ///     The solution provider name.
     /// </summary>
     string? Name { get; }
 }

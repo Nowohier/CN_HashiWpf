@@ -14,7 +14,7 @@ public enum BridgeOperationTypeEnum
 }
 
 /// <summary>
-///   Represents the type of window.
+///     Represents the type of window.
 /// </summary>
 public enum WindowTypeEnum
 {
@@ -23,7 +23,7 @@ public enum WindowTypeEnum
 }
 
 /// <summary>
-///    Represents the type of point in the Hashi puzzle.
+///     Represents the type of point in the Hashi puzzle.
 /// </summary>
 public enum HashiPointTypeEnum
 {
