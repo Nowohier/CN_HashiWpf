@@ -1,10 +1,10 @@
-﻿using System.Windows;
-using Hashi.Gui.Interfaces.ViewModels;
+﻿using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Views;
+using System.Windows;
 
 namespace Hashi.Gui.Views;
 
-public partial class HashiMainView : IWindow<IMainViewModel>
+public partial class HashiMainView : IWindow
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="HashiMainView" /> class.

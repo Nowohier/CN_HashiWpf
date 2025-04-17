@@ -4,17 +4,11 @@ namespace Hashi.LinearSolver.Models;
 
 /// <inheritdoc cref="IHelper" />
 /// >
-public class Helper : IHelper
+public class Helper(IList<int> islands, IList<int> bridges) : IHelper
 {
-    public Helper(IList<int> islands, IList<int> bridges)
-    {
-        Islands = islands;
-        Bridges = bridges;
-    }
+    /// <inheritdoc />
+    public IList<int> Islands { get; } = islands;
 
     /// <inheritdoc />
-    public IList<int> Islands { get; }
-
-    /// <inheritdoc />
-    public IList<int> Bridges { get; }
+    public IList<int> Bridges { get; } = bridges;
 }

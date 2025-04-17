@@ -3,7 +3,7 @@
 /// <summary>
 ///     Represents a message that contains a value of type <typeparamref name="T" />.
 /// </summary>
-/// <typeparam name="T">The value of value of type <typeparamref name="T" /></typeparam>
+/// <typeparam name="T">The value of type <typeparamref name="T" /></typeparam>
 public interface IValueChangedMessage<out T>
 {
     /// <summary>

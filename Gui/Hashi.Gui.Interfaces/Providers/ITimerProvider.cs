@@ -8,11 +8,6 @@ namespace Hashi.Gui.Interfaces.Providers;
 public interface ITimerProvider
 {
     /// <summary>
-    ///     Determines if the timer is running.
-    /// </summary>
-    bool IsTimerRunning { get; }
-
-    /// <summary>
     ///     Gets the timer for the game.
     /// </summary>
     Stopwatch Timer { get; }

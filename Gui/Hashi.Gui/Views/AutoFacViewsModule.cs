@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Views;
 
 namespace Hashi.Gui.Views;
@@ -11,8 +10,8 @@ public class AutoFacViewsModule : Module
     protected override void Load(ContainerBuilder builder)
     {
         // Register your views here
-        builder.RegisterType<HashiMainView>().As<IWindow<IMainViewModel>>().SingleInstance();
+        builder.RegisterType<HashiMainView>().As<IWindow>().SingleInstance();
         builder.Register<IViewBoxControl>(context =>
-            context.Resolve<IComponentContext>().Resolve<IWindow<IMainViewModel>>());
+            context.Resolve<IComponentContext>().Resolve<IWindow>());
     }
 }

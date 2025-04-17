@@ -1,8 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Media;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Enums;
@@ -14,6 +10,10 @@ using Hashi.Gui.Interfaces.Messages.MessageContainers;
 using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Views;
+using System.Collections.ObjectModel;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media;
 
 namespace Hashi.Gui.ViewModels;
 
@@ -59,7 +59,7 @@ public class IslandViewModel :
     /// <param name="updateAllIslandColorsMessageFactory">The update all island colors message factory.</param>
     /// <param name="connectionInformationContainerFactory">The bridge connection information container factory.</param>
     /// <param name="bridgeConnectionChangedMessageFactory">The bridge connection changed message factory.</param>
-    /// <param name="isTestModeRequestMessageFactory">The is test mode request factory.</param>
+    /// <param name="isTestModeRequestMessageFactory">The is isTestModeRequestMessageFactory.</param>
     /// <param name="dragDirectionChangedRequestTargetMessageFactory">
     ///     The drag direction changed request target message
     ///     factory.
@@ -152,7 +152,7 @@ public class IslandViewModel :
     public ICommand MouseRightButtonUpCommand { get; }
 
     /// <inheritdoc />
-    public ObservableCollection<IHashiPoint> AllConnections { get; } = new();
+    public ObservableCollection<IHashiPoint> AllConnections { get; } = [];
 
     /// <inheritdoc />
     public bool MaxConnectionsReached => AllConnections.Count >= MaxConnections;
