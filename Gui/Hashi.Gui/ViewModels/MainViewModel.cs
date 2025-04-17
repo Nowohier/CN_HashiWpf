@@ -27,8 +27,7 @@ public class MainViewModel : AsyncObservableRecipient,
     IMainViewModel,
     IRecipient<IBridgeConnectionChangedMessage>,
     IRecipient<IUpdateAllIslandColorsMessage>,
-    IRecipient<IAllConnectionsSetMessage>,
-    IRecipient<IDropTargetIslandChangedMessage>
+    IRecipient<IAllConnectionsSetMessage>
 {
     private readonly Func<SolidColorBrush, IHashiBrush> brushFactory;
     private readonly IDialogWrapper dialogWrapper;
@@ -78,7 +77,6 @@ public class MainViewModel : AsyncObservableRecipient,
         WeakReferenceMessenger.Default.Register<IBridgeConnectionChangedMessage>(this);
         WeakReferenceMessenger.Default.Register<IUpdateAllIslandColorsMessage>(this);
         WeakReferenceMessenger.Default.Register<IAllConnectionsSetMessage>(this);
-        WeakReferenceMessenger.Default.Register<IDropTargetIslandChangedMessage>(this);
 
         CreateNewGameCommand = new AsyncRelayCommand(CreateNewGameAsync);
         RemoveAllBridgesCommand = new RelayCommand(RemoveAllBridgesExecute);
@@ -342,24 +340,6 @@ public class MainViewModel : AsyncObservableRecipient,
         dialogWrapper.Show(caption, dialogMessage, DialogButton.Ok, DialogImage.Success);
 
         CreateNewGameCommand.Execute(null);
-    }
-
-    /// <inheritdoc cref="IMainViewModel.Receive(IDropTargetIslandChangedMessage)" />
-    public void Receive(IDropTargetIslandChangedMessage islandChangedMessage)
-    {
-        if (islandChangedMessage.Value is not { SourceIsland: { } sourceIsland } ||
-            islandChangedMessage.Value.TargetIsland is not { } dropTargetIsland ||
-            IslandProvider.GetVisibleNeighbor(sourceIsland, dropTargetIsland) is not { } targetIsland)
-        {
-            IslandProvider.RemoveAllHighlights();
-            IslandProvider.ClearTemporaryDropTargets();
-            return;
-        }
-
-        targetIsland.IslandColor = brushFactory.Invoke(HashiColorHelper.GreenIslandBrush);
-
-        IslandProvider.RemoveAllHighlights();
-        IslandProvider.HighlightPathToTargetIsland(sourceIsland, targetIsland);
     }
 
     /// <inheritdoc />
