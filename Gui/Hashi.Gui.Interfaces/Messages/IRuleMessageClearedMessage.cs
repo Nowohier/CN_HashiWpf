@@ -3,6 +3,4 @@
 /// <summary>
 ///     A message sent when the rule message has been cleared.
 /// </summary>
-public interface IRuleMessageClearedMessage : IValueChangedMessage<bool?>
-{
-}
+public interface IRuleMessageClearedMessage : IValueChangedMessage<bool?>;

@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Hashi.Enums;
 using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.Providers;
@@ -8,6 +6,8 @@ using Hashi.Gui.Interfaces.ViewModels;
 using Moq;
 using NRules.Fluent.Dsl;
 using NRules.Testing;
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 
 namespace Hashi.Rules.Test.Helpers;
 
@@ -63,7 +63,7 @@ public abstract class TestBase<T> : RulesTestFixture
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
         var action = () =>
         {
-            var test = (T)Activator.CreateInstance(typeof(T), ruleInfoProviderMockObject!, islandProviderMockObject!);
+            _ = (T)Activator.CreateInstance(typeof(T), ruleInfoProviderMockObject!, islandProviderMockObject!);
         };
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 

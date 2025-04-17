@@ -1,9 +1,8 @@
-﻿using System.Collections.ObjectModel;
-using Hashi.Enums;
+﻿using Hashi.Enums;
 using Hashi.Generator.Interfaces.Providers;
 using Hashi.Gui.Interfaces.Messages;
-using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.ViewModels;
+using System.Collections.ObjectModel;
 
 namespace Hashi.Gui.Interfaces.Providers;
 
@@ -18,16 +17,6 @@ public interface IIslandProvider
     ///     Gets a flat enumerable of all islands.
     /// </summary>
     IEnumerable<IIslandViewModel> IslandsFlat { get; }
-
-    /// <summary>
-    ///     Gets the history of connections made in the game.
-    /// </summary>
-    IList<IHashiBridge> History { get; }
-
-    /// <summary>
-    ///     Gets or sets the solution container.
-    /// </summary>
-    ISolutionProvider? Solution { get; }
 
     /// <summary>
     ///     Rebuilds the island collection with a new solution container.
@@ -79,15 +68,6 @@ public interface IIslandProvider
     /// </summary>
     /// <param name="pointType">The point type. Default is <see cref="HashiPointTypeEnum.All" />.</param>
     void RemoveAllBridges(HashiPointTypeEnum pointType);
-
-    /// <summary>
-    ///     Gets the visible neighbor of the source island depending on the direction to the potential target island. The
-    ///     potential target is not necessarily a visible neighbor.
-    /// </summary>
-    /// <param name="source">The source island.</param>
-    /// <param name="potentialTarget">The potential target island.</param>
-    /// <returns>the visible neighbor of the source island depending on the direction to the potential target island. </returns>
-    IIslandViewModel? GetVisibleNeighbor(IIslandViewModel source, IIslandViewModel potentialTarget);
 
     /// <summary>
     ///     Gets the visible neighbor of the source island depending on the direction to the potential target island. The

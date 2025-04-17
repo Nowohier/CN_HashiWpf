@@ -1,6 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.Diagnostics;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Enums;
 using Hashi.Generator.Interfaces.Providers;
@@ -11,6 +9,8 @@ using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Wrappers;
 using Hashi.Gui.Translation;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace Hashi.Gui.Providers;
 
@@ -48,10 +48,14 @@ public class IslandProvider :
     /// <inheritdoc />
     public ObservableCollection<ObservableCollection<IIslandViewModel>> Islands { get; } = [];
 
-    /// <inheritdoc />
+    /// <summary>
+    ///      The history of all connections made in the game. This is used for undo functionality.
+    /// </summary>
     public IList<IHashiBridge> History { get; } = new List<IHashiBridge>();
 
-    /// <inheritdoc />
+    /// <summary>
+    ///     The solution provider that contains the current solution.
+    /// </summary>
     public ISolutionProvider? Solution { get; private set; }
 
     /// <inheritdoc />
@@ -253,29 +257,6 @@ public class IslandProvider :
     }
 
     /// <inheritdoc />
-    public IIslandViewModel? GetVisibleNeighbor(IIslandViewModel source, IIslandViewModel potentialTarget)
-    {
-        ArgumentNullException.ThrowIfNull(potentialTarget);
-
-        if (source == potentialTarget)
-            throw new ArgumentException("Potential target island is identical to source.");
-
-        if (source.Coordinates.Y == potentialTarget.Coordinates.Y &&
-            source.Coordinates.X > potentialTarget.Coordinates.X)
-            return GetVisibleNeighbor(source, DirectionEnum.Left);
-        if (source.Coordinates.Y == potentialTarget.Coordinates.Y &&
-            source.Coordinates.X < potentialTarget.Coordinates.X)
-            return GetVisibleNeighbor(source, DirectionEnum.Right);
-        if (source.Coordinates.X == potentialTarget.Coordinates.X &&
-            source.Coordinates.Y > potentialTarget.Coordinates.Y)
-            return GetVisibleNeighbor(source, DirectionEnum.Up);
-        if (source.Coordinates.X == potentialTarget.Coordinates.X &&
-            source.Coordinates.Y < potentialTarget.Coordinates.Y)
-            return GetVisibleNeighbor(source, DirectionEnum.Down);
-        return null;
-    }
-
-    /// <inheritdoc />
     public IIslandViewModel? GetVisibleNeighbor(IIslandViewModel source, DirectionEnum direction)
     {
         return direction switch
@@ -377,29 +358,29 @@ public class IslandProvider :
         switch (connectionType)
         {
             case ConnectionTypeEnum.Vertical:
-            {
-                var minY = Math.Min(source.Coordinates.Y, target.Coordinates.Y);
-                var maxY = Math.Max(source.Coordinates.Y, target.Coordinates.Y);
-                for (var y = minY; y <= maxY; y++)
                 {
-                    var island = Islands[y][source.Coordinates.X];
-                    islandsBetween.Add(island);
-                }
+                    var minY = Math.Min(source.Coordinates.Y, target.Coordinates.Y);
+                    var maxY = Math.Max(source.Coordinates.Y, target.Coordinates.Y);
+                    for (var y = minY; y <= maxY; y++)
+                    {
+                        var island = Islands[y][source.Coordinates.X];
+                        islandsBetween.Add(island);
+                    }
 
-                break;
-            }
+                    break;
+                }
             case ConnectionTypeEnum.Horizontal:
-            {
-                var minX = Math.Min(source.Coordinates.X, target.Coordinates.X);
-                var maxX = Math.Max(source.Coordinates.X, target.Coordinates.X);
-                for (var x = minX; x <= maxX; x++)
                 {
-                    var island = Islands[source.Coordinates.Y][x];
-                    islandsBetween.Add(island);
-                }
+                    var minX = Math.Min(source.Coordinates.X, target.Coordinates.X);
+                    var maxX = Math.Max(source.Coordinates.X, target.Coordinates.X);
+                    for (var x = minX; x <= maxX; x++)
+                    {
+                        var island = Islands[source.Coordinates.Y][x];
+                        islandsBetween.Add(island);
+                    }
 
-                break;
-            }
+                    break;
+                }
             case ConnectionTypeEnum.Diagonal:
             default:
                 throw new ArgumentOutOfRangeException();
@@ -443,25 +424,25 @@ public class IslandProvider :
         switch (connectionType)
         {
             case ConnectionTypeEnum.Vertical:
-            {
-                var minY = Math.Min(source.Coordinates.Y, target.Coordinates.Y);
-                var maxY = Math.Max(source.Coordinates.Y, target.Coordinates.Y);
-                for (var y = minY + 1; y < maxY; y++)
-                    if (Islands[y][source.Coordinates.X].MaxConnections > 0)
-                        return true;
+                {
+                    var minY = Math.Min(source.Coordinates.Y, target.Coordinates.Y);
+                    var maxY = Math.Max(source.Coordinates.Y, target.Coordinates.Y);
+                    for (var y = minY + 1; y < maxY; y++)
+                        if (Islands[y][source.Coordinates.X].MaxConnections > 0)
+                            return true;
 
-                break;
-            }
+                    break;
+                }
             case ConnectionTypeEnum.Horizontal:
-            {
-                var minX = Math.Min(source.Coordinates.X, target.Coordinates.X);
-                var maxX = Math.Max(source.Coordinates.X, target.Coordinates.X);
-                for (var x = minX + 1; x < maxX; x++)
-                    if (Islands[source.Coordinates.Y][x].MaxConnections > 0)
-                        return true;
+                {
+                    var minX = Math.Min(source.Coordinates.X, target.Coordinates.X);
+                    var maxX = Math.Max(source.Coordinates.X, target.Coordinates.X);
+                    for (var x = minX + 1; x < maxX; x++)
+                        if (Islands[source.Coordinates.Y][x].MaxConnections > 0)
+                            return true;
 
-                break;
-            }
+                    break;
+                }
             case ConnectionTypeEnum.Diagonal:
             default:
                 throw new InvalidOperationException(

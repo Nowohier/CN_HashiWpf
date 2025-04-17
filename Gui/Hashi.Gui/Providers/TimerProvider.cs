@@ -1,7 +1,7 @@
-﻿using System.Diagnostics;
-using System.Windows.Threading;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Hashi.Gui.Interfaces.Providers;
+using System.Diagnostics;
+using System.Windows.Threading;
 
 namespace Hashi.Gui.Providers;
 
@@ -18,7 +18,9 @@ public class TimerProvider : ObservableObject, ITimerProvider
     /// <inheritdoc />
     public Stopwatch Timer { get; } = new();
 
-    /// <inheritdoc />
+    /// <summary>
+    ///     Gets a value indicating whether the timer is running.
+    /// </summary>
     public bool IsTimerRunning => Timer.IsRunning;
 
     /// <inheritdoc />

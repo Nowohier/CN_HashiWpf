@@ -1,8 +1,4 @@
-﻿using System.Diagnostics;
-using System.Globalization;
-using System.Windows.Input;
-using System.Windows.Media;
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Enums;
 using Hashi.Generator.Interfaces;
@@ -18,6 +14,10 @@ using Hashi.Gui.Interfaces.Wrappers;
 using Hashi.Gui.Messaging;
 using Hashi.Gui.Translation;
 using Hashi.Rules;
+using System.Diagnostics;
+using System.Globalization;
+using System.Windows.Input;
+using System.Windows.Media;
 
 namespace Hashi.Gui.ViewModels;
 
@@ -39,7 +39,6 @@ public class MainViewModel : AsyncObservableRecipient,
     private bool isTestFieldMode;
     private DifficultyEnum selectedDifficulty = DifficultyEnum.Easy3;
     private Type selectedRule;
-    private ISolutionProvider? selectedTestSolutionProvider;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="MainViewModel" /> class.
@@ -87,7 +86,6 @@ public class MainViewModel : AsyncObservableRecipient,
         ChangeLanguageCommand = new RelayCommand<string>(ChangeLanguageCommandExecute);
         ToggleTestFieldCommand = new AsyncRelayCommand(ToggleTestFieldCommandExecute);
         ResetTestFieldCommand = new AsyncRelayCommand(ResetTestFieldCommandExecute);
-        selectedTestSolutionProvider = testSolutionProvider.SolutionProviders.FirstOrDefault();
         selectedRule = HintProvider.Rules.First();
         WindowColorBrush = brushFactory.Invoke(HashiColorHelper.BasicBrush);
 
@@ -175,19 +173,6 @@ public class MainViewModel : AsyncObservableRecipient,
     }
 
     /// <summary>
-    ///     Gets or sets the selected test solution provider.
-    /// </summary>
-    public ISolutionProvider? SelectedTestSolutionProvider
-    {
-        get => selectedTestSolutionProvider;
-        set
-        {
-            if (SetProperty(ref selectedTestSolutionProvider, value) && selectedTestSolutionProvider != null)
-                SetTestSolution(selectedTestSolutionProvider);
-        }
-    }
-
-    /// <summary>
     ///     Gets or sets the selected difficulty for the game.
     /// </summary>
     public DifficultyEnum SelectedDifficulty
@@ -244,16 +229,24 @@ public class MainViewModel : AsyncObservableRecipient,
     /// </summary>
     public ICommand ResetTestFieldCommand { get; }
 
-    /// <inheritdoc />
+    /// <summary>
+    ///    Gets the timer provider for the game.
+    /// </summary>
     public ITimerProvider TimerProvider { get; }
 
-    /// <inheritdoc />
+    /// <summary>
+    ///    Gets the islands provider for the game.
+    /// </summary>
     public IIslandProvider IslandProvider { get; }
 
-    /// <inheritdoc />
+    /// <summary>
+    ///    Gets the hint provider for the game.
+    /// </summary>
     public IHintProvider HintProvider { get; }
 
-    /// <inheritdoc />
+    /// <summary>
+    ///    Gets the test solution provider for the game.
+    /// </summary>
     public ITestSolutionProvider TestSolutionProvider { get; }
 
     /// <inheritdoc />
@@ -276,7 +269,8 @@ public class MainViewModel : AsyncObservableRecipient,
             {
                 TimerProvider.StartTimer();
                 IslandProvider.AddConnection(sourceIsland, targetIsland);
-            },
+            }
+            ,
             BridgeOperationTypeEnum.RemoveAll => () => IslandProvider.RemoveAllConnections(sourceIsland, null),
             _ => throw new ArgumentOutOfRangeException()
         };
@@ -306,7 +300,7 @@ public class MainViewModel : AsyncObservableRecipient,
             return;
         }
 
-        //Check if highscore - if yes, write highscore to json and show message
+        //Check if highscore - when yes, write highscore to json and show message
         var currentSettingForSetDifficulty =
             SettingsProvider.Settings.HighScores.FirstOrDefault(x => x.Difficulty == SelectedDifficulty);
         var currentHighScore = currentSettingForSetDifficulty?.HighScoreTime;

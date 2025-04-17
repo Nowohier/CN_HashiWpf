@@ -1,5 +1,4 @@
-﻿using Hashi.Generator.Interfaces.Models;
-using Hashi.Generator.Interfaces.Providers;
+﻿using Hashi.Generator.Interfaces.Providers;
 
 namespace Hashi.Generator.Interfaces;
 
@@ -21,16 +20,4 @@ public interface IHashiGenerator
     Task<ISolutionProvider> GenerateHashAsync(int difficulty = -1, int amountNodes = 10, int width = 0, int length = 0,
         int alpha = 0,
         int beta = 0);
-
-    /// <summary>
-    ///     Gets the bridges of the Hashi field.
-    /// </summary>
-    /// <returns>a list of bridge models.</returns>
-    List<IBridge> GetBridges();
-
-    /// <summary>
-    ///     Gets the islands of the Hashi field.
-    /// </summary>
-    /// <returns>a list of island models.</returns>
-    List<IIsland> GetIslands();
 }

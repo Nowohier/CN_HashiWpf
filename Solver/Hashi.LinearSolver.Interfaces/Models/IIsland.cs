@@ -56,7 +56,7 @@ public interface IIsland
     List<IIsland> UpNeighbors { get; }
 
     /// <summary>
-    ///     Adds a a bridge to the island.
+    ///     Adds a bridge to the island.
     /// </summary>
     /// <param name="field">The array of fields.</param>
     /// <param name="islands">The list of islands.</param>

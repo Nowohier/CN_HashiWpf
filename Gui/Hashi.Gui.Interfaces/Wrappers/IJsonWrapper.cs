@@ -22,11 +22,4 @@ public interface IJsonWrapper
     ///     A JSON string representation of the object.
     /// </returns>
     string SerializeObject(object? value);
-
-    /// <summary>
-    ///     Serializes the specified object to a JSON string using hashi formatting.
-    /// </summary>
-    /// <param name="obj">The object to serialize.</param>
-    /// <returns>a formatted json string.</returns>
-    string SerializeWithCustomIndenting(object obj);
 }

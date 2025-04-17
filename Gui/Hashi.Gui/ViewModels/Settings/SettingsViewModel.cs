@@ -1,10 +1,10 @@
-﻿using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Hashi.Enums;
 using Hashi.Gui.Extensions;
 using Hashi.Gui.Interfaces.ViewModels;
 using Newtonsoft.Json;
+using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Hashi.Gui.ViewModels.Settings;
 
@@ -39,10 +39,10 @@ public class SettingsViewModel : ObservableObject, ISettingsViewModel
 
     /// <inheritdoc />
     [JsonProperty(nameof(HighScores))]
-    public ObservableCollection<IHighScorePerDifficultyViewModel> HighScores { get; } = new();
+    public ObservableCollection<IHighScorePerDifficultyViewModel> HighScores { get; } = [];
 
     /// <inheritdoc />
-    public ObservableCollection<ILanguageViewModel> Languages { get; } = new();
+    public ObservableCollection<ILanguageViewModel> Languages { get; } = [];
 
     /// <inheritdoc />
     public void InitializeHighScores()

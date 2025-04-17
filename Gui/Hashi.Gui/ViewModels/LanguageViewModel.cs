@@ -4,27 +4,26 @@ using Hashi.Gui.Interfaces.ViewModels;
 namespace Hashi.Gui.ViewModels;
 
 /// <inheritdoc cref="ILanguageViewModel" />
-public class LanguageViewModel : ObservableObject, ILanguageViewModel
+public class LanguageViewModel(string languageNameEnglish, string languageNameNative, string culture)
+    : ObservableObject, ILanguageViewModel
 {
-    private string culture;
-    private string languageNameEnglish;
-    private string languageNameNative;
+    private string culture = culture;
+    private string languageNameEnglish = languageNameEnglish;
+    private string languageNameNative = languageNameNative;
 
-    public LanguageViewModel(string languageNameEnglish, string languageNameNative, string culture)
-    {
-        this.languageNameEnglish = languageNameEnglish;
-        this.languageNameNative = languageNameNative;
-        this.culture = culture;
-    }
-
-    /// <inheritdoc />
+    /// <summary>
+    /// The name of the language in English.
+    /// </summary>
     public string LanguageNameEnglish
     {
         get => languageNameEnglish;
         set => SetProperty(ref languageNameEnglish, value);
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// The name of the language in its native form.
+    /// </summary>
+    // ReSharper disable once UnusedMember.Global
     public string LanguageNameNative
     {
         get => languageNameNative;
