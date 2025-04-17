@@ -382,7 +382,7 @@ public class MainViewModel : AsyncObservableRecipient,
 
     private void GetPotentialDropTarget(MainViewModel main, IDragDirectionChangedRequestTargetMessage message)
     {
-        if (IslandProvider.GetVisibleNeighbor(message.Source, message.Direction) is not { } target)
+        if (IslandProvider.GetVisibleNeighbor(message.Source, message.Direction) is not { } target || target.MaxConnectionsReached)
         {
             IslandProvider.RemoveAllHighlights();
             IslandProvider.ClearTemporaryDropTargets();
