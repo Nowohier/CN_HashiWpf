@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Enums;
 using Hashi.Gui.Helpers;
+using Hashi.Gui.Interfaces.Messages;
 using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Messages;
@@ -18,7 +19,7 @@ namespace Hashi.Gui.Behaviors;
 /// <summary>
 ///     A behavior that controls the visibility of a bridge based on the number of connections in a Hashi game.
 /// </summary>
-public class BridgeVisibilityBehavior : Behavior<Line>, IRecipient<RuleMessageClearedMessage>
+public class BridgeVisibilityBehavior : Behavior<Line>, IRecipient<IRuleMessageClearedMessage>
 {
     /// <summary>
     ///     Identifies the <see cref="AllConnections" /> dependency property.
@@ -72,7 +73,7 @@ public class BridgeVisibilityBehavior : Behavior<Line>, IRecipient<RuleMessageCl
     ///     Receives the <see cref="RuleMessageClearedMessage" />.
     /// </summary>
     /// <param name="messageClearedMessage">The message.</param>
-    public void Receive(RuleMessageClearedMessage messageClearedMessage)
+    public void Receive(IRuleMessageClearedMessage messageClearedMessage)
     {
         if (AssociatedObject is not { Stroke: SolidColorBrush solidColorBrush } line) return;
 

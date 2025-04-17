@@ -47,12 +47,6 @@ public interface IMainViewModel
     void Receive(IBridgeConnectionChangedMessage message);
 
     /// <summary>
-    ///     Updates the color of all islands.
-    /// </summary>
-    /// <param name="message">The <see cref="IUpdateAllIslandColorsMessage" />.</param>
-    void Receive(IUpdateAllIslandColorsMessage message);
-
-    /// <summary>
     ///     Handles the message when all connections are set.
     /// </summary>
     /// <param name="message">The <see cref="IAllConnectionsSetMessage" />.</param>

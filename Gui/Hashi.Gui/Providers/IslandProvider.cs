@@ -15,7 +15,10 @@ using System.Diagnostics;
 namespace Hashi.Gui.Providers
 {
     /// <inheritdoc cref="IIslandProvider" />
-    public class IslandProvider : ObservableObject, IIslandProvider
+    public class IslandProvider :
+        ObservableObject,
+        IIslandProvider,
+        IRecipient<IUpdateAllIslandColorsMessage>
     {
         private readonly Func<int, int, int, IIslandViewModel> islandFactory;
         private readonly Func<BridgeOperationTypeEnum, IHashiPoint, IHashiPoint, IHashiBridge> bridgeFactory;
@@ -36,12 +39,7 @@ namespace Hashi.Gui.Providers
             this.allConnectionsSetMessageFactory = allConnectionsSetMessageFactory;
             this.dialogWrapper = dialogWrapper;
 
-            WeakReferenceMessenger.Default.Register<IslandProvider, IGetVisibleNeighborRequestMessage>(this,
-                (provider, message) =>
-                {
-                    var neighbor = provider.GetVisibleNeighbor(message.Source, message.Target);
-                    message.Reply(neighbor);
-                });
+            WeakReferenceMessenger.Default.Register(this);
         }
 
         /// <inheritdoc />
@@ -346,6 +344,12 @@ namespace Hashi.Gui.Providers
             }
 
             return groupCount;
+        }
+
+        /// <inheritdoc cref="IIslandProvider.Receive(IUpdateAllIslandColorsMessage)" />
+        public void Receive(IUpdateAllIslandColorsMessage message)
+        {
+            RefreshIslandColors();
         }
 
         private void FindConnectedIslands(IIslandViewModel island, List<IIslandViewModel> group, HashSet<IIslandViewModel> visited)
