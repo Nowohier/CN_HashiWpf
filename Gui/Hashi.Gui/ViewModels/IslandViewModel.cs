@@ -10,8 +10,6 @@ using Hashi.Gui.Interfaces.Messages.MessageContainers;
 using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Views;
-using Hashi.Gui.Messages;
-using Hashi.Gui.Messages.MessageContainers;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
@@ -19,11 +17,12 @@ using System.Windows.Media;
 
 namespace Hashi.Gui.ViewModels;
 
-public class IslandViewModel : ObservableRecipient, IIslandViewModel
+public class IslandViewModel :
+    ObservableRecipient,
+    IIslandViewModel
 {
-    private readonly IViewBoxControl viewBoxControl;
+    private readonly FrameworkElement viewBoxControl;
     private readonly Func<SolidColorBrush, IHashiBrush> brushFactory;
-    private readonly Func<IIslandViewModel, IIslandViewModel, IGetVisibleNeighborRequestMessage> getVisibleNeighborRequestFactory;
     private readonly Func<bool?, IUpdateAllIslandColorsMessage> updateAllIslandColorsMessageFactory;
     private readonly Func<BridgeOperationTypeEnum, IIslandViewModel, IIslandViewModel?, IBridgeConnectionInformationContainer> connectionInformationContainerFactory;
     private readonly Func<IBridgeConnectionInformationContainer, IBridgeConnectionChangedMessage> bridgeConnectionChangedMessageFactory;
@@ -49,7 +48,6 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
     /// <param name="viewBoxControl">The viewBox.</param>
     /// <param name="hashiPointFactory">The hashi point factory.</param>
     /// <param name="brushFactory">The brush factory.</param>
-    /// <param name="getVisibleNeighborRequestFactory">The get visible neighbors request message factory.</param>
     /// <param name="updateAllIslandColorsMessageFactory">The update all island colors message factory.</param>
     /// <param name="connectionInformationContainerFactory">The bridge connection information container factory.</param>
     /// <param name="bridgeConnectionChangedMessageFactory">The bridge connection changed message factory.</param>
@@ -63,7 +61,6 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
             IViewBoxControl viewBoxControl,
             Func<int, int, HashiPointTypeEnum, IHashiPoint> hashiPointFactory,
             Func<SolidColorBrush, IHashiBrush> brushFactory,
-            Func<IIslandViewModel, IIslandViewModel, IGetVisibleNeighborRequestMessage> getVisibleNeighborRequestFactory,
             Func<bool?, IUpdateAllIslandColorsMessage> updateAllIslandColorsMessageFactory,
             Func<BridgeOperationTypeEnum, IIslandViewModel, IIslandViewModel?, IBridgeConnectionInformationContainer> connectionInformationContainerFactory,
             Func<IBridgeConnectionInformationContainer, IBridgeConnectionChangedMessage> bridgeConnectionChangedMessageFactory,
@@ -73,9 +70,8 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
     {
         MaxConnections = maxConnections;
         Coordinates = hashiPointFactory.Invoke(x, y, HashiPointTypeEnum.Normal);
-        this.viewBoxControl = viewBoxControl;
+        this.viewBoxControl = (FrameworkElement)viewBoxControl.ViewBoxControl;
         this.brushFactory = brushFactory;
-        this.getVisibleNeighborRequestFactory = getVisibleNeighborRequestFactory;
         this.updateAllIslandColorsMessageFactory = updateAllIslandColorsMessageFactory;
         this.connectionInformationContainerFactory = connectionInformationContainerFactory;
         this.bridgeConnectionChangedMessageFactory = bridgeConnectionChangedMessageFactory;
@@ -349,10 +345,7 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
         if (e.MouseEventArgs.OriginalSource is not DependencyObject depObject) return;
 
         isDragging = true;
-
-        if (viewBoxControl.ViewBoxControl is not FrameworkElement viewBox)
-            throw new InvalidOperationException("ViewBoxControl is not available.");
-        startDragPosition = CursorHelper.GetCurrentCursorPosition(viewBox);
+        startDragPosition = CursorHelper.GetCurrentCursorPosition(viewBoxControl);
 
         DragDrop.AddQueryContinueDragHandler(depObject, QueryContinueDragHandler);
         DragDrop.DoDragDrop(depObject, this, DragDropEffects.Link);
@@ -380,7 +373,9 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
     {
         if (!isDragging)
         {
-            WeakReferenceMessenger.Default.Send(new BridgeConnectionChangedMessage(new BridgeConnectionInformationContainer(BridgeOperationTypeEnum.RemoveAll, this)));
+            var info = connectionInformationContainerFactory.Invoke(BridgeOperationTypeEnum.RemoveAll, this, null);
+            var message = bridgeConnectionChangedMessageFactory.Invoke(info);
+            WeakReferenceMessenger.Default.Send(message);
 
             var isTestMode = WeakReferenceMessenger.Default.Send(isTestModeRequestMessageFactory.Invoke()).Response;
             if (isTestMode)
@@ -425,11 +420,8 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
 
     private void QueryContinueDragHandler(object sender, QueryContinueDragEventArgs e)
     {
-        if (viewBoxControl.ViewBoxControl is not FrameworkElement viewBox)
-            throw new InvalidOperationException("ViewBoxControl is not available.");
-
         // Calculate the difference in X and Y coordinates
-        var currentPosition = CursorHelper.GetCurrentCursorPosition(viewBox);
+        var currentPosition = CursorHelper.GetCurrentCursorPosition(viewBoxControl);
         var deltaX = currentPosition.X - startDragPosition.X;
         var deltaY = currentPosition.Y - startDragPosition.Y;
 
@@ -452,7 +444,7 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
         var islandInfos = connectionInformationContainerFactory.Invoke(BridgeOperationTypeEnum.Add, this, dropTargetIsland);
         var addMessage = bridgeConnectionChangedMessageFactory.Invoke(islandInfos);
         WeakReferenceMessenger.Default.Send(addMessage);
-
+        dropTargetIsland = null;
         WeakReferenceMessenger.Default.Send(updateAllIslandColorsMessageFactory.Invoke(null));
     }
 

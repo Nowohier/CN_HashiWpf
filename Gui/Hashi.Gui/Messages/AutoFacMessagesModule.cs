@@ -18,7 +18,6 @@ public class AutoFacMessagesModule : Module
         builder.RegisterType<BridgeConnectionInformationContainer>().As<IBridgeConnectionInformationContainer>().InstancePerDependency();
         builder.RegisterType<BridgeConnectionChangedMessage>().As<IBridgeConnectionChangedMessage>().InstancePerDependency();
         builder.RegisterType<UpdateAllIslandColorsMessage>().As<IUpdateAllIslandColorsMessage>().InstancePerDependency();
-        builder.RegisterType<GetVisibleNeighborRequestMessage>().As<IGetVisibleNeighborRequestMessage>().InstancePerDependency();
         builder.RegisterType<RuleMessageClearedMessage>().As<IRuleMessageClearedMessage>().InstancePerDependency();
         builder.RegisterType<IsTestModeRequestMessage>().As<IIsTestModeRequestMessage>().InstancePerDependency();
         builder.RegisterType<DragDirectionChangedRequestTargetMessage>().As<IDragDirectionChangedRequestTargetMessage>().InstancePerDependency();
@@ -29,14 +28,6 @@ public class AutoFacMessagesModule : Module
             return (source, direction) => c.Resolve<IDragDirectionChangedRequestTargetMessage>(
                 new NamedParameter("source", source),
                 new NamedParameter("direction", direction));
-        });
-
-        builder.Register<Func<IIslandViewModel, IIslandViewModel, IGetVisibleNeighborRequestMessage>>(context =>
-        {
-            var c = context.Resolve<IComponentContext>();
-            return (source, target) => c.Resolve<IGetVisibleNeighborRequestMessage>(
-                new NamedParameter("source", source),
-                new NamedParameter("target", target));
         });
 
         builder.Register<Func<BridgeOperationTypeEnum, IIslandViewModel, IIslandViewModel?, IBridgeConnectionInformationContainer>>(context =>
@@ -52,6 +43,13 @@ public class AutoFacMessagesModule : Module
         {
             var c = context.Resolve<IComponentContext>();
             return (value) => c.Resolve<IUpdateAllIslandColorsMessage>(
+                new NamedParameter("value", value));
+        });
+
+        builder.Register<Func<bool?, IRuleMessageClearedMessage>>(context =>
+        {
+            var c = context.Resolve<IComponentContext>();
+            return (value) => c.Resolve<IRuleMessageClearedMessage>(
                 new NamedParameter("value", value));
         });
 

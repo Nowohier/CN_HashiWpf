@@ -11,7 +11,6 @@ using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Interfaces.Resources.SolutionProviders;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Wrappers;
-using Hashi.Gui.Messages;
 using Hashi.Gui.Messaging;
 using Hashi.Gui.Translation;
 using Hashi.Rules;
@@ -26,7 +25,6 @@ namespace Hashi.Gui.ViewModels;
 public class MainViewModel : AsyncObservableRecipient,
     IMainViewModel,
     IRecipient<IBridgeConnectionChangedMessage>,
-    IRecipient<IUpdateAllIslandColorsMessage>,
     IRecipient<IAllConnectionsSetMessage>
 {
     private readonly Func<SolidColorBrush, IHashiBrush> brushFactory;
@@ -75,7 +73,6 @@ public class MainViewModel : AsyncObservableRecipient,
         this.solutionProviderFactory = solutionProviderFactory;
 
         WeakReferenceMessenger.Default.Register<IBridgeConnectionChangedMessage>(this);
-        WeakReferenceMessenger.Default.Register<IUpdateAllIslandColorsMessage>(this);
         WeakReferenceMessenger.Default.Register<IAllConnectionsSetMessage>(this);
 
         CreateNewGameCommand = new AsyncRelayCommand(CreateNewGameAsync);
@@ -287,18 +284,10 @@ public class MainViewModel : AsyncObservableRecipient,
 
         bridgeAction();
 
-        sourceIsland.RefreshIslandColor();
-        targetIsland?.RefreshIslandColor();
-
+        IslandProvider.RefreshIslandColors();
         IslandProvider.RemoveAllHighlights();
         IslandProvider.ClearTemporaryDropTargets();
         Debug.WriteLine($"Isolated Groups: {IslandProvider.CountIsolatedIslandGroups()}");
-    }
-
-    /// <inheritdoc cref="IMainViewModel.Receive(IUpdateAllIslandColorsMessage)" />
-    public void Receive(IUpdateAllIslandColorsMessage message)
-    {
-        IslandProvider.RefreshIslandColors();
     }
 
     /// <inheritdoc cref="IMainViewModel.Receive(IAllConnectionsSetMessage)" />
@@ -359,10 +348,10 @@ public class MainViewModel : AsyncObservableRecipient,
     private void RemoveAllBridgesExecute()
     {
         IslandProvider.RemoveAllBridges(HashiPointTypeEnum.All);
+        IslandProvider.RefreshIslandColors();
         TimerProvider.StopTimer();
 
         IsCheating = false;
-        WeakReferenceMessenger.Default.Send(new UpdateAllIslandColorsMessage());
     }
 
     private Task SetTestSolution(ISolutionProvider? solutionProvider)
@@ -401,9 +390,10 @@ public class MainViewModel : AsyncObservableRecipient,
             return;
         }
 
-        target.IslandColor = brushFactory.Invoke(HashiColorHelper.GreenIslandBrush);
-
+        IslandProvider.RefreshIslandColors();
         IslandProvider.RemoveAllHighlights();
+        message.Source.IslandColor = brushFactory.Invoke(HashiColorHelper.GreenIslandBrush);
+        target.IslandColor = brushFactory.Invoke(HashiColorHelper.GreenIslandBrush);
         IslandProvider.HighlightPathToTargetIsland(message.Source, target);
 
         message.Reply(target);
