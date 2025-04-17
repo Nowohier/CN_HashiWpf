@@ -57,10 +57,4 @@ public interface IMainViewModel
     /// </summary>
     /// <param name="message">The <see cref="IAllConnectionsSetMessage" />.</param>
     void Receive(IAllConnectionsSetMessage message);
-
-    /// <summary>
-    ///     Handles the message when the potential target island is changed.
-    /// </summary>
-    /// <param name="islandChangedMessage">The <see cref="IDropTargetIslandChangedMessage" />.</param>
-    void Receive(IDropTargetIslandChangedMessage islandChangedMessage);
 }
