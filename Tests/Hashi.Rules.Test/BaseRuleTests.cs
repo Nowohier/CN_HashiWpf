@@ -145,6 +145,34 @@ public class BaseRuleTests
         result.Should().Contain(neighborIslandMock1.Object);
     }
 
+    [Test]
+    public void GetConnectableNeighborsWithoutConnection_WhenSourceNull_ShouldThrow()
+    {
+        // arrange
+        var neighborIslandMock1 = new Mock<IIslandViewModel>();
+        var neighborIslandMock2 = new Mock<IIslandViewModel>();
+
+        neighborIslandMock1.Setup(x => x.MaxConnectionsReached).Returns(false);
+        neighborIslandMock1.Setup(x => x.AllConnections).Returns([]);
+
+        neighborIslandMock2.Setup(x => x.MaxConnectionsReached).Returns(true);
+        neighborIslandMock2.Setup(x => x.AllConnections).Returns([]);
+
+        var neighbors = new List<IIslandViewModel?> { neighborIslandMock1.Object, neighborIslandMock2.Object };
+
+        // act, assert
+        testableBaseRule.Invoking(x => x.GetConnectableNeighborsWithoutConnection(null!, neighbors!))
+            .Should().Throw<ArgumentNullException>();
+    }
+
+    [Test]
+    public void GetConnectableNeighborsWithoutConnection_WhenNeighborsNull_ShouldThrow()
+    {
+        // arrange, act, assert
+        testableBaseRule.Invoking(x => x.GetConnectableNeighborsWithoutConnection(sourceIslandMock.Object, null!))
+            .Should().Throw<ArgumentNullException>();
+    }
+
     [TestCase(0, 0)] // No neighbors exist
     [TestCase(2, 0)] // No neighbors are connected
     [TestCase(2, 2)] // All neighbors are connected
@@ -898,26 +926,29 @@ public class BaseRuleTests
     {
         // arrange
         var connectableNeighbor1 = new Mock<IIslandViewModel>();
+        connectableNeighbor1.Setup(x => x.MaxConnectionsReached).Returns(true);
+        connectableNeighbor1.Setup(x => x.AllConnections).Returns([]);
+
         var connectableNeighbor2 = new Mock<IIslandViewModel>();
+        connectableNeighbor2.Setup(x => x.MaxConnectionsReached).Returns(false);
+        connectableNeighbor2.Setup(x => x.AllConnections).Returns([]);
         var allNeighbors = new List<IIslandViewModel> { connectableNeighbor1.Object, connectableNeighbor2.Object };
 
         sourceIslandMock.Setup(x => x.MaxConnectionsReached).Returns(true);
-        connectableNeighbor1.Setup(x => x.MaxConnectionsReached).Returns(true);
-        connectableNeighbor2.Setup(x => x.MaxConnectionsReached).Returns(true);
-
         islandProviderMock.Setup(x => x.CountIsolatedIslandGroups()).Returns(1);
         islandProviderMock.Setup(x => x.GetAllVisibleNeighbors(sourceIslandMock.Object)).Returns(allNeighbors);
 
         // act
         var result = testableBaseRule.SetTestConnectionAndIfGroupIsIsolatedReturnValidNeighbor(
             sourceIslandMock.Object,
-            new List<IIslandViewModel> { connectableNeighbor1.Object, connectableNeighbor2.Object },
+            [connectableNeighbor1.Object, connectableNeighbor2.Object],
             allNeighbors);
 
         // assert
         result.Should().NotBeNull();
         islandProviderMock.Verify(x => x.AddConnection(sourceIslandMock.Object, connectableNeighbor1.Object, HashiPointTypeEnum.Test), Times.Once);
-        islandProviderMock.Verify(x => x.RemoveAllBridges(HashiPointTypeEnum.Test), Times.Exactly(2));
+        islandProviderMock.Verify(x => x.AddConnection(sourceIslandMock.Object, connectableNeighbor2.Object, HashiPointTypeEnum.Test), Times.Never);
+        islandProviderMock.Verify(x => x.RemoveAllBridges(HashiPointTypeEnum.Test), Times.Exactly(1));
     }
 
     [Test]
@@ -925,12 +956,17 @@ public class BaseRuleTests
     {
         // arrange
         var connectableNeighbor1 = new Mock<IIslandViewModel>();
+        connectableNeighbor1.Setup(x => x.MaxConnectionsReached).Returns(true);
+        connectableNeighbor1.Setup(x => x.AllConnections).Returns([]);
+
         var connectableNeighbor2 = new Mock<IIslandViewModel>();
+        connectableNeighbor2.Setup(x => x.MaxConnectionsReached).Returns(true);
+        connectableNeighbor2.Setup(x => x.AllConnections).Returns([]);
+
         var allNeighbors = new List<IIslandViewModel> { connectableNeighbor1.Object, connectableNeighbor2.Object };
 
         sourceIslandMock.Setup(x => x.MaxConnectionsReached).Returns(true);
-        connectableNeighbor1.Setup(x => x.MaxConnectionsReached).Returns(true);
-        connectableNeighbor2.Setup(x => x.MaxConnectionsReached).Returns(true);
+
 
         islandProviderMock.Setup(x => x.CountIsolatedIslandGroups()).Returns(0);
         islandProviderMock.Setup(x => x.GetAllVisibleNeighbors(sourceIslandMock.Object)).Returns(allNeighbors);
@@ -938,7 +974,7 @@ public class BaseRuleTests
         // act
         var result = testableBaseRule.SetTestConnectionAndIfGroupIsIsolatedReturnValidNeighbor(
             sourceIslandMock.Object,
-            new List<IIslandViewModel> { connectableNeighbor1.Object, connectableNeighbor2.Object },
+            [connectableNeighbor1.Object, connectableNeighbor2.Object],
             allNeighbors);
 
         // assert
@@ -959,7 +995,7 @@ public class BaseRuleTests
         // act
         var result = testableBaseRule.SetTestConnectionAndIfGroupIsIsolatedReturnValidNeighbor(
             sourceIslandMock.Object,
-            new List<IIslandViewModel>(),
+            [],
             allNeighbors);
 
         // assert
@@ -973,17 +1009,18 @@ public class BaseRuleTests
     {
         // arrange
         var connectableNeighbor = new Mock<IIslandViewModel>();
+        connectableNeighbor.Setup(x => x.MaxConnectionsReached).Returns(false);
+        connectableNeighbor.Setup(x => x.AllConnections).Returns([]);
+
         var allNeighbors = new List<IIslandViewModel> { connectableNeighbor.Object };
 
         sourceIslandMock.Setup(x => x.MaxConnectionsReached).Returns(false);
-        connectableNeighbor.Setup(x => x.MaxConnectionsReached).Returns(false);
-
         islandProviderMock.Setup(x => x.CountIsolatedIslandGroups()).Returns(0);
 
         // act
         var result = testableBaseRule.SetTestConnectionAndIfGroupIsIsolatedReturnValidNeighbor(
             sourceIslandMock.Object,
-            new List<IIslandViewModel> { connectableNeighbor.Object },
+            [connectableNeighbor.Object],
             allNeighbors);
 
         // assert

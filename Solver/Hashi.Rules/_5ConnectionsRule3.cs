@@ -24,7 +24,7 @@ public class _5ConnectionsRule3(IRuleInfoProvider ruleInfoProvider, IIslandProvi
             .Having(() => allNeighbors.Count == 4)
             .Let(() => restrictedNeighbors, () => GetMaxedOutConnectedNeighbors(island, allNeighbors, null))
             .Having(() =>
-                restrictedNeighbors.Count == 2 && CountConnectionsToNeighbors(island, restrictedNeighbors) <= 3)
+                restrictedNeighbors.Count == 2 && CountConnectionsToNeighbors(island, restrictedNeighbors) <= 2)
             .Let(() => validNeighbors, () => GetConnectableNeighborsWithoutConnection(island, allNeighbors))
             .Having(() => validNeighbors.Count > 0);
 

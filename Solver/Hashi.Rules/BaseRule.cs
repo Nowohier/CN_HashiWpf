@@ -149,6 +149,9 @@ public abstract class BaseRule : Rule
     internal List<IIslandViewModel> GetConnectableNeighborsWithoutConnection(IIslandViewModel source,
         IEnumerable<IIslandViewModel> allNeighbors)
     {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(allNeighbors);
+
         return GetConnectableNeighbors(allNeighbors).Where(x =>
             !x.AllConnections.Any(connection => DoCoordinatesMatch(source.Coordinates, connection))).ToList();
     }
