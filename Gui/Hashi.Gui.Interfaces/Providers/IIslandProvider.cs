@@ -89,6 +89,14 @@ namespace Hashi.Gui.Interfaces.Providers
         IIslandViewModel? GetVisibleNeighbor(IIslandViewModel source, IIslandViewModel potentialTarget);
 
         /// <summary>
+        ///   Gets the visible neighbor of the source island depending on the direction to the potential target island. The potential target is not necessarily a visible neighbor.
+        /// </summary>
+        /// <param name="source">The source island.</param>
+        /// <param name="direction">The direction.</param>
+        /// <returns>the next visible neighbor in the given direction.</returns>
+        IIslandViewModel? GetVisibleNeighbor(IIslandViewModel source, DirectionEnum direction);
+
+        /// <summary>
         /// Gets all visible neighbors of the source island.
         /// </summary>
         /// <param name="source">The source island.</param>
