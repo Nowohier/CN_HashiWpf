@@ -29,6 +29,7 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
     private readonly Func<IBridgeConnectionInformationContainer, IDropTargetIslandChangedMessage> dropTargetIslandChangedMessageFactory;
     private readonly Func<IBridgeConnectionInformationContainer, IBridgeConnectionChangedMessage> bridgeConnectionChangedMessageFactory;
     private readonly Func<IIsTestModeRequestMessage> isTestModeRequestMessageFactory;
+    private readonly Func<IIslandViewModel, DirectionEnum, IDragDirectionChangedRequestTargetMessage> dragDirectionChangedRequestTargetMessageFactory;
     private readonly IHashiPoint mouseDownPosition;
     private IIslandViewModel? dropTargetIsland;
     private bool isDragging;
@@ -37,6 +38,8 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
     private bool isHighlightVerticalBottom;
     private bool isHighlightVerticalTop;
     private IHashiBrush islandColor;
+    private Point startDragPosition;
+    private DirectionEnum actualDragDirection;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="IslandViewModel" /> class.
@@ -53,6 +56,7 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
     /// <param name="dropTargetIslandChangedMessageFactory">The drop target island changed factory.</param>
     /// <param name="bridgeConnectionChangedMessageFactory">The bridge connection changed message factory.</param>
     /// <param name="isTestModeRequestMessageFactory">The is test mode request factory.</param>
+    /// <param name="dragDirectionChangedRequestTargetMessageFactory">The drag direction changed request target message factory.</param>
     public IslandViewModel
         (
             int x,
@@ -66,7 +70,9 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
             Func<BridgeOperationTypeEnum, IIslandViewModel, IIslandViewModel?, IBridgeConnectionInformationContainer> connectionInformationContainerFactory,
             Func<IBridgeConnectionInformationContainer, IDropTargetIslandChangedMessage> dropTargetIslandChangedMessageFactory,
             Func<IBridgeConnectionInformationContainer, IBridgeConnectionChangedMessage> bridgeConnectionChangedMessageFactory,
-            Func<IIsTestModeRequestMessage> isTestModeRequestMessageFactory)
+            Func<IIsTestModeRequestMessage> isTestModeRequestMessageFactory,
+            Func<IIslandViewModel, DirectionEnum, IDragDirectionChangedRequestTargetMessage> dragDirectionChangedRequestTargetMessageFactory
+        )
     {
         MaxConnections = maxConnections;
         Coordinates = hashiPointFactory.Invoke(x, y, HashiPointTypeEnum.Normal);
@@ -78,6 +84,7 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
         this.dropTargetIslandChangedMessageFactory = dropTargetIslandChangedMessageFactory;
         this.bridgeConnectionChangedMessageFactory = bridgeConnectionChangedMessageFactory;
         this.isTestModeRequestMessageFactory = isTestModeRequestMessageFactory;
+        this.dragDirectionChangedRequestTargetMessageFactory = dragDirectionChangedRequestTargetMessageFactory;
 
         DragEnterCommand = new RelayCommand<DragEventArgs>(DragEnterCommandExecute);
         DropCommand = new RelayCommand<DragEventArgs>(DropCommandExecute);
@@ -347,6 +354,10 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
 
         isDragging = true;
 
+        if (viewBoxControl.ViewBoxControl is not FrameworkElement viewBox)
+            throw new InvalidOperationException("ViewBoxControl is not available.");
+        startDragPosition = CursorHelper.GetCurrentCursorPosition(viewBox);
+
         DragDrop.AddQueryContinueDragHandler(depObject, QueryContinueDragHandler);
         DragDrop.DoDragDrop(depObject, this, DragDropEffects.Link);
         DragDrop.RemoveQueryContinueDragHandler(depObject, QueryContinueDragHandler);
@@ -421,18 +432,20 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
         if (viewBoxControl.ViewBoxControl is not FrameworkElement viewBox)
             throw new InvalidOperationException("ViewBoxControl is not available.");
 
+        // Calculate the difference in X and Y coordinates
         var currentPosition = CursorHelper.GetCurrentCursorPosition(viewBox);
+        var deltaX = currentPosition.X - startDragPosition.X;
+        var deltaY = currentPosition.Y - startDragPosition.Y;
 
-        if (VisualTreeHelper.HitTest(viewBox, currentPosition)?.VisualHit is FrameworkElement element)
-            if (element.DataContext != this && element.DataContext is IslandViewModel potentialIsland &&
-                potentialIsland != dropTargetIsland)
-            {
-                dropTargetIsland = potentialIsland;
+        // Determine the drag direction
+        var dragDirection = GetDragDirection(deltaX, deltaY);
 
-                var container = connectionInformationContainerFactory.Invoke(BridgeOperationTypeEnum.None, this, dropTargetIsland);
-                var dropMessage = dropTargetIslandChangedMessageFactory.Invoke(container);
-                WeakReferenceMessenger.Default.Send(dropMessage);
-            }
+        if (dragDirection != actualDragDirection)
+        {
+            actualDragDirection = dragDirection;
+            var dragDirectionMessage = dragDirectionChangedRequestTargetMessageFactory.Invoke(this, dragDirection);
+            dropTargetIsland = WeakReferenceMessenger.Default.Send(dragDirectionMessage).Response;
+        }
 
         if (e.KeyStates != DragDropKeyStates.None) return;
 
@@ -440,11 +453,35 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
 
         if (dropTargetIsland == null) return;
 
-        var potentialTarget = WeakReferenceMessenger.Default.Send(getVisibleNeighborRequestFactory.Invoke(this, dropTargetIsland)).Response;
-        var islandInfos = connectionInformationContainerFactory.Invoke(BridgeOperationTypeEnum.Add, this, potentialTarget);
+        var islandInfos = connectionInformationContainerFactory.Invoke(BridgeOperationTypeEnum.Add, this, dropTargetIsland);
         var addMessage = bridgeConnectionChangedMessageFactory.Invoke(islandInfos);
-
         WeakReferenceMessenger.Default.Send(addMessage);
+
         WeakReferenceMessenger.Default.Send(updateAllIslandColorsMessageFactory.Invoke(null));
+    }
+
+    private DirectionEnum GetDragDirection(double deltaX, double deltaY)
+    {
+        const double threshold = 1.0; // Minimum movement to consider a direction
+
+        // Ignore small movements
+        if (Math.Abs(deltaX) < threshold && Math.Abs(deltaY) < threshold)
+            return DirectionEnum.None;
+
+        // Calculate angle in degrees
+        var angle = Math.Atan2(deltaY, deltaX) * (180 / Math.PI);
+
+        // Normalize angle to range [0, 360)
+        if (angle < 0)
+            angle += 360;
+
+        // Determine direction based on angle
+        return angle switch
+        {
+            >= 45 and < 135 => DirectionEnum.Down,
+            >= 135 and < 225 => DirectionEnum.Left,
+            >= 225 and < 315 => DirectionEnum.Up,
+            _ => DirectionEnum.Right
+        };
     }
 }

@@ -22,6 +22,15 @@ public class AutoFacMessagesModule : Module
         builder.RegisterType<GetVisibleNeighborRequestMessage>().As<IGetVisibleNeighborRequestMessage>().InstancePerDependency();
         builder.RegisterType<RuleMessageClearedMessage>().As<IRuleMessageClearedMessage>().InstancePerDependency();
         builder.RegisterType<IsTestModeRequestMessage>().As<IIsTestModeRequestMessage>().InstancePerDependency();
+        builder.RegisterType<DragDirectionChangedRequestTargetMessage>().As<IDragDirectionChangedRequestTargetMessage>().InstancePerDependency();
+
+        builder.Register<Func<IIslandViewModel, DirectionEnum, IDragDirectionChangedRequestTargetMessage>>(context =>
+        {
+            var c = context.Resolve<IComponentContext>();
+            return (source, direction) => c.Resolve<IDragDirectionChangedRequestTargetMessage>(
+                new NamedParameter("source", source),
+                new NamedParameter("direction", direction));
+        });
 
         builder.Register<Func<IIslandViewModel, IIslandViewModel, IGetVisibleNeighborRequestMessage>>(context =>
         {

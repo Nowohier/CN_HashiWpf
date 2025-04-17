@@ -94,6 +94,7 @@ public class MainViewModel : AsyncObservableRecipient,
         WindowColorBrush = brushFactory.Invoke(HashiColorHelper.BasicBrush);
 
         WeakReferenceMessenger.Default.Register<MainViewModel, IIsTestModeRequestMessage>(this, (_, message) => message.Reply(IsTestFieldMode));
+        WeakReferenceMessenger.Default.Register<MainViewModel, IDragDirectionChangedRequestTargetMessage>(this, GetPotentialDropTarget);
     }
 
     /// <inheritdoc />
@@ -408,6 +409,24 @@ public class MainViewModel : AsyncObservableRecipient,
         return SelectedRule != typeof(_0AllRules) && TestSolutionProvider.SolutionProviders.FirstOrDefault(x => x.Name == SelectedRule.Name) is { } sol
             ? sol
             : solutionProviderFactory.Invoke(TestSolutionProvider.HashiFieldReference, [], null);
+    }
+
+    private void GetPotentialDropTarget(MainViewModel main, IDragDirectionChangedRequestTargetMessage message)
+    {
+        if (IslandProvider.GetVisibleNeighbor(message.Source, message.Direction) is not { } target)
+        {
+            IslandProvider.RemoveAllHighlights();
+            IslandProvider.ClearTemporaryDropTargets();
+            message.Reply(null);
+            return;
+        }
+
+        target.IslandColor = brushFactory.Invoke(HashiColorHelper.GreenIslandBrush);
+
+        IslandProvider.RemoveAllHighlights();
+        IslandProvider.HighlightPathToTargetIsland(message.Source, target);
+
+        message.Reply(target);
     }
 
     private void GenerateHintCommandExecute()
