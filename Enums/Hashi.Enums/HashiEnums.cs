@@ -48,6 +48,7 @@ public enum ConnectionTypeEnum
 /// </summary>
 public enum DirectionEnum
 {
+    None,
     Up,
     Down,
     Left,

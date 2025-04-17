@@ -285,6 +285,19 @@ namespace Hashi.Gui.Providers
         }
 
         /// <inheritdoc />
+        public IIslandViewModel? GetVisibleNeighbor(IIslandViewModel source, DirectionEnum direction)
+        {
+            return direction switch
+            {
+                DirectionEnum.Up => CheckDirection(source, 0, -1, ConnectionTypeEnum.Vertical),
+                DirectionEnum.Down => CheckDirection(source, 0, 1, ConnectionTypeEnum.Vertical),
+                DirectionEnum.Left => CheckDirection(source, -1, 0, ConnectionTypeEnum.Horizontal),
+                DirectionEnum.Right => CheckDirection(source, 1, 0, ConnectionTypeEnum.Horizontal),
+                _ => null
+            };
+        }
+
+        /// <inheritdoc />
         public List<IIslandViewModel> GetAllVisibleNeighbors(IIslandViewModel source)
         {
             var neighbors = new List<IIslandViewModel>();
@@ -466,18 +479,6 @@ namespace Hashi.Gui.Providers
             var connectionType = source.GetConnectionType(target);
             var islands = GetAllIslandsInvolvedInConnection(source, target).Where(x => x.MaxConnections == 0);
             return islands.Any(island => IsCollidingConnection(island, connectionType));
-        }
-
-        private IIslandViewModel? GetVisibleNeighbor(IIslandViewModel source, DirectionEnum direction)
-        {
-            return direction switch
-            {
-                DirectionEnum.Up => CheckDirection(source, 0, -1, ConnectionTypeEnum.Vertical),
-                DirectionEnum.Down => CheckDirection(source, 0, 1, ConnectionTypeEnum.Vertical),
-                DirectionEnum.Left => CheckDirection(source, -1, 0, ConnectionTypeEnum.Horizontal),
-                DirectionEnum.Right => CheckDirection(source, 1, 0, ConnectionTypeEnum.Horizontal),
-                _ => null
-            };
         }
 
         private IIslandViewModel? CheckDirection(IIslandViewModel source, int dx, int dy, ConnectionTypeEnum connectionType)
