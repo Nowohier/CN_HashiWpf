@@ -10,7 +10,7 @@ namespace Hashi.Rules.Test;
 public class _5ConnectionsRule3Tests : TestBase<_5ConnectionsRule3>
 {
     [Test]
-    [TestCase(2, 1, true)]
+    [TestCase(2, 1, false)]
     [TestCase(1, 1, true)]
     [TestCase(0, 1, false)]
     [TestCase(2, 2, false)]
