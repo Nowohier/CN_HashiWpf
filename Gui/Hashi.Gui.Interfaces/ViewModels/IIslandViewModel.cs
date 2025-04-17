@@ -1,6 +1,6 @@
-﻿using Hashi.Enums;
+﻿using System.Collections.ObjectModel;
+using Hashi.Enums;
 using Hashi.Gui.Interfaces.Models;
-using System.Collections.ObjectModel;
 
 namespace Hashi.Gui.Interfaces.ViewModels;
 
@@ -114,16 +114,19 @@ public interface IIslandViewModel
     void RemoveAllConnectionsMatchingCoordinates(IHashiPoint connection);
 
     /// <summary>
-    /// Determines if the island is a valid drop target.
+    ///     Determines if the island is a valid drop target.
     /// </summary>
     /// <param name="target"></param>
     /// <returns></returns>
     bool IsValidDropTarget(IIslandViewModel? target);
 
     /// <summary>
-    /// Determines if the maximum number of bridges has been reached to the target island. Returns null if target is null.
+    ///     Determines if the maximum number of bridges has been reached to the target island. Returns null if target is null.
     /// </summary>
     /// <param name="target">The target island.</param>
-    /// <returns>a boolean value if the maximum number of bridges has been reached to the target island. Returns null if target is null.</returns>
+    /// <returns>
+    ///     a boolean value if the maximum number of bridges has been reached to the target island. Returns null if target
+    ///     is null.
+    /// </returns>
     bool? MaxBridgesReachedToTarget(IIslandViewModel? target);
 }

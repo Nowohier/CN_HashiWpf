@@ -18,7 +18,7 @@ public interface IHashiPoint : ICloneable
     public int Y { get; }
 
     /// <summary>
-    /// Determines the type of point in the Hashi puzzle.
+    ///     Determines the type of point in the Hashi puzzle.
     /// </summary>
     HashiPointTypeEnum PointType { get; set; }
 }

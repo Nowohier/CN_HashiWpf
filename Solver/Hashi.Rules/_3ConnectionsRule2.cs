@@ -5,9 +5,11 @@ using Hashi.Gui.Translation;
 namespace Hashi.Rules;
 
 /// <summary>
-/// If an island with a maximum of three bridges has three neighbors, and one is a 1-connection and another a 2-connection island then a connection must be set to the remaining neighbor.
+///     If an island with a maximum of three bridges has three neighbors, and one is a 1-connection and another a
+///     2-connection island then a connection must be set to the remaining neighbor.
 /// </summary>
-public class _3ConnectionsRule2(IRuleInfoProvider ruleInfoProvider, IIslandProvider islandProvider) : BaseRule(ruleInfoProvider, islandProvider)
+public class _3ConnectionsRule2(IRuleInfoProvider ruleInfoProvider, IIslandProvider islandProvider)
+    : BaseRule(ruleInfoProvider, islandProvider)
 {
     protected override string RuleMessage => TranslationSource.Instance[nameof(_3ConnectionsRule2)]!;
 
@@ -21,8 +23,11 @@ public class _3ConnectionsRule2(IRuleInfoProvider ruleInfoProvider, IIslandProvi
         When()
             .Match(() => island, x => x.MaxConnections == 3 && x.AllConnections.Count <= 2)
             .Let(() => allNeighbors, () => GetAllVisibleNeighbors(island))
-            .Having(() => allNeighbors.Count == 3 && allNeighbors.Count(x => x.MaxConnections == 1) == 1 && allNeighbors.Count(x => x.MaxConnections == 2) == 1)
-            .Let(() => validNeighbors, () => GetConnectableNeighborsWithoutConnection(island, allNeighbors).Where(x => x.MaxConnections > 2).ToList())
+            .Having(() => allNeighbors.Count == 3 && allNeighbors.Count(x => x.MaxConnections == 1) == 1 &&
+                          allNeighbors.Count(x => x.MaxConnections == 2) == 1)
+            .Let(() => validNeighbors,
+                () => GetConnectableNeighborsWithoutConnection(island, allNeighbors).Where(x => x.MaxConnections > 2)
+                    .ToList())
             .Having(() => validNeighbors.Count > 0);
 
         Then()

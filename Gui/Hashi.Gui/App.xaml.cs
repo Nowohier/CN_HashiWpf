@@ -1,11 +1,11 @@
-﻿using Autofac;
+﻿using System.Windows;
+using System.Windows.Threading;
+using Autofac;
 using Hashi.Enums;
 using Hashi.Gui.AutoFac;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Views;
 using Hashi.Gui.Interfaces.Wrappers;
-using System.Windows;
-using System.Windows.Threading;
 
 namespace Hashi.Gui;
 

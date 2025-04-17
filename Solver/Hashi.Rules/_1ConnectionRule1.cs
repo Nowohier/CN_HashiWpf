@@ -5,10 +5,12 @@ using Hashi.Gui.Translation;
 namespace Hashi.Rules;
 
 /// <summary>
-/// Islands with a maximum of one bridge can set their connection if there is only one neighbor island accepting bridges.
-/// Neighbor islands with a maximum of one bridge cannot be connected to as both islands would be isolated then.
+///     Islands with a maximum of one bridge can set their connection if there is only one neighbor island accepting
+///     bridges.
+///     Neighbor islands with a maximum of one bridge cannot be connected to as both islands would be isolated then.
 /// </summary>
-public class _1ConnectionRule1(IRuleInfoProvider ruleInfoProvider, IIslandProvider islandProvider) : BaseRule(ruleInfoProvider, islandProvider)
+public class _1ConnectionRule1(IRuleInfoProvider ruleInfoProvider, IIslandProvider islandProvider)
+    : BaseRule(ruleInfoProvider, islandProvider)
 {
     protected override string RuleMessage => TranslationSource.Instance[nameof(_1ConnectionRule1)]!;
 

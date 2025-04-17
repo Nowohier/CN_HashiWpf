@@ -6,7 +6,10 @@ namespace Hashi.Generator.Providers;
 
 /// <inheritdoc cref="ISolutionProvider" />
 [JsonObject(MemberSerialization.OptIn)]
-public class SolutionProvider(IReadOnlyList<int[]>? hashiField, List<IBridgeCoordinates>? bridgeCoordinates, string? name = null) : ISolutionProvider
+public class SolutionProvider(
+    IReadOnlyList<int[]>? hashiField,
+    List<IBridgeCoordinates>? bridgeCoordinates,
+    string? name = null) : ISolutionProvider
 {
     /// <inheritdoc />
     [JsonProperty(nameof(HashiField))]

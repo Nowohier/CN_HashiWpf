@@ -1,4 +1,8 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using System.Diagnostics;
+using System.Globalization;
+using System.Windows.Input;
+using System.Windows.Media;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Enums;
 using Hashi.Generator.Interfaces;
@@ -14,10 +18,6 @@ using Hashi.Gui.Interfaces.Wrappers;
 using Hashi.Gui.Messaging;
 using Hashi.Gui.Translation;
 using Hashi.Rules;
-using System.Diagnostics;
-using System.Globalization;
-using System.Windows.Input;
-using System.Windows.Media;
 
 namespace Hashi.Gui.ViewModels;
 
@@ -30,13 +30,16 @@ public class MainViewModel : AsyncObservableRecipient,
     private readonly Func<SolidColorBrush, IHashiBrush> brushFactory;
     private readonly IDialogWrapper dialogWrapper;
     private readonly IHashiGenerator hashiGenerator;
-    private readonly Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider> solutionProviderFactory;
+
+    private readonly Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider>
+        solutionProviderFactory;
+
     private bool isCheating;
     private bool isGeneratingHashiPuzzle;
-    private DifficultyEnum selectedDifficulty = DifficultyEnum.Easy3;
-    private ISolutionProvider? selectedTestSolutionProvider;
     private bool isTestFieldMode;
+    private DifficultyEnum selectedDifficulty = DifficultyEnum.Easy3;
     private Type selectedRule;
+    private ISolutionProvider? selectedTestSolutionProvider;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="MainViewModel" /> class.
@@ -88,21 +91,11 @@ public class MainViewModel : AsyncObservableRecipient,
         selectedRule = HintProvider.Rules.First();
         WindowColorBrush = brushFactory.Invoke(HashiColorHelper.BasicBrush);
 
-        WeakReferenceMessenger.Default.Register<MainViewModel, IIsTestModeRequestMessage>(this, (_, message) => message.Reply(IsTestFieldMode));
-        WeakReferenceMessenger.Default.Register<MainViewModel, IDragDirectionChangedRequestTargetMessage>(this, GetPotentialDropTarget);
+        WeakReferenceMessenger.Default.Register<MainViewModel, IIsTestModeRequestMessage>(this,
+            (_, message) => message.Reply(IsTestFieldMode));
+        WeakReferenceMessenger.Default.Register<MainViewModel, IDragDirectionChangedRequestTargetMessage>(this,
+            GetPotentialDropTarget);
     }
-
-    /// <inheritdoc />
-    public ITimerProvider TimerProvider { get; }
-
-    /// <inheritdoc />
-    public IIslandProvider IslandProvider { get; }
-
-    /// <inheritdoc />
-    public IHintProvider HintProvider { get; }
-
-    /// <inheritdoc />
-    public ITestSolutionProvider TestSolutionProvider { get; }
 
     /// <summary>
     ///     Gets the highscore for the selected difficulty.
@@ -111,17 +104,17 @@ public class MainViewModel : AsyncObservableRecipient,
         .FirstOrDefault(x => x.Difficulty.Equals(SelectedDifficulty))?.HighScoreTime;
 
     /// <summary>
-    ///    Gets the title of the game window.
+    ///     Gets the title of the game window.
     /// </summary>
     public string Title => $"Hashiwokakero{(IsTestFieldMode ? " - Testmode" : string.Empty)}";
 
     /// <summary>
-    ///   Gets the color of the window bar.
+    ///     Gets the color of the window bar.
     /// </summary>
     public IHashiBrush WindowColorBrush { get; private set; }
 
     /// <summary>
-    ///    Gets or sets the selected rule for generating hints.
+    ///     Gets or sets the selected rule for generating hints.
     /// </summary>
     public Type SelectedRule
     {
@@ -132,10 +125,7 @@ public class MainViewModel : AsyncObservableRecipient,
             HintProvider.RuleInfoProvider.RuleMessage = TranslationSource.Instance[selectedRule.Name] ?? string.Empty;
             HintProvider.RuleInfoProvider.AreRulesBeingApplied = false;
 
-            if (IsTestFieldMode)
-            {
-                SetTestSolution(GetCurrentTestSolution());
-            }
+            if (IsTestFieldMode) SetTestSolution(GetCurrentTestSolution());
         }
     }
 
@@ -149,7 +139,7 @@ public class MainViewModel : AsyncObservableRecipient,
     }
 
     /// <summary>
-    /// Determines whether the grid lines are enabled.
+    ///     Determines whether the grid lines are enabled.
     /// </summary>
     public bool AreGridLinesEnabled
     {
@@ -185,7 +175,7 @@ public class MainViewModel : AsyncObservableRecipient,
     }
 
     /// <summary>
-    ///    Gets or sets the selected test solution provider.
+    ///     Gets or sets the selected test solution provider.
     /// </summary>
     public ISolutionProvider? SelectedTestSolutionProvider
     {
@@ -193,9 +183,7 @@ public class MainViewModel : AsyncObservableRecipient,
         set
         {
             if (SetProperty(ref selectedTestSolutionProvider, value) && selectedTestSolutionProvider != null)
-            {
                 SetTestSolution(selectedTestSolutionProvider);
-            }
         }
     }
 
@@ -247,14 +235,26 @@ public class MainViewModel : AsyncObservableRecipient,
     public ICommand ChangeLanguageCommand { get; }
 
     /// <summary>
-    /// Opens the generate test field window.
+    ///     Opens the generate test field window.
     /// </summary>
     public ICommand ToggleTestFieldCommand { get; }
 
     /// <summary>
-    ///    Resets the test field to its initial state.
+    ///     Resets the test field to its initial state.
     /// </summary>
     public ICommand ResetTestFieldCommand { get; }
+
+    /// <inheritdoc />
+    public ITimerProvider TimerProvider { get; }
+
+    /// <inheritdoc />
+    public IIslandProvider IslandProvider { get; }
+
+    /// <inheritdoc />
+    public IHintProvider HintProvider { get; }
+
+    /// <inheritdoc />
+    public ITestSolutionProvider TestSolutionProvider { get; }
 
     /// <inheritdoc />
     public IHashiSettingsProvider SettingsProvider { get; }
@@ -276,8 +276,7 @@ public class MainViewModel : AsyncObservableRecipient,
             {
                 TimerProvider.StartTimer();
                 IslandProvider.AddConnection(sourceIsland, targetIsland);
-            }
-            ,
+            },
             BridgeOperationTypeEnum.RemoveAll => () => IslandProvider.RemoveAllConnections(sourceIsland, null),
             _ => throw new ArgumentOutOfRangeException()
         };
@@ -303,10 +302,7 @@ public class MainViewModel : AsyncObservableRecipient,
         if (IsCheating || IsTestFieldMode)
         {
             dialogWrapper.Show(caption, dialogMessage, DialogButton.Ok, DialogImage.Success);
-            if (!IsTestFieldMode)
-            {
-                CreateNewGameCommand.Execute(null);
-            }
+            if (!IsTestFieldMode) CreateNewGameCommand.Execute(null);
             return;
         }
 
@@ -356,10 +352,7 @@ public class MainViewModel : AsyncObservableRecipient,
 
     private Task SetTestSolution(ISolutionProvider? solutionProvider)
     {
-        if (solutionProvider is not { BridgeCoordinates: not null, HashiField: not null })
-        {
-            return Task.CompletedTask;
-        }
+        if (solutionProvider is not { BridgeCoordinates: not null, HashiField: not null }) return Task.CompletedTask;
 
         IsGeneratingHashiPuzzle = true;
         IsCheating = false;
@@ -375,14 +368,16 @@ public class MainViewModel : AsyncObservableRecipient,
 
     private ISolutionProvider GetCurrentTestSolution()
     {
-        return SelectedRule != typeof(_0AllRules) && TestSolutionProvider.SolutionProviders.FirstOrDefault(x => x.Name == SelectedRule.Name) is { } sol
+        return SelectedRule != typeof(_0AllRules) &&
+               TestSolutionProvider.SolutionProviders.FirstOrDefault(x => x.Name == SelectedRule.Name) is { } sol
             ? sol
             : solutionProviderFactory.Invoke(TestSolutionProvider.HashiFieldReference, [], null);
     }
 
     private void GetPotentialDropTarget(MainViewModel main, IDragDirectionChangedRequestTargetMessage message)
     {
-        if (IslandProvider.GetVisibleNeighbor(message.Source, message.Direction) is not { } target || target.MaxConnectionsReached)
+        if (IslandProvider.GetVisibleNeighbor(message.Source, message.Direction) is not { } target ||
+            target.MaxConnectionsReached)
         {
             IslandProvider.RemoveAllHighlights();
             IslandProvider.ClearTemporaryDropTargets();
@@ -411,13 +406,9 @@ public class MainViewModel : AsyncObservableRecipient,
         IsTestFieldMode = !IsTestFieldMode;
 
         if (IsTestFieldMode)
-        {
             await SetTestSolution(GetCurrentTestSolution());
-        }
         else
-        {
             await CreateNewGameAsync();
-        }
     }
 
     private void ChangeLanguageCommandExecute(string? culture)

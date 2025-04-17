@@ -1,15 +1,14 @@
 ﻿using Autofac;
 using NRules.Integration.Autofac;
 
-namespace Hashi.Rules
+namespace Hashi.Rules;
+
+/// <inheritdoc />
+public class AutoFacRulesModule : Module
 {
     /// <inheritdoc />
-    public class AutoFacRulesModule : Module
+    protected override void Load(ContainerBuilder builder)
     {
-        /// <inheritdoc />
-        protected override void Load(ContainerBuilder builder)
-        {
-            builder.RegisterRuleRepository(r => r.AssemblyOf<_1ConnectionRule1>());
-        }
+        builder.RegisterRuleRepository(r => r.AssemblyOf<_1ConnectionRule1>());
     }
 }

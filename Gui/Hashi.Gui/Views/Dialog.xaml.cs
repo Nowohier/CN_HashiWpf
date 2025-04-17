@@ -1,7 +1,7 @@
-﻿using Hashi.Enums;
+﻿using System.Windows;
+using Hashi.Enums;
 using Hashi.Gui.Interfaces.General;
 using Hashi.Gui.ViewModels;
-using System.Windows;
 
 namespace Hashi.Gui.Views;
 

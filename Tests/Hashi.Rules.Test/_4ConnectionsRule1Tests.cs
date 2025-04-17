@@ -23,9 +23,11 @@ public class _4ConnectionsRule1Tests : TestBase<_4ConnectionsRule1>
 
         // assert
         Verify(x => x.Rule().Fired(Times.Once));
-        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, leftIsland.Object, HashiPointTypeEnum.Hint),
+        IslandProviderMock.Verify(
+            mock => mock.AddConnection(testIsland.Object, leftIsland.Object, HashiPointTypeEnum.Hint),
             Moq.Times.Exactly(2));
-        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, rightIsland.Object, HashiPointTypeEnum.Hint),
+        IslandProviderMock.Verify(
+            mock => mock.AddConnection(testIsland.Object, rightIsland.Object, HashiPointTypeEnum.Hint),
             Moq.Times.Exactly(2));
     }
 

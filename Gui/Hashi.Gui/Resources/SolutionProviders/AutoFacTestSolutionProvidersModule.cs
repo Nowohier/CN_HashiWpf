@@ -1,15 +1,14 @@
 ﻿using Autofac;
 using Hashi.Gui.Interfaces.Resources.SolutionProviders;
 
-namespace Hashi.Gui.Resources.SolutionProviders
+namespace Hashi.Gui.Resources.SolutionProviders;
+
+/// <inheritdoc />
+public class AutoFacTestSolutionProvidersModule : Module
 {
     /// <inheritdoc />
-    public class AutoFacTestSolutionProvidersModule : Module
+    protected override void Load(ContainerBuilder builder)
     {
-        /// <inheritdoc />
-        protected override void Load(ContainerBuilder builder)
-        {
-            builder.RegisterType<TestSolutionProvider>().As<ITestSolutionProvider>().SingleInstance();
-        }
+        builder.RegisterType<TestSolutionProvider>().As<ITestSolutionProvider>().SingleInstance();
     }
 }

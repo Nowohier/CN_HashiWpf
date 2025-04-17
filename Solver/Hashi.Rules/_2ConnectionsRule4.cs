@@ -5,9 +5,11 @@ using Hashi.Gui.Translation;
 namespace Hashi.Rules;
 
 /// <summary>
-/// If an island with a maximum of two bridges has a neighbor island with maximum bridges greater than one and all remaining neighbors are islands with a maximum of one bridge, a bridge must be drawn to the larger island.
+///     If an island with a maximum of two bridges has a neighbor island with maximum bridges greater than one and all
+///     remaining neighbors are islands with a maximum of one bridge, a bridge must be drawn to the larger island.
 /// </summary>
-public class _2ConnectionsRule4(IRuleInfoProvider ruleInfoProvider, IIslandProvider islandProvider) : BaseRule(ruleInfoProvider, islandProvider)
+public class _2ConnectionsRule4(IRuleInfoProvider ruleInfoProvider, IIslandProvider islandProvider)
+    : BaseRule(ruleInfoProvider, islandProvider)
 {
     protected override string RuleMessage => TranslationSource.Instance[nameof(_2ConnectionsRule4)]!;
 

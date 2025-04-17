@@ -1,8 +1,8 @@
-﻿using Hashi.Gui.EventArgs;
-using Microsoft.Xaml.Behaviors;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Hashi.Gui.EventArgs;
+using Microsoft.Xaml.Behaviors;
 
 namespace Hashi.Gui.Behaviors;
 

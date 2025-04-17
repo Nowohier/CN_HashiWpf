@@ -5,9 +5,11 @@ using Hashi.Gui.Translation;
 namespace Hashi.Rules;
 
 /// <summary>
-/// If a 6-connection island has four neighbors and already has a 1-connection to one of these islands, which no longer allows further connections, then every other island must receive at least one connection.
+///     If a 6-connection island has four neighbors and already has a 1-connection to one of these islands, which no longer
+///     allows further connections, then every other island must receive at least one connection.
 /// </summary>
-public class _6ConnectionsRule2(IRuleInfoProvider ruleInfoProvider, IIslandProvider islandProvider) : BaseRule(ruleInfoProvider, islandProvider)
+public class _6ConnectionsRule2(IRuleInfoProvider ruleInfoProvider, IIslandProvider islandProvider)
+    : BaseRule(ruleInfoProvider, islandProvider)
 {
     protected override string RuleMessage => TranslationSource.Instance[nameof(_6ConnectionsRule2)]!;
 
