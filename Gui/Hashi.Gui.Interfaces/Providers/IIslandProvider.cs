@@ -1,5 +1,6 @@
 ﻿using Hashi.Enums;
 using Hashi.Generator.Interfaces.Providers;
+using Hashi.Gui.Interfaces.Messages;
 using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.ViewModels;
 using System.Collections.ObjectModel;
@@ -117,5 +118,11 @@ namespace Hashi.Gui.Interfaces.Providers
         /// <param name="sourceIsland">The source island.</param>
         /// <param name="targetIsland">The target island.</param>
         void RemoveAllConnections(IIslandViewModel? sourceIsland, IIslandViewModel? targetIsland);
+
+        /// <summary>
+        ///     Updates the color of all islands.
+        /// </summary>
+        /// <param name="message">The <see cref="IUpdateAllIslandColorsMessage" />.</param>
+        void Receive(IUpdateAllIslandColorsMessage message);
     }
 }
