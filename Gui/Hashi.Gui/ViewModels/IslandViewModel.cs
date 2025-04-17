@@ -26,7 +26,6 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
     private readonly Func<IIslandViewModel, IIslandViewModel, IGetVisibleNeighborRequestMessage> getVisibleNeighborRequestFactory;
     private readonly Func<bool?, IUpdateAllIslandColorsMessage> updateAllIslandColorsMessageFactory;
     private readonly Func<BridgeOperationTypeEnum, IIslandViewModel, IIslandViewModel?, IBridgeConnectionInformationContainer> connectionInformationContainerFactory;
-    private readonly Func<IBridgeConnectionInformationContainer, IDropTargetIslandChangedMessage> dropTargetIslandChangedMessageFactory;
     private readonly Func<IBridgeConnectionInformationContainer, IBridgeConnectionChangedMessage> bridgeConnectionChangedMessageFactory;
     private readonly Func<IIsTestModeRequestMessage> isTestModeRequestMessageFactory;
     private readonly Func<IIslandViewModel, DirectionEnum, IDragDirectionChangedRequestTargetMessage> dragDirectionChangedRequestTargetMessageFactory;
@@ -53,7 +52,6 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
     /// <param name="getVisibleNeighborRequestFactory">The get visible neighbors request message factory.</param>
     /// <param name="updateAllIslandColorsMessageFactory">The update all island colors message factory.</param>
     /// <param name="connectionInformationContainerFactory">The bridge connection information container factory.</param>
-    /// <param name="dropTargetIslandChangedMessageFactory">The drop target island changed factory.</param>
     /// <param name="bridgeConnectionChangedMessageFactory">The bridge connection changed message factory.</param>
     /// <param name="isTestModeRequestMessageFactory">The is test mode request factory.</param>
     /// <param name="dragDirectionChangedRequestTargetMessageFactory">The drag direction changed request target message factory.</param>
@@ -68,7 +66,6 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
             Func<IIslandViewModel, IIslandViewModel, IGetVisibleNeighborRequestMessage> getVisibleNeighborRequestFactory,
             Func<bool?, IUpdateAllIslandColorsMessage> updateAllIslandColorsMessageFactory,
             Func<BridgeOperationTypeEnum, IIslandViewModel, IIslandViewModel?, IBridgeConnectionInformationContainer> connectionInformationContainerFactory,
-            Func<IBridgeConnectionInformationContainer, IDropTargetIslandChangedMessage> dropTargetIslandChangedMessageFactory,
             Func<IBridgeConnectionInformationContainer, IBridgeConnectionChangedMessage> bridgeConnectionChangedMessageFactory,
             Func<IIsTestModeRequestMessage> isTestModeRequestMessageFactory,
             Func<IIslandViewModel, DirectionEnum, IDragDirectionChangedRequestTargetMessage> dragDirectionChangedRequestTargetMessageFactory
@@ -81,7 +78,6 @@ public class IslandViewModel : ObservableRecipient, IIslandViewModel
         this.getVisibleNeighborRequestFactory = getVisibleNeighborRequestFactory;
         this.updateAllIslandColorsMessageFactory = updateAllIslandColorsMessageFactory;
         this.connectionInformationContainerFactory = connectionInformationContainerFactory;
-        this.dropTargetIslandChangedMessageFactory = dropTargetIslandChangedMessageFactory;
         this.bridgeConnectionChangedMessageFactory = bridgeConnectionChangedMessageFactory;
         this.isTestModeRequestMessageFactory = isTestModeRequestMessageFactory;
         this.dragDirectionChangedRequestTargetMessageFactory = dragDirectionChangedRequestTargetMessageFactory;

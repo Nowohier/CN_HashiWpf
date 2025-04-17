@@ -17,7 +17,6 @@ public class AutoFacMessagesModule : Module
         builder.RegisterType<AllConnectionsSetMessage>().As<IAllConnectionsSetMessage>().InstancePerDependency();
         builder.RegisterType<BridgeConnectionInformationContainer>().As<IBridgeConnectionInformationContainer>().InstancePerDependency();
         builder.RegisterType<BridgeConnectionChangedMessage>().As<IBridgeConnectionChangedMessage>().InstancePerDependency();
-        builder.RegisterType<DropTargetIslandChangedMessage>().As<IDropTargetIslandChangedMessage>().InstancePerDependency();
         builder.RegisterType<UpdateAllIslandColorsMessage>().As<IUpdateAllIslandColorsMessage>().InstancePerDependency();
         builder.RegisterType<GetVisibleNeighborRequestMessage>().As<IGetVisibleNeighborRequestMessage>().InstancePerDependency();
         builder.RegisterType<RuleMessageClearedMessage>().As<IRuleMessageClearedMessage>().InstancePerDependency();
@@ -54,20 +53,6 @@ public class AutoFacMessagesModule : Module
             var c = context.Resolve<IComponentContext>();
             return (value) => c.Resolve<IUpdateAllIslandColorsMessage>(
                 new NamedParameter("value", value));
-        });
-
-        builder.Register<Func<IBridgeConnectionInformationContainer, IDropTargetIslandChangedMessage>>(context =>
-        {
-            var c = context.Resolve<IComponentContext>();
-            return (connectionInfo) => c.Resolve<IDropTargetIslandChangedMessage>(
-                new NamedParameter("connectionInfo", connectionInfo));
-        });
-
-        builder.Register<Func<IBridgeConnectionInformationContainer, IDropTargetIslandChangedMessage>>(context =>
-        {
-            var c = context.Resolve<IComponentContext>();
-            return (connectionInfo) => c.Resolve<IDropTargetIslandChangedMessage>(
-                new NamedParameter("connectionInfo", connectionInfo));
         });
 
         builder.Register<Func<IBridgeConnectionInformationContainer, IBridgeConnectionChangedMessage>>(context =>
