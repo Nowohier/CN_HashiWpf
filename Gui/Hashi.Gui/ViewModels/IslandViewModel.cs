@@ -281,8 +281,10 @@ public class IslandViewModel :
     protected virtual void DragEnterCommandExecute(DragEventArgs? e)
     {
         if (e == null) throw new ArgumentNullException(nameof(e));
-
-        IslandColor = brushFactory.Invoke(HashiColorHelper.GreenIslandBrush);
+        if (!MaxConnectionsReached)
+        {
+            IslandColor = brushFactory.Invoke(HashiColorHelper.GreenIslandBrush);
+        }
     }
 
     /// <summary>
@@ -334,7 +336,12 @@ public class IslandViewModel :
     /// <param name="e">The <see cref="MouseEventArgs" />.</param>
     protected virtual void MouseMoveCommandExecute(MouseEventArgsWithCorrectViewBoxPosition? e)
     {
-        if (e is not { MouseEventArgs.LeftButton: MouseButtonState.Pressed }) return;
+        if (e is not { MouseEventArgs.LeftButton: MouseButtonState.Pressed } || MaxConnectionsReached)
+        {
+            dropTargetIsland = null;
+            actualDragDirection = DirectionEnum.None;
+            return;
+        }
 
         // Check if mouse is being dragged
         var currentPosition = e.MouseEventArgs.GetPosition(null);
@@ -361,6 +368,7 @@ public class IslandViewModel :
     {
         isDragging = false;
         OnPropertyChanged(nameof(MaxConnections));
+        if (MaxConnectionsReached) return;
         IslandColor = brushFactory.Invoke(HashiColorHelper.GreenIslandBrush);
     }
 
@@ -445,6 +453,7 @@ public class IslandViewModel :
         var addMessage = bridgeConnectionChangedMessageFactory.Invoke(islandInfos);
         WeakReferenceMessenger.Default.Send(addMessage);
         dropTargetIsland = null;
+        actualDragDirection = DirectionEnum.None;
         WeakReferenceMessenger.Default.Send(updateAllIslandColorsMessageFactory.Invoke(null));
     }
 
