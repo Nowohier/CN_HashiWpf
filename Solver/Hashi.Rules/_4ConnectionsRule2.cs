@@ -5,9 +5,11 @@ using Hashi.Gui.Translation;
 namespace Hashi.Rules;
 
 /// <summary>
-/// Islands with a maximum of four bridges and three neighbors can set one connection to each neighbor if one of the neighbors already has a connection to the island and has max connections.
+///     Islands with a maximum of four bridges and three neighbors can set one connection to each neighbor if one of the
+///     neighbors already has a connection to the island and has max connections.
 /// </summary>
-public class _4ConnectionsRule2(IRuleInfoProvider ruleInfoProvider, IIslandProvider islandProvider) : BaseRule(ruleInfoProvider, islandProvider)
+public class _4ConnectionsRule2(IRuleInfoProvider ruleInfoProvider, IIslandProvider islandProvider)
+    : BaseRule(ruleInfoProvider, islandProvider)
 {
     protected override string RuleMessage => TranslationSource.Instance[nameof(_4ConnectionsRule2)]!;
 

@@ -7,15 +7,15 @@ using NRules.Fluent.Dsl;
 namespace Hashi.Rules;
 
 /// <summary>
-/// Base class for all rules.
+///     Base class for all rules.
 /// </summary>
 public abstract class BaseRule : Rule
 {
-    private readonly IRuleInfoProvider ruleInfoProvider;
     private readonly IIslandProvider islandProvider;
+    private readonly IRuleInfoProvider ruleInfoProvider;
 
     /// <summary>
-    /// Base class for all rules.
+    ///     Base class for all rules.
     /// </summary>
     protected BaseRule(IRuleInfoProvider ruleInfoProvider, IIslandProvider islandProvider)
     {
@@ -28,7 +28,7 @@ public abstract class BaseRule : Rule
 
 
     /// <summary>
-    ///   The message to be displayed when the rule is applied.
+    ///     The message to be displayed when the rule is applied.
     /// </summary>
     protected abstract string RuleMessage { get; }
 
@@ -131,7 +131,7 @@ public abstract class BaseRule : Rule
     }
 
     /// <summary>
-    ///    Gets all visible neighbors of the source island.
+    ///     Gets all visible neighbors of the source island.
     /// </summary>
     /// <param name="source">The source island.</param>
     /// <returns>a list of visible neighbors.</returns>
@@ -206,7 +206,8 @@ public abstract class BaseRule : Rule
     }
 
     /// <summary>
-    ///    Sets a test connection between the source island and its connectable neighbors. If the source island and its connected neighbors are maxed out, it checks if there are isolated groups. If so, it returns a free neighbor.
+    ///     Sets a test connection between the source island and its connectable neighbors. If the source island and its
+    ///     connected neighbors are maxed out, it checks if there are isolated groups. If so, it returns a free neighbor.
     /// </summary>
     /// <param name="source">The source island.</param>
     /// <param name="connectableNeighbors">The connectable neighbors.</param>
@@ -225,7 +226,6 @@ public abstract class BaseRule : Rule
             // Check if the source and its connected neighbors are maxed out
             var connectedNeighbors = GetConnectedNeighbors(source, allNeighbors, null);
             if (source.MaxConnectionsReached && connectedNeighbors.All(x => x.MaxConnectionsReached))
-            {
                 // Check if there are isolated groups
                 if (islandProvider.CountIsolatedIslandGroups() > 0)
                 {
@@ -234,7 +234,6 @@ public abstract class BaseRule : Rule
                     islandProvider.RemoveAllBridges(HashiPointTypeEnum.Test);
                     return freeNeighbor;
                 }
-            }
 
             // Remove the test connection
             islandProvider.RemoveAllBridges(HashiPointTypeEnum.Test);

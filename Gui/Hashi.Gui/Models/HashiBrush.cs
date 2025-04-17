@@ -1,5 +1,5 @@
-﻿using Hashi.Gui.Interfaces.Models;
-using System.Windows.Media;
+﻿using System.Windows.Media;
+using Hashi.Gui.Interfaces.Models;
 
 namespace Hashi.Gui.Models;
 

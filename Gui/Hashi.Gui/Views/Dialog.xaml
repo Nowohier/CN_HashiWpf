@@ -60,7 +60,8 @@
                 <iconPacks:PackIconMaterial Grid.Column="0" Kind="HandBackRight" Foreground="Red"
                                             Style="{StaticResource ImageStyle}"
                                             Visibility="{Binding IsHand, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <iconPacks:PackIconMaterial Grid.Column="0" Kind="Information" Foreground="{StaticResource BasicIslandBrush}"
+                <iconPacks:PackIconMaterial Grid.Column="0" Kind="Information"
+                                            Foreground="{StaticResource BasicIslandBrush}"
                                             Style="{StaticResource ImageStyle}"
                                             Visibility="{Binding IsInformation, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <iconPacks:PackIconMaterial Grid.Column="0" Kind="HelpCircle" Foreground="BlueViolet"

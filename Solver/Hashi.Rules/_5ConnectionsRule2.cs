@@ -5,9 +5,11 @@ using Hashi.Gui.Translation;
 namespace Hashi.Rules;
 
 /// <summary>
-/// If an island with a maximum of five  bridges has three neighbors and one connection to the source island only allows a maximum of one bridge, then the remaining connections for the source island can be set.
+///     If an island with a maximum of five  bridges has three neighbors and one connection to the source island only
+///     allows a maximum of one bridge, then the remaining connections for the source island can be set.
 /// </summary>
-public class _5ConnectionsRule2(IRuleInfoProvider ruleInfoProvider, IIslandProvider islandProvider) : BaseRule(ruleInfoProvider, islandProvider)
+public class _5ConnectionsRule2(IRuleInfoProvider ruleInfoProvider, IIslandProvider islandProvider)
+    : BaseRule(ruleInfoProvider, islandProvider)
 {
     protected override string RuleMessage => TranslationSource.Instance[nameof(_5ConnectionsRule2)]!;
 

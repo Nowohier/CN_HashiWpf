@@ -32,9 +32,9 @@ public class _9GeneralRule2Tests : TestBase<_9GeneralRule2>
     public void _9GeneralRule2_WhenGroupIsNotIsolated_ShouldNotTriggerRule()
     {
         // arrange
-        var connectableNeighbor1 = CreateIslandMock(TestIslandEnum.LeftIsland, 1, maxConnectionsReached: false);
-        var connectableNeighbor2 = CreateIslandMock(TestIslandEnum.RightIsland, 1, maxConnectionsReached: false);
-        var maxedOutNeighbor = CreateIslandMock(TestIslandEnum.UpIsland, 2, maxConnectionsReached: true);
+        var connectableNeighbor1 = CreateIslandMock(TestIslandEnum.LeftIsland, 1, false);
+        var connectableNeighbor2 = CreateIslandMock(TestIslandEnum.RightIsland, 1, false);
+        var maxedOutNeighbor = CreateIslandMock(TestIslandEnum.UpIsland, 2, true);
 
         var testIsland = SetupTestIsland(3, connectableNeighbor1, connectableNeighbor2, maxedOutNeighbor);
 
@@ -52,9 +52,9 @@ public class _9GeneralRule2Tests : TestBase<_9GeneralRule2>
     public void _9GeneralRule2_WhenMoreThanTwoConnectableNeighbors_ShouldNotTriggerRule()
     {
         // arrange
-        var connectableNeighbor1 = CreateIslandMock(TestIslandEnum.LeftIsland, 1, maxConnectionsReached: false);
-        var connectableNeighbor2 = CreateIslandMock(TestIslandEnum.RightIsland, 1, maxConnectionsReached: false);
-        var connectableNeighbor3 = CreateIslandMock(TestIslandEnum.DownIsland, 1, maxConnectionsReached: false);
+        var connectableNeighbor1 = CreateIslandMock(TestIslandEnum.LeftIsland, 1, false);
+        var connectableNeighbor2 = CreateIslandMock(TestIslandEnum.RightIsland, 1, false);
+        var connectableNeighbor3 = CreateIslandMock(TestIslandEnum.DownIsland, 1, false);
 
         var testIsland = SetupTestIsland(3, connectableNeighbor1, connectableNeighbor2, connectableNeighbor3);
 
@@ -70,8 +70,8 @@ public class _9GeneralRule2Tests : TestBase<_9GeneralRule2>
     public void _9GeneralRule2_WhenNoConnectableNeighbors_ShouldNotTriggerRule()
     {
         // arrange
-        var maxedOutNeighbor1 = CreateIslandMock(TestIslandEnum.LeftIsland, 1, maxConnectionsReached: true);
-        var maxedOutNeighbor2 = CreateIslandMock(TestIslandEnum.RightIsland, 1, maxConnectionsReached: true);
+        var maxedOutNeighbor1 = CreateIslandMock(TestIslandEnum.LeftIsland, 1, true);
+        var maxedOutNeighbor2 = CreateIslandMock(TestIslandEnum.RightIsland, 1, true);
 
         var testIsland = SetupTestIsland(3, maxedOutNeighbor1, maxedOutNeighbor2);
 
@@ -87,7 +87,7 @@ public class _9GeneralRule2Tests : TestBase<_9GeneralRule2>
     public void _9GeneralRule2_WhenIslandHasMaxConnectionsReached_ShouldNotTriggerRule()
     {
         // arrange
-        var connectableNeighbor = CreateIslandMock(TestIslandEnum.LeftIsland, 1, maxConnectionsReached: false);
+        var connectableNeighbor = CreateIslandMock(TestIslandEnum.LeftIsland, 1, false);
 
         var testIsland = SetupTestIsland(3, connectableNeighbor);
         testIsland.Setup(mock => mock.MaxConnectionsReached).Returns(true);

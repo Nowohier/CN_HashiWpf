@@ -5,9 +5,10 @@ using Hashi.Gui.Translation;
 namespace Hashi.Rules;
 
 /// <summary>
-/// If an island with a maximum of eight connections has four neighbors then set all connections.
+///     If an island with a maximum of eight connections has four neighbors then set all connections.
 /// </summary>
-public class _8ConnectionsRule1(IRuleInfoProvider ruleInfoProvider, IIslandProvider islandProvider) : BaseRule(ruleInfoProvider, islandProvider)
+public class _8ConnectionsRule1(IRuleInfoProvider ruleInfoProvider, IIslandProvider islandProvider)
+    : BaseRule(ruleInfoProvider, islandProvider)
 {
     protected override string RuleMessage => TranslationSource.Instance[nameof(_8ConnectionsRule1)]!;
 

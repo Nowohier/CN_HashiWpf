@@ -1,11 +1,11 @@
-﻿using Hashi.Generator.Interfaces.Providers;
+﻿using System.IO;
+using Hashi.Generator.Interfaces.Providers;
 using Hashi.Generator.Providers;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Wrappers;
 using Hashi.Gui.JsonConverters;
 using Hashi.Gui.ViewModels.Settings;
 using Newtonsoft.Json;
-using System.IO;
 
 namespace Hashi.Gui.Wrappers;
 
@@ -52,7 +52,7 @@ public class JsonWrapper : IJsonWrapper
         var serializer = new JsonSerializer
         {
             NullValueHandling = NullValueHandling.Ignore,
-            TypeNameHandling = TypeNameHandling.None,
+            TypeNameHandling = TypeNameHandling.None
         };
 
         CustomConverters.ForEach(converter => serializer.Converters.Add(converter));

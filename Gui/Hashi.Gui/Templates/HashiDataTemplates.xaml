@@ -90,7 +90,7 @@
                 <Line Style="{StaticResource BridgeStyle}" X1="0" Y1="30" X2="0" Y2="60" HorizontalAlignment="Center"
                       VerticalAlignment="Bottom" Tag="{x:Static enums:BridgeTypeEnum.VerticalDown}" />
 
-                <Rectangle Width="40" Height="40" IsHitTestVisible="True" Fill="Transparent"/>
+                <Rectangle Width="40" Height="40" IsHitTestVisible="True" Fill="Transparent" />
                 <Ellipse Width="40" Height="40" Fill="{Binding IslandColor.Brush}" HorizontalAlignment="Center"
                          VerticalAlignment="Center"
                          Visibility="{Binding MaxConnections, Converter={StaticResource IslandVisibilityConverter}}"

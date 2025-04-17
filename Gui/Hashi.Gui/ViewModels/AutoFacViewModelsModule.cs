@@ -15,7 +15,8 @@ public class AutoFacViewModelsModule : Module
         builder.RegisterType<IslandViewModel>().As<IIslandViewModel>().InstancePerDependency();
         builder.RegisterType<SettingsViewModel>().As<ISettingsViewModel>().InstancePerDependency();
         builder.RegisterType<LanguageViewModel>().As<ILanguageViewModel>().InstancePerDependency();
-        builder.RegisterType<HighScorePerDifficultyViewModel>().As<IHighScorePerDifficultyViewModel>().InstancePerDependency();
+        builder.RegisterType<HighScorePerDifficultyViewModel>().As<IHighScorePerDifficultyViewModel>()
+            .InstancePerDependency();
         builder.RegisterType<MainViewModel>().As<IMainViewModel>().SingleInstance();
 
         builder.Register<Func<int, int, int, IIslandViewModel>>(context =>

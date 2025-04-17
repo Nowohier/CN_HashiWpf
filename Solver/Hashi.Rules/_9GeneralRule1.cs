@@ -5,9 +5,10 @@ using Hashi.Gui.Translation;
 namespace Hashi.Rules;
 
 /// <summary>
-/// Islands with only one active neighbor can set their remaining connections to that neighbor.
+///     Islands with only one active neighbor can set their remaining connections to that neighbor.
 /// </summary>
-public class _9GeneralRule1(IRuleInfoProvider ruleInfoProvider, IIslandProvider islandProvider) : BaseRule(ruleInfoProvider, islandProvider)
+public class _9GeneralRule1(IRuleInfoProvider ruleInfoProvider, IIslandProvider islandProvider)
+    : BaseRule(ruleInfoProvider, islandProvider)
 {
     protected override string RuleMessage => TranslationSource.Instance[nameof(_9GeneralRule1)]!;
 

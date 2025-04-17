@@ -1,4 +1,11 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
+﻿using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Media.Effects;
+using System.Windows.Shapes;
+using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Enums;
 using Hashi.Gui.Helpers;
 using Hashi.Gui.Interfaces.Messages;
@@ -6,13 +13,6 @@ using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Messages;
 using Microsoft.Xaml.Behaviors;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Windows;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Media.Effects;
-using System.Windows.Shapes;
 
 namespace Hashi.Gui.Behaviors;
 
@@ -140,27 +140,29 @@ public class BridgeVisibilityBehavior : Behavior<Line>, IRecipient<IRuleMessageC
         if (values2 != null)
         {
             if ((values1.Count == 1 && values2.Count == 1) || AnyPointIsTest(values1) || AnyPointIsTest(values2))
-            {
                 if (AllPointsAreTest(values1) || AllPointsAreTest(values2))
                     return Visibility.Hidden;
-            }
 
-            return (values1.Count == expected && values2.Count == expected) ? Visibility.Visible : Visibility.Hidden;
+            return values1.Count == expected && values2.Count == expected ? Visibility.Visible : Visibility.Hidden;
         }
 
         // Handle the case with a single value list
         if (values1.Count == 1 || AnyPointIsTest(values1))
-        {
             if (AllPointsAreTest(values1))
                 return Visibility.Hidden;
-        }
 
         return values1.Count == expected ? Visibility.Visible : Visibility.Hidden;
 
 
-        bool AnyPointIsTest(List<IHashiPoint> values) => values.Any(x => x.PointType == HashiPointTypeEnum.Test);
+        bool AnyPointIsTest(List<IHashiPoint> values)
+        {
+            return values.Any(x => x.PointType == HashiPointTypeEnum.Test);
+        }
 
-        bool AllPointsAreTest(List<IHashiPoint> values) => values.All(x => x.PointType == HashiPointTypeEnum.Test);
+        bool AllPointsAreTest(List<IHashiPoint> values)
+        {
+            return values.All(x => x.PointType == HashiPointTypeEnum.Test);
+        }
     }
 
     private void AssociatedObject_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -173,25 +175,38 @@ public class BridgeVisibilityBehavior : Behavior<Line>, IRecipient<IRuleMessageC
         var runFadeInAnimation = BridgeType switch
         {
             BridgeTypeEnum.Horizontal => island.BridgesLeft.Count == 1 && island.BridgesRight.Count == 1 &&
-                                         (island.BridgesLeft.First().PointType.Equals(HashiPointTypeEnum.Hint) || island.BridgesRight.First().PointType.Equals(HashiPointTypeEnum.Hint)),
+                                         (island.BridgesLeft.First().PointType.Equals(HashiPointTypeEnum.Hint) ||
+                                          island.BridgesRight.First().PointType.Equals(HashiPointTypeEnum.Hint)),
             BridgeTypeEnum.HorizontalDouble => island.BridgesLeft.Count == 2 && island.BridgesRight.Count == 2 &&
-                                               (island.BridgesLeft.Any(x => x.PointType.Equals(HashiPointTypeEnum.Hint)) ||
-                                                island.BridgesRight.Any(x => x.PointType.Equals(HashiPointTypeEnum.Hint))),
+                                               (island.BridgesLeft.Any(x =>
+                                                    x.PointType.Equals(HashiPointTypeEnum.Hint)) ||
+                                                island.BridgesRight.Any(
+                                                    x => x.PointType.Equals(HashiPointTypeEnum.Hint))),
             BridgeTypeEnum.Vertical => island.BridgesUp.Count == 1 && island.BridgesDown.Count == 1 &&
-                                       (island.BridgesUp.First().PointType.Equals(HashiPointTypeEnum.Hint) || island.BridgesDown.First().PointType.Equals(HashiPointTypeEnum.Hint)),
+                                       (island.BridgesUp.First().PointType.Equals(HashiPointTypeEnum.Hint) ||
+                                        island.BridgesDown.First().PointType.Equals(HashiPointTypeEnum.Hint)),
             BridgeTypeEnum.VerticalDouble => island.BridgesUp.Count == 2 && island.BridgesDown.Count == 2 &&
                                              (island.BridgesUp.Any(x => x.PointType.Equals(HashiPointTypeEnum.Hint)) ||
                                               island.BridgesDown.Any(x => x.PointType.Equals(HashiPointTypeEnum.Hint))),
-            BridgeTypeEnum.HorizontalLeft => island.BridgesLeft.Count == 1 && island.BridgesLeft.First().PointType.Equals(HashiPointTypeEnum.Hint),
+            BridgeTypeEnum.HorizontalLeft => island.BridgesLeft.Count == 1 &&
+                                             island.BridgesLeft.First().PointType.Equals(HashiPointTypeEnum.Hint),
             BridgeTypeEnum.HorizontalDoubleLeft => island.BridgesLeft.Count == 2 &&
-                                                   island.BridgesLeft.Any(x => x.PointType.Equals(HashiPointTypeEnum.Hint)),
-            BridgeTypeEnum.HorizontalRight => island.BridgesRight.Count == 1 && island.BridgesRight.First().PointType.Equals(HashiPointTypeEnum.Hint),
+                                                   island.BridgesLeft.Any(x =>
+                                                       x.PointType.Equals(HashiPointTypeEnum.Hint)),
+            BridgeTypeEnum.HorizontalRight => island.BridgesRight.Count == 1 &&
+                                              island.BridgesRight.First().PointType.Equals(HashiPointTypeEnum.Hint),
             BridgeTypeEnum.HorizontalDoubleRight => island.BridgesRight.Count == 2 &&
-                                                    island.BridgesRight.Any(x => x.PointType.Equals(HashiPointTypeEnum.Hint)),
-            BridgeTypeEnum.VerticalUp => island.BridgesUp.Count == 1 && island.BridgesUp.First().PointType.Equals(HashiPointTypeEnum.Hint),
-            BridgeTypeEnum.VerticalDoubleUp => island.BridgesUp.Count == 2 && island.BridgesUp.Any(x => x.PointType.Equals(HashiPointTypeEnum.Hint)),
-            BridgeTypeEnum.VerticalDown => island.BridgesDown.Count == 1 && island.BridgesDown.First().PointType.Equals(HashiPointTypeEnum.Hint),
-            BridgeTypeEnum.VerticalDoubleDown => island.BridgesDown.Count == 2 && island.BridgesDown.Any(x => x.PointType.Equals(HashiPointTypeEnum.Hint)),
+                                                    island.BridgesRight.Any(x =>
+                                                        x.PointType.Equals(HashiPointTypeEnum.Hint)),
+            BridgeTypeEnum.VerticalUp => island.BridgesUp.Count == 1 &&
+                                         island.BridgesUp.First().PointType.Equals(HashiPointTypeEnum.Hint),
+            BridgeTypeEnum.VerticalDoubleUp => island.BridgesUp.Count == 2 &&
+                                               island.BridgesUp.Any(x => x.PointType.Equals(HashiPointTypeEnum.Hint)),
+            BridgeTypeEnum.VerticalDown => island.BridgesDown.Count == 1 &&
+                                           island.BridgesDown.First().PointType.Equals(HashiPointTypeEnum.Hint),
+            BridgeTypeEnum.VerticalDoubleDown => island.BridgesDown.Count == 2 &&
+                                                 island.BridgesDown.Any(
+                                                     x => x.PointType.Equals(HashiPointTypeEnum.Hint)),
             _ => false
         };
 

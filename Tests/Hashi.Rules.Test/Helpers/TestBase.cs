@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
+using FluentAssertions;
 using Hashi.Enums;
 using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.Providers;
@@ -6,8 +8,6 @@ using Hashi.Gui.Interfaces.ViewModels;
 using Moq;
 using NRules.Fluent.Dsl;
 using NRules.Testing;
-using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
 
 namespace Hashi.Rules.Test.Helpers;
 
@@ -22,16 +22,15 @@ public abstract class TestBase<T> : RulesTestFixture
     {
         // Create rule instance with mocks and add rule to the setup
         IslandProviderMock = new Mock<IIslandProvider>(MockBehavior.Strict);
-        IslandProviderMock.Setup(mock => mock.AddConnection(It.IsAny<IIslandViewModel>(), It.IsAny<IIslandViewModel>(), HashiPointTypeEnum.Hint));
+        IslandProviderMock.Setup(mock =>
+            mock.AddConnection(It.IsAny<IIslandViewModel>(), It.IsAny<IIslandViewModel>(), HashiPointTypeEnum.Hint));
         IslandProviderMock.Setup(mock => mock.GetAllVisibleNeighbors(It.IsAny<IIslandViewModel>())).Returns([]);
         RuleInfoProviderMock = new Mock<IRuleInfoProvider>(MockBehavior.Strict);
         RuleInfoProviderMock.SetupProperty(mock => mock.AreRulesBeingApplied, true);
         RuleInfoProviderMock.SetupProperty(mock => mock.RuleMessage, string.Empty);
 
         if (Activator.CreateInstance(typeof(T), RuleInfoProviderMock.Object, IslandProviderMock.Object) is not T rule)
-        {
             throw new ArgumentNullException();
-        }
 
         Setup.Rule(rule);
     }
@@ -48,36 +47,39 @@ public abstract class TestBase<T> : RulesTestFixture
         Session.RetractAll(Session.Query<IIslandViewModel>());
     }
 
-    [TestCase(true, true, true, TestName = "TestRuleClassConstructors_WhenIslandProviderAndRuleInfoProviderNull_ShouldThrowException")]
+    [TestCase(true, true, true,
+        TestName = "TestRuleClassConstructors_WhenIslandProviderAndRuleInfoProviderNull_ShouldThrowException")]
     [TestCase(true, false, true, TestName = "TestRuleClassConstructors_WhenRuleInfoProviderNull_ShouldThrowException")]
     [TestCase(false, true, true, TestName = "TestRuleClassConstructors_WhenIslandProviderNull_ShouldThrowException")]
-    [TestCase(false, false, false, TestName = "TestRuleClassConstructors_WhenIslandProviderAndRuleInfoProviderNotNull_ShouldNotThrowException")]
-    public void TestRuleClassConstructors_WhenConstructorIsTested_ShouldBehaveCorrectly(bool isIslandProviderNull, bool isRuleInfoProviderNull, bool throwsException)
+    [TestCase(false, false, false,
+        TestName = "TestRuleClassConstructors_WhenIslandProviderAndRuleInfoProviderNotNull_ShouldNotThrowException")]
+    public void TestRuleClassConstructors_WhenConstructorIsTested_ShouldBehaveCorrectly(bool isIslandProviderNull,
+        bool isRuleInfoProviderNull, bool throwsException)
     {
         // arrange
         var islandProviderMockObject = isIslandProviderNull ? null : IslandProviderMock.Object;
         var ruleInfoProviderMockObject = isRuleInfoProviderNull ? null : RuleInfoProviderMock.Object;
 
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-        var action = () => { var test = (T)Activator.CreateInstance(typeof(T), ruleInfoProviderMockObject!, islandProviderMockObject!); };
+        var action = () =>
+        {
+            var test = (T)Activator.CreateInstance(typeof(T), ruleInfoProviderMockObject!, islandProviderMockObject!);
+        };
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 
         // act, assert
         if (throwsException)
-        {
             action.Should().Throw<TargetInvocationException>().WithInnerException<ArgumentNullException>();
-        }
         else
-        {
             action.Should().NotThrow();
-        }
     }
 
 
     protected Mock<IIslandViewModel> SetupTestIsland(int maxConnections, params Mock<IIslandViewModel>[] neighbors)
     {
         var testIsland = CreateIslandMock(TestIslandEnum.TestIsland, maxConnections);
-        IslandProviderMock.Setup(mock => mock.GetAllVisibleNeighbors(testIsland.Object)).Returns(neighbors.Select(n => n.Object).ToList());
+        IslandProviderMock.Setup(mock => mock.GetAllVisibleNeighbors(testIsland.Object))
+            .Returns(neighbors.Select(n => n.Object).ToList());
         return testIsland;
     }
 

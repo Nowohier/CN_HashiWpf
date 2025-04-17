@@ -31,9 +31,11 @@ public class _4ConnectionsRule2Tests : TestBase<_4ConnectionsRule2>
 
         // assert
         Verify(x => x.Rule().Fired(Times.Once));
-        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, validNeighbor1.Object, HashiPointTypeEnum.Hint),
+        IslandProviderMock.Verify(
+            mock => mock.AddConnection(testIsland.Object, validNeighbor1.Object, HashiPointTypeEnum.Hint),
             Moq.Times.Once);
-        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, validNeighbor2.Object, HashiPointTypeEnum.Hint),
+        IslandProviderMock.Verify(
+            mock => mock.AddConnection(testIsland.Object, validNeighbor2.Object, HashiPointTypeEnum.Hint),
             Moq.Times.Once);
     }
 
@@ -190,7 +192,8 @@ public class _4ConnectionsRule2Tests : TestBase<_4ConnectionsRule2>
 
         // assert
         Verify(x => x.Rule().Fired(Times.Once));
-        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, validNeighbor1.Object, HashiPointTypeEnum.Hint),
+        IslandProviderMock.Verify(
+            mock => mock.AddConnection(testIsland.Object, validNeighbor1.Object, HashiPointTypeEnum.Hint),
             Moq.Times.Once);
     }
 

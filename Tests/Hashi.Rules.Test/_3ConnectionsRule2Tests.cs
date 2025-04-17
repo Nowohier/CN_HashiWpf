@@ -24,7 +24,8 @@ public class _3ConnectionsRule2Tests : TestBase<_3ConnectionsRule2>
 
         // assert
         Verify(x => x.Rule().Fired(Times.Once));
-        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, upIslandMock.Object, HashiPointTypeEnum.Hint),
+        IslandProviderMock.Verify(
+            mock => mock.AddConnection(testIsland.Object, upIslandMock.Object, HashiPointTypeEnum.Hint),
             Moq.Times.Once);
     }
 
@@ -35,11 +36,13 @@ public class _3ConnectionsRule2Tests : TestBase<_3ConnectionsRule2>
         // valid neighbors
         var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 1);
         var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 2);
-        rightIsland.Setup(x => x.AllConnections).Returns([CreateHashiPointMock(2, 1).Object, CreateHashiPointMock(2, 1).Object]);
+        rightIsland.Setup(x => x.AllConnections)
+            .Returns([CreateHashiPointMock(2, 1).Object, CreateHashiPointMock(2, 1).Object]);
         var upIslandMock = CreateIslandMock(TestIslandEnum.UpIsland, 3);
 
         var testIsland = SetupTestIsland(3, leftIsland, rightIsland, upIslandMock);
-        testIsland.Setup(x => x.AllConnections).Returns([CreateHashiPointMock(2, 1).Object, CreateHashiPointMock(2, 1).Object]);
+        testIsland.Setup(x => x.AllConnections)
+            .Returns([CreateHashiPointMock(2, 1).Object, CreateHashiPointMock(2, 1).Object]);
 
         // act
         Session.Insert(testIsland.Object);
@@ -47,7 +50,8 @@ public class _3ConnectionsRule2Tests : TestBase<_3ConnectionsRule2>
 
         // assert
         Verify(x => x.Rule().Fired(Times.Once));
-        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, upIslandMock.Object, HashiPointTypeEnum.Hint),
+        IslandProviderMock.Verify(
+            mock => mock.AddConnection(testIsland.Object, upIslandMock.Object, HashiPointTypeEnum.Hint),
             Moq.Times.Once);
     }
 
@@ -63,7 +67,8 @@ public class _3ConnectionsRule2Tests : TestBase<_3ConnectionsRule2>
         var upIslandMock = CreateIslandMock(TestIslandEnum.UpIsland, 3);
 
         var testIsland = SetupTestIsland(3, leftIsland, rightIsland, upIslandMock);
-        testIsland.Setup(x => x.AllConnections).Returns([CreateHashiPointMock(0, 1).Object, CreateHashiPointMock(2, 1).Object]);
+        testIsland.Setup(x => x.AllConnections)
+            .Returns([CreateHashiPointMock(0, 1).Object, CreateHashiPointMock(2, 1).Object]);
 
         // act
         Session.Insert(testIsland.Object);
@@ -71,7 +76,8 @@ public class _3ConnectionsRule2Tests : TestBase<_3ConnectionsRule2>
 
         // assert
         Verify(x => x.Rule().Fired(Times.Once));
-        IslandProviderMock.Verify(mock => mock.AddConnection(testIsland.Object, upIslandMock.Object, HashiPointTypeEnum.Hint),
+        IslandProviderMock.Verify(
+            mock => mock.AddConnection(testIsland.Object, upIslandMock.Object, HashiPointTypeEnum.Hint),
             Moq.Times.Once);
     }
 
@@ -141,11 +147,14 @@ public class _3ConnectionsRule2Tests : TestBase<_3ConnectionsRule2>
         var leftIsland = CreateIslandMock(TestIslandEnum.LeftIsland, 1);
         leftIsland.Setup(x => x.AllConnections).Returns([CreateHashiPointMock(0, 1).Object]);
         var rightIsland = CreateIslandMock(TestIslandEnum.RightIsland, 2);
-        rightIsland.Setup(x => x.AllConnections).Returns([CreateHashiPointMock(2, 1).Object, CreateHashiPointMock(2, 1).Object]);
+        rightIsland.Setup(x => x.AllConnections)
+            .Returns([CreateHashiPointMock(2, 1).Object, CreateHashiPointMock(2, 1).Object]);
         var upIslandMock = CreateIslandMock(TestIslandEnum.UpIsland, 3);
 
         var testIsland = SetupTestIsland(3, leftIsland, rightIsland, upIslandMock);
-        testIsland.Setup(x => x.AllConnections).Returns([CreateHashiPointMock(2, 1).Object, CreateHashiPointMock(2, 1).Object, CreateHashiPointMock(0, 1).Object]);
+        testIsland.Setup(x => x.AllConnections).Returns([
+            CreateHashiPointMock(2, 1).Object, CreateHashiPointMock(2, 1).Object, CreateHashiPointMock(0, 1).Object
+        ]);
 
         // act
         Session.Insert(testIsland.Object);
