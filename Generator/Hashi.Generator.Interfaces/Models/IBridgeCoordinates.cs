@@ -21,14 +21,4 @@ public interface IBridgeCoordinates
     ///     Amount of bridges between the two islands.
     /// </summary>
     int AmountBridges { get; }
-
-    /// <summary>
-    ///     Checks if the bridge is horizontal or vertical.
-    /// </summary>
-    bool IsHorizontal { get; }
-
-    /// <summary>
-    ///     Checks if the bridge is vertical or horizontal.
-    /// </summary>
-    bool IsVertical { get; }
 }

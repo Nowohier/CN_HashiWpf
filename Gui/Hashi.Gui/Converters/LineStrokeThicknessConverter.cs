@@ -12,14 +12,14 @@ namespace Hashi.Gui.Converters;
 public class LineStrokeThicknessConverter : IValueConverter
 {
     /// <inheritdoc />
-    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         return value is not ItemsControl itemsControl ? 1.5 :
             itemsControl.ActualWidth > 1000 || itemsControl.ActualHeight > 1000 ? 2 : 1.5;
     }
 
     /// <inheritdoc />
-    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         throw new NotImplementedException();
     }

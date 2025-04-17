@@ -1,11 +1,11 @@
-﻿using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using Hashi.Gui.Interfaces.Providers;
+﻿using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Wrappers;
 using Hashi.Gui.Translation;
 using Hashi.Gui.ViewModels.Settings;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
 
 namespace Hashi.Gui.Providers;
 
@@ -26,17 +26,25 @@ public class HashiSettingsProvider : IHashiSettingsProvider
     /// <inheritdoc />
     public ISettingsViewModel Settings { get; }
 
-    /// <inheritdoc />
+    /// <summary>
+    ///   Gets the path to the settings file.
+    /// </summary>
     public string HashiSettingsFilePath => Path.Combine(SettingsDirectoryPath, HashiSettingsFileName);
 
-    /// <inheritdoc />
+    /// <summary>
+    ///  Gets the path to the settings directory.
+    /// </summary>
     public string SettingsDirectoryPath =>
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), LocalAppDataPath);
 
-    /// <inheritdoc />
+    /// <summary>
+    ///   Gets the name of the settings file.
+    /// </summary>
     public string HashiSettingsFileName => "HashiSettings.json";
 
-    /// <inheritdoc />
+    /// <summary>
+    ///  Gets the path to the local application data directory.
+    /// </summary>
     public string LocalAppDataPath => @"CN_Hashi\Settings";
 
     public ISettingsViewModel LoadSettings()

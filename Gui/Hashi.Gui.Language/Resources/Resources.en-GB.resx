@@ -166,7 +166,7 @@
     <value>If an island with a maximum of two bridges has two neighbor islands with also a maximum of two bridges, then a connection to each neighbor must be set.</value>
   </data>
   <data name="_2ConnectionsRule2" xml:space="preserve">
-    <value>If an island with a maximum of two bridges has a connection to another island with max one connections, then the other connection can only go to a neighbor with max connections &gt; 1.</value>
+    <value>If an island with a maximum of two bridges has a connection to another island with max one connection, then the other connection can only go to a neighbor with max connections &gt; 1.</value>
   </data>
   <data name="_2ConnectionsRule3" xml:space="preserve">
     <value>If an island with a maximum of two connections has two neighbor islands and one of them is an island with a maximum of two connections, a connection must be established to the other island.</value>

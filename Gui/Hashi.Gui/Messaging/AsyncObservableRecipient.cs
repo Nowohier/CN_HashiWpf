@@ -1,8 +1,8 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Gui.Interfaces.Messages;
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 
 namespace Hashi.Gui.Messaging;
 
@@ -14,10 +14,10 @@ public abstract class AsyncObservableRecipient : ObservableRecipient
 {
     // Cache reflection results.
     private static readonly MethodInfo? RegisterMethodInfo = typeof(IMessengerExtensions).GetMethod(
-        nameof(IMessengerExtensions.Register), BindingFlags.Public | BindingFlags.Static, new[] { typeof(object) });
+        nameof(IMessengerExtensions.Register), BindingFlags.Public | BindingFlags.Static, [typeof(object)]);
 
     private static readonly MethodInfo? UnregisterMethodInfo =
-        typeof(IMessenger).GetMethod("Unregister", new[] { typeof(object) });
+        typeof(IMessenger).GetMethod("Unregister", [typeof(object)]);
 
     /// <inheritdoc />
     protected override void OnActivated()
@@ -44,7 +44,7 @@ public abstract class AsyncObservableRecipient : ObservableRecipient
             if (RegisterMethodInfo != null)
             {
                 var registerMethod = RegisterMethodInfo.MakeGenericMethod(messageType);
-                registerMethod.Invoke(null, new object[] { Messenger, this });
+                registerMethod.Invoke(null, [Messenger, this]);
             }
         }
     }
@@ -60,7 +60,7 @@ public abstract class AsyncObservableRecipient : ObservableRecipient
             if (UnregisterMethodInfo != null)
             {
                 var genericMethod = UnregisterMethodInfo.MakeGenericMethod(messageType);
-                genericMethod.Invoke(Messenger, new object[] { this });
+                genericMethod.Invoke(Messenger, [this]);
             }
         }
     }

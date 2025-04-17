@@ -12,14 +12,14 @@ namespace Hashi.Gui.Converters;
 public class GridStrokeThicknessConverter : IValueConverter
 {
     /// <inheritdoc />
-    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         return value is not ItemsControl itemsControl ? 1 :
             itemsControl.ActualWidth > 1000 || itemsControl.ActualHeight > 1000 ? 2 : 1;
     }
 
     /// <inheritdoc />
-    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         throw new NotImplementedException();
     }

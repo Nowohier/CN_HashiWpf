@@ -1,6 +1,6 @@
-﻿using System.Drawing;
-using Hashi.Generator.Interfaces.Models;
+﻿using Hashi.Generator.Interfaces.Models;
 using Newtonsoft.Json;
+using System.Drawing;
 
 namespace Hashi.Generator.Models;
 
@@ -32,10 +32,4 @@ public class BridgeCoordinates : IBridgeCoordinates
     /// <inheritdoc />
     [JsonProperty(nameof(AmountBridges))]
     public int AmountBridges { get; }
-
-    /// <inheritdoc />
-    public bool IsHorizontal => Location1.Y == Location2.Y;
-
-    /// <inheritdoc />
-    public bool IsVertical => Location1.X == Location2.X;
 }

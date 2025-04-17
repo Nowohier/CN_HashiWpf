@@ -1,6 +1,6 @@
 ﻿namespace Hashi.Gui.Interfaces.Views;
 
-public interface IWindow<T> : IViewBoxControl
+public interface IWindow : IViewBoxControl
 {
     /// <summary>
     ///     Gets or sets the view model for the main view.

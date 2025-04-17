@@ -18,7 +18,7 @@ public abstract class AsyncMessage : CollectionRequestMessage<Task>, IAsyncMessa
     }
 
     /// <inheritdoc />
-    public CancellationToken CancellationToken => cancellationTokenSource?.Token ?? default;
+    public CancellationToken CancellationToken => cancellationTokenSource?.Token ?? CancellationToken.None;
 }
 
 /// <inheritdoc cref="IAsyncMessage{T}" />

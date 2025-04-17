@@ -9,8 +9,7 @@ namespace Hashi.Rules.Extensions;
 public static class HashiRuleRepositoryExtensions
 {
     /// <summary>
-    ///     Compiles all rules in the repository into a session factory.
-    ///     Use <see cref="RuleCompiler" /> explicitly if only need to compile a subset of rules.
+    ///     Compiles one rule only in the repository into a session factory.
     /// </summary>
     /// <param name="repository">Rule repository.</param>
     /// <param name="ruleName">The rule name.</param>

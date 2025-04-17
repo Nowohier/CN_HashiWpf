@@ -6,16 +6,6 @@
 public interface ILanguageViewModel
 {
     /// <summary>
-    ///     The english name of the language.
-    /// </summary>
-    string LanguageNameEnglish { get; set; }
-
-    /// <summary>
-    ///     The native name of the language.
-    /// </summary>
-    string LanguageNameNative { get; set; }
-
-    /// <summary>
     ///     The culture of the language.
     /// </summary>
     string Culture { get; set; }

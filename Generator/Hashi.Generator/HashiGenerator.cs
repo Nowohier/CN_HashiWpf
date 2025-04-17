@@ -1,37 +1,27 @@
-﻿using System.Diagnostics;
-using System.Drawing;
-using Hashi.Enums;
+﻿using Hashi.Enums;
 using Hashi.Generator.Interfaces;
 using Hashi.Generator.Interfaces.Models;
 using Hashi.Generator.Interfaces.Providers;
 using Hashi.Generator.Models;
 using Hashi.LinearSolver.Interfaces;
+using System.Diagnostics;
+using System.Drawing;
 
 namespace Hashi.Generator;
 
 /// <summary>
 ///     Generates a Hashi field.
 /// </summary>
-public class HashiGenerator : IHashiGenerator
+public class HashiGenerator(
+    Func<int, int, int, IIsland> islandFactory,
+    Func<IIsland, IIsland, int, IBridge> bridgeFactory,
+    Func<int[][], IList<IBridgeCoordinates>, ISolutionProvider> solutionContainerFactory,
+    ILinearSolutionSolverWithIterativ linearSolutionSolverWithIterativ)
+    : IHashiGenerator
 {
-    private readonly Func<IIsland, IIsland, int, IBridge> bridgeFactory;
-    private readonly List<IBridge> bridges = new();
-    private readonly Func<int, int, int, IIsland> islandFactory;
-    private readonly List<IIsland> islands = new();
-    private readonly ILinearSolutionSolverWithIterativ linearSolutionSolverWithIterativ;
+    private readonly List<IBridge> bridges = [];
+    private readonly List<IIsland> islands = [];
     private readonly Random random = new();
-    private readonly Func<int[][], IList<IBridgeCoordinates>, ISolutionProvider> solutionContainerFactory;
-
-    public HashiGenerator(Func<int, int, int, IIsland> islandFactory,
-        Func<IIsland, IIsland, int, IBridge> bridgeFactory,
-        Func<int[][], IList<IBridgeCoordinates>, ISolutionProvider> solutionContainerFactory,
-        ILinearSolutionSolverWithIterativ linearSolutionSolverWithIterativ)
-    {
-        this.islandFactory = islandFactory;
-        this.bridgeFactory = bridgeFactory;
-        this.solutionContainerFactory = solutionContainerFactory;
-        this.linearSolutionSolverWithIterativ = linearSolutionSolverWithIterativ;
-    }
 
     public async Task<ISolutionProvider> GenerateHashAsync(int difficulty = -1, int amountNodes = 10, int width = 0,
         int length = 0, int alpha = 0,
@@ -134,15 +124,6 @@ public class HashiGenerator : IHashiGenerator
     public List<IBridge> GetBridges()
     {
         return bridges;
-    }
-
-    /// <summary>
-    ///     Gets the islands of the Hashi field.
-    /// </summary>
-    /// <returns>a list of island models.</returns>
-    public List<IIsland> GetIslands()
-    {
-        return islands;
     }
 
     /// <summary>
@@ -402,13 +383,13 @@ public class HashiGenerator : IHashiGenerator
     private int UpBlocked(IIsland mainIsland, int[][] mainField)
     {
         for (var row = mainIsland.Y - 1; row > 0; row--)
-        for (var checkLeft = mainIsland.X - 1; checkLeft >= 0; checkLeft--)
-        {
-            if (bridges.Count <= 0 || mainField[row][checkLeft] == 0) continue;
-            if (bridges.Any(bridge =>
-                    bridge.Island1.Y == row && bridge.Island1.X == checkLeft && bridge.Island2.X > mainIsland.X))
-                return row;
-        }
+            for (var checkLeft = mainIsland.X - 1; checkLeft >= 0; checkLeft--)
+            {
+                if (bridges.Count <= 0 || mainField[row][checkLeft] == 0) continue;
+                if (bridges.Any(bridge =>
+                        bridge.Island1.Y == row && bridge.Island1.X == checkLeft && bridge.Island2.X > mainIsland.X))
+                    return row;
+            }
 
         return -1;
     }
@@ -416,13 +397,13 @@ public class HashiGenerator : IHashiGenerator
     private int DownBlocked(IIsland mainIsland, int[][] mainField)
     {
         for (var row = mainIsland.Y + 1; row < mainField.Length; row++)
-        for (var checkLeft = mainIsland.X - 1; checkLeft >= 0; checkLeft--)
-        {
-            if (bridges.Count <= 0 || mainField[row][checkLeft] == 0) continue;
-            if (bridges.Any(bridge =>
-                    bridge.Island1.Y == row && bridge.Island1.X == checkLeft && bridge.Island2.X > mainIsland.X))
-                return row;
-        }
+            for (var checkLeft = mainIsland.X - 1; checkLeft >= 0; checkLeft--)
+            {
+                if (bridges.Count <= 0 || mainField[row][checkLeft] == 0) continue;
+                if (bridges.Any(bridge =>
+                        bridge.Island1.Y == row && bridge.Island1.X == checkLeft && bridge.Island2.X > mainIsland.X))
+                    return row;
+            }
 
         return -1;
     }
@@ -430,13 +411,13 @@ public class HashiGenerator : IHashiGenerator
     private int RightBlocked(IIsland mainIsland, int[][] mainField)
     {
         for (var col = mainIsland.X + 1; col < mainField[mainIsland.Y].Length; col++)
-        for (var checkLeft = mainIsland.Y - 1; checkLeft >= 0; checkLeft--)
-        {
-            if (bridges.Count <= 0 || mainField[checkLeft][col] == 0) continue;
-            if (bridges.Any(bridge =>
-                    bridge.Island1.Y == checkLeft && bridge.Island1.X == col && bridge.Island2.Y > mainIsland.Y))
-                return col;
-        }
+            for (var checkLeft = mainIsland.Y - 1; checkLeft >= 0; checkLeft--)
+            {
+                if (bridges.Count <= 0 || mainField[checkLeft][col] == 0) continue;
+                if (bridges.Any(bridge =>
+                        bridge.Island1.Y == checkLeft && bridge.Island1.X == col && bridge.Island2.Y > mainIsland.Y))
+                    return col;
+            }
 
         return -1;
     }
@@ -444,13 +425,13 @@ public class HashiGenerator : IHashiGenerator
     private int LeftBlocked(IIsland mainIsland, int[][] mainField)
     {
         for (var col = mainIsland.X - 1; col > 0; col--)
-        for (var checkLeft = mainIsland.Y - 1; checkLeft >= 0; checkLeft--)
-        {
-            if (bridges.Count <= 0 || mainField[checkLeft][col] == 0) continue;
-            if (bridges.Any(bridge =>
-                    bridge.Island1.Y == checkLeft && bridge.Island1.X == col && bridge.Island2.Y > mainIsland.Y))
-                return col;
-        }
+            for (var checkLeft = mainIsland.Y - 1; checkLeft >= 0; checkLeft--)
+            {
+                if (bridges.Count <= 0 || mainField[checkLeft][col] == 0) continue;
+                if (bridges.Any(bridge =>
+                        bridge.Island1.Y == checkLeft && bridge.Island1.X == col && bridge.Island2.Y > mainIsland.Y))
+                    return col;
+            }
 
         return -1;
     }
@@ -460,13 +441,13 @@ public class HashiGenerator : IHashiGenerator
     {
         if (mainIsland.IslandDown == null) return -1;
         for (var row = mainIsland.IslandDown.Y - 1; row > mainIsland.Y; row--)
-        for (var checkLeft = mainIsland.X - 1; checkLeft >= 0; checkLeft--)
-        {
-            if (mainField[row][checkLeft] == 0) continue;
-            if (bridges.Any(bridge =>
-                    bridge.Island1.Y == row && bridge.Island1.X == checkLeft && bridge.Island2.X > mainIsland.X))
-                return row;
-        }
+            for (var checkLeft = mainIsland.X - 1; checkLeft >= 0; checkLeft--)
+            {
+                if (mainField[row][checkLeft] == 0) continue;
+                if (bridges.Any(bridge =>
+                        bridge.Island1.Y == row && bridge.Island1.X == checkLeft && bridge.Island2.X > mainIsland.X))
+                    return row;
+            }
 
         return -1;
     }
@@ -476,13 +457,13 @@ public class HashiGenerator : IHashiGenerator
     {
         if (mainIsland.IslandRight == null) return -1;
         for (var col = mainIsland.IslandRight.X - 1; col > mainIsland.X; col--)
-        for (var checkLeft = mainIsland.Y - 1; checkLeft >= 0; checkLeft--)
-        {
-            if (mainField[checkLeft][col] == 0) continue;
-            if (bridges.Any(bridge =>
-                    bridge.Island1.Y == checkLeft && bridge.Island1.X == col && bridge.Island2.Y > mainIsland.Y))
-                return col;
-        }
+            for (var checkLeft = mainIsland.Y - 1; checkLeft >= 0; checkLeft--)
+            {
+                if (mainField[checkLeft][col] == 0) continue;
+                if (bridges.Any(bridge =>
+                        bridge.Island1.Y == checkLeft && bridge.Island1.X == col && bridge.Island2.Y > mainIsland.Y))
+                    return col;
+            }
 
         return -1;
     }

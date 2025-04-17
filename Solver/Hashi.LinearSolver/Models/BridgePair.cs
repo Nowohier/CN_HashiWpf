@@ -14,8 +14,8 @@ public class BridgePair : IBridgePair
     /// <param name="bridge2Node2">The second node of bridge 2.</param>
     public BridgePair(int bridge1Node1, int bridge1Node2, int bridge2Node1, int bridge2Node2)
     {
-        Bridge1 = new[] { bridge1Node1, bridge1Node2 };
-        Bridge2 = new[] { bridge2Node1, bridge2Node2 };
+        Bridge1 = [bridge1Node1, bridge1Node2];
+        Bridge2 = [bridge2Node1, bridge2Node2];
     }
 
     /// <inheritdoc />
