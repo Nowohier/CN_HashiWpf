@@ -1,6 +1,6 @@
 ﻿using Hashi.Generator.Interfaces.Providers;
 
-namespace Hashi.Gui.Interfaces.Resources.SolutionProviders;
+namespace Hashi.Gui.Interfaces.Providers;
 
 /// <summary>
 ///     Interface for providing test solutions.

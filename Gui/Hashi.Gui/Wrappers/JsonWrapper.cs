@@ -1,4 +1,6 @@
-﻿using Hashi.Generator.Interfaces.Providers;
+﻿using Hashi.Generator.Interfaces.Models;
+using Hashi.Generator.Interfaces.Providers;
+using Hashi.Generator.Models;
 using Hashi.Generator.Providers;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Wrappers;
@@ -16,7 +18,8 @@ public class JsonWrapper : IJsonWrapper
     [
         new AbstractConverter<HighScorePerDifficultyViewModel, IHighScorePerDifficultyViewModel>(),
         new AbstractConverter<SettingsViewModel, ISettingsViewModel>(),
-        new AbstractConverter<SolutionProvider, ISolutionProvider>()
+        new AbstractConverter<SolutionProvider, ISolutionProvider>(),
+        new AbstractConverter<BridgeCoordinates, IBridgeCoordinates>()
     ];
 
     private readonly JsonSerializerSettings settings = new()
