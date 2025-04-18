@@ -11,7 +11,7 @@ public interface IMainViewModel
     /// <summary>
     ///     The settings provider for the Hashi game.
     /// </summary>
-    IHashiSettingsProvider SettingsProvider { get; }
+    ISettingsProvider SettingsProvider { get; }
 
     /// <summary>
     ///     Creates a new game asynchronously.

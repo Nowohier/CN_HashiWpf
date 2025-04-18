@@ -57,7 +57,7 @@ public class MainViewModel : AsyncObservableRecipient,
         Func<SolidColorBrush, IHashiBrush> brushFactory,
         IDialogWrapper dialogWrapper,
         IHashiGenerator hashiGenerator,
-        IHashiSettingsProvider settingsProvider,
+        ISettingsProvider settingsProvider,
         ITimerProvider timerProvider,
         IIslandProvider islandProvider,
         IHintProvider hintProvider,
@@ -250,7 +250,7 @@ public class MainViewModel : AsyncObservableRecipient,
     public ITestSolutionProvider TestSolutionProvider { get; }
 
     /// <inheritdoc />
-    public IHashiSettingsProvider SettingsProvider { get; }
+    public ISettingsProvider SettingsProvider { get; }
 
     /// <inheritdoc cref="IMainViewModel.Receive(IBridgeConnectionChangedMessage)" />
     public void Receive(IBridgeConnectionChangedMessage message)

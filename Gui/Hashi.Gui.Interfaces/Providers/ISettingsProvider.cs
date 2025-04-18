@@ -5,7 +5,7 @@ namespace Hashi.Gui.Interfaces.Providers;
 /// <summary>
 ///     Interface for providing settings file paths and names.
 /// </summary>
-public interface IHashiSettingsProvider
+public interface ISettingsProvider
 {
     /// <summary>
     ///     Gets the settings view model.
