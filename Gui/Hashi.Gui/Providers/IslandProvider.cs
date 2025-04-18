@@ -86,10 +86,10 @@ public class IslandProvider :
     {
         ArgumentNullException.ThrowIfNull(solutionProvider, nameof(solutionProvider));
         ArgumentNullException.ThrowIfNull(solutionProvider.HashiField, nameof(solutionProvider.HashiField));
-        ArgumentNullException.ThrowIfNull(solutionProvider.BridgeCoordinates,
-            nameof(solutionProvider.BridgeCoordinates));
 
         InitializeNewSolution(solutionProvider);
+
+        if (solutionProvider.BridgeCoordinates == null) return;
 
         foreach (var bridge in solutionProvider.BridgeCoordinates)
             for (var i = 0; i < bridge.AmountBridges; i++)
