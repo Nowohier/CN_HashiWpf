@@ -36,7 +36,7 @@
         <mah:WindowCommands>
             <StackPanel Orientation="Horizontal"
                         Visibility="{Binding Source={x:Static helpers:DebugHelper.IsDebugBuild}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-                <TextBlock Text="Rules:" VerticalAlignment="Center" />
+                <TextBlock Text="{ns:Loc TextRules}" VerticalAlignment="Center" />
                 <ComboBox Height="26" BorderThickness="1" ItemsSource="{Binding  HintProvider.Rules}"
                           BorderBrush="{StaticResource MahApps.Brushes.Gray5}"
                           SelectedItem="{Binding  SelectedRule}" DisplayMemberPath="Name"
@@ -44,13 +44,13 @@
             </StackPanel>
             <Button Height="26" Command="{Binding ToggleTestFieldCommand}"
                     Padding="5,0,5,0" Margin="10,0,0,0" DockPanel.Dock="Right"
-                    ToolTip="{ns:Loc Undo}" ToolTipService.InitialShowDelay="0"
+                    ToolTip="{ns:Loc TooltipTestmode}" ToolTipService.InitialShowDelay="0"
                     Visibility="{Binding Source={x:Static helpers:DebugHelper.IsDebugBuild}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
                 <iconPacks:PackIconPhosphorIcons Kind="TestTube" Width="18"
                                                  Height="18" />
             </Button>
             <mah:DropDownButton Padding="5,0,5,0"
-                                ToolTip="{ns:Loc Language}" ItemsSource="{Binding SettingsProvider.Settings.Languages}"
+                                ToolTip="{ns:Loc TooltipLanguage}" ItemsSource="{Binding SettingsProvider.Settings.Languages}"
                                 ToolTipService.InitialShowDelay="0" Height="26"
                                 BorderBrush="{StaticResource MahApps.Brushes.Gray5}">
                 <mah:DropDownButton.Icon>
@@ -81,23 +81,23 @@
             </Grid.RowDefinitions>
             <Border Grid.Row="0">
                 <DockPanel LastChildFill="True">
-                    <GroupBox Header="{ns:Loc CreateTitle}" Padding="5" Style="{x:Null}" DockPanel.Dock="Left"
+                    <GroupBox Header="{ns:Loc TitleCreate}" Padding="5" Style="{x:Null}" DockPanel.Dock="Left"
                               BorderThickness="0,1,0,0" Margin="0,0,0,0" BorderBrush="{StaticResource BasicBrush}"
                               Background="{StaticResource MenuBackgroundBrush}">
                         <DockPanel LastChildFill="False">
-                            <ComboBox BorderBrush="#FFD5DFE5" Focusable="False" Width="85"
+                            <ComboBox BorderBrush="#FFD5DFE5" Focusable="False" Width="85" ToolTip="{ns:Loc TooltipDifficultyLevel}" ToolTipService.InitialShowDelay="0"
                                       SelectedItem="{Binding SelectedDifficulty}" DisplayMemberPath=""
                                       ItemsSource="{Binding Source={StaticResource DifficultyEnums}}"
                                       DockPanel.Dock="Left" />
                             <Button Style="{StaticResource MenuButtonStyle}" Padding="3,0,3,0" Width="30"
-                                    HorizontalAlignment="Left" ToolTip="{ns:Loc CreateTooltip}"
+                                    HorizontalAlignment="Left" ToolTip="{ns:Loc TooltipCreate}"
                                     ToolTipService.InitialShowDelay="0"
                                     Command="{Binding CreateNewGameCommand}" Margin="10,0,0,0" DockPanel.Dock="Left">
                                 <iconPacks:PackIconPhosphorIcons Kind="ShootingStarThin" Width="20" Height="20" />
                             </Button>
                         </DockPanel>
                     </GroupBox>
-                    <GroupBox Header="{ns:Loc TimesTitle}" Margin="10,0,0,0" Padding="5" Style="{x:Null}"
+                    <GroupBox Header="{ns:Loc TitleTimes}" Margin="10,0,0,0" Padding="5" Style="{x:Null}"
                               DockPanel.Dock="Right"
                               BorderThickness="0,1,0,0" BorderBrush="{StaticResource BasicBrush}"
                               Background="{StaticResource MenuBackgroundBrush}">
@@ -117,13 +117,13 @@
                                 Foreground="{StaticResource IntenseGreenBrush}" VerticalAlignment="Center" />
                         </StackPanel>
                     </GroupBox>
-                    <GroupBox Header="{ns:Loc OptionsTitle}" Padding="5" Style="{x:Null}" Margin="10,0,0,0"
+                    <GroupBox Header="{ns:Loc TitleOptions}" Padding="5" Style="{x:Null}" Margin="10,0,0,0"
                               BorderThickness="0,1,0,0"
                               BorderBrush="{StaticResource BasicBrush}"
                               Background="{StaticResource MenuBackgroundBrush}">
                         <DockPanel LastChildFill="False">
                             <Button Style="{StaticResource MenuButtonStyle}" Padding="3,0,3,0" Width="30"
-                                    HorizontalAlignment="Left" ToolTip="{ns:Loc RemoveAllBridgesTooltip}"
+                                    HorizontalAlignment="Left" ToolTip="{ns:Loc TooltipRemoveAllBridges}"
                                     ToolTipService.InitialShowDelay="0"
                                     Command="{Binding RemoveAllBridgesCommand}" DockPanel.Dock="Left">
                                 <Grid>
@@ -137,7 +137,7 @@
                             </Button>
                             <Button Style="{StaticResource MenuButtonStyle}" Command="{Binding GenerateHintCommand}"
                                     DockPanel.Dock="Left" Width="30" Padding="3,0,3,0" Margin="10,0,0,0"
-                                    HorizontalAlignment="Left" ToolTip="{ns:Loc ShowHintTooltip}"
+                                    HorizontalAlignment="Left" ToolTip="{ns:Loc TooltipShowHint}"
                                     ToolTipService.InitialShowDelay="0">
                                 <StackPanel Orientation="Horizontal">
                                     <iconPacks:PackIconPhosphorIcons Kind="LightbulbThin" Width="18" Height="18" />
@@ -149,12 +149,12 @@
                                           HorizontalAlignment="Left" DockPanel.Dock="Left" />
                             <Button Style="{StaticResource MenuButtonStyle}" Command="{Binding RedoCommand}"
                                     Padding="5,0,5,0" Margin="10,0,0,0" DockPanel.Dock="Right"
-                                    ToolTip="{ns:Loc Redo}" ToolTipService.InitialShowDelay="0">
+                                    ToolTip="{ns:Loc TooltipRedo}" ToolTipService.InitialShowDelay="0">
                                 <iconPacks:PackIconPhosphorIcons Kind="ClockClockwiseThin" Width="18" Height="18" />
                             </Button>
                             <Button Style="{StaticResource MenuButtonStyle}" Command="{Binding UndoCommand}"
                                     Padding="5,0,5,0" Margin="10,0,0,0" DockPanel.Dock="Right"
-                                    ToolTip="{ns:Loc Undo}" ToolTipService.InitialShowDelay="0">
+                                    ToolTip="{ns:Loc TooltipUndo}" ToolTipService.InitialShowDelay="0">
                                 <iconPacks:PackIconPhosphorIcons Kind="ClockCounterClockwiseThin" Width="18"
                                                                  Height="18" />
                             </Button>
@@ -172,13 +172,13 @@
             </Grid.RowDefinitions>
             <Border Grid.Row="0">
                 <DockPanel LastChildFill="True">
-                    <GroupBox Header="{ns:Loc OptionsTitle}" Padding="5" Style="{x:Null}"
+                    <GroupBox Header="{ns:Loc TitleOptions}" Padding="5" Style="{x:Null}"
                               BorderThickness="0,1,0,0"
                               BorderBrush="{StaticResource BasicBrush}"
                               Background="{StaticResource MenuBackgroundBrush}">
                         <DockPanel LastChildFill="False">
                             <Button Style="{StaticResource MenuButtonGenerateStyle}" Padding="3,0,3,0" Width="30"
-                                    HorizontalAlignment="Left" ToolTip="{ns:Loc RemoveAllBridgesTooltip}"
+                                    HorizontalAlignment="Left" ToolTip="{ns:Loc TooltipRemoveAllBridges}"
                                     ToolTipService.InitialShowDelay="0"
                                     Command="{Binding RemoveAllBridgesCommand}" DockPanel.Dock="Left">
                                 <Grid>
@@ -193,7 +193,7 @@
                             <Button Style="{StaticResource MenuButtonGenerateStyle}"
                                     Command="{Binding GenerateHintCommand}"
                                     DockPanel.Dock="Left" Width="30" Padding="3,0,3,0" Margin="10,0,0,0"
-                                    HorizontalAlignment="Left" ToolTip="{ns:Loc ShowHintTooltip}"
+                                    HorizontalAlignment="Left" ToolTip="{ns:Loc TooltipShowHint}"
                                     ToolTipService.InitialShowDelay="0">
                                 <StackPanel Orientation="Horizontal">
                                     <iconPacks:PackIconPhosphorIcons Kind="LightbulbThin" Width="18" Height="18" />
@@ -203,7 +203,7 @@
                                           IsChecked="{Binding AreGridLinesEnabled}"
                                           Margin="10,0,0,0"
                                           HorizontalAlignment="Left" DockPanel.Dock="Left" />
-                            <TextBlock Text="Testfield Name:" VerticalAlignment="Center" Margin="10,0,0,0"
+                            <TextBlock Text="{ns:Loc TextTestfield}" VerticalAlignment="Center" Margin="10,0,0,0"
                                        DockPanel.Dock="Left" />
                             <ComboBox Height="26" BorderThickness="1"
                                       BorderBrush="{StaticResource MahApps.Brushes.Gray5}"
@@ -213,7 +213,7 @@
                             <Button Style="{StaticResource MenuButtonGenerateStyle}"
                                     Command="{Binding ResetTestFieldCommand}"
                                     DockPanel.Dock="Right" Width="30" Padding="3,0,3,0" Margin="10,0,0,0"
-                                    HorizontalAlignment="Left" ToolTip="{ns:Loc ShowHintTooltip}"
+                                    HorizontalAlignment="Left" ToolTip="{ns:Loc TooltipTestfieldReset}"
                                     ToolTipService.InitialShowDelay="0">
                                 <StackPanel Orientation="Horizontal">
                                     <iconPacks:PackIconPhosphorIcons Kind="ArrowsCounterClockwiseThin" Width="14"
@@ -223,7 +223,7 @@
                             <Button Style="{StaticResource MenuButtonGenerateStyle}"
                                     Command="{Binding ResetTestFieldCommand}"
                                     DockPanel.Dock="Right" Width="30" Padding="3,0,3,0" Margin="10,0,0,0"
-                                    HorizontalAlignment="Left" ToolTip="{ns:Loc ShowHintTooltip}"
+                                    HorizontalAlignment="Left" ToolTip="{ns:Loc TooltipTestfieldSave}"
                                     ToolTipService.InitialShowDelay="0">
                                 <StackPanel Orientation="Horizontal">
                                     <iconPacks:PackIconPhosphorIcons Kind="FloppyDiskThin" Width="18" Height="18"
@@ -255,19 +255,19 @@
                         Margin="0,5,0,0">
                 <iconPacks:PackIconVaadinIcons Kind="Cluster" Width="32" Height="32" Spin="True" Margin="0,0,20,0"
                                                VerticalAlignment="Center" />
-                <TextBlock Text="{ns:Loc HashiLoadingText}" FontSize="20" />
+                <TextBlock Text="{ns:Loc TextHashiLoading}" FontSize="20" />
             </StackPanel>
         </Grid>
 
         <Grid Grid.Row="2">
-            <GroupBox Header="{ns:Loc MessagesTitle}" Margin="-1,-10,-1,0" Padding="10,5,10,5" Style="{x:Null}"
+            <GroupBox Header="{ns:Loc TitleMessages}" Margin="-1,-10,-1,0" Padding="10,5,10,5" Style="{x:Null}"
                       BorderThickness="1" Height="90"
                       BorderBrush="{StaticResource BasicBrush}"
                       Background="{StaticResource GreenIslandBrush}">
                 <TextBlock FontSize="16" TextWrapping="WrapWithOverflow"
                            MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=GroupBox}, Converter={StaticResource MaxMessageTextWidthConverter}}"
                            Visibility="{Binding HintProvider.RuleInfoProvider.RuleMessage, Converter={StaticResource EmptyStringToVisibilityConverter}}">
-                    <Run FontWeight="Bold" Text="{ns:Loc HintText}" />
+                    <Run FontWeight="Bold" Text="{ns:Loc TextHint}" />
                     <Run Text="{Binding HintProvider.RuleInfoProvider.RuleMessage, Mode=OneWay}" />
                 </TextBlock>
             </GroupBox>

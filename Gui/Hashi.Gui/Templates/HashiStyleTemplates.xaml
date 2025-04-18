@@ -45,7 +45,7 @@
         <Setter Property="Background" Value="White" />
         <Setter Property="Height" Value="30" />
         <Setter Property="IsEnabled" Value="True" />
-        <Setter Property="ToolTip" Value="{ns:Loc ToggleGridlinesTooltip}" />
+        <Setter Property="ToolTip" Value="{ns:Loc TooltipToggleGridlines}" />
         <Setter Property="ToolTipService.InitialShowDelay" Value="0" />
         <Setter Property="Template">
             <Setter.Value>
