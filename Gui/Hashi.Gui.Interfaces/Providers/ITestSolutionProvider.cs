@@ -1,5 +1,6 @@
 ﻿using Hashi.Generator.Interfaces.Providers;
 using Hashi.Gui.Interfaces.ViewModels;
+using System.Collections.ObjectModel;
 
 namespace Hashi.Gui.Interfaces.Providers;
 
@@ -16,7 +17,7 @@ public interface ITestSolutionProvider
     /// <summary>
     ///     Gets the test solution providers.
     /// </summary>
-    List<ISolutionProvider> SolutionProviders { get; }
+    ObservableCollection<ISolutionProvider> SolutionProviders { get; }
 
     /// <summary>
     ///    Gets or sets the selected solution provider.

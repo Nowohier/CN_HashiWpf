@@ -17,7 +17,9 @@ namespace Hashi.Gui.Providers
         public string SettingsDirectoryPath =>
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), LocalAppDataPath);
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Gets the local application data path.
+        /// </summary>
         public string LocalAppDataPath => @"CN_Hashi\Settings";
 
         /// <summary>

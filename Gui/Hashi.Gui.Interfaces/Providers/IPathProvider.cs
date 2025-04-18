@@ -19,10 +19,5 @@
         ///  Gets the path to the settings directory.
         /// </summary>
         string SettingsDirectoryPath { get; }
-
-        /// <summary>
-        ///  Gets the path to the local application data directory.
-        /// </summary>
-        string LocalAppDataPath { get; }
     }
 }

@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Enums;
 using Hashi.Generator.Interfaces;
 using Hashi.Generator.Interfaces.Providers;
+using Hashi.Generator.Providers;
 using Hashi.Gui.Helpers;
 using Hashi.Gui.Interfaces.Messages;
 using Hashi.Gui.Interfaces.Models;
@@ -34,6 +35,7 @@ public class MainViewModel : AsyncObservableRecipient,
     private bool isTestFieldMode;
     private DifficultyEnum selectedDifficulty = DifficultyEnum.Easy3;
     private Type selectedRule;
+    private string newRuleName = string.Empty;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="MainViewModel" /> class.
@@ -85,6 +87,7 @@ public class MainViewModel : AsyncObservableRecipient,
         ResetTestFieldCommand = new AsyncRelayCommand(ResetTestFieldCommandExecute);
         SaveTestFieldCommand = new RelayCommand(SaveTestFieldCommandExecute);
         DeleteTestFieldCommand = new RelayCommand(DeleteTestFieldCommandExecute);
+        CreateTestFieldCommand = new RelayCommand(CreateTestFieldCommandExecute, CreateTestFieldCommandCanExecute);
 
         selectedRule = HintProvider.Rules.First();
         WindowColorBrush = brushFactory.Invoke(HashiColorHelper.BasicBrush);
@@ -232,6 +235,11 @@ public class MainViewModel : AsyncObservableRecipient,
     /// <summary>
     ///      Deletes the test field.
     /// </summary>
+    public ICommand CreateTestFieldCommand { get; }
+
+    /// <summary>
+    ///      Deletes the test field.
+    /// </summary>
     public ICommand DeleteTestFieldCommand { get; }
 
     /// <summary>
@@ -256,6 +264,21 @@ public class MainViewModel : AsyncObservableRecipient,
 
     /// <inheritdoc />
     public ISettingsProvider SettingsProvider { get; }
+
+    /// <summary>
+    ///    Gets or sets the new rule name for the test field.
+    /// </summary>
+    public string NewRuleName
+    {
+        get => newRuleName;
+        set
+        {
+            if (SetProperty(ref newRuleName, value))
+            {
+                ((RelayCommand)CreateTestFieldCommand).NotifyCanExecuteChanged();
+            }
+        }
+    }
 
     /// <inheritdoc cref="IMainViewModel.Receive(IBridgeConnectionChangedMessage)" />
     public void Receive(IBridgeConnectionChangedMessage message)
@@ -366,6 +389,11 @@ public class MainViewModel : AsyncObservableRecipient,
         IslandProvider.InitializeNewSolutionAndSetBridges(solutionProvider);
         TimerProvider.StopTimer();
 
+        if (HintProvider.Rules.FirstOrDefault(x => x.Name.Equals(solutionProvider.Name)) is { } rule)
+        {
+            SelectedRule = rule;
+        }
+
         IsGeneratingHashiPuzzle = false;
 
         return Task.CompletedTask;
@@ -458,5 +486,18 @@ public class MainViewModel : AsyncObservableRecipient,
             TestSolutionProvider.SelectedSolutionProvider = TestSolutionProvider.SolutionProviders.FirstOrDefault();
             TestSolutionProvider.SaveTestFields();
         }
+    }
+
+    private void CreateTestFieldCommandExecute()
+    {
+        var solutionProvider = new SolutionProvider(TestSolutionProvider.HashiFieldReference, null, NewRuleName);
+        TestSolutionProvider.SolutionProviders.Add(solutionProvider);
+        TestSolutionProvider.SelectedSolutionProvider = solutionProvider;
+        TestSolutionProvider.SaveTestFields();
+    }
+
+    private bool CreateTestFieldCommandCanExecute()
+    {
+        return !string.IsNullOrEmpty(NewRuleName) && !TestSolutionProvider.SolutionProviders.Any(x => x.Name == null || x.Name.Equals(NewRuleName));
     }
 }
