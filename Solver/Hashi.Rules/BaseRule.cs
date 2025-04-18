@@ -270,7 +270,13 @@ public abstract class BaseRule : Rule
         return result;
     }
 
-    private bool DoCoordinatesMatch(IHashiPoint source, IHashiPoint target)
+    /// <summary>
+    /// Compares two HashiPoint coordinates.
+    /// </summary>
+    /// <param name="source">The source coordinate.</param>
+    /// <param name="target">The target coordinate.</param>
+    /// <returns>a boolean value indicating if the coordinates match.</returns>
+    internal bool DoCoordinatesMatch(IHashiPoint source, IHashiPoint target)
     {
         return source.X == target.X && source.Y == target.Y;
     }

@@ -249,28 +249,34 @@
   <data name="_9GeneralRule2" xml:space="preserve">
     <value>Wenn die Verbindung zu einem beliebigen Nachbarn zu einer maximalen Auslastung der Insel und aller VERBUNDENEN Nachbarn führen würde, prüfen, ob die gesamte Gruppe isoliert ist. Wenn ja, wird eine Verbindung zum verbleibenden Nachbarn hergestellt.</value>
   </data>
-  <data name="TextTestfield" xml:space="preserve">
-    <value>Testszenario:</value>
-  </data>
   <data name="TooltipTestmode" xml:space="preserve">
     <value>Testmodus</value>
-  </data>
-  <data name="TextRules" xml:space="preserve">
-    <value>Regeln:</value>
   </data>
   <data name="TooltipTestfieldSave" xml:space="preserve">
     <value>Testfeld für ausgewählte Regel speichern.</value>
   </data>
   <data name="TooltipTestfieldReset" xml:space="preserve">
-    <value>Testfeld zurücksetzen.</value>
+    <value>Dieses Testszenario zurücksetzen.</value>
   </data>
   <data name="TooltipDifficultyLevel" xml:space="preserve">
     <value>Eingestellter Schwierigkeitsgrad</value>
   </data>
   <data name="TextTestfieldName" xml:space="preserve">
-    <value>Neuer Name:</value>
+    <value>Name:</value>
   </data>
   <data name="TooltipDeleteTestfield" xml:space="preserve">
     <value>Dieses Testszenario löschen</value>
+  </data>
+  <data name="TitleCreateTestfield" xml:space="preserve">
+    <value>NEUES TESTSZENARIO</value>
+  </data>
+  <data name="TooltipCreateTestfield" xml:space="preserve">
+    <value>Neues Testszenario erstellen</value>
+  </data>
+  <data name="TitleTestfields" xml:space="preserve">
+    <value>TESTSZENARIOS</value>
+  </data>
+  <data name="TitleRules" xml:space="preserve">
+    <value>ANGEWANDTE REGEL(N)</value>
   </data>
 </root>

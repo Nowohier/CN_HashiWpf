@@ -10,6 +10,4 @@
     <converters:GridStrokeThicknessConverter x:Key="GridStrokeThicknessConverter" />
     <converters:LineStrokeThicknessConverter x:Key="LineStrokeThicknessConverter" />
     <converters:InvertedBoolToVisibilityConverter x:Key="InvertedBoolToVisibilityConverter" />
-    <converters:TestFieldNameVisibilityConverter x:Key="TestFieldNameVisibilityConverter" />
-    <converters:InvertedTestFieldNameVisibilityConverter x:Key="InvertedTestFieldNameVisibilityConverter" />
 </ResourceDictionary>
