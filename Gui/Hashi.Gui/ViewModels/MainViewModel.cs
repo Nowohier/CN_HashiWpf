@@ -445,6 +445,7 @@ public class MainViewModel : AsyncObservableRecipient,
 
     private async Task SaveTestFieldCommandExecute()
     {
-        // ToDo: Implement saving testfields!
+        TestSolutionProvider.ConvertIslandsToSolutionProvider(IslandProvider.IslandsFlat, "TestSolution");
+        TestSolutionProvider.SaveTestFields();
     }
 }

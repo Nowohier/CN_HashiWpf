@@ -1,4 +1,5 @@
 ﻿using Hashi.Generator.Interfaces.Providers;
+using Hashi.Gui.Interfaces.ViewModels;
 
 namespace Hashi.Gui.Interfaces.Providers;
 
@@ -18,7 +19,19 @@ public interface ITestSolutionProvider
     List<ISolutionProvider> SolutionProviders { get; }
 
     /// <summary>
+    ///    Gets or sets the selected solution provider.
+    /// </summary>
+    ISolutionProvider? SelectedSolutionProvider { get; set; }
+
+    /// <summary>
     ///     Saves the test fields to a JSON file.
     /// </summary>
     void SaveTestFields();
+
+    /// <summary>
+    /// Converts the current islands to a solution provider.
+    /// </summary>
+    /// <param name="allIslands">The islands as a flat IEnumerable.</param>
+    /// <param name="solutionName">The solution name.</param>
+    void ConvertIslandsToSolutionProvider(IEnumerable<IIslandViewModel> allIslands, string solutionName);
 }
