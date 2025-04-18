@@ -250,7 +250,7 @@
     <value>Wenn die Verbindung zu einem beliebigen Nachbarn zu einer maximalen Auslastung der Insel und aller VERBUNDENEN Nachbarn führen würde, prüfen, ob die gesamte Gruppe isoliert ist. Wenn ja, wird eine Verbindung zum verbleibenden Nachbarn hergestellt.</value>
   </data>
   <data name="TextTestfield" xml:space="preserve">
-    <value>Testfeld für:</value>
+    <value>Testszenario:</value>
   </data>
   <data name="TooltipTestmode" xml:space="preserve">
     <value>Testmodus</value>
@@ -266,5 +266,11 @@
   </data>
   <data name="TooltipDifficultyLevel" xml:space="preserve">
     <value>Eingestellter Schwierigkeitsgrad</value>
+  </data>
+  <data name="TextTestfieldName" xml:space="preserve">
+    <value>Neuer Name:</value>
+  </data>
+  <data name="TooltipDeleteTestfield" xml:space="preserve">
+    <value>Dieses Testszenario löschen</value>
   </data>
 </root>
