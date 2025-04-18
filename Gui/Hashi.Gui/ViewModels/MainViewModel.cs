@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Enums;
 using Hashi.Generator.Interfaces;
-using Hashi.Generator.Interfaces.Models;
 using Hashi.Generator.Interfaces.Providers;
 using Hashi.Gui.Helpers;
 using Hashi.Gui.Interfaces.Messages;
@@ -12,7 +11,6 @@ using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Wrappers;
 using Hashi.Gui.Messaging;
 using Hashi.Gui.Translation;
-using Hashi.Rules;
 using System.Diagnostics;
 using System.Globalization;
 using System.Windows.Input;
@@ -24,14 +22,12 @@ namespace Hashi.Gui.ViewModels;
 public class MainViewModel : AsyncObservableRecipient,
     IMainViewModel,
     IRecipient<IBridgeConnectionChangedMessage>,
-    IRecipient<IAllConnectionsSetMessage>
+    IRecipient<IAllConnectionsSetMessage>,
+    IRecipient<ISetTestSolutionMessage>
 {
     private readonly Func<SolidColorBrush, IHashiBrush> brushFactory;
     private readonly IDialogWrapper dialogWrapper;
     private readonly IHashiGenerator hashiGenerator;
-
-    private readonly Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider>
-        solutionProviderFactory;
 
     private bool isCheating;
     private bool isGeneratingHashiPuzzle;
@@ -50,7 +46,6 @@ public class MainViewModel : AsyncObservableRecipient,
     /// <param name="islandProvider">The islands provider.</param>
     /// <param name="hintProvider">The hint provider.</param>
     /// <param name="testSolutionProvider">The test solution provider.</param>
-    /// <param name="solutionProviderFactory">The solution provider factory.</param>
     public MainViewModel
     (
         Func<SolidColorBrush, IHashiBrush> brushFactory,
@@ -60,8 +55,7 @@ public class MainViewModel : AsyncObservableRecipient,
         ITimerProvider timerProvider,
         IIslandProvider islandProvider,
         IHintProvider hintProvider,
-        ITestSolutionProvider testSolutionProvider,
-        Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider> solutionProviderFactory)
+        ITestSolutionProvider testSolutionProvider)
     {
         this.brushFactory = brushFactory;
         SettingsProvider = settingsProvider;
@@ -71,10 +65,14 @@ public class MainViewModel : AsyncObservableRecipient,
         TestSolutionProvider = testSolutionProvider;
         this.dialogWrapper = dialogWrapper;
         this.hashiGenerator = hashiGenerator;
-        this.solutionProviderFactory = solutionProviderFactory;
 
         WeakReferenceMessenger.Default.Register<IBridgeConnectionChangedMessage>(this);
         WeakReferenceMessenger.Default.Register<IAllConnectionsSetMessage>(this);
+        WeakReferenceMessenger.Default.Register<ISetTestSolutionMessage>(this);
+        WeakReferenceMessenger.Default.Register<MainViewModel, IIsTestModeRequestMessage>(this,
+            (_, message) => message.Reply(IsTestFieldMode));
+        WeakReferenceMessenger.Default.Register<MainViewModel, IDragDirectionChangedRequestTargetMessage>(this,
+            GetPotentialDropTarget);
 
         CreateNewGameCommand = new AsyncRelayCommand(CreateNewGameAsync);
         RemoveAllBridgesCommand = new RelayCommand(RemoveAllBridgesExecute);
@@ -86,13 +84,9 @@ public class MainViewModel : AsyncObservableRecipient,
         ToggleTestFieldCommand = new AsyncRelayCommand(ToggleTestFieldCommandExecute);
         ResetTestFieldCommand = new AsyncRelayCommand(ResetTestFieldCommandExecute);
         SaveTestFieldCommand = new AsyncRelayCommand(SaveTestFieldCommandExecute);
+
         selectedRule = HintProvider.Rules.First();
         WindowColorBrush = brushFactory.Invoke(HashiColorHelper.BasicBrush);
-
-        WeakReferenceMessenger.Default.Register<MainViewModel, IIsTestModeRequestMessage>(this,
-            (_, message) => message.Reply(IsTestFieldMode));
-        WeakReferenceMessenger.Default.Register<MainViewModel, IDragDirectionChangedRequestTargetMessage>(this,
-            GetPotentialDropTarget);
     }
 
     /// <summary>
@@ -123,7 +117,7 @@ public class MainViewModel : AsyncObservableRecipient,
             HintProvider.RuleInfoProvider.RuleMessage = TranslationSource.Instance[selectedRule.Name] ?? string.Empty;
             HintProvider.RuleInfoProvider.AreRulesBeingApplied = false;
 
-            if (IsTestFieldMode) SetTestSolution(GetCurrentTestSolution());
+            if (IsTestFieldMode) SetTestSolution(TestSolutionProvider.SelectedSolutionProvider);
         }
     }
 
@@ -326,6 +320,12 @@ public class MainViewModel : AsyncObservableRecipient,
         CreateNewGameCommand.Execute(null);
     }
 
+    /// <inheritdoc cref="IMainViewModel.Receive(ISetTestSolutionMessage)" />
+    public void Receive(ISetTestSolutionMessage message)
+    {
+        SetTestSolution(message.Value);
+    }
+
     /// <inheritdoc />
     public async Task CreateNewGameAsync()
     {
@@ -351,7 +351,7 @@ public class MainViewModel : AsyncObservableRecipient,
 
     private Task SetTestSolution(ISolutionProvider? solutionProvider)
     {
-        if (solutionProvider is not { BridgeCoordinates: not null, HashiField: not null }) return Task.CompletedTask;
+        if (solutionProvider is not { HashiField: not null }) return Task.CompletedTask;
 
         IsGeneratingHashiPuzzle = true;
         IsCheating = false;
@@ -363,14 +363,6 @@ public class MainViewModel : AsyncObservableRecipient,
         IsGeneratingHashiPuzzle = false;
 
         return Task.CompletedTask;
-    }
-
-    private ISolutionProvider GetCurrentTestSolution()
-    {
-        return SelectedRule != typeof(_0AllRules) &&
-               TestSolutionProvider.SolutionProviders.FirstOrDefault(x => x.Name == SelectedRule.Name) is { } sol
-            ? sol
-            : solutionProviderFactory.Invoke(TestSolutionProvider.HashiFieldReference, [], null);
     }
 
     private void GetPotentialDropTarget(MainViewModel main, IDragDirectionChangedRequestTargetMessage message)
@@ -405,7 +397,7 @@ public class MainViewModel : AsyncObservableRecipient,
         IsTestFieldMode = !IsTestFieldMode;
 
         if (IsTestFieldMode)
-            await SetTestSolution(GetCurrentTestSolution());
+            await SetTestSolution(TestSolutionProvider.SelectedSolutionProvider);
         else
             await CreateNewGameAsync();
     }
@@ -440,12 +432,12 @@ public class MainViewModel : AsyncObservableRecipient,
 
     private async Task ResetTestFieldCommandExecute()
     {
-        await SetTestSolution(GetCurrentTestSolution());
+        await SetTestSolution(TestSolutionProvider.SelectedSolutionProvider);
     }
 
     private async Task SaveTestFieldCommandExecute()
     {
-        TestSolutionProvider.ConvertIslandsToSolutionProvider(IslandProvider.IslandsFlat, "TestSolution");
+        TestSolutionProvider.ConvertIslandsToSolutionProvider(IslandProvider.IslandsFlat);
         TestSolutionProvider.SaveTestFields();
     }
 }

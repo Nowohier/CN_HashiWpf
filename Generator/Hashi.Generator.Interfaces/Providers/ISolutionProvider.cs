@@ -21,5 +21,5 @@ public interface ISolutionProvider
     /// <summary>
     ///     The solution provider name.
     /// </summary>
-    string? Name { get; }
+    string? Name { get; set; }
 }

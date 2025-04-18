@@ -1,8 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Generator.Interfaces.Models;
 using Hashi.Generator.Interfaces.Providers;
 using Hashi.Generator.Models;
 using Hashi.Generator.Providers;
+using Hashi.Gui.Interfaces.Messages;
 using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Wrappers;
@@ -16,15 +18,28 @@ namespace Hashi.Gui.Providers;
 [JsonObject(MemberSerialization.OptIn)]
 public class TestSolutionProvider : ObservableObject, ITestSolutionProvider
 {
+    public const string NewSolutionName = "New Testfield";
     private readonly IJsonWrapper jsonWrapper;
     private readonly IPathProvider pathProvider;
+    private readonly Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider> solutionProviderFactory;
+    private readonly Func<ISolutionProvider, ISetTestSolutionMessage> setTestSolutionMessageFactory;
     private ISolutionProvider? selectedSolutionProvider;
 
-    public TestSolutionProvider(IJsonWrapper jsonWrapper, IPathProvider pathProvider)
+    public TestSolutionProvider
+    (
+        IJsonWrapper jsonWrapper,
+        IPathProvider pathProvider,
+        Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider> solutionProviderFactory,
+        Func<ISolutionProvider, ISetTestSolutionMessage> setTestSolutionMessageFactory
+    )
     {
         this.jsonWrapper = jsonWrapper;
         this.pathProvider = pathProvider;
-        SolutionProviders = LoadSettings(); //ToDo: Implement saving testfields!
+        this.solutionProviderFactory = solutionProviderFactory;
+        this.setTestSolutionMessageFactory = setTestSolutionMessageFactory;
+        SolutionProviders = LoadSettings();
+        selectedSolutionProvider = SolutionProviders.FirstOrDefault(x => x.Name == NewSolutionName) ??
+                                   SolutionProviders.FirstOrDefault();
     }
 
     /// <inheritdoc />
@@ -47,21 +62,17 @@ public class TestSolutionProvider : ObservableObject, ITestSolutionProvider
         get => selectedSolutionProvider;
         set
         {
-            if (SetProperty(ref selectedSolutionProvider, value))
-            {
-                //ToDo : Implement this!
-                //HintProvider.RuleInfoProvider.RuleMessage = TranslationSource.Instance[selectedRule.Name] ?? string.Empty;
-                //HintProvider.RuleInfoProvider.AreRulesBeingApplied = false;
-
-                //if (IsTestFieldMode) SetTestSolution(GetCurrentTestSolution());
-            }
+            if (!SetProperty(ref selectedSolutionProvider, value) || selectedSolutionProvider == null) return;
+            var message = setTestSolutionMessageFactory.Invoke(selectedSolutionProvider);
+            WeakReferenceMessenger.Default.Send(message);
         }
     }
 
     /// <inheritdoc />
-    public void ConvertIslandsToSolutionProvider(IEnumerable<IIslandViewModel> allIslandEnumerable, string solutionName)
+    public void ConvertIslandsToSolutionProvider(IEnumerable<IIslandViewModel> allIslandEnumerable)
     {
         ArgumentNullException.ThrowIfNull(allIslandEnumerable, nameof(allIslandEnumerable));
+        ArgumentNullException.ThrowIfNull(SelectedSolutionProvider, nameof(SelectedSolutionProvider));
 
         var allIslands = allIslandEnumerable.ToList();
 
@@ -116,6 +127,8 @@ public class TestSolutionProvider : ObservableObject, ITestSolutionProvider
 
         bridgeCoordinates = bridgeCoordinates.Distinct().ToList();
 
+        var solutionName = SelectedSolutionProvider.Name;
+
         // Create the solution provider
         var solutionProvider = new SolutionProvider(hashiField, bridgeCoordinates, solutionName);
 
@@ -127,6 +140,7 @@ public class TestSolutionProvider : ObservableObject, ITestSolutionProvider
         }
 
         SolutionProviders.Add(solutionProvider);
+        SelectedSolutionProvider = solutionProvider;
     }
 
     /// <inheritdoc />
@@ -134,11 +148,14 @@ public class TestSolutionProvider : ObservableObject, ITestSolutionProvider
     {
         if (SolutionProviders == null) throw new InvalidOperationException("Settings cannot be null.");
 
-        var jsonArray = jsonWrapper.SerializeWithCustomIndenting(SolutionProviders);
+        var jsonArray = jsonWrapper.SerializeWithCustomIndenting(SolutionProviders.Where(x => x.Name != null && !x.Name.Equals(NewSolutionName)));
         var path = pathProvider.HashiTestFieldsFilePath;
         try
         {
-            if (!Directory.Exists(pathProvider.SettingsDirectoryPath)) Directory.CreateDirectory(pathProvider.SettingsDirectoryPath);
+            if (!Directory.Exists(pathProvider.SettingsDirectoryPath))
+            {
+                Directory.CreateDirectory(pathProvider.SettingsDirectoryPath);
+            }
 
             File.WriteAllText(path, jsonArray);
         }
@@ -146,22 +163,30 @@ public class TestSolutionProvider : ObservableObject, ITestSolutionProvider
         {
             Debug.WriteLine(ex.StackTrace);
         }
+
+        if (!SolutionProviders.Select(x => x.Name).Contains(NewSolutionName))
+        {
+            SolutionProviders.Insert(0, solutionProviderFactory.Invoke(HashiFieldReference, null, NewSolutionName));
+        }
     }
 
     private List<ISolutionProvider> LoadSettings()
     {
-        var loadedTestFields = new List<ISolutionProvider>();
+        var loadedTestFields = new List<ISolutionProvider> { solutionProviderFactory.Invoke(HashiFieldReference, null, NewSolutionName) };
 
         try
         {
             var path = pathProvider.HashiTestFieldsFilePath;
-            if (File.Exists(path))
+            if (!File.Exists(path) || File.ReadAllText(path) is not { } fileContent ||
+                jsonWrapper.DeserializeObject(fileContent, typeof(List<ISolutionProvider>)) is not
+                    List<ISolutionProvider> loadedFromJson)
             {
-                loadedTestFields =
-                    (List<ISolutionProvider>)jsonWrapper.DeserializeObject(File.ReadAllText(path),
-                        typeof(List<ISolutionProvider>))!;
                 return loadedTestFields;
             }
+
+            loadedTestFields.AddRange(loadedFromJson);
+
+            return loadedTestFields;
         }
         catch (Exception ex)
         {

@@ -21,5 +21,5 @@ public class SolutionProvider(
 
     /// <inheritdoc />
     [JsonProperty(nameof(Name))]
-    public string? Name { get; } = name ?? string.Empty;
+    public string? Name { get; set; } = name ?? string.Empty;
 }

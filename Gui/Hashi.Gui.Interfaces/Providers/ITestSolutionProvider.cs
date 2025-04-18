@@ -32,6 +32,5 @@ public interface ITestSolutionProvider
     /// Converts the current islands to a solution provider.
     /// </summary>
     /// <param name="allIslands">The islands as a flat IEnumerable.</param>
-    /// <param name="solutionName">The solution name.</param>
-    void ConvertIslandsToSolutionProvider(IEnumerable<IIslandViewModel> allIslands, string solutionName);
+    void ConvertIslandsToSolutionProvider(IEnumerable<IIslandViewModel> allIslands);
 }

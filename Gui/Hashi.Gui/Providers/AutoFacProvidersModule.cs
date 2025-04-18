@@ -1,4 +1,6 @@
 ﻿using Autofac;
+using Hashi.Generator.Interfaces.Models;
+using Hashi.Generator.Interfaces.Providers;
 using Hashi.Gui.Interfaces.Providers;
 
 namespace Hashi.Gui.Providers;
@@ -16,5 +18,14 @@ public class AutoFacProvidersModule : Module
         builder.RegisterType<RuleInfoProvider>().As<IRuleInfoProvider>().SingleInstance();
         builder.RegisterType<TestSolutionProvider>().As<ITestSolutionProvider>().SingleInstance();
         builder.RegisterType<PathProvider>().As<IPathProvider>().SingleInstance();
+
+        builder.Register<Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider>>(context =>
+        {
+            var c = context.Resolve<IComponentContext>();
+            return (hashiField, bridgeCoordinates, name) => c.Resolve<ISolutionProvider>(
+                new NamedParameter("hashiField", hashiField),
+                new NamedParameter("bridgeCoordinates", bridgeCoordinates),
+                new NamedParameter("name", name));
+        });
     }
 }

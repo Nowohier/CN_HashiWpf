@@ -210,6 +210,11 @@
                                       ItemsSource="{Binding  TestSolutionProvider.SolutionProviders}" Focusable="False"
                                       SelectedItem="{Binding  TestSolutionProvider.SelectedSolutionProvider}" DisplayMemberPath="Name"
                                       Margin="5,0,10,0" />
+                            <StackPanel Orientation="Horizontal" Visibility="{Binding TestSolutionProvider.SelectedSolutionProvider, Converter={StaticResource TestFieldNameVisibilityConverter}}">
+                                <TextBlock Text="{ns:Loc TextTestfield}" VerticalAlignment="Center" Margin="10,0,0,0"
+                                           DockPanel.Dock="Left" />
+                                <TextBox Text="{Binding TestSolutionProvider.SelectedSolutionProvider.Name, FallbackValue=-, UpdateSourceTrigger=PropertyChanged}" Height="26" BorderBrush="{StaticResource MahApps.Brushes.Gray5}" Margin="5,0,0,0" Width="100"/>
+                            </StackPanel>
                             <Button Style="{StaticResource MenuButtonGenerateStyle}"
                                     Command="{Binding ResetTestFieldCommand}"
                                     DockPanel.Dock="Right" Width="30" Padding="3,0,3,0" Margin="10,0,0,0"
