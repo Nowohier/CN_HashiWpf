@@ -6,7 +6,6 @@ using Hashi.Gui.Helpers;
 using Hashi.Gui.Messages;
 using Hashi.Gui.Models;
 using Hashi.Gui.Providers;
-using Hashi.Gui.Resources.SolutionProviders;
 using Hashi.Gui.ViewModels;
 using Hashi.Gui.Views;
 using Hashi.Gui.Wrappers;
@@ -33,7 +32,6 @@ public class AutoFacMainModule : Module
         builder.RegisterModule<AutoFacHelpersModule>();
         builder.RegisterModule<AutoFacProvidersModule>();
         builder.RegisterModule<AutoFacRulesModule>();
-        builder.RegisterModule<AutoFacTestSolutionProvidersModule>();
 
         builder.Register<Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider>>(context =>
         {

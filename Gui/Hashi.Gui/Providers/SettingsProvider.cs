@@ -9,14 +9,14 @@ using System.IO;
 
 namespace Hashi.Gui.Providers;
 
-/// <inheritdoc cref="IHashiSettingsProvider" />
-public class HashiSettingsProvider : IHashiSettingsProvider
+/// <inheritdoc cref="ISettingsProvider" />
+public class SettingsProvider : ISettingsProvider
 {
     private readonly IJsonWrapper jsonWrapper;
     private readonly Func<ISettingsViewModel> settingsFactory;
 
-    /// <inheritdoc cref="IHashiSettingsProvider" />
-    public HashiSettingsProvider(IJsonWrapper jsonWrapper, Func<ISettingsViewModel> settingsFactory)
+    /// <inheritdoc cref="ISettingsProvider" />
+    public SettingsProvider(IJsonWrapper jsonWrapper, Func<ISettingsViewModel> settingsFactory)
     {
         this.jsonWrapper = jsonWrapper;
         this.settingsFactory = settingsFactory;
