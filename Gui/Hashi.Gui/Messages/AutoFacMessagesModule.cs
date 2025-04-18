@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Hashi.Enums;
+using Hashi.Generator.Interfaces.Providers;
 using Hashi.Gui.Interfaces.Messages;
 using Hashi.Gui.Interfaces.Messages.MessageContainers;
 using Hashi.Gui.Interfaces.ViewModels;
@@ -25,6 +26,7 @@ public class AutoFacMessagesModule : Module
         builder.RegisterType<IsTestModeRequestMessage>().As<IIsTestModeRequestMessage>().InstancePerDependency();
         builder.RegisterType<DragDirectionChangedRequestTargetMessage>().As<IDragDirectionChangedRequestTargetMessage>()
             .InstancePerDependency();
+        builder.RegisterType<SetTestSolutionMessage>().As<ISetTestSolutionMessage>().InstancePerDependency();
 
         builder.Register<Func<IIslandViewModel, DirectionEnum, IDragDirectionChangedRequestTargetMessage>>(context =>
         {
@@ -57,6 +59,13 @@ public class AutoFacMessagesModule : Module
         {
             var c = context.Resolve<IComponentContext>();
             return value => c.Resolve<IRuleMessageClearedMessage>(
+                new NamedParameter("value", value));
+        });
+
+        builder.Register<Func<ISolutionProvider, ISetTestSolutionMessage>>(context =>
+        {
+            var c = context.Resolve<IComponentContext>();
+            return value => c.Resolve<ISetTestSolutionMessage>(
                 new NamedParameter("value", value));
         });
 

@@ -30,4 +30,10 @@ public interface IMainViewModel
     /// </summary>
     /// <param name="message">The <see cref="IAllConnectionsSetMessage" />.</param>
     void Receive(IAllConnectionsSetMessage message);
+
+    /// <summary>
+    ///     Handles the message when a test solution is to be set.
+    /// </summary>
+    /// <param name="message">The <see cref="ISetTestSolutionMessage" />.</param>
+    void Receive(ISetTestSolutionMessage message);
 }
