@@ -83,7 +83,8 @@ public class MainViewModel : AsyncObservableRecipient,
         ChangeLanguageCommand = new RelayCommand<string>(ChangeLanguageCommandExecute);
         ToggleTestFieldCommand = new AsyncRelayCommand(ToggleTestFieldCommandExecute);
         ResetTestFieldCommand = new AsyncRelayCommand(ResetTestFieldCommandExecute);
-        SaveTestFieldCommand = new AsyncRelayCommand(SaveTestFieldCommandExecute);
+        SaveTestFieldCommand = new RelayCommand(SaveTestFieldCommandExecute);
+        DeleteTestFieldCommand = new RelayCommand(DeleteTestFieldCommandExecute);
 
         selectedRule = HintProvider.Rules.First();
         WindowColorBrush = brushFactory.Invoke(HashiColorHelper.BasicBrush);
@@ -227,6 +228,11 @@ public class MainViewModel : AsyncObservableRecipient,
     ///   Saves the test field to a file.
     /// </summary>
     public ICommand SaveTestFieldCommand { get; }
+
+    /// <summary>
+    ///      Deletes the test field.
+    /// </summary>
+    public ICommand DeleteTestFieldCommand { get; }
 
     /// <summary>
     ///    Gets the timer provider for the game.
@@ -435,9 +441,22 @@ public class MainViewModel : AsyncObservableRecipient,
         await SetTestSolution(TestSolutionProvider.SelectedSolutionProvider);
     }
 
-    private async Task SaveTestFieldCommandExecute()
+    private void SaveTestFieldCommandExecute()
     {
         TestSolutionProvider.ConvertIslandsToSolutionProvider(IslandProvider.IslandsFlat);
         TestSolutionProvider.SaveTestFields();
+    }
+
+    private void DeleteTestFieldCommandExecute()
+    {
+        if (TestSolutionProvider.SelectedSolutionProvider == null) return;
+        if (dialogWrapper.Show("Warning",
+                $"You are about to delete the scenario {TestSolutionProvider.SelectedSolutionProvider.Name}. Continue?",
+                DialogButton.YesNo, DialogImage.Question) == DialogResult.Yes)
+        {
+            TestSolutionProvider.SolutionProviders.Remove(TestSolutionProvider.SelectedSolutionProvider);
+            TestSolutionProvider.SelectedSolutionProvider = TestSolutionProvider.SolutionProviders.FirstOrDefault();
+            TestSolutionProvider.SaveTestFields();
+        }
     }
 }

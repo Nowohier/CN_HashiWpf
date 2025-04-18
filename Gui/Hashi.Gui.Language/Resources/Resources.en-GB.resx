@@ -250,7 +250,7 @@
     <value>If setting a connection to any neighbor would result in a maxed-out island and maxed-out CONNECTED neighbors, check if the whole group is isolated. If it is, set the connection to the remaining neighbor.</value>
   </data>
   <data name="TextTestfield" xml:space="preserve">
-    <value>Testfield for:</value>
+    <value>Testscenario:</value>
   </data>
   <data name="TooltipTestmode" xml:space="preserve">
     <value>Testmode</value>
@@ -266,5 +266,11 @@
   </data>
   <data name="TooltipDifficultyLevel" xml:space="preserve">
     <value>Selected difficulty level</value>
+  </data>
+  <data name="TextTestfieldName" xml:space="preserve">
+    <value>New Name:</value>
+  </data>
+  <data name="TooltipDeleteTestfield" xml:space="preserve">
+    <value>Delete this testscenario</value>
   </data>
 </root>
