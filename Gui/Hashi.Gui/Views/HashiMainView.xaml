@@ -221,7 +221,7 @@
                                 </StackPanel>
                             </Button>
                             <Button Style="{StaticResource MenuButtonGenerateStyle}"
-                                    Command="{Binding ResetTestFieldCommand}"
+                                    Command="{Binding SaveTestFieldCommand}"
                                     DockPanel.Dock="Right" Width="30" Padding="3,0,3,0" Margin="10,0,0,0"
                                     HorizontalAlignment="Left" ToolTip="{ns:Loc TooltipTestfieldSave}"
                                     ToolTipService.InitialShowDelay="0">

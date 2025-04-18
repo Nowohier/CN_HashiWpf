@@ -28,6 +28,25 @@ public class SettingsProvider : ISettingsProvider
     /// <inheritdoc />
     public ISettingsViewModel Settings { get; }
 
+    /// <inheritdoc />
+    public void SaveSettings()
+    {
+        if (Settings == null) throw new InvalidOperationException("Settings cannot be null.");
+
+        var jsonArray = jsonWrapper.SerializeObject(Settings);
+        var path = pathProvider.HashiSettingsFilePath;
+        try
+        {
+            if (!Directory.Exists(pathProvider.SettingsDirectoryPath)) Directory.CreateDirectory(pathProvider.SettingsDirectoryPath);
+
+            File.WriteAllText(path, jsonArray);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.StackTrace);
+        }
+    }
+
     public ISettingsViewModel LoadSettings()
     {
         ISettingsViewModel loadedSettings;
@@ -57,23 +76,5 @@ public class SettingsProvider : ISettingsProvider
         TranslationSource.Instance.CurrentCulture = new CultureInfo(loadedSettings.SelectedLanguageCulture ?? "en-GB");
 
         return loadedSettings;
-    }
-
-    public void SaveSettings()
-    {
-        if (Settings == null) throw new InvalidOperationException("Settings cannot be null.");
-
-        var jsonArray = jsonWrapper.SerializeObject(Settings);
-        var path = pathProvider.HashiSettingsFilePath;
-        try
-        {
-            if (!Directory.Exists(pathProvider.SettingsDirectoryPath)) Directory.CreateDirectory(pathProvider.SettingsDirectoryPath);
-
-            File.WriteAllText(path, jsonArray);
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine(ex.StackTrace);
-        }
     }
 }
