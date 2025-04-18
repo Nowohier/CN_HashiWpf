@@ -14,38 +14,19 @@ public class SettingsProvider : ISettingsProvider
 {
     private readonly IJsonWrapper jsonWrapper;
     private readonly Func<ISettingsViewModel> settingsFactory;
+    private readonly IPathProvider pathProvider;
 
     /// <inheritdoc cref="ISettingsProvider" />
-    public SettingsProvider(IJsonWrapper jsonWrapper, Func<ISettingsViewModel> settingsFactory)
+    public SettingsProvider(IJsonWrapper jsonWrapper, Func<ISettingsViewModel> settingsFactory, IPathProvider pathProvider)
     {
         this.jsonWrapper = jsonWrapper;
         this.settingsFactory = settingsFactory;
+        this.pathProvider = pathProvider;
         Settings = LoadSettings();
     }
 
     /// <inheritdoc />
     public ISettingsViewModel Settings { get; }
-
-    /// <summary>
-    ///   Gets the path to the settings file.
-    /// </summary>
-    public string HashiSettingsFilePath => Path.Combine(SettingsDirectoryPath, HashiSettingsFileName);
-
-    /// <summary>
-    ///  Gets the path to the settings directory.
-    /// </summary>
-    public string SettingsDirectoryPath =>
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), LocalAppDataPath);
-
-    /// <summary>
-    ///   Gets the name of the settings file.
-    /// </summary>
-    public string HashiSettingsFileName => "HashiSettings.json";
-
-    /// <summary>
-    ///  Gets the path to the local application data directory.
-    /// </summary>
-    public string LocalAppDataPath => @"CN_Hashi\Settings";
 
     public ISettingsViewModel LoadSettings()
     {
@@ -53,7 +34,7 @@ public class SettingsProvider : ISettingsProvider
 
         try
         {
-            var path = HashiSettingsFilePath;
+            var path = pathProvider.HashiSettingsFilePath;
             if (File.Exists(path))
             {
                 loadedSettings =
@@ -83,10 +64,10 @@ public class SettingsProvider : ISettingsProvider
         if (Settings == null) throw new InvalidOperationException("Settings cannot be null.");
 
         var jsonArray = jsonWrapper.SerializeObject(Settings);
-        var path = HashiSettingsFilePath;
+        var path = pathProvider.HashiSettingsFilePath;
         try
         {
-            if (!Directory.Exists(SettingsDirectoryPath)) Directory.CreateDirectory(SettingsDirectoryPath);
+            if (!Directory.Exists(pathProvider.SettingsDirectoryPath)) Directory.CreateDirectory(pathProvider.SettingsDirectoryPath);
 
             File.WriteAllText(path, jsonArray);
         }

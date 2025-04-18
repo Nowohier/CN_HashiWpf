@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Hashi.Gui.Interfaces.Providers;
-using Hashi.Gui.Interfaces.Resources.SolutionProviders;
 
 namespace Hashi.Gui.Providers;
 
@@ -16,5 +15,6 @@ public class AutoFacProvidersModule : Module
         builder.RegisterType<HintProvider>().As<IHintProvider>().SingleInstance();
         builder.RegisterType<RuleInfoProvider>().As<IRuleInfoProvider>().SingleInstance();
         builder.RegisterType<TestSolutionProvider>().As<ITestSolutionProvider>().SingleInstance();
+        builder.RegisterType<PathProvider>().As<IPathProvider>().SingleInstance();
     }
 }
