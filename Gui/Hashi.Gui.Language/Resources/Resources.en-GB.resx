@@ -249,28 +249,34 @@
   <data name="_9GeneralRule2" xml:space="preserve">
     <value>If setting a connection to any neighbor would result in a maxed-out island and maxed-out CONNECTED neighbors, check if the whole group is isolated. If it is, set the connection to the remaining neighbor.</value>
   </data>
-  <data name="TextTestfield" xml:space="preserve">
-    <value>Testscenario:</value>
-  </data>
   <data name="TooltipTestmode" xml:space="preserve">
     <value>Testmode</value>
-  </data>
-  <data name="TextRules" xml:space="preserve">
-    <value>Rules:</value>
   </data>
   <data name="TooltipTestfieldSave" xml:space="preserve">
     <value>Save testfield for the selected rule.</value>
   </data>
   <data name="TooltipTestfieldReset" xml:space="preserve">
-    <value>Reset testfield</value>
+    <value>Reset this testscenario</value>
   </data>
   <data name="TooltipDifficultyLevel" xml:space="preserve">
     <value>Selected difficulty level</value>
   </data>
   <data name="TextTestfieldName" xml:space="preserve">
-    <value>New Name:</value>
+    <value>Name:</value>
   </data>
   <data name="TooltipDeleteTestfield" xml:space="preserve">
     <value>Delete this testscenario</value>
+  </data>
+  <data name="TitleCreateTestfield" xml:space="preserve">
+    <value>NEW TESTSCENARIO</value>
+  </data>
+  <data name="TooltipCreateTestfield" xml:space="preserve">
+    <value>Create new test scenario</value>
+  </data>
+  <data name="TitleTestfields" xml:space="preserve">
+    <value>TESTSCENARIOS</value>
+  </data>
+  <data name="TitleRules" xml:space="preserve">
+    <value>USED RULE(S)</value>
   </data>
 </root>

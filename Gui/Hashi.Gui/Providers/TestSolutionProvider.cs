@@ -4,11 +4,13 @@ using Hashi.Generator.Interfaces.Models;
 using Hashi.Generator.Interfaces.Providers;
 using Hashi.Generator.Models;
 using Hashi.Generator.Providers;
+using Hashi.Gui.Extensions;
 using Hashi.Gui.Interfaces.Messages;
 using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Wrappers;
 using Newtonsoft.Json;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -18,7 +20,6 @@ namespace Hashi.Gui.Providers;
 [JsonObject(MemberSerialization.OptIn)]
 public class TestSolutionProvider : ObservableObject, ITestSolutionProvider
 {
-    public const string NewSolutionName = "New Testfield";
     private readonly IJsonWrapper jsonWrapper;
     private readonly IPathProvider pathProvider;
     private readonly Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider> solutionProviderFactory;
@@ -37,9 +38,8 @@ public class TestSolutionProvider : ObservableObject, ITestSolutionProvider
         this.pathProvider = pathProvider;
         this.solutionProviderFactory = solutionProviderFactory;
         this.setTestSolutionMessageFactory = setTestSolutionMessageFactory;
-        SolutionProviders = LoadSettings();
-        selectedSolutionProvider = SolutionProviders.FirstOrDefault(x => x.Name == NewSolutionName) ??
-                                   SolutionProviders.FirstOrDefault();
+        SolutionProviders.AddRange(LoadSettings());
+        selectedSolutionProvider = SolutionProviders.FirstOrDefault();
     }
 
     /// <inheritdoc />
@@ -54,7 +54,7 @@ public class TestSolutionProvider : ObservableObject, ITestSolutionProvider
     ];
 
     /// <inheritdoc />
-    public List<ISolutionProvider> SolutionProviders { get; }
+    public ObservableCollection<ISolutionProvider> SolutionProviders { get; } = [];
 
     /// <inheritdoc />
     public ISolutionProvider? SelectedSolutionProvider
@@ -148,7 +148,7 @@ public class TestSolutionProvider : ObservableObject, ITestSolutionProvider
     {
         if (SolutionProviders == null) throw new InvalidOperationException("Settings cannot be null.");
 
-        var jsonArray = jsonWrapper.SerializeWithCustomIndenting(SolutionProviders.Where(x => x.Name != null && !x.Name.Equals(NewSolutionName)));
+        var jsonArray = jsonWrapper.SerializeWithCustomIndenting(SolutionProviders.Where(x => x.Name != null));
         var path = pathProvider.HashiTestFieldsFilePath;
         try
         {
@@ -163,16 +163,11 @@ public class TestSolutionProvider : ObservableObject, ITestSolutionProvider
         {
             Debug.WriteLine(ex.StackTrace);
         }
-
-        if (!SolutionProviders.Select(x => x.Name).Contains(NewSolutionName))
-        {
-            SolutionProviders.Insert(0, solutionProviderFactory.Invoke(HashiFieldReference, null, NewSolutionName));
-        }
     }
 
     private List<ISolutionProvider> LoadSettings()
     {
-        var loadedTestFields = new List<ISolutionProvider> { solutionProviderFactory.Invoke(HashiFieldReference, null, NewSolutionName) };
+        var loadedTestFields = new List<ISolutionProvider>();
 
         try
         {
