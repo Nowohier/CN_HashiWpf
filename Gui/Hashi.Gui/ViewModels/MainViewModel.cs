@@ -8,7 +8,6 @@ using Hashi.Gui.Helpers;
 using Hashi.Gui.Interfaces.Messages;
 using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.Providers;
-using Hashi.Gui.Interfaces.Resources.SolutionProviders;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Wrappers;
 using Hashi.Gui.Messaging;
