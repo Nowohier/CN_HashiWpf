@@ -16,4 +16,9 @@ public interface ITestSolutionProvider
     ///     Gets the test solution providers.
     /// </summary>
     List<ISolutionProvider> SolutionProviders { get; }
+
+    /// <summary>
+    ///     Saves the test fields to a JSON file.
+    /// </summary>
+    void SaveTestFields();
 }

@@ -85,6 +85,7 @@ public class MainViewModel : AsyncObservableRecipient,
         ChangeLanguageCommand = new RelayCommand<string>(ChangeLanguageCommandExecute);
         ToggleTestFieldCommand = new AsyncRelayCommand(ToggleTestFieldCommandExecute);
         ResetTestFieldCommand = new AsyncRelayCommand(ResetTestFieldCommandExecute);
+        SaveTestFieldCommand = new AsyncRelayCommand(SaveTestFieldCommandExecute);
         selectedRule = HintProvider.Rules.First();
         WindowColorBrush = brushFactory.Invoke(HashiColorHelper.BasicBrush);
 
@@ -227,6 +228,11 @@ public class MainViewModel : AsyncObservableRecipient,
     ///     Resets the test field to its initial state.
     /// </summary>
     public ICommand ResetTestFieldCommand { get; }
+
+    /// <summary>
+    ///   Saves the test field to a file.
+    /// </summary>
+    public ICommand SaveTestFieldCommand { get; }
 
     /// <summary>
     ///    Gets the timer provider for the game.
@@ -435,5 +441,10 @@ public class MainViewModel : AsyncObservableRecipient,
     private async Task ResetTestFieldCommandExecute()
     {
         await SetTestSolution(GetCurrentTestSolution());
+    }
+
+    private async Task SaveTestFieldCommandExecute()
+    {
+        // ToDo: Implement saving testfields!
     }
 }

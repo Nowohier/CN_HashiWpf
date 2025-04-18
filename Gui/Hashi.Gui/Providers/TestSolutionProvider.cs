@@ -34,6 +34,25 @@ public class TestSolutionProvider : ITestSolutionProvider
     /// <inheritdoc />
     public List<ISolutionProvider> SolutionProviders { get; }
 
+    /// <inheritdoc />
+    public void SaveTestFields()
+    {
+        if (SolutionProviders == null) throw new InvalidOperationException("Settings cannot be null.");
+
+        var jsonArray = jsonWrapper.SerializeWithCustomIndenting(SolutionProviders);
+        var path = pathProvider.HashiTestFieldsFilePath;
+        try
+        {
+            if (!Directory.Exists(pathProvider.SettingsDirectoryPath)) Directory.CreateDirectory(pathProvider.SettingsDirectoryPath);
+
+            File.WriteAllText(path, jsonArray);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.StackTrace);
+        }
+    }
+
     private List<ISolutionProvider> LoadSettings()
     {
         var loadedTestFields = new List<ISolutionProvider>();
