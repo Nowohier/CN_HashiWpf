@@ -1,11 +1,11 @@
-﻿using System.Drawing;
-using Hashi.Generator.Interfaces.Providers;
+﻿using Hashi.Generator.Interfaces.Providers;
 using Hashi.Generator.Models;
 using Hashi.Generator.Providers;
 using Hashi.Gui.Interfaces.Resources.SolutionProviders;
 using Newtonsoft.Json;
+using System.Drawing;
 
-namespace Hashi.Gui.Resources.SolutionProviders;
+namespace Hashi.Gui.Providers;
 
 [JsonObject(MemberSerialization.OptIn)]
 public class TestSolutionProvider : ITestSolutionProvider
