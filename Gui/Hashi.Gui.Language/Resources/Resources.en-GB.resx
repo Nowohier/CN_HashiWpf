@@ -117,46 +117,46 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CreateTitle" xml:space="preserve">
+  <data name="TitleCreate" xml:space="preserve">
     <value>CREATE NEW GAME</value>
   </data>
-  <data name="CreateTooltip" xml:space="preserve">
+  <data name="TooltipCreate" xml:space="preserve">
     <value>Create a new game</value>
   </data>
   <data name="_9GeneralRule1" xml:space="preserve">
     <value>Islands with only one active neighbor can set their remaining connections to that neighbor.</value>
   </data>
-  <data name="HashiLoadingText" xml:space="preserve">
+  <data name="TextHashiLoading" xml:space="preserve">
     <value>Please wait - generating Hashi puzzle...</value>
   </data>
-  <data name="HintText" xml:space="preserve">
+  <data name="TextHint" xml:space="preserve">
     <value>Hint: </value>
   </data>
-  <data name="Language" xml:space="preserve">
+  <data name="TooltipLanguage" xml:space="preserve">
     <value>Language</value>
   </data>
-  <data name="MessagesTitle" xml:space="preserve">
+  <data name="TitleMessages" xml:space="preserve">
     <value>MESSAGES</value>
   </data>
-  <data name="OptionsTitle" xml:space="preserve">
+  <data name="TitleOptions" xml:space="preserve">
     <value>OPTIONS</value>
   </data>
-  <data name="Redo" xml:space="preserve">
+  <data name="TooltipRedo" xml:space="preserve">
     <value>Redo</value>
   </data>
-  <data name="RemoveAllBridgesTooltip" xml:space="preserve">
+  <data name="TooltipRemoveAllBridges" xml:space="preserve">
     <value>Remove all bridges</value>
   </data>
-  <data name="ShowHintTooltip" xml:space="preserve">
+  <data name="TooltipShowHint" xml:space="preserve">
     <value>Show hint</value>
   </data>
-  <data name="TimesTitle" xml:space="preserve">
+  <data name="TitleTimes" xml:space="preserve">
     <value>TIMES</value>
   </data>
-  <data name="ToggleGridlinesTooltip" xml:space="preserve">
+  <data name="TooltipToggleGridlines" xml:space="preserve">
     <value>Toggle gridlines</value>
   </data>
-  <data name="Undo" xml:space="preserve">
+  <data name="TooltipUndo" xml:space="preserve">
     <value>Undo</value>
   </data>
   <data name="_1ConnectionRule1" xml:space="preserve">
@@ -248,5 +248,23 @@
   </data>
   <data name="_9GeneralRule2" xml:space="preserve">
     <value>If setting a connection to any neighbor would result in a maxed-out island and maxed-out CONNECTED neighbors, check if the whole group is isolated. If it is, set the connection to the remaining neighbor.</value>
+  </data>
+  <data name="TextTestfield" xml:space="preserve">
+    <value>Testfield for:</value>
+  </data>
+  <data name="TooltipTestmode" xml:space="preserve">
+    <value>Testmode</value>
+  </data>
+  <data name="TextRules" xml:space="preserve">
+    <value>Rules:</value>
+  </data>
+  <data name="TooltipTestfieldSave" xml:space="preserve">
+    <value>Save testfield for the selected rule.</value>
+  </data>
+  <data name="TooltipTestfieldReset" xml:space="preserve">
+    <value>Reset testfield</value>
+  </data>
+  <data name="TooltipDifficultyLevel" xml:space="preserve">
+    <value>Selected difficulty level</value>
   </data>
 </root>
