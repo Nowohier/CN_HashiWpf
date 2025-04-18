@@ -207,8 +207,8 @@
                                        DockPanel.Dock="Left" />
                             <ComboBox Height="26" BorderThickness="1"
                                       BorderBrush="{StaticResource MahApps.Brushes.Gray5}"
-                                      ItemsSource="{Binding  HintProvider.Rules}" Focusable="False"
-                                      SelectedItem="{Binding  SelectedRule}" DisplayMemberPath="Name"
+                                      ItemsSource="{Binding  TestSolutionProvider.SolutionProviders}" Focusable="False"
+                                      SelectedItem="{Binding  TestSolutionProvider.SelectedSolutionProvider}" DisplayMemberPath="Name"
                                       Margin="5,0,10,0" />
                             <Button Style="{StaticResource MenuButtonGenerateStyle}"
                                     Command="{Binding ResetTestFieldCommand}"
