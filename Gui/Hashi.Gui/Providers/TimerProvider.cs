@@ -9,6 +9,7 @@ namespace Hashi.Gui.Providers;
 public class TimerProvider : ObservableObject, ITimerProvider
 {
     private readonly DispatcherTimer dispatcherTimer = new() { Interval = TimeSpan.FromSeconds(1) };
+    private bool isTimerRunning;
 
     public TimerProvider()
     {
@@ -21,7 +22,12 @@ public class TimerProvider : ObservableObject, ITimerProvider
     /// <summary>
     ///     Gets a value indicating whether the timer is running.
     /// </summary>
-    public bool IsTimerRunning => Timer.IsRunning;
+    public bool IsTimerRunning
+    {
+        get => isTimerRunning;
+        private set => SetProperty(ref isTimerRunning, value);
+    }
+
 
     /// <inheritdoc />
     public void StartTimer()
@@ -30,7 +36,7 @@ public class TimerProvider : ObservableObject, ITimerProvider
 
         dispatcherTimer.Start();
         Timer.Start();
-        OnPropertyChanged(nameof(IsTimerRunning));
+        IsTimerRunning = true;
     }
 
     /// <inheritdoc />
@@ -38,7 +44,7 @@ public class TimerProvider : ObservableObject, ITimerProvider
     {
         Timer.Reset();
         dispatcherTimer.Stop();
+        IsTimerRunning = false;
         OnPropertyChanged(nameof(Timer));
-        OnPropertyChanged(nameof(IsTimerRunning));
     }
 }
