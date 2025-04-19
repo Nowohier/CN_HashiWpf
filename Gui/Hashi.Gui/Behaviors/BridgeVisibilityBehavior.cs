@@ -1,11 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Windows;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Media.Effects;
-using System.Windows.Shapes;
-using CommunityToolkit.Mvvm.Messaging;
+﻿using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Enums;
 using Hashi.Gui.Helpers;
 using Hashi.Gui.Interfaces.Messages;
@@ -13,6 +6,13 @@ using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Messages;
 using Microsoft.Xaml.Behaviors;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Media.Effects;
+using System.Windows.Shapes;
 
 namespace Hashi.Gui.Behaviors;
 
@@ -112,7 +112,6 @@ public class BridgeVisibilityBehavior : Behavior<Line>, IRecipient<IRuleMessageC
     private void UpdateVisibility()
     {
         if (AssociatedObject is not { } line || AssociatedObject.DataContext is not IIslandViewModel island) return;
-
         line.Visibility = BridgeType switch
         {
             BridgeTypeEnum.Horizontal => DetermineVisibility(1, island.BridgesLeft, island.BridgesRight),
@@ -212,7 +211,7 @@ public class BridgeVisibilityBehavior : Behavior<Line>, IRecipient<IRuleMessageC
 
         if (!runFadeInAnimation) return;
 
-        line.Stroke = (SolidColorBrush)new BrushConverter().ConvertFrom("#3abf5b")!;
+        line.Stroke = (SolidColorBrush)new BrushConverter().ConvertFrom(HashiColorHelper.IntenseGreenBrush.Color.ToString())!;
         line.Effect = new BlurEffect { Radius = 10 };
         line.BeginAnimation(UIElement.OpacityProperty, fadeInAnimation);
     }
