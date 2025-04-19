@@ -22,14 +22,10 @@ namespace Hashi.Gui.Providers
         /// </summary>
         public string LocalAppDataPath => @"CN_Hashi\Settings";
 
-        /// <summary>
-        /// Gets the name of the settings file.
-        /// </summary>
-        private string HashiSettingsFileName => "HashiSettings.json";
+        /// <inheritdoc />
+        public string HashiSettingsFileName => "HashiSettings.json";
 
-        /// <summary>
-        /// Gets the name of the test fields file.
-        /// </summary>
-        private string HashiTestFieldsFileName => "HashiTestfields.json";
+        /// <inheritdoc />
+        public string HashiTestFieldsFileName => "HashiTestfields.json";
     }
 }

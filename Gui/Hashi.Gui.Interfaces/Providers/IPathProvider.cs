@@ -19,5 +19,15 @@
         ///  Gets the path to the settings directory.
         /// </summary>
         string SettingsDirectoryPath { get; }
+
+        /// <summary>
+        /// Gets the hashi settings file name.
+        /// </summary>
+        string HashiSettingsFileName { get; }
+
+        /// <summary>
+        /// Gets the hashi test fields file name.
+        /// </summary>
+        string HashiTestFieldsFileName { get; }
     }
 }

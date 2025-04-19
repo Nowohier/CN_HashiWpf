@@ -45,9 +45,8 @@ public partial class App
         using var scope = container.BeginLifetimeScope();
 
         dialogWrapper = scope.Resolve<IDialogWrapper>();
-
         mainViewModel = scope.Resolve<IMainViewModel>();
-        mainViewModel.CreateNewGameAsync();
+        mainViewModel.Initialize();
 
         var gui = scope.Resolve<IWindow>();
         gui.DataContext = mainViewModel;
