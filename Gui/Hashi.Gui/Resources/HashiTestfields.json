@@ -1,9 +1,7 @@
 [ {
-    "Name": "None"
-  }, {
-    "HashiField": [ [ 0, 1, 0, 0, 2, 0 ], [ 0, 0, 4, 0, 0, 0 ], [ 0, 0, 0, 3, 0, 1 ], [ 0, 0, 0, 0, 0, 0 ], [ 0, 0, 1, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0 ] ],
+    "HashiField": [ [ 2, 0, 0, 2, 0, 0 ], [ 0, 0, 0, 0, 0, 0 ], [ 2, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 2, 0 ], [ 0, 0, 0, 0, 0, 0 ], [ 0, 2, 0, 0, 2, 0 ] ],
     "BridgeCoordinates": [],
-    "Name": "_1ConnectionRule1"
+    "Name": "_2ConnectionsRule1"
   }, {
     "HashiField": [ [ 3, 0, 0, 3, 0, 0 ], [ 0, 0, 0, 0, 0, 0 ], [ 0, 1, 0, 0, 0, 0 ], [ 0, 0, 0, 3, 0, 3 ], [ 0, 0, 0, 0, 0, 0 ], [ 0, 3, 0, 0, 0, 3 ] ],
     "BridgeCoordinates": [],
@@ -13,37 +11,17 @@
     "BridgeCoordinates": [],
     "Name": "_4ConnectionsRule1"
   }, {
-    "HashiField": [ [ 3, 0, 0, 4, 0, 0 ], [ 0, 0, 0, 0, 0, 0 ], [ 0, 3, 0, 5, 0, 2 ], [ 5, 0, 2, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0 ], [ 3, 0, 5, 0, 0, 2 ] ],
-    "BridgeCoordinates": [],
-    "Name": "_5ConnectionsRule1"
-  }, {
-    "HashiField": [ [ 1, 0, 0, 4, 0, 0 ], [ 0, 0, 0, 0, 0, 0 ], [ 0, 3, 0, 5, 0, 1 ], [ 5, 0, 3, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0 ], [ 3, 0, 5, 0, 0, 1 ] ],
-    "BridgeCoordinates": [ {
-        "Location1": "0, 0",
-        "Location2": "0, 3",
-        "AmountBridges": 1
-      }, {
-        "Location1": "5, 2",
-        "Location2": "3, 2",
-        "AmountBridges": 1
-      }, {
-        "Location1": "5, 5",
-        "Location2": "2, 5",
-        "AmountBridges": 2
-      } ],
-    "Name": "_5ConnectionsRule2"
-  }, {
     "HashiField": [ [ 3, 0, 6, 0, 0, 2 ], [ 0, 0, 0, 3, 0, 0 ], [ 0, 0, 2, 0, 0, 0 ], [ 2, 0, 0, 6, 0, 0 ], [ 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 4, 0, 0 ] ],
     "BridgeCoordinates": [],
     "Name": "_6ConnectionsRule1"
   }, {
-    "HashiField": [ [ 0, 0, 3, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0 ], [ 4, 0, 8, 0, 0, 5 ], [ 0, 0, 0, 0, 0, 0 ], [ 0, 0, 2, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0 ] ],
-    "BridgeCoordinates": [],
-    "Name": "_8ConnectionsRule1"
-  }, {
     "HashiField": [ [ 0, 0, 3, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0 ], [ 2, 0, 7, 0, 4, 0 ], [ 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0 ], [ 0, 0, 5, 0, 0, 0 ] ],
     "BridgeCoordinates": [],
     "Name": "_7ConnectionsRule1"
+  }, {
+    "HashiField": [ [ 0, 0, 3, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0 ], [ 4, 0, 8, 0, 0, 5 ], [ 0, 0, 0, 0, 0, 0 ], [ 0, 0, 2, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0 ] ],
+    "BridgeCoordinates": [],
+    "Name": "_8ConnectionsRule1"
   }, {
     "HashiField": [ [ 0, 2, 0, 0, 3, 0 ], [ 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0 ], [ 0, 0, 1, 0, 4, 0 ], [ 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 2, 0 ] ],
     "BridgeCoordinates": [],
@@ -76,4 +54,80 @@
         "AmountBridges": 1
       } ],
     "Name": "_9GeneralRule2"
+  }, {
+    "HashiField": [ [ 0, 1, 0, 0, 2, 0 ], [ 0, 0, 4, 0, 0, 0 ], [ 0, 0, 0, 3, 0, 1 ], [ 0, 0, 0, 0, 0, 0 ], [ 0, 0, 1, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0 ] ],
+    "BridgeCoordinates": [],
+    "Name": "_1ConnectionRule1"
+  }, {
+    "HashiField": [ [ 0, 0, 0, 0, 0, 0 ], [ 1, 0, 2, 0, 1, 0 ], [ 0, 0, 0, 0, 0, 0 ], [ 0, 0, 4, 0, 0, 0 ], [ 0, 0, 0, 1, 0, 0 ], [ 0, 3, 0, 2, 0, 1 ] ],
+    "BridgeCoordinates": [ {
+        "Location1": "0, 1",
+        "Location2": "2, 1",
+        "AmountBridges": 1
+      }, {
+        "Location1": "3, 5",
+        "Location2": "5, 5",
+        "AmountBridges": 1
+      } ],
+    "Name": "_2ConnectionsRule2"
+  }, {
+    "HashiField": [ [ 3, 0, 0, 4, 0, 0 ], [ 0, 0, 0, 0, 0, 0 ], [ 0, 3, 0, 5, 0, 2 ], [ 5, 0, 2, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0 ], [ 4, 0, 5, 0, 0, 2 ] ],
+    "BridgeCoordinates": [],
+    "Name": "_5ConnectionsRule1"
+  }, {
+    "HashiField": [ [ 1, 0, 0, 4, 0, 0 ], [ 0, 0, 0, 0, 0, 0 ], [ 0, 3, 0, 5, 0, 1 ], [ 5, 0, 6, 0, 0, 3 ], [ 0, 0, 0, 0, 0, 0 ], [ 4, 0, 5, 0, 0, 1 ] ],
+    "BridgeCoordinates": [ {
+        "Location1": "0, 0",
+        "Location2": "0, 3",
+        "AmountBridges": 1
+      }, {
+        "Location1": "3, 2",
+        "Location2": "5, 2",
+        "AmountBridges": 1
+      }, {
+        "Location1": "2, 5",
+        "Location2": "5, 5",
+        "AmountBridges": 1
+      } ],
+    "Name": "_5ConnectionsRule2"
+  }, {
+    "HashiField": [ [ 0, 0, 0, 0, 0, 0 ], [ 0, 2, 0, 0, 4, 0 ], [ 0, 0, 0, 0, 0, 0 ], [ 0, 2, 0, 0, 4, 0 ], [ 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0 ] ],
+    "BridgeCoordinates": [],
+    "Name": "_2ConnectionsRule3"
+  }, {
+    "HashiField": [ [ 0, 0, 1, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0 ], [ 1, 0, 2, 0, 3, 0 ], [ 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0 ], [ 0, 0, 1, 0, 0, 0 ] ],
+    "BridgeCoordinates": [],
+    "Name": "_2ConnectionsRule4"
+  }, {
+    "HashiField": [ [ 0, 0, 3, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0 ], [ 1, 0, 3, 0, 0, 2 ], [ 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0 ] ],
+    "BridgeCoordinates": [],
+    "Name": "_3ConnectionsRule2"
+  }, {
+    "HashiField": [ [ 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 3, 0, 0 ], [ 0, 0, 0, 0, 0, 0 ], [ 1, 0, 0, 4, 0, 3 ], [ 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0 ] ],
+    "BridgeCoordinates": [ {
+        "Location1": "0, 3",
+        "Location2": "3, 3",
+        "AmountBridges": 1
+      } ],
+    "Name": "_4ConnectionsRule2"
+  }, {
+    "HashiField": [ [ 0, 0, 1, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0 ], [ 3, 0, 5, 0, 1, 0 ], [ 0, 0, 0, 0, 0, 0 ], [ 0, 0, 3, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0 ] ],
+    "BridgeCoordinates": [ {
+        "Location1": "2, 0",
+        "Location2": "2, 2",
+        "AmountBridges": 1
+      }, {
+        "Location1": "2, 2",
+        "Location2": "4, 2",
+        "AmountBridges": 1
+      } ],
+    "Name": "_5ConnectionsRule3"
+  }, {
+    "HashiField": [ [ 0, 0, 1, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0 ], [ 4, 0, 6, 0, 0, 3 ], [ 0, 0, 0, 0, 0, 0 ], [ 0, 0, 2, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0 ] ],
+    "BridgeCoordinates": [ {
+        "Location1": "2, 0",
+        "Location2": "2, 2",
+        "AmountBridges": 1
+      } ],
+    "Name": "_6ConnectionsRule2"
   } ]
