@@ -103,18 +103,18 @@
                               Background="{StaticResource MenuBackgroundBrush}">
                         <StackPanel Orientation="Horizontal">
                             <iconPacks:PackIconPhosphorIcons Kind="Timer" VerticalAlignment="Center"
-                                                             Foreground="Red" Height="25" Width="25" />
+                                                             Height="25" Width="25" Style="{StaticResource ElapsedTimeStyleIcon}"/>
                             <TextBlock Text="{Binding TimerProvider.Timer.Elapsed, StringFormat={}{0:hh\\:mm\\:ss}}"
                                        Margin="10,0,0,0" FontSize="20"
-                                       Foreground="Red" VerticalAlignment="Center" />
-                            <iconPacks:PackIconPhosphorIcons Kind="Crown" Margin="30,0,0,0" VerticalAlignment="Center"
+                                        VerticalAlignment="Center" Style="{StaticResource ElapsedTimeStyleTextBlock}"/>
+                            <iconPacks:PackIconPhosphorIcons Kind="Crown" Margin="20,0,0,0" VerticalAlignment="Center"
                                                              Foreground="{StaticResource IntenseGreenBrush}"
                                                              Height="30"
-                                                             Width="30" />
+                                                             Width="30"/>
                             <TextBlock
                                 Text="{Binding HighscoreForSelectedDifficulty, StringFormat={}{0:hh\\:mm\\:ss}, TargetNullValue='00:00:00'}"
                                 Margin="10,0,0,0" FontSize="20"
-                                Foreground="{StaticResource IntenseGreenBrush}" VerticalAlignment="Center" />
+                                Foreground="{StaticResource IntenseGreenBrush}" Style="{StaticResource HighScoreTimeStyleTextBlock}" VerticalAlignment="Center"/>
                         </StackPanel>
                     </GroupBox>
                     <GroupBox Header="{ns:Loc TitleRules}" Padding="5" Style="{x:Null}"

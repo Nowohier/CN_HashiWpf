@@ -21,4 +21,9 @@ public interface ITimerProvider
     ///     Stops the timer for the game and resets it.
     /// </summary>
     void StopTimer();
+
+    /// <summary>
+    ///    Gets a value indicating whether the timer is running.
+    /// </summary>
+    bool IsTimerRunning { get; }
 }
