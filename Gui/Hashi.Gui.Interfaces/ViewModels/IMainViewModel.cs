@@ -9,14 +9,14 @@ namespace Hashi.Gui.Interfaces.ViewModels;
 public interface IMainViewModel
 {
     /// <summary>
+    ///    Initializes the main view model.
+    /// </summary>
+    void Initialize();
+
+    /// <summary>
     ///     The settings provider for the Hashi game.
     /// </summary>
     ISettingsProvider SettingsProvider { get; }
-
-    /// <summary>
-    ///     Creates a new game asynchronously.
-    /// </summary>
-    Task CreateNewGameAsync();
 
     /// <summary>
     ///     Handles the message when a bridge connection is changed.

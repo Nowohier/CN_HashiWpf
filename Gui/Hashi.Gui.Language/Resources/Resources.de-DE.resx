@@ -279,4 +279,19 @@
   <data name="TitleRules" xml:space="preserve">
     <value>ANGEWANDTE REGEL(N)</value>
   </data>
+  <data name="TooltipResetAllSettingsToDefault" xml:space="preserve">
+    <value>Alle Einstellungen auf default zurücksetzen</value>
+  </data>
+  <data name="MessageResetAllToDefaultCaption" xml:space="preserve">
+    <value>Vorsicht</value>
+  </data>
+  <data name="MessageResetAllToDefaultText" xml:space="preserve">
+    <value>Wirklich alle Einstellungen zurücksetzen? Die momentanen Einstellungen gehen dabei verloren.</value>
+  </data>
+  <data name="MessageDeleteScenarioCaption" xml:space="preserve">
+    <value>Warnung</value>
+  </data>
+  <data name="MessageDeleteScenarioText" xml:space="preserve">
+    <value>Das Szenario {0} wird gelöscht. Fortfahren?</value>
+  </data>
 </root>

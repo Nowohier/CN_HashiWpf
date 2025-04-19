@@ -30,6 +30,11 @@ public interface ITestSolutionProvider
     void SaveTestFields();
 
     /// <summary>
+    /// Resets the settings to the default values.
+    /// </summary>
+    void ResetSettings();
+
+    /// <summary>
     /// Converts the current islands to a solution provider.
     /// </summary>
     /// <param name="allIslands">The islands as a flat IEnumerable.</param>

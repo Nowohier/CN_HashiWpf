@@ -26,7 +26,13 @@ public class SettingsProvider : ISettingsProvider
     }
 
     /// <inheritdoc />
-    public ISettingsViewModel Settings { get; }
+    public ISettingsViewModel Settings { get; private set; }
+
+    /// <inheritdoc />
+    public void ResetSettings()
+    {
+        Settings = LoadSettings();
+    }
 
     /// <inheritdoc />
     public void SaveSettings()

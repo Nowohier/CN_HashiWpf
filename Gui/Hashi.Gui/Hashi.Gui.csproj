@@ -12,6 +12,16 @@
   <PropertyGroup>
     <ApplicationIcon>hashiicon.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\HashiSettings.json" />
+    <None Remove="Resources\HashiTestfields.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\HashiSettings.json" />
+    <EmbeddedResource Include="Resources\HashiTestfields.json" />
+  </ItemGroup>
   <ItemGroup>
 	<None Update="hashiicon.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

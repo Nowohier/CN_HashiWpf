@@ -3,45 +3,33 @@
   "SelectedLanguageCulture": "de-DE",
   "HighScores": [
     {
-      "$type": "Hashi.Gui.ViewModels.HighScorePerDifficultyViewModel, Hashi.Gui",
-      "HighScoreTime": "00:00:04",
       "Difficulty": 0
     },
     {
-      "$type": "Hashi.Gui.ViewModels.HighScorePerDifficultyViewModel, Hashi.Gui",
       "Difficulty": 1
     },
     {
-      "$type": "Hashi.Gui.ViewModels.HighScorePerDifficultyViewModel, Hashi.Gui",
-      "HighScoreTime": "00:02:07.3549170",
       "Difficulty": 2
     },
     {
-      "$type": "Hashi.Gui.ViewModels.HighScorePerDifficultyViewModel, Hashi.Gui",
       "Difficulty": 3
     },
     {
-      "$type": "Hashi.Gui.ViewModels.HighScorePerDifficultyViewModel, Hashi.Gui",
       "Difficulty": 4
     },
     {
-      "$type": "Hashi.Gui.ViewModels.HighScorePerDifficultyViewModel, Hashi.Gui",
       "Difficulty": 5
     },
     {
-      "$type": "Hashi.Gui.ViewModels.HighScorePerDifficultyViewModel, Hashi.Gui",
       "Difficulty": 6
     },
     {
-      "$type": "Hashi.Gui.ViewModels.HighScorePerDifficultyViewModel, Hashi.Gui",
       "Difficulty": 7
     },
     {
-      "$type": "Hashi.Gui.ViewModels.HighScorePerDifficultyViewModel, Hashi.Gui",
       "Difficulty": 8
     },
     {
-      "$type": "Hashi.Gui.ViewModels.HighScorePerDifficultyViewModel, Hashi.Gui",
       "Difficulty": 9
     }
   ]

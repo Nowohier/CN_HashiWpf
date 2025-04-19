@@ -3,6 +3,7 @@ using Hashi.Generator;
 using Hashi.Generator.Interfaces.Models;
 using Hashi.Generator.Interfaces.Providers;
 using Hashi.Gui.Helpers;
+using Hashi.Gui.Managers;
 using Hashi.Gui.Messages;
 using Hashi.Gui.Models;
 using Hashi.Gui.Providers;
@@ -32,6 +33,7 @@ public class AutoFacMainModule : Module
         builder.RegisterModule<AutoFacHelpersModule>();
         builder.RegisterModule<AutoFacProvidersModule>();
         builder.RegisterModule<AutoFacRulesModule>();
+        builder.RegisterModule<AutoFacManagersModule>();
 
         builder.Register<Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider>>(context =>
         {
