@@ -69,6 +69,13 @@ public class TestSolutionProvider : ObservableObject, ITestSolutionProvider
     }
 
     /// <inheritdoc />
+    public void ResetSettings()
+    {
+        SolutionProviders.Clear();
+        SolutionProviders.AddRange(LoadSettings());
+    }
+
+    /// <inheritdoc />
     public void ConvertIslandsToSolutionProvider(IEnumerable<IIslandViewModel> allIslandEnumerable)
     {
         ArgumentNullException.ThrowIfNull(allIslandEnumerable, nameof(allIslandEnumerable));

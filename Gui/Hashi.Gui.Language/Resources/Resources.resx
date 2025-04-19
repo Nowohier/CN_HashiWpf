@@ -279,4 +279,19 @@
   <data name="TitleRules" xml:space="preserve">
     <value>USED RULE(S)</value>
   </data>
+  <data name="TooltipResetAllSettingsToDefault" xml:space="preserve">
+    <value>Reset all settings to default</value>
+  </data>
+  <data name="MessageResetAllToDefaultCaption" xml:space="preserve">
+    <value>Caution</value>
+  </data>
+  <data name="MessageResetAllToDefaultText" xml:space="preserve">
+    <value>Do you really want to load all settings from default? Current settings will be lost.</value>
+  </data>
+  <data name="MessageDeleteScenarioCaption" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="MessageDeleteScenarioText" xml:space="preserve">
+    <value>You are about to delete the scenario {0}. Continue?</value>
+  </data>
 </root>

@@ -5,6 +5,7 @@ using Hashi.Generator.Interfaces;
 using Hashi.Generator.Interfaces.Providers;
 using Hashi.Generator.Providers;
 using Hashi.Gui.Helpers;
+using Hashi.Gui.Interfaces.Managers;
 using Hashi.Gui.Interfaces.Messages;
 using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.Providers;
@@ -29,12 +30,13 @@ public class MainViewModel : AsyncObservableRecipient,
     private readonly Func<SolidColorBrush, IHashiBrush> brushFactory;
     private readonly IDialogWrapper dialogWrapper;
     private readonly IHashiGenerator hashiGenerator;
+    private readonly IResourceManager resourceManager;
 
     private bool isCheating;
     private bool isGeneratingHashiPuzzle;
     private bool isTestFieldMode;
     private DifficultyEnum selectedDifficulty = DifficultyEnum.Easy3;
-    private Type selectedRule;
+    private Type? selectedRule;
     private string newRuleName = string.Empty;
 
     /// <summary>
@@ -48,6 +50,7 @@ public class MainViewModel : AsyncObservableRecipient,
     /// <param name="islandProvider">The islands provider.</param>
     /// <param name="hintProvider">The hint provider.</param>
     /// <param name="testSolutionProvider">The test solution provider.</param>
+    /// <param name="resourceManager">The resource manager.</param>
     public MainViewModel
     (
         Func<SolidColorBrush, IHashiBrush> brushFactory,
@@ -57,7 +60,8 @@ public class MainViewModel : AsyncObservableRecipient,
         ITimerProvider timerProvider,
         IIslandProvider islandProvider,
         IHintProvider hintProvider,
-        ITestSolutionProvider testSolutionProvider)
+        ITestSolutionProvider testSolutionProvider,
+        IResourceManager resourceManager)
     {
         this.brushFactory = brushFactory;
         SettingsProvider = settingsProvider;
@@ -67,6 +71,7 @@ public class MainViewModel : AsyncObservableRecipient,
         TestSolutionProvider = testSolutionProvider;
         this.dialogWrapper = dialogWrapper;
         this.hashiGenerator = hashiGenerator;
+        this.resourceManager = resourceManager;
 
         WeakReferenceMessenger.Default.Register<IBridgeConnectionChangedMessage>(this);
         WeakReferenceMessenger.Default.Register<IAllConnectionsSetMessage>(this);
@@ -88,9 +93,17 @@ public class MainViewModel : AsyncObservableRecipient,
         SaveTestFieldCommand = new RelayCommand(SaveTestFieldCommandExecute);
         DeleteTestFieldCommand = new RelayCommand(DeleteTestFieldCommandExecute);
         CreateTestFieldCommand = new RelayCommand(CreateTestFieldCommandExecute, CreateTestFieldCommandCanExecute);
+        ResetAllSettingsToDefaultCommand = new RelayCommand(ResetAllSettingsToDefaultExecute);
 
+    }
+
+    /// <inheritdoc />
+    public void Initialize()
+    {
+        resourceManager.PrepareUi();
         selectedRule = HintProvider.Rules.First();
         WindowColorBrush = brushFactory.Invoke(HashiColorHelper.BasicBrush);
+        _ = CreateNewGameAsync();
     }
 
     /// <summary>
@@ -107,17 +120,17 @@ public class MainViewModel : AsyncObservableRecipient,
     /// <summary>
     ///     Gets the color of the window bar.
     /// </summary>
-    public IHashiBrush WindowColorBrush { get; private set; }
+    public IHashiBrush? WindowColorBrush { get; private set; }
 
     /// <summary>
     ///     Gets or sets the selected rule for generating hints.
     /// </summary>
-    public Type SelectedRule
+    public Type? SelectedRule
     {
         get => selectedRule;
         set
         {
-            if (!SetProperty(ref selectedRule, value)) return;
+            if (!SetProperty(ref selectedRule, value) || selectedRule == null) return;
             HintProvider.RuleInfoProvider.RuleMessage = TranslationSource.Instance[selectedRule.Name] ?? string.Empty;
             HintProvider.RuleInfoProvider.AreRulesBeingApplied = false;
 
@@ -231,6 +244,11 @@ public class MainViewModel : AsyncObservableRecipient,
     ///   Saves the test field to a file.
     /// </summary>
     public ICommand SaveTestFieldCommand { get; }
+
+    /// <summary>
+    ///     Resets all settings to their default values.
+    /// </summary>
+    public ICommand ResetAllSettingsToDefaultCommand { get; }
 
     /// <summary>
     ///      Deletes the test field.
@@ -355,7 +373,9 @@ public class MainViewModel : AsyncObservableRecipient,
         SetTestSolution(message.Value);
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    ///   Creates a new game asynchronously.
+    /// </summary>
     public async Task CreateNewGameAsync()
     {
         IsGeneratingHashiPuzzle = true;
@@ -423,7 +443,7 @@ public class MainViewModel : AsyncObservableRecipient,
     {
         IsCheating = true;
         TimerProvider.StartTimer();
-        HintProvider.GenerateHint(SelectedRule);
+        HintProvider.GenerateHint(SelectedRule!);
     }
 
     private async Task ToggleTestFieldCommandExecute()
@@ -475,11 +495,25 @@ public class MainViewModel : AsyncObservableRecipient,
         TestSolutionProvider.SaveTestFields();
     }
 
+    private void ResetAllSettingsToDefaultExecute()
+    {
+        if (dialogWrapper.Show(TranslationSource.Instance["MessageResetAllToDefaultCaption"]!,
+                TranslationSource.Instance["MessageResetAllToDefaultText"]!, DialogButton.YesNo,
+                DialogImage.Question) == DialogResult.Yes)
+        {
+            resourceManager.ResetSettingsAndLoadFromDefault();
+            SettingsProvider.ResetSettings();
+            TestSolutionProvider.ResetSettings();
+            TestSolutionProvider.SelectedSolutionProvider = TestSolutionProvider.SolutionProviders.First();
+        }
+    }
+
     private void DeleteTestFieldCommandExecute()
     {
         if (TestSolutionProvider.SelectedSolutionProvider == null) return;
-        if (dialogWrapper.Show("Warning",
-                $"You are about to delete the scenario {TestSolutionProvider.SelectedSolutionProvider.Name}. Continue?",
+        if (dialogWrapper.Show(TranslationSource.Instance["MessageDeleteScenarioCaption"]!,
+                string.Format(TranslationSource.Instance["MessageDeleteScenarioText"]!,
+                    TestSolutionProvider.SelectedSolutionProvider.Name),
                 DialogButton.YesNo, DialogImage.Question) == DialogResult.Yes)
         {
             TestSolutionProvider.SolutionProviders.Remove(TestSolutionProvider.SelectedSolutionProvider);
