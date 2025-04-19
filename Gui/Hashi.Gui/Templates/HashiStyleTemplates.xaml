@@ -35,6 +35,74 @@
         </Style.Triggers>
     </Style>
 
+    <Style x:Key="ElapsedTimeStyleIcon" TargetType="iconPacks:PackIconPhosphorIcons">
+        <Setter Property="Foreground" Value="Black"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding TimerProvider.IsTimerRunning}" Value="True">
+                <DataTrigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard Timeline.DesiredFrameRate="10">
+                            <ColorAnimation From="Black" To="Red" Duration="0:0:0.2" Storyboard.TargetProperty="(iconPacks:PackIconPhosphorIcons.Foreground).(SolidColorBrush.Color)"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+                <DataTrigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard Timeline.DesiredFrameRate="10">
+                            <ColorAnimation From="Red" To="Black" Duration="0:0:0.2" Storyboard.TargetProperty="(iconPacks:PackIconPhosphorIcons.Foreground).(SolidColorBrush.Color)"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.ExitActions>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="ElapsedTimeStyleTextBlock" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource MahApps.Brushes.Text}"/>
+        <Setter Property="Width" Value="81"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding TimerProvider.IsTimerRunning}" Value="True">
+                <DataTrigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard Timeline.DesiredFrameRate="10" Duration="0:0:0.2">
+                            <ColorAnimation From="{StaticResource MahApps.Colors.ThemeForeground}" To="Red" Duration="0:0:0.2" BeginTime="0:0:0" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)"/>
+                            <DoubleAnimation From="20" To="22" Duration="0:0:0.2" BeginTime="0:0:0" Storyboard.TargetProperty="(TextBlock.FontSize)"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+                <DataTrigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard Timeline.DesiredFrameRate="10" Duration="0:0:0.2">
+                            <ColorAnimation From="Red" To="{StaticResource MahApps.Colors.ThemeForeground}" Duration="0:0:0.2" BeginTime="0:0:0" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)"/>
+                            <DoubleAnimation From="22" To="20" Duration="0:0:0.2" BeginTime="0:0:0" Storyboard.TargetProperty="(TextBlock.FontSize)"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.ExitActions>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    
+    <Style x:Key="HighScoreTimeStyleTextBlock" TargetType="TextBlock">
+        <Setter Property="Width" Value="81"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding TimerProvider.IsTimerRunning}" Value="True">
+                <DataTrigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard Timeline.DesiredFrameRate="10">
+                            <DoubleAnimation From="20" To="22" Duration="0:0:0.2" BeginTime="0:0:0" Storyboard.TargetProperty="(TextBlock.FontSize)"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+                <DataTrigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard Timeline.DesiredFrameRate="10">
+                            <DoubleAnimation From="22" To="20" Duration="0:0:0.2" BeginTime="0:0:0" Storyboard.TargetProperty="(TextBlock.FontSize)"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.ExitActions>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
 
     <Style x:Shared="False" x:Key="MenuGenerateGridToggleButtonStyle" TargetType="ToggleButton"
            BasedOn="{StaticResource MahApps.Styles.ToggleButton}">
