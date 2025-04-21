@@ -133,7 +133,7 @@ public class MainViewModel : AsyncObservableRecipient,
             if (!SetProperty(ref selectedRule, value) || selectedRule == null) return;
             HintProvider.RuleInfoProvider.RuleMessage = TranslationSource.Instance[selectedRule.Name] ?? string.Empty;
             HintProvider.RuleInfoProvider.AreRulesBeingApplied = false;
-
+            HintProvider.ResetSession();
             if (IsTestFieldMode) SetTestSolution(TestSolutionProvider.SelectedSolutionProvider);
         }
     }
@@ -451,9 +451,14 @@ public class MainViewModel : AsyncObservableRecipient,
         IsTestFieldMode = !IsTestFieldMode;
 
         if (IsTestFieldMode)
+        {
             await SetTestSolution(TestSolutionProvider.SelectedSolutionProvider);
+        }
         else
+        {
+            SelectedRule = HintProvider.Rules.First();
             await CreateNewGameAsync();
+        }
     }
 
     private void ChangeLanguageCommandExecute(string? culture)
