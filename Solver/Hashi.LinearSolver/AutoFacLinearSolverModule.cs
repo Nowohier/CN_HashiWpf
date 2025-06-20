@@ -14,7 +14,7 @@ public class AutoFacLinearSolverModule : Module
         // Register your linear solver classes here
         builder.RegisterType<Bridge>().As<IBridge>().InstancePerDependency();
         builder.RegisterType<BridgePair>().As<IBridgePair>().InstancePerDependency();
-        builder.RegisterType<Island>().As<IIsland>().InstancePerDependency();
+        builder.RegisterType<Models.Island>().As<IIsland>().InstancePerDependency();
         builder.RegisterType<Helper>().As<IHelper>().InstancePerDependency();
         builder.RegisterType<LinearSolutionSolverWithIterativ>().As<ILinearSolutionSolverWithIterativ>()
             .SingleInstance();
