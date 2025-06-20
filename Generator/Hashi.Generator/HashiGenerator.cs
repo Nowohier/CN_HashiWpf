@@ -3,6 +3,7 @@ using Hashi.Generator.Interfaces;
 using Hashi.Generator.Interfaces.Models;
 using Hashi.Generator.Interfaces.Providers;
 using Hashi.Generator.Models;
+using Hashi.LinearSolver;
 using Hashi.LinearSolver.Interfaces;
 using System.Diagnostics;
 using System.Drawing;
@@ -129,8 +130,8 @@ public class HashiGenerator : IHashiGenerator
                 attempts = 0;
                 beta = Math.Max(0, beta - 5); // Reduce bridge complexity slightly
             }
-        }
-        while (await linearSolutionSolver.SolveAsync(field) == SolverStatusEnum.Infeasible);
+        } while (GetHashiSolveStatus(field) == SolverStatusEnum.Infeasible);
+        //while (await linearSolutionSolver.SolveAsync(field) == SolverStatusEnum.Infeasible);
 
         // Optimize bridge coordinate creation with direct list allocation
         var bridgeCoordinates = new List<IBridgeCoordinates>(bridges.Count);
@@ -150,6 +151,12 @@ public class HashiGenerator : IHashiGenerator
         }
 
         return solutionContainerFactory.Invoke(field, bridgeCoordinates);
+    }
+
+    private SolverStatusEnum GetHashiSolveStatus(int[][] field)
+    {
+        var convertedData = HashiSolver.ConvertData(field);
+        return HashiSolver.SolveLazy(convertedData.Item1, convertedData.Item2);
     }
 
     private async Task<int[][]> CreateHashAsync(int numberOfIslands, int sizeLength, int sizeWidth, int difficulty,
