@@ -6,6 +6,9 @@ using System.Diagnostics;
 
 namespace Hashi.LinearSolver
 {
+    /// <summary>
+    /// Represents a solver for the Hashiwokakero (Hashi) puzzle using Google OR-Tools CP-SAT solver.
+    /// </summary>
     public class HashiSolver : IHashiSolver
     {
         private readonly Func<int, int, int, int, IIsland> islandFactory;
