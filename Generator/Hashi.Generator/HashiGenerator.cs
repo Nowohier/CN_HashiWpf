@@ -3,7 +3,6 @@ using Hashi.Generator.Interfaces;
 using Hashi.Generator.Interfaces.Models;
 using Hashi.Generator.Interfaces.Providers;
 using Hashi.Generator.Models;
-using Hashi.LinearSolver;
 using Hashi.LinearSolver.Interfaces;
 using System.Diagnostics;
 using System.Drawing;
@@ -19,7 +18,7 @@ public class HashiGenerator : IHashiGenerator
     private readonly Func<int, int, int, IIsland> islandFactory;
     private readonly Func<IIsland, IIsland, int, IBridge> bridgeFactory;
     private readonly Func<int[][], IList<IBridgeCoordinates>, ISolutionProvider> solutionContainerFactory;
-    private readonly ILinearSolutionSolverWithIterativ linearSolutionSolver;
+    private readonly IHashiSolver hashiSolver;
     private readonly List<IBridge> bridges = [];
     private readonly List<IIsland> islands = [];
     private readonly Random random = new();
@@ -35,12 +34,12 @@ public class HashiGenerator : IHashiGenerator
         Func<int, int, int, IIsland> islandFactory,
         Func<IIsland, IIsland, int, IBridge> bridgeFactory,
         Func<int[][], IList<IBridgeCoordinates>, ISolutionProvider> solutionContainerFactory,
-        ILinearSolutionSolverWithIterativ linearSolutionSolverWithIterativ)
+        IHashiSolver hashiSolver)
     {
         this.islandFactory = islandFactory;
         this.bridgeFactory = bridgeFactory;
         this.solutionContainerFactory = solutionContainerFactory;
-        linearSolutionSolver = linearSolutionSolverWithIterativ;
+        this.hashiSolver = hashiSolver;
     }
 
     /// <inheritdoc />
@@ -54,12 +53,6 @@ public class HashiGenerator : IHashiGenerator
 
         return await GenerateHashAsync(amountNodes, length, width, alpha, beta, true);
     }
-
-    /// <summary>
-    ///     Gets the bridges of the Hashi field.
-    /// </summary>
-    /// <returns>a list of bridge models.</returns>
-    public List<IBridge> GetBridges() => bridges;
 
     private async Task<ISolutionProvider> GenerateWithDifficultyAsync(int difficulty)
     {
@@ -111,7 +104,7 @@ public class HashiGenerator : IHashiGenerator
         int difficulty, int beta, bool checkDifficulty)
     {
         int[][] field;
-        int attempts = 0;
+        var attempts = 0;
         const int maxAttempts = 5; // Maximum number of attempts before changing strategy
 
         do
@@ -130,10 +123,7 @@ public class HashiGenerator : IHashiGenerator
                 attempts = 0;
                 beta = Math.Max(0, beta - 5); // Reduce bridge complexity slightly
             }
-        }
-        // ToDo; This has to be implemented completely
-        while (HashiSolver.SolveLazy(field) == SolverStatusEnum.Infeasible);
-        //while (await linearSolutionSolver.SolveAsync(field) == SolverStatusEnum.Infeasible);
+        } while (hashiSolver.SolveLazy(field) == SolverStatusEnum.Infeasible);
 
         // Optimize bridge coordinate creation with direct list allocation
         var bridgeCoordinates = new List<IBridgeCoordinates>(bridges.Count);
@@ -216,11 +206,11 @@ public class HashiGenerator : IHashiGenerator
             if (!checkDifficulty)
             {
                 // Apply bridges based on difficulty
-                int alphaValue = GetAlphaForDifficulty(difficulty);
+                var alphaValue = GetAlphaForDifficulty(difficulty);
                 AddAdditionalBridges(mainField, alphaValue);
 
                 // Set beta based on difficulty range
-                int betaValue = GetBetaForDifficulty(difficulty);
+                var betaValue = GetBetaForDifficulty(difficulty);
                 SetBeta(mainField, betaValue);
             }
             else
@@ -274,7 +264,7 @@ public class HashiGenerator : IHashiGenerator
 
         // Create an index array for random access without shuffling the original island list
         var islandIndices = new int[islands.Count];
-        for (int i = 0; i < islandIndices.Length; i++)
+        for (var i = 0; i < islandIndices.Length; i++)
             islandIndices[i] = i;
 
         // Fisher-Yates shuffle for better randomization
@@ -303,9 +293,9 @@ public class HashiGenerator : IHashiGenerator
     // Efficient Fisher-Yates shuffle
     private void ShuffleArray<T>(T[] array)
     {
-        for (int i = array.Length - 1; i > 0; i--)
+        for (var i = array.Length - 1; i > 0; i--)
         {
-            int j = random.Next(i + 1);
+            var j = random.Next(i + 1);
             (array[i], array[j]) = (array[j], array[i]);
         }
     }
@@ -526,11 +516,11 @@ public class HashiGenerator : IHashiGenerator
     // Use the cache for direction checks before resorting to slower LINQ operations
     private bool HasBridgeInDirection(IIsland island, Direction direction)
     {
-        if (bridgeDirectionCache.TryGetValue((island, direction), out bool cached))
+        if (bridgeDirectionCache.TryGetValue((island, direction), out var cached))
             return cached;
 
         // Only perform LINQ if not in cache
-        bool result = direction switch
+        var result = direction switch
         {
             Direction.Up => bridges.Any(b =>
                 b.Island1.Y == island.Y && b.Island1.X == island.X &&
@@ -576,10 +566,10 @@ public class HashiGenerator : IHashiGenerator
     private int GetUpBlocked(IIsland mainIsland, int[][] mainField)
     {
         var key = (mainIsland.X, -mainIsland.Y); // Negative Y for up direction
-        if (blockCache.TryGetValue(key, out int value))
+        if (blockCache.TryGetValue(key, out var value))
             return value;
 
-        int result = CalculateUpBlocked(mainIsland, mainField);
+        var result = CalculateUpBlocked(mainIsland, mainField);
         blockCache[key] = result;
         return result;
     }
@@ -590,7 +580,7 @@ public class HashiGenerator : IHashiGenerator
         if (bridges.Count == 0) return -1;
 
         // Use array bounds to optimize loop
-        int minRow = Math.Max(1, mainIsland.Y - 10); // Limit search depth for performance
+        var minRow = Math.Max(1, mainIsland.Y - 10); // Limit search depth for performance
 
         for (var row = mainIsland.Y - 1; row >= minRow; row--)
         {
@@ -617,10 +607,10 @@ public class HashiGenerator : IHashiGenerator
     private int GetDownBlocked(IIsland mainIsland, int[][] mainField)
     {
         var key = (mainIsland.X, mainIsland.Y);
-        if (blockCache.TryGetValue(key, out int value))
+        if (blockCache.TryGetValue(key, out var value))
             return value;
 
-        int result = CalculateDownBlocked(mainIsland, mainField);
+        var result = CalculateDownBlocked(mainIsland, mainField);
         blockCache[key] = result;
         return result;
     }
@@ -629,7 +619,7 @@ public class HashiGenerator : IHashiGenerator
     {
         if (bridges.Count == 0) return -1;
 
-        int maxRow = Math.Min(mainField.Length - 1, mainIsland.Y + 10);
+        var maxRow = Math.Min(mainField.Length - 1, mainIsland.Y + 10);
 
         for (var row = mainIsland.Y + 1; row <= maxRow; row++)
         {
@@ -655,10 +645,10 @@ public class HashiGenerator : IHashiGenerator
     private int GetRightBlocked(IIsland mainIsland, int[][] mainField)
     {
         var key = (mainIsland.X, mainIsland.Y + 1000); // Offset for unique key
-        if (blockCache.TryGetValue(key, out int value))
+        if (blockCache.TryGetValue(key, out var value))
             return value;
 
-        int result = CalculateRightBlocked(mainIsland, mainField);
+        var result = CalculateRightBlocked(mainIsland, mainField);
         blockCache[key] = result;
         return result;
     }
@@ -667,7 +657,7 @@ public class HashiGenerator : IHashiGenerator
     {
         if (bridges.Count == 0) return -1;
 
-        int maxCol = Math.Min(mainField[mainIsland.Y].Length - 1, mainIsland.X + 10);
+        var maxCol = Math.Min(mainField[mainIsland.Y].Length - 1, mainIsland.X + 10);
 
         for (var col = mainIsland.X + 1; col <= maxCol; col++)
         {
@@ -693,10 +683,10 @@ public class HashiGenerator : IHashiGenerator
     private int GetLeftBlocked(IIsland mainIsland, int[][] mainField)
     {
         var key = (-mainIsland.X, mainIsland.Y + 1000); // Negative X for left direction
-        if (blockCache.TryGetValue(key, out int value))
+        if (blockCache.TryGetValue(key, out var value))
             return value;
 
-        int result = CalculateLeftBlocked(mainIsland, mainField);
+        var result = CalculateLeftBlocked(mainIsland, mainField);
         blockCache[key] = result;
         return result;
     }
@@ -705,7 +695,7 @@ public class HashiGenerator : IHashiGenerator
     {
         if (bridges.Count == 0) return -1;
 
-        int minCol = Math.Max(1, mainIsland.X - 10);
+        var minCol = Math.Max(1, mainIsland.X - 10);
 
         for (var col = mainIsland.X - 1; col >= minCol; col--)
         {
@@ -733,15 +723,15 @@ public class HashiGenerator : IHashiGenerator
         if (mainIsland.IslandDown == null) return -1;
 
         var key = (mainIsland.X, mainIsland.Y + 2000); // Unique key with offset
-        if (blockCache.TryGetValue(key, out int value))
+        if (blockCache.TryGetValue(key, out var value))
             return value;
 
-        int result = -1;
+        var result = -1;
 
         // Search only in the range between the islands for better performance
         for (var row = mainIsland.Y + 1; row < mainIsland.IslandDown.Y; row++)
         {
-            bool foundBlocking = false;
+            var foundBlocking = false;
             for (var x = mainIsland.X - 1; x >= 0; x--)
             {
                 if (mainField[row][x] == 0) continue;
@@ -769,15 +759,15 @@ public class HashiGenerator : IHashiGenerator
         if (mainIsland.IslandRight == null) return -1;
 
         var key = (mainIsland.X, mainIsland.Y + 3000); // Unique key with offset
-        if (blockCache.TryGetValue(key, out int value))
+        if (blockCache.TryGetValue(key, out var value))
             return value;
 
-        int result = -1;
+        var result = -1;
 
         // Search only in the range between the islands
         for (var col = mainIsland.X + 1; col < mainIsland.IslandRight.X; col++)
         {
-            bool foundBlocking = false;
+            var foundBlocking = false;
             for (var y = mainIsland.Y - 1; y >= 0; y--)
             {
                 if (mainField[y][col] == 0) continue;
@@ -806,7 +796,7 @@ public class HashiGenerator : IHashiGenerator
         if (beta <= 0) return;
 
         // Calculate exact number of bridges to add for better efficiency
-        int bridgesToAdd = (int)Math.Ceiling(bridges.Count * 0.5 * (beta / 100.0));
+        var bridgesToAdd = (int)Math.Ceiling(bridges.Count * 0.5 * (beta / 100.0));
         if (bridgesToAdd <= 0) return;
 
         // Get candidate bridges (every other one to avoid duplicates)
@@ -818,7 +808,7 @@ public class HashiGenerator : IHashiGenerator
         ShuffleList(candidates);
 
         // Add additional bridges up to the calculated count
-        for (int i = 0; i < Math.Min(bridgesToAdd, candidates.Count); i++)
+        for (var i = 0; i < Math.Min(bridgesToAdd, candidates.Count); i++)
         {
             bridges[candidates[i]].AddBridge(mainField);
         }
@@ -827,9 +817,9 @@ public class HashiGenerator : IHashiGenerator
     /// Fisher-Yates shuffle for lists
     private void ShuffleList(List<int> list)
     {
-        for (int i = list.Count - 1; i > 0; i--)
+        for (var i = list.Count - 1; i > 0; i--)
         {
-            int j = random.Next(i + 1);
+            var j = random.Next(i + 1);
             (list[i], list[j]) = (list[j], list[i]);
         }
     }
