@@ -130,7 +130,9 @@ public class HashiGenerator : IHashiGenerator
                 attempts = 0;
                 beta = Math.Max(0, beta - 5); // Reduce bridge complexity slightly
             }
-        } while (GetHashiSolveStatus(field) == SolverStatusEnum.Infeasible);
+        }
+        // ToDo; This has to be implemented completely
+        while (HashiSolver.SolveLazy(field) == SolverStatusEnum.Infeasible);
         //while (await linearSolutionSolver.SolveAsync(field) == SolverStatusEnum.Infeasible);
 
         // Optimize bridge coordinate creation with direct list allocation
@@ -151,12 +153,6 @@ public class HashiGenerator : IHashiGenerator
         }
 
         return solutionContainerFactory.Invoke(field, bridgeCoordinates);
-    }
-
-    private SolverStatusEnum GetHashiSolveStatus(int[][] field)
-    {
-        var convertedData = HashiSolver.ConvertData(field);
-        return HashiSolver.SolveLazy(convertedData.Item1, convertedData.Item2);
     }
 
     private async Task<int[][]> CreateHashAsync(int numberOfIslands, int sizeLength, int sizeWidth, int difficulty,
