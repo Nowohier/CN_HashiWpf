@@ -7,15 +7,6 @@ namespace Hashi.LinearSolver.Interfaces
     public interface IHashiSolver
     {
         /// <summary>
-        /// Solves the Hashi puzzle from the given file using the Google OR-Tools CP-SAT solver. This method is considerably slower than the
-        /// lazy version, as it does not use lazy constraints to iteratively refine the solution.
-        /// </summary>
-        /// <param name="file">The file to read from</param>
-        /// <param name="prettyPrint">Determines if the solution should be printed.</param>
-        /// <returns>The state after trying to resolve the puzzle.</returns>
-        Task<SolverStatusEnum> Solve(string file, bool prettyPrint = true);
-
-        /// <summary>
         /// Converts the given 2D array of integers into a list of islands and a list of intersections.
         /// </summary>
         /// <param name="data">The 2D array.</param>
