@@ -32,9 +32,9 @@ namespace Hashi.LinearSolver
         /// </summary>
         /// <param name="file">The file to read from</param>
         /// <returns>A double value representing the seconds taken to solve the puzzle.</returns>
-        public SolverStatusEnum Solve(string file)
+        public async Task<SolverStatusEnum> Solve(string file)
         {
-            var (islands, intersections) = ReadFile(file);
+            var (islands, intersections) = await ReadFile(file);
             var n = islands.Count;
 
             // Build edge maps
@@ -153,7 +153,7 @@ namespace Hashi.LinearSolver
             if (status == CpSolverStatus.Optimal)
             {
                 Debug.WriteLine($"Problem is unsatisfiable ({Math.Round(watch.Elapsed.TotalSeconds, 3)}).");
-                PrettyPrint(islands, x, solver, edgeMap);
+                await PrettyPrint(islands, x, solver, edgeMap);
                 return SolverStatusEnum.Optimal;
             }
             else
@@ -168,7 +168,7 @@ namespace Hashi.LinearSolver
         /// </summary>
         /// <param name="data">The 2D array.</param>
         /// <returns>A list of islands and a list of intersections.</returns>
-        public (List<IIsland>, List<(int, int, int, int)>) ConvertData(int[][] data)
+        public async Task<(List<IIsland>, List<(int, int, int, int)>)> ConvertData(int[][] data)
         {
             var rows = data.Length;
             var columns = data[0].Length;
@@ -181,7 +181,7 @@ namespace Hashi.LinearSolver
                 }
             }
 
-            return BuildIslandsAndIntersections(grid, rows, columns);
+            return await BuildIslandsAndIntersections(grid, rows, columns);
         }
 
         /// <summary>
@@ -189,7 +189,7 @@ namespace Hashi.LinearSolver
         /// </summary>
         /// <param name="file">The file path.</param>
         /// <returns>A list of islands and a list of intersections.</returns>
-        public (List<IIsland>, List<(int, int, int, int)>) ReadFile(string file)
+        public async Task<(List<IIsland>, List<(int, int, int, int)>)> ReadFile(string file)
         {
             var lines = File.ReadAllLines(file);
             var header = lines[0].Split(' ').Select(int.Parse).ToArray();
@@ -206,7 +206,7 @@ namespace Hashi.LinearSolver
                     grid[r, c] = rowVals[c];
                 }
             }
-            return BuildIslandsAndIntersections(grid, rows, columns);
+            return await BuildIslandsAndIntersections(grid, rows, columns);
         }
 
         /// <summary>
@@ -216,7 +216,7 @@ namespace Hashi.LinearSolver
         /// <param name="x">x is a 2D array of boolean decision variables representing the number of bridges between islands.</param>
         /// <param name="solver">The <see cref="CpSolver"/> instance.</param>
         /// <param name="edgeMap">A dictionary with <see cref="IEdge"/> mapping information.</param>
-        public void PrettyPrint(List<IIsland> islands, IntVar[,] x, CpSolver solver, Dictionary<int, IEdge> edgeMap)
+        public Task PrettyPrint(List<IIsland> islands, IntVar[,] x, CpSolver solver, Dictionary<int, IEdge> edgeMap)
         {
             var rows = islands.Max(island => island.Row) + 1;
             var cols = islands.Max(island => island.Col) + 1;
@@ -277,6 +277,8 @@ namespace Hashi.LinearSolver
 
                 Debug.WriteLine("");
             }
+
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -284,10 +286,10 @@ namespace Hashi.LinearSolver
         /// </summary>
         /// <param name="data">The 2D array of integer data representing the hashi field.</param>
         /// <returns>The state after trying to resolve the puzzle.</returns>
-        public SolverStatusEnum SolveLazy(int[][] data)
+        public async Task<SolverStatusEnum> SolveLazy(int[][] data)
         {
-            var (islands, intersections) = ConvertData(data);
-            return SolveLazy(islands, intersections);
+            var (islands, intersections) = await ConvertData(data);
+            return await SolveLazy(islands, intersections);
         }
 
         /// <summary>
@@ -295,10 +297,10 @@ namespace Hashi.LinearSolver
         /// </summary>
         /// <param name="file">The file path.</param>
         /// <returns>The state after trying to resolve the puzzle.</returns>
-        public SolverStatusEnum SolveLazy(string file)
+        public async Task<SolverStatusEnum> SolveLazy(string file)
         {
-            var (islands, intersections) = ReadFile(file);
-            return SolveLazy(islands, intersections);
+            var (islands, intersections) = await ReadFile(file);
+            return await SolveLazy(islands, intersections);
         }
 
         /// <summary>
@@ -307,7 +309,7 @@ namespace Hashi.LinearSolver
         /// <param name="islands">A list of Hashi islands.</param>
         /// <param name="intersections">A list of intersections.</param>
         /// <returns></returns>
-        public SolverStatusEnum SolveLazy(List<IIsland> islands, List<(int, int, int, int)> intersections)
+        public async Task<SolverStatusEnum> SolveLazy(List<IIsland> islands, List<(int, int, int, int)> intersections)
         {
             var n = islands.Count;
 
@@ -384,14 +386,14 @@ namespace Hashi.LinearSolver
                 }
 
                 // Check connectivity and get cuts
-                var cuts = FindComponentCuts(islands, xSol, edgeMap, revEdgeMap);
+                var cuts = await FindComponentCuts(islands, xSol, edgeMap, revEdgeMap);
 
                 // If only one component, solution is connected
                 if (cuts is [{ Count: 0 }])
                 {
                     Debug.WriteLine($"Solution found ({Math.Round(watch.Elapsed.TotalSeconds, 3)})");
                     watch.Stop();
-                    PrettyPrint(islands, x, solver, edgeMap.Select(kvp => new KeyValuePair<int, IEdge>(kvp.Key, edgeFactory.Invoke(kvp.Key, kvp.Value.Item1, kvp.Value.Item2))).ToDictionary());
+                    await PrettyPrint(islands, x, solver, edgeMap.Select(kvp => new KeyValuePair<int, IEdge>(kvp.Key, edgeFactory.Invoke(kvp.Key, kvp.Value.Item1, kvp.Value.Item2))).ToDictionary());
                     return SolverStatusEnum.Optimal;
                 }
 
@@ -429,7 +431,7 @@ namespace Hashi.LinearSolver
         /// <param name="rows">The amount of rows.</param>
         /// <param name="columns">The amount of columns.</param>
         /// <returns>>A list of islands and a list of intersections.</returns>
-        private (List<IIsland>, List<(int, int, int, int)>) BuildIslandsAndIntersections(
+        private Task<(List<IIsland>, List<(int, int, int, int)>)> BuildIslandsAndIntersections(
         int[,] grid, int rows, int columns)
         {
             var islandMap = new Dictionary<(int, int), int>();
@@ -496,7 +498,7 @@ namespace Hashi.LinearSolver
                 }
             }
 
-            return (islands, intersections);
+            return Task.FromResult((islands, intersections));
         }
 
         /// <summary>
@@ -507,7 +509,7 @@ namespace Hashi.LinearSolver
         /// <param name="edgeMap"></param>
         /// <param name="revEdgeMap"></param>
         /// <returns>The returned value is a list of integer lists. Each inner list contains the edge IDs that, if at least one is activated (i.e., a bridge is built), would connect that component to the rest of the puzzle.</returns>
-        private List<List<int>> FindComponentCuts(
+        private Task<List<List<int>>> FindComponentCuts(
             List<IIsland> islands,
             int[,] xSol,
             Dictionary<int, (int, int)> edgeMap,
@@ -578,7 +580,7 @@ namespace Hashi.LinearSolver
                     allVisited.Add(v);
             }
 
-            return componentCuts;
+            return Task.FromResult(componentCuts);
         }
     }
 }
