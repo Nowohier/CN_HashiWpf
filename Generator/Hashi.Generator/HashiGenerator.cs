@@ -123,7 +123,7 @@ public class HashiGenerator : IHashiGenerator
                 attempts = 0;
                 beta = Math.Max(0, beta - 5); // Reduce bridge complexity slightly
             }
-        } while (hashiSolver.SolveLazy(field) == SolverStatusEnum.Infeasible);
+        } while (await hashiSolver.SolveLazy(field) == SolverStatusEnum.Infeasible);
 
         // Optimize bridge coordinate creation with direct list allocation
         var bridgeCoordinates = new List<IBridgeCoordinates>(bridges.Count);
