@@ -208,7 +208,7 @@ namespace Hashi.LinearSolver
                 var status = solver.Solve(model);
                 if (status != CpSolverStatus.Optimal && status != CpSolverStatus.Feasible)
                 {
-                    Debug.WriteLine($"Problem is unsatisfiable ({Math.Round(watch.Elapsed.TotalSeconds, 3)}).");
+                    //Debug.WriteLine($"Problem is unsatisfiable ({Math.Round(watch.Elapsed.TotalSeconds, 3)}).");
                     watch.Stop();
                     return SolverStatusEnum.Infeasible;
                 }
