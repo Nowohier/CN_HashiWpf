@@ -36,9 +36,7 @@ public class AutoFacMainModule : Module
         builder.RegisterModule<AutoFacProvidersModule>();
         builder.RegisterModule<AutoFacRulesModule>();
         builder.RegisterModule<AutoFacManagersModule>();
-        
-        // Register shared logging services
-        builder.RegisterType<LoggerFactory>().As<ILoggerFactory>().SingleInstance();
+        builder.RegisterModule<AutoFacLoggingModule>();
 
         builder.Register<Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider>>(context =>
         {

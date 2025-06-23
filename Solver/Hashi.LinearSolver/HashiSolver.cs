@@ -57,7 +57,7 @@ namespace Hashi.LinearSolver
             for (var r = 0; r < rows; r++)
             {
                 var rowVals = lines[r + 1]
-                    .Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Split((char[])[' '], StringSplitOptions.RemoveEmptyEntries)
                     .Select(int.Parse)
                     .ToArray();
                 for (var c = 0; c < columns; c++)

@@ -13,9 +13,6 @@ public class AutoFacLinearSolverModule : Module
     /// <inheritdoc />
     protected override void Load(ContainerBuilder builder)
     {
-        // Register logging services
-        builder.RegisterType<LoggerFactory>().As<ILoggerFactory>().SingleInstance();
-        
         builder.RegisterType<HashiSolver>().As<IHashiSolver>().SingleInstance();
         builder.RegisterType<Island>().As<IIsland>().InstancePerDependency();
         builder.RegisterType<Edge>().As<IEdge>().InstancePerDependency();
