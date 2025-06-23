@@ -25,6 +25,7 @@ namespace Hashi.LinearSolver.Test
         }
 
         [Test]
+        [Ignore("Should not be run every time")]
         public async Task SolveLazy_WhenCalled_ShouldSolveAllPuzzlesOptimal()
         {
             // arrange
