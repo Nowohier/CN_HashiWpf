@@ -32,6 +32,7 @@ public class MainViewModel : AsyncObservableRecipient,
     private readonly IDialogWrapper dialogWrapper;
     private readonly IHashiGenerator hashiGenerator;
     private readonly IResourceManager resourceManager;
+    private readonly ILogger logger;
 
     private bool isCheating;
     private bool isGeneratingHashiPuzzle;
@@ -52,6 +53,7 @@ public class MainViewModel : AsyncObservableRecipient,
     /// <param name="hintProvider">The hint provider.</param>
     /// <param name="testSolutionProvider">The test solution provider.</param>
     /// <param name="resourceManager">The resource manager.</param>
+    /// <param name="loggerFactory">The logger factory.</param>
     public MainViewModel
     (
         Func<SolidColorBrush, IHashiBrush> brushFactory,
@@ -62,7 +64,8 @@ public class MainViewModel : AsyncObservableRecipient,
         IIslandProvider islandProvider,
         IHintProvider hintProvider,
         ITestSolutionProvider testSolutionProvider,
-        IResourceManager resourceManager)
+        IResourceManager resourceManager,
+        ILoggerFactory loggerFactory)
     {
         this.brushFactory = brushFactory;
         SettingsProvider = settingsProvider;
@@ -73,6 +76,7 @@ public class MainViewModel : AsyncObservableRecipient,
         this.dialogWrapper = dialogWrapper;
         this.hashiGenerator = hashiGenerator;
         this.resourceManager = resourceManager;
+        logger = loggerFactory.Create<MainViewModel>();
 
         WeakReferenceMessenger.Default.Register<IBridgeConnectionChangedMessage>(this);
         WeakReferenceMessenger.Default.Register<IAllConnectionsSetMessage>(this);
@@ -327,7 +331,7 @@ public class MainViewModel : AsyncObservableRecipient,
         IslandProvider.RefreshIslandColors();
         IslandProvider.RemoveAllHighlights();
         IslandProvider.ClearTemporaryDropTargets();
-        // Debug: Isolated Groups: {IslandProvider.CountIsolatedIslandGroups()}
+        logger.Debug("Isolated Groups: {IsolatedGroupCount}", IslandProvider.CountIsolatedIslandGroups());
     }
 
     /// <inheritdoc cref="IMainViewModel.Receive(IAllConnectionsSetMessage)" />

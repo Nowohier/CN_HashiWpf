@@ -16,9 +16,6 @@ public class AutoFacGeneratorModule : Module
     /// <inheritdoc />
     protected override void Load(ContainerBuilder builder)
     {
-        // Register logging services
-        builder.RegisterType<LoggerFactory>().As<ILoggerFactory>().SingleInstance();
-        
         builder.RegisterType<HashiGenerator>().As<IHashiGenerator>().SingleInstance();
         builder.RegisterType<Island>().As<IIsland>().InstancePerDependency();
         builder.RegisterType<Bridge>().As<IBridge>().InstancePerDependency();
