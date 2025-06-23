@@ -12,13 +12,13 @@ namespace Hashi.Gui.Logging;
 /// </summary>
 public class NLogLoggerFactory : ILoggerFactory
 {
-    private readonly IPathProvider _pathProvider;
-    private static bool _isConfigured = false;
-    private static readonly object _lock = new object();
+    private readonly IPathProvider pathProvider;
+    private static bool isConfigured = false;
+    private static readonly object lockObject = new object();
 
     public NLogLoggerFactory(IPathProvider pathProvider)
     {
-        _pathProvider = pathProvider;
+        this.pathProvider = pathProvider;
         ConfigureNLog();
     }
 
@@ -35,9 +35,9 @@ public class NLogLoggerFactory : ILoggerFactory
 
     private void ConfigureNLog()
     {
-        lock (_lock)
+        lock (lockObject)
         {
-            if (_isConfigured)
+            if (isConfigured)
                 return;
 
             var config = new LoggingConfiguration();
@@ -45,7 +45,7 @@ public class NLogLoggerFactory : ILoggerFactory
             // Create file target
             var fileTarget = new FileTarget("fileTarget")
             {
-                FileName = Path.Combine(_pathProvider.SettingsDirectoryPath, "${date:format=yyyyddMM}.hashi_log.txt"),
+                FileName = Path.Combine(pathProvider.SettingsDirectoryPath, "${date:format=yyyyddMM}.hashi_log.txt"),
                 Layout = "${longdate}|${level:uppercase=true}|${logger}|${message}",
                 ArchiveEvery = FileArchivePeriod.Day,
                 ArchiveNumbering = ArchiveNumberingMode.Date,
@@ -70,7 +70,7 @@ public class NLogLoggerFactory : ILoggerFactory
             }
 
             LogManager.Configuration = config;
-            _isConfigured = true;
+            isConfigured = true;
         }
     }
 }
