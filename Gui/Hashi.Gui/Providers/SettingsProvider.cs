@@ -1,4 +1,5 @@
-﻿using Hashi.Gui.Interfaces.Providers;
+﻿using Hashi.Gui.Interfaces.Logging;
+using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Wrappers;
 using Hashi.Gui.Translation;
@@ -15,14 +16,17 @@ public class SettingsProvider : ISettingsProvider
     private readonly IJsonWrapper jsonWrapper;
     private readonly Func<ISettingsViewModel> settingsFactory;
     private readonly IPathProvider pathProvider;
+    private readonly ILogger logger;
 
     /// <inheritdoc cref="ISettingsProvider" />
-    public SettingsProvider(IJsonWrapper jsonWrapper, Func<ISettingsViewModel> settingsFactory, IPathProvider pathProvider)
+    public SettingsProvider(IJsonWrapper jsonWrapper, Func<ISettingsViewModel> settingsFactory, IPathProvider pathProvider, ILoggerFactory loggerFactory)
     {
         this.jsonWrapper = jsonWrapper;
         this.settingsFactory = settingsFactory;
         this.pathProvider = pathProvider;
+        this.logger = loggerFactory.CreateLogger<SettingsProvider>();
         Settings = LoadSettings();
+        logger.Info("SettingsProvider initialized");
     }
 
     /// <inheritdoc />
@@ -49,12 +53,13 @@ public class SettingsProvider : ISettingsProvider
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex.StackTrace);
+            logger.Error("Failed to save settings", ex);
         }
     }
 
     public ISettingsViewModel LoadSettings()
     {
+        logger.Debug($"Loading settings from {pathProvider.HashiSettingsFilePath}");
         ISettingsViewModel loadedSettings;
 
         try
@@ -68,18 +73,20 @@ public class SettingsProvider : ISettingsProvider
 
                 TranslationSource.Instance.CurrentCulture =
                     new CultureInfo(loadedSettings.SelectedLanguageCulture ?? "en-GB");
+                logger.Info("Settings loaded successfully from file");
                 return loadedSettings;
             }
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex.StackTrace);
+            logger.Error("Failed to load settings, using defaults", ex);
         }
 
         loadedSettings = settingsFactory.Invoke();
         loadedSettings.InitializeHighScores();
         loadedSettings.SelectedLanguageCulture = loadedSettings.Languages[0].Culture;
         TranslationSource.Instance.CurrentCulture = new CultureInfo(loadedSettings.SelectedLanguageCulture ?? "en-GB");
+        logger.Info("Created new default settings");
 
         return loadedSettings;
     }

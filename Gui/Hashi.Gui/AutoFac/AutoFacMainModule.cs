@@ -34,6 +34,7 @@ public class AutoFacMainModule : Module
         builder.RegisterModule<AutoFacProvidersModule>();
         builder.RegisterModule<AutoFacRulesModule>();
         builder.RegisterModule<AutoFacManagersModule>();
+        builder.RegisterModule<Logging.AutoFacLoggingModule>();
 
         builder.Register<Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider>>(context =>
         {
