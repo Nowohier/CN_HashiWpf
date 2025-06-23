@@ -9,7 +9,7 @@ namespace Hashi.LinearSolver.Logging;
 /// </summary>
 public static class Logger
 {
-    private static readonly Lazy<NLog.Logger> _logger = new Lazy<NLog.Logger>(CreateLogger);
+    private static readonly Lazy<NLog.Logger> logger = new Lazy<NLog.Logger>(CreateLogger);
 
     private static NLog.Logger CreateLogger()
     {
@@ -60,12 +60,12 @@ public static class Logger
             .OfType<DebuggableAttribute>().Any(da => da.IsJITTrackingEnabled);
     }
 
-    public static void Trace(string message) => _logger.Value.Trace(message);
-    public static void Debug(string message) => _logger.Value.Debug(message);
-    public static void Info(string message) => _logger.Value.Info(message);
-    public static void Warn(string message) => _logger.Value.Warn(message);
-    public static void Error(string message) => _logger.Value.Error(message);
-    public static void Error(string message, Exception exception) => _logger.Value.Error(exception, message);
-    public static void Fatal(string message) => _logger.Value.Fatal(message);
-    public static void Fatal(string message, Exception exception) => _logger.Value.Fatal(exception, message);
+    public static void Trace(string message) => logger.Value.Trace(message);
+    public static void Debug(string message) => logger.Value.Debug(message);
+    public static void Info(string message) => logger.Value.Info(message);
+    public static void Warn(string message) => logger.Value.Warn(message);
+    public static void Error(string message) => logger.Value.Error(message);
+    public static void Error(string message, Exception exception) => logger.Value.Error(exception, message);
+    public static void Fatal(string message) => logger.Value.Fatal(message);
+    public static void Fatal(string message, Exception exception) => logger.Value.Fatal(exception, message);
 }
