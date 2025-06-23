@@ -1,4 +1,4 @@
-namespace Hashi.Gui.Interfaces.Logging;
+namespace Hashi.Logging.Interfaces;
 
 /// <summary>
 /// Interface for logging services.

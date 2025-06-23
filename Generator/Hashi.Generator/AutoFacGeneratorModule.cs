@@ -5,6 +5,8 @@ using Hashi.Generator.Interfaces.Models;
 using Hashi.Generator.Interfaces.Providers;
 using Hashi.Generator.Models;
 using Hashi.Generator.Providers;
+using Hashi.Logging;
+using Hashi.Logging.Interfaces;
 
 namespace Hashi.Generator;
 
@@ -14,6 +16,9 @@ public class AutoFacGeneratorModule : Module
     /// <inheritdoc />
     protected override void Load(ContainerBuilder builder)
     {
+        // Register logging services
+        builder.RegisterType<LoggerFactory>().As<ILoggerFactory>().SingleInstance();
+        
         builder.RegisterType<HashiGenerator>().As<IHashiGenerator>().SingleInstance();
         builder.RegisterType<Island>().As<IIsland>().InstancePerDependency();
         builder.RegisterType<Bridge>().As<IBridge>().InstancePerDependency();

@@ -1,38 +1,48 @@
-using Hashi.Gui.Helpers;
-using Hashi.Gui.Interfaces.Logging;
-using Hashi.Gui.Interfaces.Providers;
+using System.Diagnostics;
+using System.Reflection;
+using Hashi.Logging.Interfaces;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
-using System.IO;
-using ILogger = Hashi.Gui.Interfaces.Logging.ILogger;
+using ILogger = Hashi.Logging.Interfaces.ILogger;
 
-namespace Hashi.Gui.Logging;
+namespace Hashi.Logging;
 
 /// <summary>
 /// NLog implementation of ILoggerFactory.
 /// </summary>
-public class NLogLoggerFactory : ILoggerFactory
+public class LoggerFactory : ILoggerFactory
 {
-    private readonly IPathProvider pathProvider;
     private static bool isConfigured = false;
     private static readonly object lockObject = new object();
 
-    public NLogLoggerFactory(IPathProvider pathProvider)
+    /// <summary>
+    /// Initializes a new instance of the LoggerFactory class.
+    /// </summary>
+    public LoggerFactory()
     {
-        this.pathProvider = pathProvider;
         ConfigureNLog();
     }
 
+    /// <summary>
+    /// Creates a logger for the specified type.
+    /// </summary>
+    /// <typeparam name="T">The type to create logger for.</typeparam>
+    /// <returns>A logger instance.</returns>
     public ILogger CreateLogger<T>()
     {
         return CreateLogger(typeof(T).FullName ?? typeof(T).Name);
     }
 
+    /// <summary>
+    /// Creates a logger with the specified name.
+    /// </summary>
+    /// <param name="name">The logger name.</param>
+    /// <returns>A logger instance.</returns>
     public ILogger CreateLogger(string name)
     {
         var nlogLogger = LogManager.GetLogger(name);
-        return new NLogLogger(nlogLogger);
+        return new Logger(nlogLogger);
     }
 
     private void ConfigureNLog()
@@ -47,8 +57,8 @@ public class NLogLoggerFactory : ILoggerFactory
             // Create file target
             var fileTarget = new FileTarget("fileTarget")
             {
-                FileName = Path.Combine(pathProvider.SettingsDirectoryPath, "${date:format=yyyyddMM}.hashi_log.txt"),
-                Layout = "${longdate}|${level:uppercase=true}|${logger}|${message}",
+                FileName = Path.Combine(GetLogsDirectory(), "${date:format=yyyyddMM}.hashi_log.txt"),
+                Layout = "${longdate}\t${level:uppercase=true}\t${logger}\t${message}",
                 ArchiveEvery = FileArchivePeriod.Day,
                 ArchiveNumbering = ArchiveNumberingMode.Date,
                 MaxArchiveFiles = 30,
@@ -60,7 +70,7 @@ public class NLogLoggerFactory : ILoggerFactory
             config.AddTarget(fileTarget);
 
             // Configure logging rules based on build configuration
-            if (DebugHelper.IsDebugBuild)
+            if (IsDebugBuild())
             {
                 // Debug build: log from Trace level onwards
                 config.AddRule(LogLevel.Trace, LogLevel.Fatal, fileTarget);
@@ -74,5 +84,17 @@ public class NLogLoggerFactory : ILoggerFactory
             LogManager.Configuration = config;
             isConfigured = true;
         }
+    }
+
+    private static string GetLogsDirectory()
+    {
+        var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        return Path.Combine(localAppData, "CN_Hashi", "Settings");
+    }
+
+    private static bool IsDebugBuild()
+    {
+        return Assembly.GetExecutingAssembly().GetCustomAttributes(false)
+            .OfType<DebuggableAttribute>().Any(da => da.IsJITTrackingEnabled);
     }
 }

@@ -5,7 +5,7 @@ using Hashi.Generator.Interfaces.Providers;
 using Hashi.Generator.Models;
 using Hashi.Generator.Providers;
 using Hashi.Gui.Extensions;
-using Hashi.Gui.Interfaces.Logging;
+using Hashi.Logging.Interfaces;
 using Hashi.Gui.Interfaces.Messages;
 using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Interfaces.ViewModels;
