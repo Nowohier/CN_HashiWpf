@@ -1,9 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <LangVersion>12</LangVersion>
     <RootNamespace>$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
   </PropertyGroup>
 
@@ -14,6 +15,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Hashi.LinearSolver.Interfaces\Hashi.LinearSolver.Interfaces.csproj" />
+    <ProjectReference Include="..\..\Logging\Hashi.Logging.Interfaces\Hashi.Logging.Interfaces.csproj" />
+    <ProjectReference Include="..\..\Logging\Hashi.Logging\Hashi.Logging.csproj" />
   </ItemGroup>
 
 </Project>

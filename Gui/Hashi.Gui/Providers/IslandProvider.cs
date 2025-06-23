@@ -9,8 +9,8 @@ using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Wrappers;
 using Hashi.Gui.Translation;
+using Hashi.Logging.Interfaces;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 
 namespace Hashi.Gui.Providers;
 
@@ -24,6 +24,7 @@ public class IslandProvider :
     private readonly Func<BridgeOperationTypeEnum, IHashiPoint, IHashiPoint, IHashiBridge> bridgeFactory;
     private readonly IDialogWrapper dialogWrapper;
     private readonly Func<int, int, int, IIslandViewModel> islandFactory;
+    private readonly ILogger logger;
 
     /// <inheritdoc cref="IIslandProvider" />
     public IslandProvider
@@ -31,15 +32,18 @@ public class IslandProvider :
         Func<int, int, int, IIslandViewModel> islandFactory,
         Func<BridgeOperationTypeEnum, IHashiPoint, IHashiPoint, IHashiBridge> bridgeFactory,
         Func<bool?, IAllConnectionsSetMessage> allConnectionsSetMessageFactory,
-        IDialogWrapper dialogWrapper
+        IDialogWrapper dialogWrapper,
+        ILoggerFactory loggerFactory
     )
     {
         this.islandFactory = islandFactory;
         this.bridgeFactory = bridgeFactory;
         this.allConnectionsSetMessageFactory = allConnectionsSetMessageFactory;
         this.dialogWrapper = dialogWrapper;
+        this.logger = loggerFactory.CreateLogger<IslandProvider>();
 
         WeakReferenceMessenger.Default.Register(this);
+        logger.Info("IslandProvider initialized");
     }
 
     private bool AreAllConnectionsSet =>
@@ -311,8 +315,7 @@ public class IslandProvider :
             var group = new List<IIslandViewModel>();
             FindConnectedIslands(island, group, visited);
 
-            Debug.WriteLine(
-                $"GroupCount: {group.Count} | Islands: {string.Join("|", group.Select(x => x.Coordinates))}");
+            //Debug.WriteLine($"GroupCount: {group.Count} | Islands: {string.Join("|", group.Select(x => x.Coordinates))}");
 
             // Count the group as isolated if all islands in the group have MaxConnectionsReached
             if (group.All(i => i.MaxConnectionsReached) && group.Count > 1)
