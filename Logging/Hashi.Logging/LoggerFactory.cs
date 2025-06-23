@@ -70,7 +70,7 @@ public class LoggerFactory : ILoggerFactory
             config.AddTarget(fileTarget);
 
             // Configure logging rules based on build configuration
-            if (IsDebugBuild())
+            if (Debugger.IsAttached)
             {
                 // Debug build: log from Trace level onwards
                 config.AddRule(LogLevel.Trace, LogLevel.Fatal, fileTarget);
@@ -92,9 +92,4 @@ public class LoggerFactory : ILoggerFactory
         return Path.Combine(localAppData, "CN_Hashi", "Settings");
     }
 
-    private static bool IsDebugBuild()
-    {
-        return Assembly.GetExecutingAssembly().GetCustomAttributes(false)
-            .OfType<DebuggableAttribute>().Any(da => da.IsJITTrackingEnabled);
-    }
 }
