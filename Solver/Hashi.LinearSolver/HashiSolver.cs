@@ -2,6 +2,7 @@
 using Hashi.Enums;
 using Hashi.LinearSolver.Interfaces;
 using Hashi.LinearSolver.Interfaces.Models;
+using Hashi.Logging.Interfaces;
 using System.Diagnostics;
 
 namespace Hashi.LinearSolver
@@ -13,6 +14,7 @@ namespace Hashi.LinearSolver
     {
         private readonly Func<int, int, int, int, IIsland> islandFactory;
         private readonly Func<int, int, int, IEdge> edgeFactory;
+        private readonly ILogger logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HashiSolver"/> class with the specified island and edge factories.
@@ -20,10 +22,12 @@ namespace Hashi.LinearSolver
         /// </summary>
         /// <param name="islandFactory">The island factory.</param>
         /// <param name="edgeFactory">The edge factory.</param>
-        public HashiSolver(Func<int, int, int, int, IIsland> islandFactory, Func<int, int, int, IEdge> edgeFactory)
+        /// <param name="loggerFactory">The logger factory.</param>
+        public HashiSolver(Func<int, int, int, int, IIsland> islandFactory, Func<int, int, int, IEdge> edgeFactory, ILoggerFactory loggerFactory)
         {
             this.islandFactory = islandFactory;
             this.edgeFactory = edgeFactory;
+            this.logger = loggerFactory.CreateLogger<HashiSolver>();
         }
 
         /// <inheritdoc />
@@ -53,7 +57,7 @@ namespace Hashi.LinearSolver
             for (var r = 0; r < rows; r++)
             {
                 var rowVals = lines[r + 1]
-                    .Split([' '], StringSplitOptions.RemoveEmptyEntries)
+                    .Split((char[])[' '], StringSplitOptions.RemoveEmptyEntries)
                     .Select(int.Parse)
                     .ToArray();
                 for (var c = 0; c < columns; c++)
@@ -117,14 +121,15 @@ namespace Hashi.LinearSolver
                 }
             }
 
+            logger.Debug("Grid visualization:");
             for (var r = 0; r < 2 * rows + 1; r++)
             {
+                var line = "";
                 for (var c = 0; c < 2 * cols + 1; c++)
                 {
-                    Debug.Write(grid[r, c]);
+                    line += grid[r, c];
                 }
-
-                Debug.WriteLine("");
+                logger.Debug(line);
             }
 
             return Task.CompletedTask;
@@ -133,6 +138,7 @@ namespace Hashi.LinearSolver
         /// <inheritdoc />
         public async Task<SolverStatusEnum> SolveLazy(int[][] data, bool prettyPrint = true)
         {
+            logger.Info($"Starting solver with {data.Length}x{data[0].Length} grid");
             var (islands, intersections) = await ConvertData(data);
             return await SolveLazy(islands, intersections, prettyPrint);
         }
@@ -140,6 +146,7 @@ namespace Hashi.LinearSolver
         /// <inheritdoc />
         public async Task<SolverStatusEnum> SolveLazy(string file, bool prettyPrint = true)
         {
+            logger.Info($"Reading puzzle from file: {file}");
             var (islands, intersections) = await ReadFile(file);
             return await SolveLazy(islands, intersections, prettyPrint);
         }
@@ -148,6 +155,7 @@ namespace Hashi.LinearSolver
         public async Task<SolverStatusEnum> SolveLazy(List<IIsland> islands, List<(int, int, int, int)> intersections, bool prettyPrint = true)
         {
             var n = islands.Count;
+            logger.Info($"Starting solving with {n} islands and {intersections.Count} intersections");
 
             // Build edge maps
             var edgeMap = new Dictionary<int, (int, int)>();
@@ -227,7 +235,7 @@ namespace Hashi.LinearSolver
                 // If only one component, solution is connected
                 if (cuts is [{ Count: 0 }])
                 {
-                    Debug.WriteLine($"Solution found ({Math.Round(watch.Elapsed.TotalSeconds, 3)})");
+                    logger.Info($"Solution found ({Math.Round(watch.Elapsed.TotalSeconds, 3)} seconds)");
                     watch.Stop();
                     if (prettyPrint)
                     {
@@ -256,7 +264,7 @@ namespace Hashi.LinearSolver
                 // If no new cuts were added, but still disconnected, declare infeasible (should not happen)
                 if (!newCutAdded)
                 {
-                    Debug.WriteLine("No new cuts could be added, but solution is still disconnected. Declaring infeasible.");
+                    logger.Warn("No new cuts could be added, but solution is still disconnected. Declaring infeasible.");
                     watch.Stop();
                     return SolverStatusEnum.Infeasible;
                 }

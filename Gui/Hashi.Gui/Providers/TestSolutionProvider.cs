@@ -5,6 +5,7 @@ using Hashi.Generator.Interfaces.Providers;
 using Hashi.Generator.Models;
 using Hashi.Generator.Providers;
 using Hashi.Gui.Extensions;
+using Hashi.Logging.Interfaces;
 using Hashi.Gui.Interfaces.Messages;
 using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Interfaces.ViewModels;
@@ -24,6 +25,7 @@ public class TestSolutionProvider : ObservableObject, ITestSolutionProvider
     private readonly IPathProvider pathProvider;
     private readonly Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider> solutionProviderFactory;
     private readonly Func<ISolutionProvider, ISetTestSolutionMessage> setTestSolutionMessageFactory;
+    private readonly ILogger logger;
     private ISolutionProvider? selectedSolutionProvider;
 
     public TestSolutionProvider
@@ -31,15 +33,18 @@ public class TestSolutionProvider : ObservableObject, ITestSolutionProvider
         IJsonWrapper jsonWrapper,
         IPathProvider pathProvider,
         Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider> solutionProviderFactory,
-        Func<ISolutionProvider, ISetTestSolutionMessage> setTestSolutionMessageFactory
+        Func<ISolutionProvider, ISetTestSolutionMessage> setTestSolutionMessageFactory,
+        ILoggerFactory loggerFactory
     )
     {
         this.jsonWrapper = jsonWrapper;
         this.pathProvider = pathProvider;
         this.solutionProviderFactory = solutionProviderFactory;
         this.setTestSolutionMessageFactory = setTestSolutionMessageFactory;
+        this.logger = loggerFactory.CreateLogger<TestSolutionProvider>();
         SolutionProviders.AddRange(LoadSettings());
         selectedSolutionProvider = SolutionProviders.FirstOrDefault();
+        logger.Info("TestSolutionProvider initialized");
     }
 
     /// <inheritdoc />
@@ -155,20 +160,23 @@ public class TestSolutionProvider : ObservableObject, ITestSolutionProvider
     {
         if (SolutionProviders == null) throw new InvalidOperationException("Settings cannot be null.");
 
+        logger.Debug($"Saving test fields to {pathProvider.HashiTestFieldsFilePath}");
         var jsonArray = jsonWrapper.SerializeWithCustomIndenting(SolutionProviders.Where(x => x.Name != null));
         var path = pathProvider.HashiTestFieldsFilePath;
         try
         {
             if (!Directory.Exists(pathProvider.SettingsDirectoryPath))
             {
+                logger.Debug($"Creating settings directory: {pathProvider.SettingsDirectoryPath}");
                 Directory.CreateDirectory(pathProvider.SettingsDirectoryPath);
             }
 
             File.WriteAllText(path, jsonArray);
+            logger.Info($"Successfully saved {SolutionProviders.Count(x => x.Name != null)} test fields");
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex.StackTrace);
+            logger.Error("Failed to save test fields", ex);
         }
     }
 
@@ -178,21 +186,24 @@ public class TestSolutionProvider : ObservableObject, ITestSolutionProvider
 
         try
         {
+            logger.Debug($"Loading settings from {pathProvider.HashiTestFieldsFilePath}");
             var path = pathProvider.HashiTestFieldsFilePath;
             if (!File.Exists(path) || File.ReadAllText(path) is not { } fileContent ||
                 jsonWrapper.DeserializeObject(fileContent, typeof(List<ISolutionProvider>)) is not
                     List<ISolutionProvider> loadedFromJson)
             {
+                logger.Info("No existing test fields found, starting with empty list");
                 return loadedTestFields;
             }
 
             loadedTestFields.AddRange(loadedFromJson);
+            logger.Info($"Successfully loaded {loadedTestFields.Count} test fields");
 
             return loadedTestFields;
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex.StackTrace);
+            logger.Error("Failed to load settings", ex);
         }
 
         return loadedTestFields;
