@@ -1,5 +1,3 @@
-using System.Diagnostics;
-using NLog;
 using ILogger = Hashi.Logging.Interfaces.ILogger;
 
 namespace Hashi.Logging;
