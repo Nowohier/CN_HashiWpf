@@ -4,6 +4,7 @@ using Hashi.Generator.Interfaces.Models;
 using Hashi.Generator.Interfaces.Providers;
 using Hashi.Generator.Models;
 using Hashi.LinearSolver.Interfaces;
+using Hashi.Logging.Interfaces;
 using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.CompilerServices;
@@ -19,6 +20,7 @@ public class HashiGenerator : IHashiGenerator
     private readonly Func<IIsland, IIsland, int, IBridge> bridgeFactory;
     private readonly Func<int[][], IList<IBridgeCoordinates>, ISolutionProvider> solutionContainerFactory;
     private readonly IHashiSolver hashiSolver;
+    private readonly ILogger logger;
     private readonly List<IBridge> bridges = [];
     private readonly List<IIsland> islands = [];
     private readonly Random random = new();
@@ -34,18 +36,22 @@ public class HashiGenerator : IHashiGenerator
         Func<int, int, int, IIsland> islandFactory,
         Func<IIsland, IIsland, int, IBridge> bridgeFactory,
         Func<int[][], IList<IBridgeCoordinates>, ISolutionProvider> solutionContainerFactory,
-        IHashiSolver hashiSolver)
+        IHashiSolver hashiSolver,
+        ILoggerFactory loggerFactory)
     {
         this.islandFactory = islandFactory;
         this.bridgeFactory = bridgeFactory;
         this.solutionContainerFactory = solutionContainerFactory;
         this.hashiSolver = hashiSolver;
+        this.logger = loggerFactory.CreateLogger<HashiGenerator>();
     }
 
     /// <inheritdoc />
     public async Task<ISolutionProvider> GenerateHashAsync(int difficulty = -1, int amountNodes = 10, int width = 0,
         int length = 0, int alpha = 0, int beta = 0)
     {
+        logger.Info($"Starting hash generation - difficulty: {difficulty}, nodes: {amountNodes}, size: {width}x{length}");
+        
         if (difficulty >= 0)
         {
             return await GenerateWithDifficultyAsync(difficulty);
@@ -137,9 +143,12 @@ public class HashiGenerator : IHashiGenerator
 
         if (Debugger.IsAttached)
         {
-            Debug.WriteLine(string.Empty);
-            Debug.WriteLine($"Number of islands: {islands.Count}");
-            Debug.WriteLine(string.Join("\n", field.Select(row => $"{{{string.Join(", ", row)}}}")));
+            logger.Debug($"Number of islands: {islands.Count}");
+            logger.Debug("Generated field:");
+            foreach (var row in field)
+            {
+                logger.Debug($"{{{string.Join(", ", row)}}}");
+            }
         }
 
         return solutionContainerFactory.Invoke(field, bridgeCoordinates);
