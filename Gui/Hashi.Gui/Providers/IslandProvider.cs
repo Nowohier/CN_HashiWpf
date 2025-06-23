@@ -11,7 +11,6 @@ using Hashi.Gui.Interfaces.Wrappers;
 using Hashi.Gui.Translation;
 using Hashi.Logging.Interfaces;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 
 namespace Hashi.Gui.Providers;
 
@@ -316,10 +315,7 @@ public class IslandProvider :
             var group = new List<IIslandViewModel>();
             FindConnectedIslands(island, group, visited);
 
-            Debug.WriteLine(
-                $"GroupCount: {group.Count} | Islands: {string.Join("|", group.Select(x => x.Coordinates))}");
-            logger.Debug(
-                $"Connected group found - GroupCount: {group.Count} | Islands: {string.Join("|", group.Select(x => x.Coordinates))}");
+            //Debug.WriteLine($"GroupCount: {group.Count} | Islands: {string.Join("|", group.Select(x => x.Coordinates))}");
 
             // Count the group as isolated if all islands in the group have MaxConnectionsReached
             if (group.All(i => i.MaxConnectionsReached) && group.Count > 1)
