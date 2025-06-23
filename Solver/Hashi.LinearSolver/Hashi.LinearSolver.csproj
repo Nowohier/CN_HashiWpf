@@ -10,11 +10,12 @@
   <ItemGroup>
     <PackageReference Include="Autofac" Version="8.2.1" />
     <PackageReference Include="Google.OrTools" Version="9.12.4544" />
-    <PackageReference Include="NLog" Version="5.3.4" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Hashi.LinearSolver.Interfaces\Hashi.LinearSolver.Interfaces.csproj" />
+    <ProjectReference Include="..\..\Logging\Hashi.Logging.Interfaces\Hashi.Logging.Interfaces.csproj" />
+    <ProjectReference Include="..\..\Logging\Hashi.Logging\Hashi.Logging.csproj" />
   </ItemGroup>
 
 </Project>

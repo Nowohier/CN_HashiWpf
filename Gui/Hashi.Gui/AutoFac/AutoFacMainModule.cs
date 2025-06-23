@@ -11,6 +11,8 @@ using Hashi.Gui.ViewModels;
 using Hashi.Gui.Views;
 using Hashi.Gui.Wrappers;
 using Hashi.LinearSolver;
+using Hashi.Logging;
+using Hashi.Logging.Interfaces;
 using Hashi.Rules;
 
 namespace Hashi.Gui.AutoFac;
@@ -34,7 +36,9 @@ public class AutoFacMainModule : Module
         builder.RegisterModule<AutoFacProvidersModule>();
         builder.RegisterModule<AutoFacRulesModule>();
         builder.RegisterModule<AutoFacManagersModule>();
-        builder.RegisterModule<Logging.AutoFacLoggingModule>();
+        
+        // Register shared logging services
+        builder.RegisterType<LoggerFactory>().As<ILoggerFactory>().SingleInstance();
 
         builder.Register<Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider>>(context =>
         {
