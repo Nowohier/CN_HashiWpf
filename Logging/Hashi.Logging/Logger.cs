@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using NLog;
 using ILogger = Hashi.Logging.Interfaces.ILogger;
 
@@ -26,6 +27,7 @@ public class Logger : ILogger
     public void Trace(string message)
     {
         logger.Trace(message);
+        System.Diagnostics.Debug.WriteLine($"TRACE|{logger.Name}|{message}");
     }
 
     /// <summary>
@@ -35,6 +37,7 @@ public class Logger : ILogger
     public void Debug(string message)
     {
         logger.Debug(message);
+        System.Diagnostics.Debug.WriteLine($"DEBUG|{logger.Name}|{message}");
     }
 
     /// <summary>
@@ -44,6 +47,7 @@ public class Logger : ILogger
     public void Info(string message)
     {
         logger.Info(message);
+        System.Diagnostics.Debug.WriteLine($"INFO|{logger.Name}|{message}");
     }
 
     /// <summary>
@@ -53,6 +57,7 @@ public class Logger : ILogger
     public void Warn(string message)
     {
         logger.Warn(message);
+        System.Diagnostics.Debug.WriteLine($"WARN|{logger.Name}|{message}");
     }
 
     /// <summary>
@@ -62,6 +67,7 @@ public class Logger : ILogger
     public void Error(string message)
     {
         logger.Error(message);
+        System.Diagnostics.Debug.WriteLine($"ERROR|{logger.Name}|{message}");
     }
 
     /// <summary>
@@ -72,6 +78,7 @@ public class Logger : ILogger
     public void Error(string message, Exception exception)
     {
         logger.Error(exception, message);
+        System.Diagnostics.Debug.WriteLine($"ERROR|{logger.Name}|{message}|{exception}");
     }
 
     /// <summary>
@@ -81,6 +88,7 @@ public class Logger : ILogger
     public void Fatal(string message)
     {
         logger.Fatal(message);
+        System.Diagnostics.Debug.WriteLine($"FATAL|{logger.Name}|{message}");
     }
 
     /// <summary>
@@ -91,5 +99,6 @@ public class Logger : ILogger
     public void Fatal(string message, Exception exception)
     {
         logger.Fatal(exception, message);
+        System.Diagnostics.Debug.WriteLine($"FATAL|{logger.Name}|{message}|{exception}");
     }
 }
