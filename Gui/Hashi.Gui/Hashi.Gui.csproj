@@ -37,6 +37,7 @@
     <PackageReference Include="MahApps.Metro.IconPacks.VaadinIcons" Version="5.1.0" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="NLog" Version="5.3.4" />
     <PackageReference Include="NRules" Version="1.0.2" />
   </ItemGroup>
 
