@@ -1,4 +1,4 @@
-﻿using Hashi.Gui.Interfaces.Logging;
+﻿using Hashi.Logging.Interfaces;
 using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Wrappers;
