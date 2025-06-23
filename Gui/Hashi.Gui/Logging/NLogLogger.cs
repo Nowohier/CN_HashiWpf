@@ -1,5 +1,5 @@
-using Hashi.Gui.Interfaces.Logging;
 using NLog;
+using ILogger = Hashi.Gui.Interfaces.Logging.ILogger;
 
 namespace Hashi.Gui.Logging;
 

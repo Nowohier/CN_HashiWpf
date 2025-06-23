@@ -1,9 +1,11 @@
+using Hashi.Gui.Helpers;
 using Hashi.Gui.Interfaces.Logging;
 using Hashi.Gui.Interfaces.Providers;
-using Hashi.Gui.Helpers;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
+using System.IO;
+using ILogger = Hashi.Gui.Interfaces.Logging.ILogger;
 
 namespace Hashi.Gui.Logging;
 
