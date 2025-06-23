@@ -5,7 +5,6 @@ using Hashi.Generator.Interfaces;
 using Hashi.Generator.Interfaces.Providers;
 using Hashi.Generator.Providers;
 using Hashi.Gui.Helpers;
-using Hashi.Logging.Interfaces;
 using Hashi.Gui.Interfaces.Managers;
 using Hashi.Gui.Interfaces.Messages;
 using Hashi.Gui.Interfaces.Models;
@@ -14,7 +13,7 @@ using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Wrappers;
 using Hashi.Gui.Messaging;
 using Hashi.Gui.Translation;
-using System.Diagnostics;
+using Hashi.Logging.Interfaces;
 using System.Globalization;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -76,7 +75,7 @@ public class MainViewModel : AsyncObservableRecipient,
         this.dialogWrapper = dialogWrapper;
         this.hashiGenerator = hashiGenerator;
         this.resourceManager = resourceManager;
-        logger = loggerFactory.Create<MainViewModel>();
+        logger = loggerFactory.CreateLogger<MainViewModel>();
 
         WeakReferenceMessenger.Default.Register<IBridgeConnectionChangedMessage>(this);
         WeakReferenceMessenger.Default.Register<IAllConnectionsSetMessage>(this);
@@ -331,7 +330,7 @@ public class MainViewModel : AsyncObservableRecipient,
         IslandProvider.RefreshIslandColors();
         IslandProvider.RemoveAllHighlights();
         IslandProvider.ClearTemporaryDropTargets();
-        logger.Debug("Isolated Groups: {IsolatedGroupCount}", IslandProvider.CountIsolatedIslandGroups());
+        logger.Debug($"Isolated Groups: {IslandProvider.CountIsolatedIslandGroups()}");
     }
 
     /// <inheritdoc cref="IMainViewModel.Receive(IAllConnectionsSetMessage)" />
