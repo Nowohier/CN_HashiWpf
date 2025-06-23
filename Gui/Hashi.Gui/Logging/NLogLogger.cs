@@ -8,50 +8,50 @@ namespace Hashi.Gui.Logging;
 /// </summary>
 public class NLogLogger : ILogger
 {
-    private readonly Logger _logger;
+    private readonly Logger logger;
 
     public NLogLogger(Logger logger)
     {
-        _logger = logger;
+        this.logger = logger;
     }
 
     public void Trace(string message)
     {
-        _logger.Trace(message);
+        logger.Trace(message);
     }
 
     public void Debug(string message)
     {
-        _logger.Debug(message);
+        logger.Debug(message);
     }
 
     public void Info(string message)
     {
-        _logger.Info(message);
+        logger.Info(message);
     }
 
     public void Warn(string message)
     {
-        _logger.Warn(message);
+        logger.Warn(message);
     }
 
     public void Error(string message)
     {
-        _logger.Error(message);
+        logger.Error(message);
     }
 
     public void Error(string message, Exception exception)
     {
-        _logger.Error(exception, message);
+        logger.Error(exception, message);
     }
 
     public void Fatal(string message)
     {
-        _logger.Fatal(message);
+        logger.Fatal(message);
     }
 
     public void Fatal(string message, Exception exception)
     {
-        _logger.Fatal(exception, message);
+        logger.Fatal(exception, message);
     }
 }
