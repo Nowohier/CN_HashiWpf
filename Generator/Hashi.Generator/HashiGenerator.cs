@@ -2,6 +2,7 @@
 using Hashi.Generator.Interfaces;
 using Hashi.Generator.Interfaces.Models;
 using Hashi.Generator.Interfaces.Providers;
+using Hashi.Generator.Logging;
 using Hashi.Generator.Models;
 using Hashi.LinearSolver.Interfaces;
 using System.Diagnostics;
@@ -46,6 +47,8 @@ public class HashiGenerator : IHashiGenerator
     public async Task<ISolutionProvider> GenerateHashAsync(int difficulty = -1, int amountNodes = 10, int width = 0,
         int length = 0, int alpha = 0, int beta = 0)
     {
+        Logger.Info($"Starting hash generation - difficulty: {difficulty}, nodes: {amountNodes}, size: {width}x{length}");
+        
         if (difficulty >= 0)
         {
             return await GenerateWithDifficultyAsync(difficulty);
@@ -137,9 +140,12 @@ public class HashiGenerator : IHashiGenerator
 
         if (Debugger.IsAttached)
         {
-            Debug.WriteLine(string.Empty);
-            Debug.WriteLine($"Number of islands: {islands.Count}");
-            Debug.WriteLine(string.Join("\n", field.Select(row => $"{{{string.Join(", ", row)}}}")));
+            Logger.Debug($"Number of islands: {islands.Count}");
+            Logger.Debug("Generated field:");
+            foreach (var row in field)
+            {
+                Logger.Debug($"{{{string.Join(", ", row)}}}");
+            }
         }
 
         return solutionContainerFactory.Invoke(field, bridgeCoordinates);
