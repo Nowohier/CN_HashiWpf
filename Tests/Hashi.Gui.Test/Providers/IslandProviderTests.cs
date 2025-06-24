@@ -353,18 +353,18 @@ public class IslandProviderTests
 
         mockCoordinates.Setup(c => c.X).Returns(x);
         mockCoordinates.Setup(c => c.Y).Returns(y);
-        
+
         mockIsland.Setup(i => i.Coordinates).Returns(mockCoordinates.Object);
         mockIsland.Setup(i => i.MaxConnections).Returns(maxConnections);
         mockIsland.Setup(i => i.AllConnections).Returns(new ObservableCollection<IHashiPoint>());
-        
+
         // Setup properties that might be accessed in tests
         mockIsland.SetupProperty(i => i.IsHighlightHorizontalLeft);
         mockIsland.SetupProperty(i => i.IsHighlightHorizontalRight);
         mockIsland.SetupProperty(i => i.IsHighlightVerticalTop);
         mockIsland.SetupProperty(i => i.IsHighlightVerticalBottom);
         mockIsland.SetupProperty(i => i.IslandColor);
-        
+
         // Setup additional properties
         mockIsland.Setup(i => i.MaxConnectionsReached).Returns(false);
         mockIsland.Setup(i => i.RemainingConnections).Returns(maxConnections);
@@ -372,14 +372,14 @@ public class IslandProviderTests
         mockIsland.Setup(i => i.BridgesRight).Returns(new List<IHashiPoint>());
         mockIsland.Setup(i => i.BridgesUp).Returns(new List<IHashiPoint>());
         mockIsland.Setup(i => i.BridgesDown).Returns(new List<IHashiPoint>());
-        
+
         // Setup methods that might be called
         mockIsland.Setup(i => i.RefreshIslandColor()).Verifiable();
         mockIsland.Setup(i => i.ResetDropTarget()).Verifiable();
         mockIsland.Setup(i => i.NotifyBridgeConnections()).Verifiable();
         mockIsland.Setup(i => i.AddConnection(It.IsAny<IHashiPoint>())).Verifiable();
         mockIsland.Setup(i => i.RemoveAllConnectionsMatchingCoordinates(It.IsAny<IHashiPoint>())).Verifiable();
-        mockIsland.Setup(i => i.GetConnectionType(It.IsAny<IIslandViewModel>())).Returns(ConnectionTypeEnum.None);
+        mockIsland.Setup(i => i.GetConnectionType(It.IsAny<IIslandViewModel>())).Returns(ConnectionTypeEnum.Diagonal);
         mockIsland.Setup(i => i.IsValidDropTarget(It.IsAny<IIslandViewModel>())).Returns(true);
         mockIsland.Setup(i => i.MaxBridgesReachedToTarget(It.IsAny<IIslandViewModel>())).Returns(false);
 

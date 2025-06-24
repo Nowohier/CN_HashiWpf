@@ -6,6 +6,7 @@ using Hashi.Gui.Providers;
 using Hashi.Gui.ViewModels.Settings;
 using Hashi.Logging.Interfaces;
 using Moq;
+using System.Collections.ObjectModel;
 
 namespace Hashi.Gui.Test.Providers;
 
@@ -53,8 +54,8 @@ public class SettingsProviderTests
         // Setup default return for settings that don't exist
         var mockLanguage = new Mock<ILanguageViewModel>();
         mockLanguage.Setup(x => x.Culture).Returns("en-GB");
-        var languagesList = new List<ILanguageViewModel> { mockLanguage.Object };
-        
+        var languagesList = new ObservableCollection<ILanguageViewModel> { mockLanguage.Object };
+
         settingsViewModelMock.Setup(x => x.Languages).Returns(languagesList);
         settingsViewModelMock.Setup(x => x.InitializeHighScores()).Verifiable();
         settingsViewModelMock.SetupProperty(x => x.SelectedLanguageCulture);
