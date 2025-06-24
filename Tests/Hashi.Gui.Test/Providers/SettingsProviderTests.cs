@@ -40,6 +40,15 @@ public class SettingsProviderTests
         pathProviderMock.Setup(x => x.SettingsDirectoryPath).Returns(testDirectoryPath);
         settingsFactoryMock.Setup(x => x.Invoke()).Returns(settingsViewModelMock.Object);
 
+        // Setup logger methods that are called
+        loggerMock.Setup(x => x.Info(It.IsAny<string>())).Verifiable();
+        loggerMock.Setup(x => x.Error(It.IsAny<string>())).Verifiable();
+        loggerMock.Setup(x => x.Error(It.IsAny<string>(), It.IsAny<Exception>())).Verifiable();
+
+        // Setup JsonWrapper methods (will be overridden in specific tests as needed)
+        jsonWrapperMock.Setup(x => x.SerializeObject(It.IsAny<object>())).Returns("{}");
+        jsonWrapperMock.Setup(x => x.DeserializeObject(It.IsAny<string>(), It.IsAny<Type>())).Returns(null);
+
         // Setup default return for settings that don't exist
         settingsViewModelMock.Setup(x => x.Languages).Returns([Mock.Of<ILanguageViewModel>(l => l.Culture == "en-GB")]);
 

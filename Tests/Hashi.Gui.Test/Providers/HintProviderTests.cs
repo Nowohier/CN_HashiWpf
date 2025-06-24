@@ -31,6 +31,12 @@ public class HintProviderTests
 
         islandProviderMock.Setup(x => x.IslandsFlat).Returns(new List<IIslandViewModel>());
 
+        // Setup common method calls 
+        ruleInfoProviderMock.SetupProperty(x => x.AreRulesBeingApplied, false);
+        ruleRepositoryMock.Setup(x => x.CompileOne(It.IsAny<string>())).Returns(Mock.Of<ISessionFactory>());
+        ruleRepositoryMock.Setup(x => x.Compile()).Returns(Mock.Of<ISessionFactory>());
+        dialogWrapperMock.Setup(x => x.Show(It.IsAny<string>(), It.IsAny<string>())).Verifiable();
+
         sut = new HintProvider(
             islandProviderMock.Object,
             dialogWrapperMock.Object,

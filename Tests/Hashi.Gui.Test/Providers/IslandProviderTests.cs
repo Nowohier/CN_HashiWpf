@@ -35,6 +35,17 @@ public class IslandProviderTests
 
         loggerFactoryMock.Setup(x => x.CreateLogger<IslandProvider>()).Returns(loggerMock.Object);
 
+        // Setup logger methods
+        loggerMock.Setup(x => x.Info(It.IsAny<string>())).Verifiable();
+        loggerMock.Setup(x => x.Error(It.IsAny<string>())).Verifiable();
+        loggerMock.Setup(x => x.Error(It.IsAny<string>(), It.IsAny<Exception>())).Verifiable();
+
+        // Setup common factory method calls
+        islandFactoryMock.Setup(x => x.Invoke(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>())).Returns(Mock.Of<IIslandViewModel>());
+        bridgeFactoryMock.Setup(x => x.Invoke(It.IsAny<BridgeOperationTypeEnum>(), It.IsAny<IHashiPoint>(), It.IsAny<IHashiPoint>())).Returns(Mock.Of<IHashiBridge>());
+        allConnectionsSetMessageFactoryMock.Setup(x => x.Invoke(It.IsAny<bool?>())).Returns(Mock.Of<IAllConnectionsSetMessage>());
+        dialogWrapperMock.Setup(x => x.Show(It.IsAny<string>(), It.IsAny<string>())).Verifiable();
+
         sut = new IslandProvider(
             islandFactoryMock.Object,
             bridgeFactoryMock.Object,

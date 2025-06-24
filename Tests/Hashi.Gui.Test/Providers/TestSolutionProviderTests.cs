@@ -40,6 +40,18 @@ public class TestSolutionProviderTests
         jsonWrapperMock.Setup(x => x.DeserializeObject(It.IsAny<string>(), It.IsAny<Type>()))
                       .Returns(new List<ISolutionProvider>());
 
+        // Setup logger methods
+        loggerMock.Setup(x => x.Info(It.IsAny<string>())).Verifiable();
+        loggerMock.Setup(x => x.Error(It.IsAny<string>())).Verifiable();
+        loggerMock.Setup(x => x.Error(It.IsAny<string>(), It.IsAny<Exception>())).Verifiable();
+
+        // Setup JsonWrapper methods
+        jsonWrapperMock.Setup(x => x.SerializeObject(It.IsAny<object>())).Returns("{}");
+
+        // Setup factory methods
+        solutionProviderFactoryMock.Setup(x => x.Invoke(It.IsAny<IReadOnlyList<int[]>?>(), It.IsAny<List<IBridgeCoordinates>?>(), It.IsAny<string?>())).Returns(Mock.Of<ISolutionProvider>());
+        setTestSolutionMessageFactoryMock.Setup(x => x.Invoke(It.IsAny<ISolutionProvider>())).Returns(Mock.Of<ISetTestSolutionMessage>());
+
         sut = new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,

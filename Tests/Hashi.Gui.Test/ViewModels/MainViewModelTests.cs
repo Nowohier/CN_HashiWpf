@@ -59,6 +59,39 @@ public class MainViewModelTests
         var hashiBrushMock = new Mock<IHashiBrush>(MockBehavior.Strict);
         brushFactoryMock.Setup(x => x.Invoke(It.IsAny<SolidColorBrush>())).Returns(hashiBrushMock.Object);
 
+        // Setup logger methods
+        loggerMock.Setup(x => x.Info(It.IsAny<string>())).Verifiable();
+        loggerMock.Setup(x => x.Error(It.IsAny<string>())).Verifiable();
+        loggerMock.Setup(x => x.Error(It.IsAny<string>(), It.IsAny<Exception>())).Verifiable();
+
+        // Setup ResourceManager methods
+        resourceManagerMock.Setup(x => x.PrepareUi()).Verifiable();
+        resourceManagerMock.Setup(x => x.ResetSettingsAndLoadFromDefault()).Verifiable();
+
+        // Setup RuleInfoProvider properties
+        ruleInfoProviderMock.SetupProperty(x => x.RuleMessage, string.Empty);
+        ruleInfoProviderMock.SetupProperty(x => x.AreRulesBeingApplied, false);
+
+        // Setup HintProvider methods
+        hintProviderMock.Setup(x => x.ResetSession()).Verifiable();
+        hintProviderMock.Setup(x => x.GetHintForSelectedRule()).Verifiable();
+        hintProviderMock.Setup(x => x.GetHintForAllRules()).Verifiable();
+
+        // Setup other provider methods
+        timerProviderMock.Setup(x => x.StartTimer()).Verifiable();
+        timerProviderMock.Setup(x => x.StopTimer()).Verifiable();
+        timerProviderMock.Setup(x => x.ResetTimer()).Verifiable();
+        islandProviderMock.Setup(x => x.InitIslands(It.IsAny<IReadOnlyList<int[]>>())).Verifiable();
+        islandProviderMock.Setup(x => x.ResetHighlights()).Verifiable();
+        testSolutionProviderMock.Setup(x => x.SetTestSolution(It.IsAny<ISolutionProvider>())).Verifiable();
+        hashiGeneratorMock.Setup(x => x.Generate(It.IsAny<DifficultyEnum>())).Returns(Mock.Of<ISolutionProvider>());
+
+        // Setup DialogWrapper methods
+        dialogWrapperMock.Setup(x => x.Show(It.IsAny<string>(), It.IsAny<string>())).Verifiable();
+
+        // Setup Settings methods
+        settingsProviderMock.Setup(x => x.SaveSettings()).Verifiable();
+
         sut = new MainViewModel(
             brushFactoryMock.Object,
             dialogWrapperMock.Object,
