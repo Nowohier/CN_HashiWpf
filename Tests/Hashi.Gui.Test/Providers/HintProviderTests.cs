@@ -5,8 +5,10 @@ using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Wrappers;
 using Hashi.Gui.Providers;
 using Hashi.Rules;
+using Hashi.Rules.Extensions;
 using Moq;
 using NRules;
+using NRules.RuleModel;
 
 namespace Hashi.Gui.Test.Providers;
 
@@ -125,7 +127,7 @@ public class HintProviderTests
         var selectedRule = typeof(_1ConnectionRule1);
         var mockSessionFactory = new Mock<ISessionFactory>();
         var mockSession = new Mock<ISession>();
-        
+
         mockRuleRepository.Setup(x => x.CompileOne(selectedRule.FullName!))
                          .Returns(mockSessionFactory.Object);
         mockSessionFactory.Setup(x => x.CreateSession()).Returns(mockSession.Object);
@@ -147,7 +149,7 @@ public class HintProviderTests
         var selectedRule = typeof(_1ConnectionRule1);
         var mockSessionFactory = new Mock<ISessionFactory>();
         var mockSession = new Mock<ISession>();
-        
+
         mockRuleRepository.Setup(x => x.CompileOne(selectedRule.FullName!))
                          .Returns(mockSessionFactory.Object);
         mockSessionFactory.Setup(x => x.CreateSession()).Returns(mockSession.Object);
@@ -169,7 +171,7 @@ public class HintProviderTests
         var selectedRule = typeof(_0AllRules);
         var mockSessionFactory = new Mock<ISessionFactory>();
         var mockSession = new Mock<ISession>();
-        
+
         mockRuleRepository.Setup(x => x.Compile())
                          .Returns(mockSessionFactory.Object);
         mockSessionFactory.Setup(x => x.CreateSession()).Returns(mockSession.Object);
@@ -191,7 +193,7 @@ public class HintProviderTests
         var selectedRule = typeof(_1ConnectionRule1);
         var mockSessionFactory = new Mock<ISessionFactory>();
         var mockSession = new Mock<ISession>();
-        
+
         mockRuleRepository.Setup(x => x.CompileOne(selectedRule.FullName!))
                          .Returns(mockSessionFactory.Object);
         mockSessionFactory.Setup(x => x.CreateSession()).Returns(mockSession.Object);
@@ -216,7 +218,7 @@ public class HintProviderTests
         var selectedRule = typeof(_1ConnectionRule1);
         var mockSessionFactory = new Mock<ISessionFactory>();
         var mockSession = new Mock<ISession>();
-        
+
         mockRuleRepository.Setup(x => x.CompileOne(selectedRule.FullName!))
                          .Returns(mockSessionFactory.Object);
         mockSessionFactory.Setup(x => x.CreateSession()).Returns(mockSession.Object);
@@ -241,7 +243,7 @@ public class HintProviderTests
         var selectedRule = typeof(_1ConnectionRule1);
         var mockSessionFactory = new Mock<ISessionFactory>();
         var mockSession = new Mock<ISession>();
-        
+
         // First call to create session
         mockRuleRepository.Setup(x => x.CompileOne(selectedRule.FullName!))
                          .Returns(mockSessionFactory.Object);
@@ -269,7 +271,7 @@ public class HintProviderTests
         var selectedRule = typeof(_1ConnectionRule1);
         var mockSessionFactory = new Mock<ISessionFactory>();
         var mockSession = new Mock<ISession>();
-        
+
         mockRuleRepository.Setup(x => x.CompileOne(selectedRule.FullName!))
                          .Returns(mockSessionFactory.Object);
         mockSessionFactory.Setup(x => x.CreateSession()).Returns(mockSession.Object);

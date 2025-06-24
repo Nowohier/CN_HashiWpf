@@ -1,6 +1,7 @@
 using FluentAssertions;
 using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Managers;
+using Hashi.Logging.Interfaces;
 using Moq;
 
 namespace Hashi.Gui.Test.Managers;
@@ -9,6 +10,7 @@ namespace Hashi.Gui.Test.Managers;
 public class ResourceManagerTests
 {
     private Mock<IPathProvider> mockPathProvider;
+    private Mock<ILogger> loggerMock;
     private ResourceManager sut;
     private string testDirectoryPath;
     private string testSettingsFilePath;
@@ -28,7 +30,10 @@ public class ResourceManagerTests
         mockPathProvider.Setup(x => x.HashiSettingsFileName).Returns("hashisettings.json");
         mockPathProvider.Setup(x => x.HashiTestFieldsFileName).Returns("hashitestfields.json");
 
-        sut = new ResourceManager(mockPathProvider.Object);
+        loggerMock = new Mock<ILogger>(MockBehavior.Strict);
+        loggerMock.Setup(x => x.Error(It.IsAny<string>())).Verifiable();
+
+        sut = new ResourceManager(mockPathProvider.Object, loggerMock.Object);
     }
 
     [TearDown]
@@ -52,7 +57,7 @@ public class ResourceManagerTests
     public void Constructor_WhenCalledWithValidPathProvider_ShouldNotThrow()
     {
         // Arrange & Act & Assert
-        var act = () => new ResourceManager(mockPathProvider.Object);
+        var act = () => new ResourceManager(mockPathProvider.Object, loggerMock.Object);
         act.Should().NotThrow();
     }
 
@@ -204,10 +209,16 @@ public class ResourceManagerTests
         invalidPathProvider.Setup(x => x.HashiSettingsFileName).Returns("settings.json");
         invalidPathProvider.Setup(x => x.HashiTestFieldsFileName).Returns("testfields.json");
 
-        var resourceManager = new ResourceManager(invalidPathProvider.Object);
+        var errorMessage = string.Format(ResourceManager.ErrorMessage, invalidPathProvider.Object.SettingsDirectoryPath, "*");
+
+        var resourceManager = new ResourceManager(invalidPathProvider.Object, loggerMock.Object);
 
         // Act & Assert
-        resourceManager.Invoking(x => x.PrepareUi()).Should().NotThrow();
+        resourceManager
+            .Invoking(x => x.PrepareUi())
+            .Should()
+            .Throw<ArgumentException>()
+            .WithMessage(errorMessage);
     }
 
     [Test]
@@ -221,9 +232,15 @@ public class ResourceManagerTests
         invalidPathProvider.Setup(x => x.HashiSettingsFileName).Returns("settings.json");
         invalidPathProvider.Setup(x => x.HashiTestFieldsFileName).Returns("testfields.json");
 
-        var resourceManager = new ResourceManager(invalidPathProvider.Object);
+        var errorMessage = string.Format(ResourceManager.ErrorMessage, invalidPathProvider.Object.SettingsDirectoryPath, "*");
+
+        var resourceManager = new ResourceManager(invalidPathProvider.Object, loggerMock.Object);
 
         // Act & Assert
-        resourceManager.Invoking(x => x.ResetSettingsAndLoadFromDefault()).Should().NotThrow();
+        resourceManager
+            .Invoking(x => x.ResetSettingsAndLoadFromDefault())
+            .Should()
+            .Throw<ArgumentException>()
+            .WithMessage(errorMessage);
     }
 }

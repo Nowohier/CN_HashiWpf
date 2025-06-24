@@ -1,5 +1,6 @@
 ﻿using Hashi.Gui.Interfaces.Managers;
 using Hashi.Gui.Interfaces.Providers;
+using Hashi.Logging.Interfaces;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -7,9 +8,10 @@ using System.Text;
 namespace Hashi.Gui.Managers
 {
     /// <inheritdoc cref="IResourceManager"/>
-    public class ResourceManager(IPathProvider pathProvider) : IResourceManager
+    public class ResourceManager(IPathProvider pathProvider, ILogger logger) : IResourceManager
     {
         private readonly string[] embeddedResourceNames = Assembly.GetExecutingAssembly().GetManifestResourceNames();
+        internal const string ErrorMessage = "Failed to create directory '{0}': {1}";
 
         /// <inheritdoc />
         public void PrepareUi()
@@ -35,7 +37,16 @@ namespace Hashi.Gui.Managers
         private void EnsureDirectoryExists(string directoryPath)
         {
             if (Directory.Exists(directoryPath)) return;
-            Directory.CreateDirectory(directoryPath);
+            try
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
+            catch (ArgumentException ex)
+            {
+                var message = string.Format(ErrorMessage, directoryPath, ex.Message);
+                logger.Error(message);
+                throw new ArgumentException(message, ex);
+            }
         }
 
         private void EnsureFileExists(string filePath, string embeddedFileName)

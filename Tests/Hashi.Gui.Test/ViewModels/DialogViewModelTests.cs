@@ -99,12 +99,12 @@ public class DialogViewModelTests
         var property = typeof(DialogViewModel).GetProperty(expectedPropertyName);
         property.Should().NotBeNull();
         ((bool)property!.GetValue(result)!).Should().BeTrue();
-        
+
         // Verify only this property is true
         var allImageProperties = typeof(DialogViewModel).GetProperties()
             .Where(p => p.Name.StartsWith("Is") && p.PropertyType == typeof(bool))
             .Where(p => p.Name != expectedPropertyName);
-        
+
         foreach (var prop in allImageProperties)
         {
             ((bool)prop.GetValue(result)!).Should().BeFalse($"{prop.Name} should be false when {expectedPropertyName} is true");
@@ -141,11 +141,11 @@ public class DialogViewModelTests
     public void OkCommand_WhenExecutedWithDialogResult_ShouldSetDialogResultToOk()
     {
         // Arrange
-        var mockDialogResult = new Mock<IDialogResult>();
-        var mockObject = Mock.Of<IDialogResult>(x => x == mockDialogResult.Object);
+        var mockDialogResult = new Mock<IDialogResult>(MockBehavior.Strict);
+        mockDialogResult.SetupProperty(mock => mock.DialogResult, DialogResult.None);
 
         // Act
-        sut.OkCommand.Execute(mockObject);
+        sut.OkCommand.Execute(mockDialogResult.Object);
 
         // Assert
         mockDialogResult.VerifySet(x => x.DialogResult = DialogResult.Ok, Times.Once);
@@ -168,11 +168,11 @@ public class DialogViewModelTests
     public void CancelCommand_WhenExecutedWithDialogResult_ShouldSetDialogResultToCancel()
     {
         // Arrange
-        var mockDialogResult = new Mock<IDialogResult>();
-        var mockObject = Mock.Of<IDialogResult>(x => x == mockDialogResult.Object);
+        var mockDialogResult = new Mock<IDialogResult>(MockBehavior.Strict);
+        mockDialogResult.SetupProperty(mock => mock.DialogResult, DialogResult.None);
 
         // Act
-        sut.CancelCommand.Execute(mockObject);
+        sut.CancelCommand.Execute(mockDialogResult.Object);
 
         // Assert
         mockDialogResult.VerifySet(x => x.DialogResult = DialogResult.Cancel, Times.Once);
@@ -195,11 +195,11 @@ public class DialogViewModelTests
     public void YesCommand_WhenExecutedWithDialogResult_ShouldSetDialogResultToYes()
     {
         // Arrange
-        var mockDialogResult = new Mock<IDialogResult>();
-        var mockObject = Mock.Of<IDialogResult>(x => x == mockDialogResult.Object);
+        var mockDialogResult = new Mock<IDialogResult>(MockBehavior.Strict);
+        mockDialogResult.SetupProperty(mock => mock.DialogResult, DialogResult.None);
 
         // Act
-        sut.YesCommand.Execute(mockObject);
+        sut.YesCommand.Execute(mockDialogResult.Object);
 
         // Assert
         mockDialogResult.VerifySet(x => x.DialogResult = DialogResult.Yes, Times.Once);
@@ -222,11 +222,11 @@ public class DialogViewModelTests
     public void NoCommand_WhenExecutedWithDialogResult_ShouldSetDialogResultToNo()
     {
         // Arrange
-        var mockDialogResult = new Mock<IDialogResult>();
-        var mockObject = Mock.Of<IDialogResult>(x => x == mockDialogResult.Object);
+        var mockDialogResult = new Mock<IDialogResult>(MockBehavior.Strict);
+        mockDialogResult.SetupProperty(mock => mock.DialogResult, DialogResult.None);
 
         // Act
-        sut.NoCommand.Execute(mockObject);
+        sut.NoCommand.Execute(mockDialogResult.Object);
 
         // Assert
         mockDialogResult.VerifySet(x => x.DialogResult = DialogResult.No, Times.Once);
@@ -249,7 +249,9 @@ public class DialogViewModelTests
     public void Commands_WhenExecutedWithObjectImplementingBothInterfaces_ShouldCallBothMethods()
     {
         // Arrange
-        var mockObject = new Mock<IDialogResultAndCloseable>();
+        var mockObject = new Mock<IDialogResultAndCloseable>(MockBehavior.Strict);
+        mockObject.SetupProperty(mock => mock.DialogResult, DialogResult.None);
+        mockObject.Setup(x => x.Close());
 
         // Act
         sut.OkCommand.Execute(mockObject.Object);

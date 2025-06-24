@@ -41,10 +41,7 @@ public class SettingsProviderTests
         mockSettingsFactory.Setup(x => x.Invoke()).Returns(mockSettingsViewModel.Object);
 
         // Setup default return for settings that don't exist
-        mockSettingsViewModel.Setup(x => x.Languages).Returns(new List<ILanguageViewModel>
-        {
-            Mock.Of<ILanguageViewModel>(l => l.Culture == "en-GB")
-        });
+        mockSettingsViewModel.Setup(x => x.Languages).Returns([Mock.Of<ILanguageViewModel>(l => l.Culture == "en-GB")]);
 
         sut = new SettingsProvider(
             mockJsonWrapper.Object,
@@ -109,13 +106,13 @@ public class SettingsProviderTests
         // Arrange
         var localMockSettingsFactory = new Mock<Func<ISettingsViewModel>>();
         localMockSettingsFactory.Setup(x => x.Invoke()).Returns((ISettingsViewModel)null!);
-        
+
         var localSut = new SettingsProvider(
             mockJsonWrapper.Object,
             localMockSettingsFactory.Object,
             mockPathProvider.Object,
             mockLoggerFactory.Object);
-        
+
         // Use reflection to set Settings to null since it's private set
         var settingsProperty = typeof(SettingsProvider).GetProperty("Settings");
         settingsProperty!.SetValue(localSut, null);
@@ -174,7 +171,7 @@ public class SettingsProviderTests
         // Arrange
         mockJsonWrapper.Setup(x => x.SerializeObject(It.IsAny<object>()))
                       .Returns("serialized_settings");
-        
+
         // Setup an invalid path to cause file write to fail
         mockPathProvider.Setup(x => x.HashiSettingsFilePath).Returns("/invalid/path/settings.json");
         mockPathProvider.Setup(x => x.SettingsDirectoryPath).Returns("/invalid/path");
@@ -192,11 +189,8 @@ public class SettingsProviderTests
         // Arrange
         var originalSettings = sut.Settings;
         var newMockSettings = new Mock<ISettingsViewModel>();
-        newMockSettings.Setup(x => x.Languages).Returns(new List<ILanguageViewModel>
-        {
-            Mock.Of<ILanguageViewModel>(l => l.Culture == "de-DE")
-        });
-        
+        newMockSettings.Setup(x => x.Languages).Returns([Mock.Of<ILanguageViewModel>(l => l.Culture == "de-DE")]);
+
         mockSettingsFactory.Setup(x => x.Invoke()).Returns(newMockSettings.Object);
 
         // Act
@@ -213,10 +207,10 @@ public class SettingsProviderTests
         // Arrange
         Directory.CreateDirectory(testDirectoryPath);
         File.WriteAllText(testSettingsPath, "file_content");
-        
+
         var deserializedSettings = new Mock<ISettingsViewModel>();
         deserializedSettings.Setup(x => x.SelectedLanguageCulture).Returns("en-US");
-        
+
         mockJsonWrapper.Setup(x => x.DeserializeObject("file_content", typeof(SettingsViewModel)))
                       .Returns(deserializedSettings.Object);
 
@@ -251,7 +245,7 @@ public class SettingsProviderTests
         // Arrange
         Directory.CreateDirectory(testDirectoryPath);
         File.WriteAllText(testSettingsPath, "invalid_json");
-        
+
         mockJsonWrapper.Setup(x => x.DeserializeObject(It.IsAny<string>(), It.IsAny<Type>()))
                       .Throws(new Exception("Deserialization failed"));
 
@@ -270,10 +264,10 @@ public class SettingsProviderTests
         // Arrange
         Directory.CreateDirectory(testDirectoryPath);
         File.WriteAllText(testSettingsPath, "file_content");
-        
+
         var deserializedSettings = new Mock<ISettingsViewModel>();
         deserializedSettings.Setup(x => x.SelectedLanguageCulture).Returns("de-DE");
-        
+
         mockJsonWrapper.Setup(x => x.DeserializeObject("file_content", typeof(SettingsViewModel)))
                       .Returns(deserializedSettings.Object);
 
@@ -292,8 +286,8 @@ public class SettingsProviderTests
         // Arrange
         var mockLanguage = new Mock<ILanguageViewModel>();
         mockLanguage.Setup(x => x.Culture).Returns("fr-FR");
-        
-        mockSettingsViewModel.Setup(x => x.Languages).Returns(new List<ILanguageViewModel> { mockLanguage.Object });
+
+        mockSettingsViewModel.Setup(x => x.Languages).Returns([mockLanguage.Object]);
 
         // Act
         var result = sut.LoadSettings();

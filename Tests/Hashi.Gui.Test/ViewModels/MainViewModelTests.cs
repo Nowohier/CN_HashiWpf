@@ -54,7 +54,7 @@ public class MainViewModelTests
         mockSettingsProvider.Setup(x => x.Settings).Returns(mockSettings.Object);
         mockHintProvider.Setup(x => x.RuleInfoProvider).Returns(mockRuleInfoProvider.Object);
         mockHintProvider.Setup(x => x.Rules).Returns(new List<Type> { typeof(_1ConnectionRule1), typeof(_2ConnectionsRule1) });
-        mockSettings.Setup(x => x.HighScores).Returns(new List<IHighScorePerDifficultyViewModel>());
+        mockSettings.Setup(x => x.HighScores).Returns([]);
 
         var mockHashiBrush = new Mock<IHashiBrush>();
         mockBrushFactory.Setup(x => x.Invoke(It.IsAny<SolidColorBrush>())).Returns(mockHashiBrush.Object);
@@ -173,7 +173,7 @@ public class MainViewModelTests
     public void SelectedDifficulty_WhenSet_ShouldUpdateProperty()
     {
         // Arrange
-        var newDifficulty = DifficultyEnum.Hard15;
+        var newDifficulty = DifficultyEnum.Hard3;
 
         // Act
         sut.SelectedDifficulty = newDifficulty;
@@ -285,7 +285,7 @@ public class MainViewModelTests
     public void HighscoreForSelectedDifficulty_WhenNoHighscoresExist_ShouldReturnNull()
     {
         // Arrange
-        mockSettings.Setup(x => x.HighScores).Returns(new List<IHighScorePerDifficultyViewModel>());
+        mockSettings.Setup(x => x.HighScores).Returns([]);
 
         // Act
         var highscore = sut.HighscoreForSelectedDifficulty;
@@ -302,8 +302,8 @@ public class MainViewModelTests
         var mockHighScore = new Mock<IHighScorePerDifficultyViewModel>();
         mockHighScore.Setup(x => x.Difficulty).Returns(DifficultyEnum.Easy3);
         mockHighScore.Setup(x => x.HighScoreTime).Returns(expectedTime);
-        
-        mockSettings.Setup(x => x.HighScores).Returns(new List<IHighScorePerDifficultyViewModel> { mockHighScore.Object });
+
+        mockSettings.Setup(x => x.HighScores).Returns([mockHighScore.Object]);
         sut.SelectedDifficulty = DifficultyEnum.Easy3;
 
         // Act
@@ -365,7 +365,7 @@ public class MainViewModelTests
         };
 
         // Act
-        sut.SelectedDifficulty = DifficultyEnum.Medium7;
+        sut.SelectedDifficulty = DifficultyEnum.Medium2;
 
         // Assert
         propertyChangedRaised.Should().BeTrue();

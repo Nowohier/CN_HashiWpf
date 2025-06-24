@@ -70,7 +70,7 @@ public class TimerProviderTests
         sut.Timer.IsRunning.Should().BeTrue();
         sut.IsTimerRunning.Should().BeTrue();
         // Timer should still be running and have elapsed time greater than or equal to before
-        sut.Timer.Elapsed.Should().BeGreaterOrEqualTo(elapsedBefore);
+        sut.Timer.Elapsed.Should().BeGreaterThanOrEqualTo(elapsedBefore);
     }
 
     [Test]

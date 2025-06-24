@@ -23,8 +23,9 @@
 4. New classes require new interfaces
 5. Use autofac for dependency injection in constructors
 4. Write unit tests for new functionality. Use FluentAssertions and Moq for testing. 
-   UnitTest class name: [NameOfClassToTest]Tests.cs
-   Unit Test naming: [MethodName]_When[TestConditions]_Should[ExpectedResult]
+   UnitTest class name: [NameOfClassToTest]Tests.cs.
+   Unit Test naming: [MethodName]_When[TestConditions]_Should[ExpectedResult].
+   Use MockBehavior.Strict for Mocks. all Mock<T> fields should be named in camel case [NameOfTypeToMock]Mock.
    Use pattern "Arrange, Act, Assert" for structuring tests.
    - Arrange: Set up the context and inputs
    - Act: Execute the code under test
