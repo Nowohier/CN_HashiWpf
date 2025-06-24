@@ -32,6 +32,8 @@ public class ResourceManagerTests
 
         loggerMock = new Mock<ILogger>(MockBehavior.Strict);
         loggerMock.Setup(x => x.Error(It.IsAny<string>())).Verifiable();
+        loggerMock.Setup(x => x.Debug(It.IsAny<string>())).Verifiable();
+        loggerMock.Setup(x => x.Info(It.IsAny<string>())).Verifiable();
 
         sut = new ResourceManager(pathProviderMock.Object, loggerMock.Object);
     }

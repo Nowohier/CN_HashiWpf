@@ -61,6 +61,7 @@ public class MainViewModelTests
 
         // Setup logger methods
         loggerMock.Setup(x => x.Info(It.IsAny<string>())).Verifiable();
+        loggerMock.Setup(x => x.Debug(It.IsAny<string>())).Verifiable();
         loggerMock.Setup(x => x.Error(It.IsAny<string>())).Verifiable();
         loggerMock.Setup(x => x.Error(It.IsAny<string>(), It.IsAny<Exception>())).Verifiable();
 
@@ -77,13 +78,24 @@ public class MainViewModelTests
         hintProviderMock.Setup(x => x.GetHintForSelectedRule()).Verifiable();
         hintProviderMock.Setup(x => x.GetHintForAllRules()).Verifiable();
 
-        // Setup other provider methods
+        timerProviderMock.Setup(x => x.Timer).Returns(new System.Diagnostics.Stopwatch());
+        timerProviderMock.Setup(x => x.IsTimerRunning).Returns(false);
+        
+        islandProviderMock.Setup(x => x.Islands).Returns([]);
+        islandProviderMock.Setup(x => x.IslandsFlat).Returns([]);
+        
+        testSolutionProviderMock.Setup(x => x.HashiFieldReference).Returns([]);
+        testSolutionProviderMock.Setup(x => x.SolutionProviders).Returns([]);
+        testSolutionProviderMock.SetupProperty(x => x.SelectedSolutionProvider);
+        
+        // Setup provider method calls
         timerProviderMock.Setup(x => x.StartTimer()).Verifiable();
         timerProviderMock.Setup(x => x.StopTimer()).Verifiable();
-        timerProviderMock.Setup(x => x.ResetTimer()).Verifiable();
-        islandProviderMock.Setup(x => x.InitIslands(It.IsAny<IReadOnlyList<int[]>>())).Verifiable();
-        islandProviderMock.Setup(x => x.ResetHighlights()).Verifiable();
-        testSolutionProviderMock.Setup(x => x.SetTestSolution(It.IsAny<ISolutionProvider>())).Verifiable();
+        islandProviderMock.Setup(x => x.InitializeNewSolution(It.IsAny<ISolutionProvider>())).Verifiable();
+        islandProviderMock.Setup(x => x.RemoveAllHighlights()).Verifiable();
+        testSolutionProviderMock.Setup(x => x.SaveTestFields()).Verifiable();
+        testSolutionProviderMock.Setup(x => x.ResetSettings()).Verifiable();
+        testSolutionProviderMock.Setup(x => x.ConvertIslandsToSolutionProvider(It.IsAny<IEnumerable<IIslandViewModel>>())).Verifiable();
         hashiGeneratorMock.Setup(x => x.Generate(It.IsAny<DifficultyEnum>())).Returns(Mock.Of<ISolutionProvider>());
 
         // Setup DialogWrapper methods

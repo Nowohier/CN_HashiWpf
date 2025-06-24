@@ -42,6 +42,7 @@ public class SettingsProviderTests
 
         // Setup logger methods that are called
         loggerMock.Setup(x => x.Info(It.IsAny<string>())).Verifiable();
+        loggerMock.Setup(x => x.Debug(It.IsAny<string>())).Verifiable();
         loggerMock.Setup(x => x.Error(It.IsAny<string>())).Verifiable();
         loggerMock.Setup(x => x.Error(It.IsAny<string>(), It.IsAny<Exception>())).Verifiable();
 
@@ -51,6 +52,8 @@ public class SettingsProviderTests
 
         // Setup default return for settings that don't exist
         settingsViewModelMock.Setup(x => x.Languages).Returns([Mock.Of<ILanguageViewModel>(l => l.Culture == "en-GB")]);
+        settingsViewModelMock.Setup(x => x.InitializeHighScores()).Verifiable();
+        settingsViewModelMock.SetupProperty(x => x.SelectedLanguageCulture);
 
         sut = new SettingsProvider(
             jsonWrapperMock.Object,
@@ -197,8 +200,10 @@ public class SettingsProviderTests
     {
         // Arrange
         var originalSettings = sut.Settings;
-        var newMockSettings = new Mock<ISettingsViewModel>();
+        var newMockSettings = new Mock<ISettingsViewModel>(MockBehavior.Strict);
         newMockSettings.Setup(x => x.Languages).Returns([Mock.Of<ILanguageViewModel>(l => l.Culture == "de-DE")]);
+        newMockSettings.Setup(x => x.InitializeHighScores()).Verifiable();
+        newMockSettings.SetupProperty(x => x.SelectedLanguageCulture);
 
         settingsFactoryMock.Setup(x => x.Invoke()).Returns(newMockSettings.Object);
 
@@ -217,8 +222,9 @@ public class SettingsProviderTests
         Directory.CreateDirectory(testDirectoryPath);
         File.WriteAllText(testSettingsPath, "file_content");
 
-        var deserializedSettings = new Mock<ISettingsViewModel>();
+        var deserializedSettings = new Mock<ISettingsViewModel>(MockBehavior.Strict);
         deserializedSettings.Setup(x => x.SelectedLanguageCulture).Returns("en-US");
+        deserializedSettings.SetupProperty(x => x.SelectedLanguageCulture, "en-US");
 
         jsonWrapperMock.Setup(x => x.DeserializeObject("file_content", typeof(SettingsViewModel)))
                       .Returns(deserializedSettings.Object);
@@ -274,8 +280,9 @@ public class SettingsProviderTests
         Directory.CreateDirectory(testDirectoryPath);
         File.WriteAllText(testSettingsPath, "file_content");
 
-        var deserializedSettings = new Mock<ISettingsViewModel>();
+        var deserializedSettings = new Mock<ISettingsViewModel>(MockBehavior.Strict);
         deserializedSettings.Setup(x => x.SelectedLanguageCulture).Returns("de-DE");
+        deserializedSettings.SetupProperty(x => x.SelectedLanguageCulture, "de-DE");
 
         jsonWrapperMock.Setup(x => x.DeserializeObject("file_content", typeof(SettingsViewModel)))
                       .Returns(deserializedSettings.Object);

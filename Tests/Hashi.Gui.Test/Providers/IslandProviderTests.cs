@@ -37,6 +37,7 @@ public class IslandProviderTests
 
         // Setup logger methods
         loggerMock.Setup(x => x.Info(It.IsAny<string>())).Verifiable();
+        loggerMock.Setup(x => x.Debug(It.IsAny<string>())).Verifiable();
         loggerMock.Setup(x => x.Error(It.IsAny<string>())).Verifiable();
         loggerMock.Setup(x => x.Error(It.IsAny<string>(), It.IsAny<Exception>())).Verifiable();
 
