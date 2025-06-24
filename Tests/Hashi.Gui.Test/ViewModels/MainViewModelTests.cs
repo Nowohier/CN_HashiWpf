@@ -1,6 +1,7 @@
 using FluentAssertions;
 using Hashi.Enums;
 using Hashi.Generator.Interfaces;
+using Hashi.Generator.Interfaces.Providers;
 using Hashi.Gui.Interfaces.Managers;
 using Hashi.Gui.Interfaces.Messages;
 using Hashi.Gui.Interfaces.Models;
@@ -78,14 +79,14 @@ public class MainViewModelTests
 
         timerProviderMock.Setup(x => x.Timer).Returns(new System.Diagnostics.Stopwatch());
         timerProviderMock.Setup(x => x.IsTimerRunning).Returns(false);
-        
+
         islandProviderMock.Setup(x => x.Islands).Returns([]);
         islandProviderMock.Setup(x => x.IslandsFlat).Returns([]);
-        
+
         testSolutionProviderMock.Setup(x => x.HashiFieldReference).Returns([]);
         testSolutionProviderMock.Setup(x => x.SolutionProviders).Returns([]);
         testSolutionProviderMock.SetupProperty(x => x.SelectedSolutionProvider);
-        
+
         // Setup provider method calls
         timerProviderMock.Setup(x => x.StartTimer()).Verifiable();
         timerProviderMock.Setup(x => x.StopTimer()).Verifiable();
@@ -101,7 +102,7 @@ public class MainViewModelTests
         hashiGeneratorMock.Setup(x => x.Generate(It.IsAny<DifficultyEnum>())).Returns(Mock.Of<ISolutionProvider>());
 
         // Setup DialogWrapper methods
-        dialogWrapperMock.Setup(x => x.Show(It.IsAny<string>(), It.IsAny<string>())).Verifiable();
+        dialogWrapperMock.Setup(x => x.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DialogButton>(), It.IsAny<DialogImage>())).Verifiable();
 
         // Setup Settings methods
         settingsProviderMock.Setup(x => x.SaveSettings()).Verifiable();
@@ -405,7 +406,7 @@ public class MainViewModelTests
     {
         // Arrange
         var propertyChangedRaised = false;
-        sut.PropertyChanged += (sender, args) =>
+        sut.PropertyChanged += (_, args) =>
         {
             if (args.PropertyName == nameof(sut.SelectedDifficulty))
                 propertyChangedRaised = true;
@@ -423,7 +424,7 @@ public class MainViewModelTests
     {
         // Arrange
         var propertyChangedRaised = false;
-        sut.PropertyChanged += (sender, args) =>
+        sut.PropertyChanged += (_, args) =>
         {
             if (args.PropertyName == nameof(sut.IsTestFieldMode))
                 propertyChangedRaised = true;
@@ -441,7 +442,7 @@ public class MainViewModelTests
     {
         // Arrange
         var titlePropertyChangedRaised = false;
-        sut.PropertyChanged += (sender, args) =>
+        sut.PropertyChanged += (_, args) =>
         {
             if (args.PropertyName == nameof(sut.Title))
                 titlePropertyChangedRaised = true;

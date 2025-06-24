@@ -45,7 +45,7 @@ public class IslandProviderTests
         islandFactoryMock.Setup(x => x.Invoke(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>())).Returns(Mock.Of<IIslandViewModel>());
         bridgeFactoryMock.Setup(x => x.Invoke(It.IsAny<BridgeOperationTypeEnum>(), It.IsAny<IHashiPoint>(), It.IsAny<IHashiPoint>())).Returns(Mock.Of<IHashiBridge>());
         allConnectionsSetMessageFactoryMock.Setup(x => x.Invoke(It.IsAny<bool?>())).Returns(Mock.Of<IAllConnectionsSetMessage>());
-        dialogWrapperMock.Setup(x => x.Show(It.IsAny<string>(), It.IsAny<string>())).Verifiable();
+        dialogWrapperMock.Setup(x => x.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DialogButton>(), It.IsAny<DialogImage>())).Verifiable();
 
         sut = new IslandProvider(
             islandFactoryMock.Object,
@@ -100,18 +100,18 @@ public class IslandProviderTests
         // Arrange
         var hashiField = new List<int[]>
         {
-            new int[] { 1, 0, 2 },
-            new int[] { 0, 0, 0 },
-            new int[] { 3, 0, 1 }
+            new[] { 1, 0, 2 },
+            new[] { 0, 0, 0 },
+            new[] { 3, 0, 1 }
         };
-        
+
         var mockSolutionProvider = new Mock<ISolutionProvider>();
         mockSolutionProvider.Setup(x => x.HashiField).Returns(hashiField);
 
         var mockIslands = new List<IIslandViewModel>();
-        for (int row = 0; row < 3; row++)
+        for (var row = 0; row < 3; row++)
         {
-            for (int col = 0; col < 3; col++)
+            for (var col = 0; col < 3; col++)
             {
                 var mockIsland = new Mock<IIslandViewModel>();
                 mockIslands.Add(mockIsland.Object);
@@ -127,11 +127,11 @@ public class IslandProviderTests
         sut.Islands.Should().HaveCount(3);
         sut.Islands.All(row => row.Count == 3).Should().BeTrue();
         sut.IslandsFlat.Should().HaveCount(9);
-        
+
         // Verify all islands were created with correct parameters
-        for (int row = 0; row < 3; row++)
+        for (var row = 0; row < 3; row++)
         {
-            for (int col = 0; col < 3; col++)
+            for (var col = 0; col < 3; col++)
             {
                 islandFactoryMock.Verify(x => x.Invoke(col, row, hashiField[row][col]), Times.Once);
             }
@@ -142,12 +142,12 @@ public class IslandProviderTests
     public void InitializeNewSolution_WhenCalledMultipleTimes_ShouldClearPreviousIslands()
     {
         // Arrange
-        var hashiField1 = new List<int[]> { new int[] { 1, 2 } };
-        var hashiField2 = new List<int[]> { new int[] { 3, 4, 5 } };
-        
+        var hashiField1 = new List<int[]> { new[] { 1, 2 } };
+        var hashiField2 = new List<int[]> { new[] { 3, 4, 5 } };
+
         var mockSolutionProvider1 = new Mock<ISolutionProvider>();
         mockSolutionProvider1.Setup(x => x.HashiField).Returns(hashiField1);
-        
+
         var mockSolutionProvider2 = new Mock<ISolutionProvider>();
         mockSolutionProvider2.Setup(x => x.HashiField).Returns(hashiField2);
 
@@ -197,7 +197,7 @@ public class IslandProviderTests
         var mockBridge = new Mock<IHashiBridge>();
 
         SetupValidConnection(mockSourceIsland, mockTargetIsland);
-        
+
         bridgeFactoryMock.Setup(x => x.Invoke(
             BridgeOperationTypeEnum.Add,
             mockSourceIsland.Object.Coordinates,
@@ -230,7 +230,7 @@ public class IslandProviderTests
         var mockSourceIsland = CreateMockIslandViewModel(0, 0, 2);
         var mockConnection = new Mock<IHashiPoint>();
         var connections = new ObservableCollection<IHashiPoint> { mockConnection.Object };
-        
+
         mockSourceIsland.Setup(x => x.AllConnections).Returns(connections);
 
         // Act
@@ -302,10 +302,10 @@ public class IslandProviderTests
         var mockIsland = CreateMockIslandViewModel(0, 0, 2);
         var mockConnection = new Mock<IHashiPoint>();
         mockConnection.Setup(x => x.PointType).Returns(pointType);
-        
+
         var connections = new ObservableCollection<IHashiPoint> { mockConnection.Object };
         mockIsland.Setup(x => x.AllConnections).Returns(connections);
-        
+
         SetupSingleIslandInProvider(mockIsland.Object);
 
         // Act
@@ -350,13 +350,13 @@ public class IslandProviderTests
     {
         var mockIsland = new Mock<IIslandViewModel>();
         var mockCoordinates = new Mock<IHashiPoint>();
-        
+
         mockCoordinates.Setup(c => c.X).Returns(x);
         mockCoordinates.Setup(c => c.Y).Returns(y);
         mockIsland.Setup(i => i.Coordinates).Returns(mockCoordinates.Object);
         mockIsland.Setup(i => i.MaxConnections).Returns(maxConnections);
         mockIsland.Setup(i => i.AllConnections).Returns(new ObservableCollection<IHashiPoint>());
-        
+
         return mockIsland;
     }
 
@@ -384,7 +384,7 @@ public class IslandProviderTests
 
         var row1 = new ObservableCollection<IIslandViewModel> { mockIslands[0], mockIslands[1] };
         var row2 = new ObservableCollection<IIslandViewModel> { mockIslands[2] };
-        
+
         sut.Islands.Add(row1);
         sut.Islands.Add(row2);
     }
