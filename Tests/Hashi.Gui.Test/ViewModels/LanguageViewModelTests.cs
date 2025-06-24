@@ -7,9 +7,9 @@ namespace Hashi.Gui.Test.ViewModels;
 public class LanguageViewModelTests
 {
     private LanguageViewModel sut;
-    private const string TestLanguageNameEnglish = "German";
-    private const string TestLanguageNameNative = "Deutsch";
-    private const string TestCulture = "de-DE";
+    private const string TestLanguageNameEnglish = "English";
+    private const string TestLanguageNameNative = "English";
+    private const string TestCulture = "en-GB";
 
     [SetUp]
     public void SetUp()

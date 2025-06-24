@@ -37,8 +37,6 @@ public class TestSolutionProviderTests
         loggerFactoryMock.Setup(x => x.CreateLogger<TestSolutionProvider>()).Returns(loggerMock.Object);
         pathProviderMock.Setup(x => x.HashiTestFieldsFilePath).Returns("/test/path/testfields.json");
         pathProviderMock.Setup(x => x.SettingsDirectoryPath).Returns("/test/path");
-        jsonWrapperMock.Setup(x => x.DeserializeObject(It.IsAny<string>(), It.IsAny<Type>()))
-                      .Returns(new List<ISolutionProvider>());
 
         // Setup logger methods
         loggerMock.Setup(x => x.Info(It.IsAny<string>())).Verifiable();
@@ -48,8 +46,9 @@ public class TestSolutionProviderTests
 
         // Setup JsonWrapper methods
         jsonWrapperMock.Setup(x => x.SerializeObject(It.IsAny<object>())).Returns("{}");
-
-        // Setup factory methods
+        jsonWrapperMock.Setup(x => x.SerializeWithCustomIndenting(It.IsAny<object>())).Returns("[]");
+        jsonWrapperMock.Setup(x => x.DeserializeObject(It.IsAny<string>(), It.IsAny<Type>()))
+                      .Returns(new List<ISolutionProvider>());
         solutionProviderFactoryMock.Setup(x => x.Invoke(It.IsAny<IReadOnlyList<int[]>?>(), It.IsAny<List<IBridgeCoordinates>?>(), It.IsAny<string?>())).Returns(Mock.Of<ISolutionProvider>());
         setTestSolutionMessageFactoryMock.Setup(x => x.Invoke(It.IsAny<ISolutionProvider>())).Returns(Mock.Of<ISetTestSolutionMessage>());
 

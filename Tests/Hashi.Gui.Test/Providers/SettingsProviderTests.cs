@@ -51,7 +51,11 @@ public class SettingsProviderTests
         jsonWrapperMock.Setup(x => x.DeserializeObject(It.IsAny<string>(), It.IsAny<Type>())).Returns(null);
 
         // Setup default return for settings that don't exist
-        settingsViewModelMock.Setup(x => x.Languages).Returns([Mock.Of<ILanguageViewModel>(l => l.Culture == "en-GB")]);
+        var mockLanguage = new Mock<ILanguageViewModel>();
+        mockLanguage.Setup(x => x.Culture).Returns("en-GB");
+        var languagesList = new List<ILanguageViewModel> { mockLanguage.Object };
+        
+        settingsViewModelMock.Setup(x => x.Languages).Returns(languagesList);
         settingsViewModelMock.Setup(x => x.InitializeHighScores()).Verifiable();
         settingsViewModelMock.SetupProperty(x => x.SelectedLanguageCulture);
 
