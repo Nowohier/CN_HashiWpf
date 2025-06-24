@@ -4,8 +4,6 @@
 - Clean coding
 
 ### Required Before Each Commit
-- Run `make fmt` before committing any changes to ensure proper code formatting
-- This will run gofmt on all Go files to maintain consistent style
 
 ### Development Flow
 
@@ -28,3 +26,6 @@
    - Arrange: Set up the context and inputs
    - Act: Execute the code under test
    - Assert: Verify the outcome
+5. Use camel case for private fields
+6. Use braces for if, for, foreach
+7. Use namespace declaration
