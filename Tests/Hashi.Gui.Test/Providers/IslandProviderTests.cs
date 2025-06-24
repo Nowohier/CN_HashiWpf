@@ -15,32 +15,32 @@ namespace Hashi.Gui.Test.Providers;
 [TestFixture]
 public class IslandProviderTests
 {
-    private Mock<Func<int, int, int, IIslandViewModel>> mockIslandFactory;
-    private Mock<Func<BridgeOperationTypeEnum, IHashiPoint, IHashiPoint, IHashiBridge>> mockBridgeFactory;
-    private Mock<Func<bool?, IAllConnectionsSetMessage>> mockAllConnectionsSetMessageFactory;
-    private Mock<IDialogWrapper> mockDialogWrapper;
-    private Mock<ILoggerFactory> mockLoggerFactory;
-    private Mock<ILogger> mockLogger;
+    private Mock<Func<int, int, int, IIslandViewModel>> islandFactoryMock;
+    private Mock<Func<BridgeOperationTypeEnum, IHashiPoint, IHashiPoint, IHashiBridge>> bridgeFactoryMock;
+    private Mock<Func<bool?, IAllConnectionsSetMessage>> allConnectionsSetMessageFactoryMock;
+    private Mock<IDialogWrapper> dialogWrapperMock;
+    private Mock<ILoggerFactory> loggerFactoryMock;
+    private Mock<ILogger> loggerMock;
     private IslandProvider sut;
 
     [SetUp]
     public void SetUp()
     {
-        mockIslandFactory = new Mock<Func<int, int, int, IIslandViewModel>>();
-        mockBridgeFactory = new Mock<Func<BridgeOperationTypeEnum, IHashiPoint, IHashiPoint, IHashiBridge>>();
-        mockAllConnectionsSetMessageFactory = new Mock<Func<bool?, IAllConnectionsSetMessage>>();
-        mockDialogWrapper = new Mock<IDialogWrapper>();
-        mockLoggerFactory = new Mock<ILoggerFactory>();
-        mockLogger = new Mock<ILogger>();
+        islandFactoryMock = new Mock<Func<int, int, int, IIslandViewModel>>(MockBehavior.Strict);
+        bridgeFactoryMock = new Mock<Func<BridgeOperationTypeEnum, IHashiPoint, IHashiPoint, IHashiBridge>>(MockBehavior.Strict);
+        allConnectionsSetMessageFactoryMock = new Mock<Func<bool?, IAllConnectionsSetMessage>>(MockBehavior.Strict);
+        dialogWrapperMock = new Mock<IDialogWrapper>(MockBehavior.Strict);
+        loggerFactoryMock = new Mock<ILoggerFactory>(MockBehavior.Strict);
+        loggerMock = new Mock<ILogger>(MockBehavior.Strict);
 
-        mockLoggerFactory.Setup(x => x.CreateLogger<IslandProvider>()).Returns(mockLogger.Object);
+        loggerFactoryMock.Setup(x => x.CreateLogger<IslandProvider>()).Returns(loggerMock.Object);
 
         sut = new IslandProvider(
-            mockIslandFactory.Object,
-            mockBridgeFactory.Object,
-            mockAllConnectionsSetMessageFactory.Object,
-            mockDialogWrapper.Object,
-            mockLoggerFactory.Object);
+            islandFactoryMock.Object,
+            bridgeFactoryMock.Object,
+            allConnectionsSetMessageFactoryMock.Object,
+            dialogWrapperMock.Object,
+            loggerFactoryMock.Object);
     }
 
     [Test]
@@ -48,16 +48,16 @@ public class IslandProviderTests
     {
         // Arrange & Act
         var result = new IslandProvider(
-            mockIslandFactory.Object,
-            mockBridgeFactory.Object,
-            mockAllConnectionsSetMessageFactory.Object,
-            mockDialogWrapper.Object,
-            mockLoggerFactory.Object);
+            islandFactoryMock.Object,
+            bridgeFactoryMock.Object,
+            allConnectionsSetMessageFactoryMock.Object,
+            dialogWrapperMock.Object,
+            loggerFactoryMock.Object);
 
         // Assert
         result.Islands.Should().NotBeNull().And.BeEmpty();
         result.IslandsFlat.Should().NotBeNull().And.BeEmpty();
-        mockLogger.Verify(x => x.Info("IslandProvider initialized"), Times.Once);
+        loggerMock.Verify(x => x.Info("IslandProvider initialized"), Times.Once);
     }
 
     [Test]
@@ -103,7 +103,7 @@ public class IslandProviderTests
             {
                 var mockIsland = new Mock<IIslandViewModel>();
                 mockIslands.Add(mockIsland.Object);
-                mockIslandFactory.Setup(x => x.Invoke(col, row, hashiField[row][col]))
+                islandFactoryMock.Setup(x => x.Invoke(col, row, hashiField[row][col]))
                                .Returns(mockIsland.Object);
             }
         }
@@ -121,7 +121,7 @@ public class IslandProviderTests
         {
             for (int col = 0; col < 3; col++)
             {
-                mockIslandFactory.Verify(x => x.Invoke(col, row, hashiField[row][col]), Times.Once);
+                islandFactoryMock.Verify(x => x.Invoke(col, row, hashiField[row][col]), Times.Once);
             }
         }
     }
@@ -186,7 +186,7 @@ public class IslandProviderTests
 
         SetupValidConnection(mockSourceIsland, mockTargetIsland);
         
-        mockBridgeFactory.Setup(x => x.Invoke(
+        bridgeFactoryMock.Setup(x => x.Invoke(
             BridgeOperationTypeEnum.Add,
             mockSourceIsland.Object.Coordinates,
             mockTargetIsland.Object.Coordinates))
@@ -357,7 +357,7 @@ public class IslandProviderTests
 
     private void SetupMockIslandFactory()
     {
-        mockIslandFactory.Setup(x => x.Invoke(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
+        islandFactoryMock.Setup(x => x.Invoke(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
                         .Returns(() => new Mock<IIslandViewModel>().Object);
     }
 

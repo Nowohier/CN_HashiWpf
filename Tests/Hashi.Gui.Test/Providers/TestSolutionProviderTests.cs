@@ -16,36 +16,36 @@ namespace Hashi.Gui.Test.Providers;
 [TestFixture]
 public class TestSolutionProviderTests
 {
-    private Mock<IJsonWrapper> mockJsonWrapper;
-    private Mock<IPathProvider> mockPathProvider;
-    private Mock<Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider>> mockSolutionProviderFactory;
-    private Mock<Func<ISolutionProvider, ISetTestSolutionMessage>> mockSetTestSolutionMessageFactory;
-    private Mock<ILoggerFactory> mockLoggerFactory;
-    private Mock<ILogger> mockLogger;
+    private Mock<IJsonWrapper> jsonWrapperMock;
+    private Mock<IPathProvider> pathProviderMock;
+    private Mock<Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider>> solutionProviderFactoryMock;
+    private Mock<Func<ISolutionProvider, ISetTestSolutionMessage>> setTestSolutionMessageFactoryMock;
+    private Mock<ILoggerFactory> loggerFactoryMock;
+    private Mock<ILogger> loggerMock;
     private TestSolutionProvider sut;
 
     [SetUp]
     public void SetUp()
     {
-        mockJsonWrapper = new Mock<IJsonWrapper>();
-        mockPathProvider = new Mock<IPathProvider>();
-        mockSolutionProviderFactory = new Mock<Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider>>();
-        mockSetTestSolutionMessageFactory = new Mock<Func<ISolutionProvider, ISetTestSolutionMessage>>();
-        mockLoggerFactory = new Mock<ILoggerFactory>();
-        mockLogger = new Mock<ILogger>();
+        jsonWrapperMock = new Mock<IJsonWrapper>(MockBehavior.Strict);
+        pathProviderMock = new Mock<IPathProvider>(MockBehavior.Strict);
+        solutionProviderFactoryMock = new Mock<Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider>>(MockBehavior.Strict);
+        setTestSolutionMessageFactoryMock = new Mock<Func<ISolutionProvider, ISetTestSolutionMessage>>(MockBehavior.Strict);
+        loggerFactoryMock = new Mock<ILoggerFactory>(MockBehavior.Strict);
+        loggerMock = new Mock<ILogger>(MockBehavior.Strict);
 
-        mockLoggerFactory.Setup(x => x.CreateLogger<TestSolutionProvider>()).Returns(mockLogger.Object);
-        mockPathProvider.Setup(x => x.HashiTestFieldsFilePath).Returns("/test/path/testfields.json");
-        mockPathProvider.Setup(x => x.SettingsDirectoryPath).Returns("/test/path");
-        mockJsonWrapper.Setup(x => x.DeserializeObject(It.IsAny<string>(), It.IsAny<Type>()))
+        loggerFactoryMock.Setup(x => x.CreateLogger<TestSolutionProvider>()).Returns(loggerMock.Object);
+        pathProviderMock.Setup(x => x.HashiTestFieldsFilePath).Returns("/test/path/testfields.json");
+        pathProviderMock.Setup(x => x.SettingsDirectoryPath).Returns("/test/path");
+        jsonWrapperMock.Setup(x => x.DeserializeObject(It.IsAny<string>(), It.IsAny<Type>()))
                       .Returns(new List<ISolutionProvider>());
 
         sut = new TestSolutionProvider(
-            mockJsonWrapper.Object,
-            mockPathProvider.Object,
-            mockSolutionProviderFactory.Object,
-            mockSetTestSolutionMessageFactory.Object,
-            mockLoggerFactory.Object);
+            jsonWrapperMock.Object,
+            pathProviderMock.Object,
+            solutionProviderFactoryMock.Object,
+            setTestSolutionMessageFactoryMock.Object,
+            loggerFactoryMock.Object);
     }
 
     [Test]
@@ -53,11 +53,11 @@ public class TestSolutionProviderTests
     {
         // Arrange & Act
         var result = new TestSolutionProvider(
-            mockJsonWrapper.Object,
-            mockPathProvider.Object,
-            mockSolutionProviderFactory.Object,
-            mockSetTestSolutionMessageFactory.Object,
-            mockLoggerFactory.Object);
+            jsonWrapperMock.Object,
+            pathProviderMock.Object,
+            solutionProviderFactoryMock.Object,
+            setTestSolutionMessageFactoryMock.Object,
+            loggerFactoryMock.Object);
 
         // Assert
         result.SolutionProviders.Should().NotBeNull();
@@ -70,8 +70,8 @@ public class TestSolutionProviderTests
     public void Constructor_WhenCalled_ShouldCreateLogger()
     {
         // Arrange & Act & Assert
-        mockLoggerFactory.Verify(x => x.CreateLogger<TestSolutionProvider>(), Times.Once);
-        mockLogger.Verify(x => x.Info("TestSolutionProvider initialized"), Times.Once);
+        loggerFactoryMock.Verify(x => x.CreateLogger<TestSolutionProvider>(), Times.Once);
+        loggerMock.Verify(x => x.Info("TestSolutionProvider initialized"), Times.Once);
     }
 
     [Test]
@@ -80,7 +80,7 @@ public class TestSolutionProviderTests
         // Arrange
         var mockSolutionProvider = new Mock<ISolutionProvider>();
         var mockMessage = new Mock<ISetTestSolutionMessage>();
-        mockSetTestSolutionMessageFactory.Setup(x => x.Invoke(mockSolutionProvider.Object))
+        setTestSolutionMessageFactoryMock.Setup(x => x.Invoke(mockSolutionProvider.Object))
                                         .Returns(mockMessage.Object);
 
         // Act
@@ -96,14 +96,14 @@ public class TestSolutionProviderTests
         // Arrange
         var mockSolutionProvider = new Mock<ISolutionProvider>();
         var mockMessage = new Mock<ISetTestSolutionMessage>();
-        mockSetTestSolutionMessageFactory.Setup(x => x.Invoke(mockSolutionProvider.Object))
+        setTestSolutionMessageFactoryMock.Setup(x => x.Invoke(mockSolutionProvider.Object))
                                         .Returns(mockMessage.Object);
 
         // Act
         sut.SelectedSolutionProvider = mockSolutionProvider.Object;
 
         // Assert
-        mockSetTestSolutionMessageFactory.Verify(x => x.Invoke(mockSolutionProvider.Object), Times.Once);
+        setTestSolutionMessageFactoryMock.Verify(x => x.Invoke(mockSolutionProvider.Object), Times.Once);
     }
 
     [Test]
@@ -113,7 +113,7 @@ public class TestSolutionProviderTests
         sut.SelectedSolutionProvider = null;
 
         // Act & Assert
-        mockSetTestSolutionMessageFactory.Verify(x => x.Invoke(It.IsAny<ISolutionProvider>()), Times.Never);
+        setTestSolutionMessageFactoryMock.Verify(x => x.Invoke(It.IsAny<ISolutionProvider>()), Times.Never);
     }
 
     [Test]
@@ -122,7 +122,7 @@ public class TestSolutionProviderTests
         // Arrange
         var mockSolutionProvider = new Mock<ISolutionProvider>();
         var mockMessage = new Mock<ISetTestSolutionMessage>();
-        mockSetTestSolutionMessageFactory.Setup(x => x.Invoke(mockSolutionProvider.Object))
+        setTestSolutionMessageFactoryMock.Setup(x => x.Invoke(mockSolutionProvider.Object))
                                         .Returns(mockMessage.Object);
         sut.SelectedSolutionProvider = mockSolutionProvider.Object;
 
@@ -130,7 +130,7 @@ public class TestSolutionProviderTests
         sut.SelectedSolutionProvider = mockSolutionProvider.Object;
 
         // Assert
-        mockSetTestSolutionMessageFactory.Verify(x => x.Invoke(mockSolutionProvider.Object), Times.Once);
+        setTestSolutionMessageFactoryMock.Verify(x => x.Invoke(mockSolutionProvider.Object), Times.Once);
     }
 
     [Test]
@@ -146,7 +146,7 @@ public class TestSolutionProviderTests
 
         // Assert
         sut.SolutionProviders.Count.Should().Be(0);
-        mockJsonWrapper.Verify(x => x.DeserializeObject(It.IsAny<string>(), typeof(List<ISolutionProvider>)), Times.AtLeastOnce);
+        jsonWrapperMock.Verify(x => x.DeserializeObject(It.IsAny<string>(), typeof(List<ISolutionProvider>)), Times.AtLeastOnce);
     }
 
     [Test]
@@ -200,14 +200,14 @@ public class TestSolutionProviderTests
         var islands = new List<IIslandViewModel> { mockIsland1.Object, mockIsland2.Object };
 
         var mockNewSolutionProvider = new Mock<ISolutionProvider>();
-        mockSolutionProviderFactory.Setup(x => x.Invoke(It.IsAny<IReadOnlyList<int[]>>(), It.IsAny<List<IBridgeCoordinates>>(), "TestSolution"))
+        solutionProviderFactoryMock.Setup(x => x.Invoke(It.IsAny<IReadOnlyList<int[]>>(), It.IsAny<List<IBridgeCoordinates>>(), "TestSolution"))
                                   .Returns(mockNewSolutionProvider.Object);
 
         // Act
         sut.ConvertIslandsToSolutionProvider(islands);
 
         // Assert
-        mockSolutionProviderFactory.Verify(x => x.Invoke(
+        solutionProviderFactoryMock.Verify(x => x.Invoke(
             It.Is<IReadOnlyList<int[]>>(field => field.Count == 3 && field[0][0] == 2 && field[2][2] == 1),
             It.IsAny<List<IBridgeCoordinates>>(),
             "TestSolution"), Times.Once);
@@ -239,7 +239,7 @@ public class TestSolutionProviderTests
         var islands = new List<IIslandViewModel> { mockIsland.Object };
 
         var mockNewSolutionProvider = new Mock<ISolutionProvider>();
-        mockSolutionProviderFactory.Setup(x => x.Invoke(It.IsAny<IReadOnlyList<int[]>>(), It.IsAny<List<IBridgeCoordinates>>(), "TestSolution"))
+        solutionProviderFactoryMock.Setup(x => x.Invoke(It.IsAny<IReadOnlyList<int[]>>(), It.IsAny<List<IBridgeCoordinates>>(), "TestSolution"))
                                   .Returns(mockNewSolutionProvider.Object);
 
         var initialCount = sut.SolutionProviders.Count;
@@ -272,69 +272,69 @@ public class TestSolutionProviderTests
         mockSolutionProvider.Setup(x => x.Name).Returns("TestSolution");
         sut.SolutionProviders.Add(mockSolutionProvider.Object);
 
-        mockJsonWrapper.Setup(x => x.SerializeWithCustomIndenting(It.IsAny<IEnumerable<ISolutionProvider>>()))
+        jsonWrapperMock.Setup(x => x.SerializeWithCustomIndenting(It.IsAny<IEnumerable<ISolutionProvider>>()))
                       .Returns("serialized_json");
 
         // Act
         sut.SaveTestFields();
 
         // Assert
-        mockJsonWrapper.Verify(x => x.SerializeWithCustomIndenting(
+        jsonWrapperMock.Verify(x => x.SerializeWithCustomIndenting(
             It.Is<IEnumerable<ISolutionProvider>>(providers => providers.Any(p => p.Name == "TestSolution"))), 
             Times.Once);
-        mockLogger.Verify(x => x.Debug($"Saving test fields to {mockPathProvider.Object.HashiTestFieldsFilePath}"), Times.Once);
+        loggerMock.Verify(x => x.Debug($"Saving test fields to {pathProviderMock.Object.HashiTestFieldsFilePath}"), Times.Once);
     }
 
     [Test]
     public void SaveTestFields_WhenSerializationFails_ShouldLogError()
     {
         // Arrange
-        mockJsonWrapper.Setup(x => x.SerializeWithCustomIndenting(It.IsAny<object>()))
+        jsonWrapperMock.Setup(x => x.SerializeWithCustomIndenting(It.IsAny<object>()))
                       .Throws(new Exception("Serialization failed"));
 
         // Act
         sut.SaveTestFields();
 
         // Assert
-        mockLogger.Verify(x => x.Error("Failed to save test fields", It.IsAny<Exception>()), Times.Once);
+        loggerMock.Verify(x => x.Error("Failed to save test fields", It.IsAny<Exception>()), Times.Once);
     }
 
     [Test]
     public void LoadSettings_WhenFileDoesNotExist_ShouldReturnEmptyList()
     {
         // Arrange
-        mockPathProvider.Setup(x => x.HashiTestFieldsFilePath).Returns("/nonexistent/path.json");
+        pathProviderMock.Setup(x => x.HashiTestFieldsFilePath).Returns("/nonexistent/path.json");
 
         // Act
         var result = new TestSolutionProvider(
-            mockJsonWrapper.Object,
-            mockPathProvider.Object,
-            mockSolutionProviderFactory.Object,
-            mockSetTestSolutionMessageFactory.Object,
-            mockLoggerFactory.Object);
+            jsonWrapperMock.Object,
+            pathProviderMock.Object,
+            solutionProviderFactoryMock.Object,
+            setTestSolutionMessageFactoryMock.Object,
+            loggerFactoryMock.Object);
 
         // Assert
         result.SolutionProviders.Should().BeEmpty();
-        mockLogger.Verify(x => x.Info("No existing test fields found, starting with empty list"), Times.Once);
+        loggerMock.Verify(x => x.Info("No existing test fields found, starting with empty list"), Times.Once);
     }
 
     [Test]
     public void LoadSettings_WhenDeserializationFails_ShouldLogErrorAndReturnEmptyList()
     {
         // Arrange
-        mockJsonWrapper.Setup(x => x.DeserializeObject(It.IsAny<string>(), It.IsAny<Type>()))
+        jsonWrapperMock.Setup(x => x.DeserializeObject(It.IsAny<string>(), It.IsAny<Type>()))
                       .Throws(new Exception("Deserialization failed"));
 
         // Act
         var result = new TestSolutionProvider(
-            mockJsonWrapper.Object,
-            mockPathProvider.Object,
-            mockSolutionProviderFactory.Object,
-            mockSetTestSolutionMessageFactory.Object,
-            mockLoggerFactory.Object);
+            jsonWrapperMock.Object,
+            pathProviderMock.Object,
+            solutionProviderFactoryMock.Object,
+            setTestSolutionMessageFactoryMock.Object,
+            loggerFactoryMock.Object);
 
         // Assert
         result.SolutionProviders.Should().BeEmpty();
-        mockLogger.Verify(x => x.Error("Failed to load settings", It.IsAny<Exception>()), Times.Once);
+        loggerMock.Verify(x => x.Error("Failed to load settings", It.IsAny<Exception>()), Times.Once);
     }
 }

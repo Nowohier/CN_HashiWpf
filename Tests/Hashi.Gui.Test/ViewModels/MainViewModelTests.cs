@@ -18,58 +18,58 @@ namespace Hashi.Gui.Test.ViewModels;
 [TestFixture]
 public class MainViewModelTests
 {
-    private Mock<Func<SolidColorBrush, IHashiBrush>> mockBrushFactory;
-    private Mock<IDialogWrapper> mockDialogWrapper;
-    private Mock<IHashiGenerator> mockHashiGenerator;
-    private Mock<ISettingsProvider> mockSettingsProvider;
-    private Mock<ITimerProvider> mockTimerProvider;
-    private Mock<IIslandProvider> mockIslandProvider;
-    private Mock<IHintProvider> mockHintProvider;
-    private Mock<ITestSolutionProvider> mockTestSolutionProvider;
-    private Mock<IResourceManager> mockResourceManager;
-    private Mock<ILoggerFactory> mockLoggerFactory;
-    private Mock<ILogger> mockLogger;
-    private Mock<ISettingsViewModel> mockSettings;
-    private Mock<IRuleInfoProvider> mockRuleInfoProvider;
+    private Mock<Func<SolidColorBrush, IHashiBrush>> brushFactoryMock;
+    private Mock<IDialogWrapper> dialogWrapperMock;
+    private Mock<IHashiGenerator> hashiGeneratorMock;
+    private Mock<ISettingsProvider> settingsProviderMock;
+    private Mock<ITimerProvider> timerProviderMock;
+    private Mock<IIslandProvider> islandProviderMock;
+    private Mock<IHintProvider> hintProviderMock;
+    private Mock<ITestSolutionProvider> testSolutionProviderMock;
+    private Mock<IResourceManager> resourceManagerMock;
+    private Mock<ILoggerFactory> loggerFactoryMock;
+    private Mock<ILogger> loggerMock;
+    private Mock<ISettingsViewModel> settingsMock;
+    private Mock<IRuleInfoProvider> ruleInfoProviderMock;
     private MainViewModel sut;
 
     [SetUp]
     public void SetUp()
     {
-        mockBrushFactory = new Mock<Func<SolidColorBrush, IHashiBrush>>();
-        mockDialogWrapper = new Mock<IDialogWrapper>();
-        mockHashiGenerator = new Mock<IHashiGenerator>();
-        mockSettingsProvider = new Mock<ISettingsProvider>();
-        mockTimerProvider = new Mock<ITimerProvider>();
-        mockIslandProvider = new Mock<IIslandProvider>();
-        mockHintProvider = new Mock<IHintProvider>();
-        mockTestSolutionProvider = new Mock<ITestSolutionProvider>();
-        mockResourceManager = new Mock<IResourceManager>();
-        mockLoggerFactory = new Mock<ILoggerFactory>();
-        mockLogger = new Mock<ILogger>();
-        mockSettings = new Mock<ISettingsViewModel>();
-        mockRuleInfoProvider = new Mock<IRuleInfoProvider>();
+        brushFactoryMock = new Mock<Func<SolidColorBrush, IHashiBrush>>(MockBehavior.Strict);
+        dialogWrapperMock = new Mock<IDialogWrapper>(MockBehavior.Strict);
+        hashiGeneratorMock = new Mock<IHashiGenerator>(MockBehavior.Strict);
+        settingsProviderMock = new Mock<ISettingsProvider>(MockBehavior.Strict);
+        timerProviderMock = new Mock<ITimerProvider>(MockBehavior.Strict);
+        islandProviderMock = new Mock<IIslandProvider>(MockBehavior.Strict);
+        hintProviderMock = new Mock<IHintProvider>(MockBehavior.Strict);
+        testSolutionProviderMock = new Mock<ITestSolutionProvider>(MockBehavior.Strict);
+        resourceManagerMock = new Mock<IResourceManager>(MockBehavior.Strict);
+        loggerFactoryMock = new Mock<ILoggerFactory>(MockBehavior.Strict);
+        loggerMock = new Mock<ILogger>(MockBehavior.Strict);
+        settingsMock = new Mock<ISettingsViewModel>(MockBehavior.Strict);
+        ruleInfoProviderMock = new Mock<IRuleInfoProvider>(MockBehavior.Strict);
 
-        mockLoggerFactory.Setup(x => x.CreateLogger<MainViewModel>()).Returns(mockLogger.Object);
-        mockSettingsProvider.Setup(x => x.Settings).Returns(mockSettings.Object);
-        mockHintProvider.Setup(x => x.RuleInfoProvider).Returns(mockRuleInfoProvider.Object);
-        mockHintProvider.Setup(x => x.Rules).Returns(new List<Type> { typeof(_1ConnectionRule1), typeof(_2ConnectionsRule1) });
-        mockSettings.Setup(x => x.HighScores).Returns([]);
+        loggerFactoryMock.Setup(x => x.CreateLogger<MainViewModel>()).Returns(loggerMock.Object);
+        settingsProviderMock.Setup(x => x.Settings).Returns(settingsMock.Object);
+        hintProviderMock.Setup(x => x.RuleInfoProvider).Returns(ruleInfoProviderMock.Object);
+        hintProviderMock.Setup(x => x.Rules).Returns(new List<Type> { typeof(_1ConnectionRule1), typeof(_2ConnectionsRule1) });
+        settingsMock.Setup(x => x.HighScores).Returns([]);
 
-        var mockHashiBrush = new Mock<IHashiBrush>();
-        mockBrushFactory.Setup(x => x.Invoke(It.IsAny<SolidColorBrush>())).Returns(mockHashiBrush.Object);
+        var hashiBrushMock = new Mock<IHashiBrush>(MockBehavior.Strict);
+        brushFactoryMock.Setup(x => x.Invoke(It.IsAny<SolidColorBrush>())).Returns(hashiBrushMock.Object);
 
         sut = new MainViewModel(
-            mockBrushFactory.Object,
-            mockDialogWrapper.Object,
-            mockHashiGenerator.Object,
-            mockSettingsProvider.Object,
-            mockTimerProvider.Object,
-            mockIslandProvider.Object,
-            mockHintProvider.Object,
-            mockTestSolutionProvider.Object,
-            mockResourceManager.Object,
-            mockLoggerFactory.Object);
+            brushFactoryMock.Object,
+            dialogWrapperMock.Object,
+            hashiGeneratorMock.Object,
+            settingsProviderMock.Object,
+            timerProviderMock.Object,
+            islandProviderMock.Object,
+            hintProviderMock.Object,
+            testSolutionProviderMock.Object,
+            resourceManagerMock.Object,
+            loggerFactoryMock.Object);
     }
 
     [Test]
@@ -77,23 +77,23 @@ public class MainViewModelTests
     {
         // Arrange & Act
         var result = new MainViewModel(
-            mockBrushFactory.Object,
-            mockDialogWrapper.Object,
-            mockHashiGenerator.Object,
-            mockSettingsProvider.Object,
-            mockTimerProvider.Object,
-            mockIslandProvider.Object,
-            mockHintProvider.Object,
-            mockTestSolutionProvider.Object,
-            mockResourceManager.Object,
-            mockLoggerFactory.Object);
+            brushFactoryMock.Object,
+            dialogWrapperMock.Object,
+            hashiGeneratorMock.Object,
+            settingsProviderMock.Object,
+            timerProviderMock.Object,
+            islandProviderMock.Object,
+            hintProviderMock.Object,
+            testSolutionProviderMock.Object,
+            resourceManagerMock.Object,
+            loggerFactoryMock.Object);
 
         // Assert
-        result.SettingsProvider.Should().Be(mockSettingsProvider.Object);
-        result.TimerProvider.Should().Be(mockTimerProvider.Object);
-        result.IslandProvider.Should().Be(mockIslandProvider.Object);
-        result.HintProvider.Should().Be(mockHintProvider.Object);
-        result.TestSolutionProvider.Should().Be(mockTestSolutionProvider.Object);
+        result.SettingsProvider.Should().Be(settingsProviderMock.Object);
+        result.TimerProvider.Should().Be(timerProviderMock.Object);
+        result.IslandProvider.Should().Be(islandProviderMock.Object);
+        result.HintProvider.Should().Be(hintProviderMock.Object);
+        result.TestSolutionProvider.Should().Be(testSolutionProviderMock.Object);
     }
 
     [Test]
@@ -122,7 +122,7 @@ public class MainViewModelTests
         sut.Initialize();
 
         // Assert
-        mockResourceManager.Verify(x => x.PrepareUi(), Times.Once);
+        resourceManagerMock.Verify(x => x.PrepareUi(), Times.Once);
     }
 
     [Test]
@@ -143,7 +143,7 @@ public class MainViewModelTests
 
         // Assert
         sut.WindowColorBrush.Should().NotBeNull();
-        mockBrushFactory.Verify(x => x.Invoke(It.IsAny<SolidColorBrush>()), Times.Once);
+        brushFactoryMock.Verify(x => x.Invoke(It.IsAny<SolidColorBrush>()), Times.Once);
     }
 
     [Test]
@@ -205,9 +205,9 @@ public class MainViewModelTests
         sut.SelectedRule = newRule;
 
         // Assert
-        mockRuleInfoProvider.VerifySet(x => x.RuleMessage = It.IsAny<string>(), Times.Once);
-        mockRuleInfoProvider.VerifySet(x => x.AreRulesBeingApplied = false, Times.Once);
-        mockHintProvider.Verify(x => x.ResetSession(), Times.Once);
+        ruleInfoProviderMock.VerifySet(x => x.RuleMessage = It.IsAny<string>(), Times.Once);
+        ruleInfoProviderMock.VerifySet(x => x.AreRulesBeingApplied = false, Times.Once);
+        hintProviderMock.Verify(x => x.ResetSession(), Times.Once);
     }
 
     [Test]
@@ -217,8 +217,8 @@ public class MainViewModelTests
         sut.SelectedRule = null;
 
         // Assert
-        mockRuleInfoProvider.VerifySet(x => x.RuleMessage = It.IsAny<string>(), Times.Never);
-        mockHintProvider.Verify(x => x.ResetSession(), Times.Never);
+        ruleInfoProviderMock.VerifySet(x => x.RuleMessage = It.IsAny<string>(), Times.Never);
+        hintProviderMock.Verify(x => x.ResetSession(), Times.Never);
     }
 
     [Test]
@@ -227,15 +227,15 @@ public class MainViewModelTests
         // Arrange
         var rule = typeof(_1ConnectionRule1);
         sut.SelectedRule = rule;
-        mockRuleInfoProvider.Reset();
-        mockHintProvider.Reset();
+        ruleInfoProviderMock.Reset();
+        hintProviderMock.Reset();
 
         // Act
         sut.SelectedRule = rule;
 
         // Assert
-        mockRuleInfoProvider.VerifySet(x => x.RuleMessage = It.IsAny<string>(), Times.Never);
-        mockHintProvider.Verify(x => x.ResetSession(), Times.Never);
+        ruleInfoProviderMock.VerifySet(x => x.RuleMessage = It.IsAny<string>(), Times.Never);
+        hintProviderMock.Verify(x => x.ResetSession(), Times.Never);
     }
 
     [Test]
@@ -285,7 +285,7 @@ public class MainViewModelTests
     public void HighscoreForSelectedDifficulty_WhenNoHighscoresExist_ShouldReturnNull()
     {
         // Arrange
-        mockSettings.Setup(x => x.HighScores).Returns([]);
+        settingsMock.Setup(x => x.HighScores).Returns([]);
 
         // Act
         var highscore = sut.HighscoreForSelectedDifficulty;
@@ -303,7 +303,7 @@ public class MainViewModelTests
         mockHighScore.Setup(x => x.Difficulty).Returns(DifficultyEnum.Easy3);
         mockHighScore.Setup(x => x.HighScoreTime).Returns(expectedTime);
 
-        mockSettings.Setup(x => x.HighScores).Returns([mockHighScore.Object]);
+        settingsMock.Setup(x => x.HighScores).Returns([mockHighScore.Object]);
         sut.SelectedDifficulty = DifficultyEnum.Easy3;
 
         // Act
@@ -320,7 +320,7 @@ public class MainViewModelTests
         sut.WindowMouseClickedCommand.Execute(null);
 
         // Assert
-        mockRuleInfoProvider.VerifySet(x => x.RuleMessage = string.Empty, Times.Once);
+        ruleInfoProviderMock.VerifySet(x => x.RuleMessage = string.Empty, Times.Once);
     }
 
     [Test]

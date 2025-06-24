@@ -15,27 +15,27 @@ namespace Hashi.Gui.Test.Providers;
 [TestFixture]
 public class HintProviderTests
 {
-    private Mock<IIslandProvider> mockIslandProvider;
-    private Mock<IDialogWrapper> mockDialogWrapper;
-    private Mock<IRuleRepository> mockRuleRepository;
-    private Mock<IRuleInfoProvider> mockRuleInfoProvider;
+    private Mock<IIslandProvider> islandProviderMock;
+    private Mock<IDialogWrapper> dialogWrapperMock;
+    private Mock<IRuleRepository> ruleRepositoryMock;
+    private Mock<IRuleInfoProvider> ruleInfoProviderMock;
     private HintProvider sut;
 
     [SetUp]
     public void SetUp()
     {
-        mockIslandProvider = new Mock<IIslandProvider>();
-        mockDialogWrapper = new Mock<IDialogWrapper>();
-        mockRuleRepository = new Mock<IRuleRepository>();
-        mockRuleInfoProvider = new Mock<IRuleInfoProvider>();
+        islandProviderMock = new Mock<IIslandProvider>(MockBehavior.Strict);
+        dialogWrapperMock = new Mock<IDialogWrapper>(MockBehavior.Strict);
+        ruleRepositoryMock = new Mock<IRuleRepository>(MockBehavior.Strict);
+        ruleInfoProviderMock = new Mock<IRuleInfoProvider>(MockBehavior.Strict);
 
-        mockIslandProvider.Setup(x => x.IslandsFlat).Returns(new List<IIslandViewModel>());
+        islandProviderMock.Setup(x => x.IslandsFlat).Returns(new List<IIslandViewModel>());
 
         sut = new HintProvider(
-            mockIslandProvider.Object,
-            mockDialogWrapper.Object,
-            mockRuleRepository.Object,
-            mockRuleInfoProvider.Object);
+            islandProviderMock.Object,
+            dialogWrapperMock.Object,
+            ruleRepositoryMock.Object,
+            ruleInfoProviderMock.Object);
     }
 
     [Test]
@@ -43,13 +43,13 @@ public class HintProviderTests
     {
         // Arrange & Act
         var result = new HintProvider(
-            mockIslandProvider.Object,
-            mockDialogWrapper.Object,
-            mockRuleRepository.Object,
-            mockRuleInfoProvider.Object);
+            islandProviderMock.Object,
+            dialogWrapperMock.Object,
+            ruleRepositoryMock.Object,
+            ruleInfoProviderMock.Object);
 
         // Assert
-        result.RuleInfoProvider.Should().Be(mockRuleInfoProvider.Object);
+        result.RuleInfoProvider.Should().Be(ruleInfoProviderMock.Object);
         result.Rules.Should().NotBeNull().And.NotBeEmpty();
     }
 
@@ -73,7 +73,7 @@ public class HintProviderTests
         var ruleInfoProvider = sut.RuleInfoProvider;
 
         // Assert
-        ruleInfoProvider.Should().Be(mockRuleInfoProvider.Object);
+        ruleInfoProvider.Should().Be(ruleInfoProviderMock.Object);
     }
 
     [Test]
@@ -87,13 +87,13 @@ public class HintProviderTests
     public void ResetSession_WhenSessionExists_ShouldResetRuleInfoProvider()
     {
         // Arrange
-        mockRuleInfoProvider.Setup(x => x.AreRulesBeingApplied).Returns(true);
+        ruleInfoProviderMock.Setup(x => x.AreRulesBeingApplied).Returns(true);
 
         // Act
         sut.ResetSession();
 
         // Assert
-        mockRuleInfoProvider.VerifySet(x => x.AreRulesBeingApplied = false, Times.Once);
+        ruleInfoProviderMock.VerifySet(x => x.AreRulesBeingApplied = false, Times.Once);
     }
 
     [Test]
@@ -108,27 +108,27 @@ public class HintProviderTests
     public void GenerateHint_WhenRulesAreBeingApplied_ShouldReturnEarly()
     {
         // Arrange
-        mockRuleInfoProvider.Setup(x => x.AreRulesBeingApplied).Returns(true);
+        ruleInfoProviderMock.Setup(x => x.AreRulesBeingApplied).Returns(true);
         var selectedRule = typeof(_1ConnectionRule1);
 
         // Act
         sut.GenerateHint(selectedRule);
 
         // Assert
-        mockRuleRepository.Verify(x => x.CompileOne(It.IsAny<string>()), Times.Never);
-        mockRuleRepository.Verify(x => x.Compile(), Times.Never);
+        ruleRepositoryMock.Verify(x => x.CompileOne(It.IsAny<string>()), Times.Never);
+        ruleRepositoryMock.Verify(x => x.Compile(), Times.Never);
     }
 
     [Test]
     public void GenerateHint_WhenCalledWithValidRule_ShouldSetRulesBeingApplied()
     {
         // Arrange
-        mockRuleInfoProvider.Setup(x => x.AreRulesBeingApplied).Returns(false);
+        ruleInfoProviderMock.Setup(x => x.AreRulesBeingApplied).Returns(false);
         var selectedRule = typeof(_1ConnectionRule1);
         var mockSessionFactory = new Mock<ISessionFactory>();
         var mockSession = new Mock<ISession>();
 
-        mockRuleRepository.Setup(x => x.CompileOne(selectedRule.FullName!))
+        ruleRepositoryMock.Setup(x => x.CompileOne(selectedRule.FullName!))
                          .Returns(mockSessionFactory.Object);
         mockSessionFactory.Setup(x => x.CreateSession()).Returns(mockSession.Object);
         mockSession.Setup(x => x.Fire()).Returns(0);
@@ -137,20 +137,20 @@ public class HintProviderTests
         sut.GenerateHint(selectedRule);
 
         // Assert
-        mockRuleInfoProvider.VerifySet(x => x.AreRulesBeingApplied = true, Times.Once);
-        mockRuleInfoProvider.VerifySet(x => x.AreRulesBeingApplied = false, Times.Once);
+        ruleInfoProviderMock.VerifySet(x => x.AreRulesBeingApplied = true, Times.Once);
+        ruleInfoProviderMock.VerifySet(x => x.AreRulesBeingApplied = false, Times.Once);
     }
 
     [Test]
     public void GenerateHint_WhenCalledWithSpecificRule_ShouldCompileOneRule()
     {
         // Arrange
-        mockRuleInfoProvider.Setup(x => x.AreRulesBeingApplied).Returns(false);
+        ruleInfoProviderMock.Setup(x => x.AreRulesBeingApplied).Returns(false);
         var selectedRule = typeof(_1ConnectionRule1);
         var mockSessionFactory = new Mock<ISessionFactory>();
         var mockSession = new Mock<ISession>();
 
-        mockRuleRepository.Setup(x => x.CompileOne(selectedRule.FullName!))
+        ruleRepositoryMock.Setup(x => x.CompileOne(selectedRule.FullName!))
                          .Returns(mockSessionFactory.Object);
         mockSessionFactory.Setup(x => x.CreateSession()).Returns(mockSession.Object);
         mockSession.Setup(x => x.Fire()).Returns(1);
@@ -159,20 +159,20 @@ public class HintProviderTests
         sut.GenerateHint(selectedRule);
 
         // Assert
-        mockRuleRepository.Verify(x => x.CompileOne(selectedRule.FullName!), Times.Once);
-        mockRuleRepository.Verify(x => x.Compile(), Times.Never);
+        ruleRepositoryMock.Verify(x => x.CompileOne(selectedRule.FullName!), Times.Once);
+        ruleRepositoryMock.Verify(x => x.Compile(), Times.Never);
     }
 
     [Test]
     public void GenerateHint_WhenCalledWithAllRulesType_ShouldCompileAllRules()
     {
         // Arrange
-        mockRuleInfoProvider.Setup(x => x.AreRulesBeingApplied).Returns(false);
+        ruleInfoProviderMock.Setup(x => x.AreRulesBeingApplied).Returns(false);
         var selectedRule = typeof(_0AllRules);
         var mockSessionFactory = new Mock<ISessionFactory>();
         var mockSession = new Mock<ISession>();
 
-        mockRuleRepository.Setup(x => x.Compile())
+        ruleRepositoryMock.Setup(x => x.Compile())
                          .Returns(mockSessionFactory.Object);
         mockSessionFactory.Setup(x => x.CreateSession()).Returns(mockSession.Object);
         mockSession.Setup(x => x.Fire()).Returns(1);
@@ -181,20 +181,20 @@ public class HintProviderTests
         sut.GenerateHint(selectedRule);
 
         // Assert
-        mockRuleRepository.Verify(x => x.Compile(), Times.Once);
-        mockRuleRepository.Verify(x => x.CompileOne(It.IsAny<string>()), Times.Never);
+        ruleRepositoryMock.Verify(x => x.Compile(), Times.Once);
+        ruleRepositoryMock.Verify(x => x.CompileOne(It.IsAny<string>()), Times.Never);
     }
 
     [Test]
     public void GenerateHint_WhenNoRulesFired_ShouldShowNoHintsDialog()
     {
         // Arrange
-        mockRuleInfoProvider.Setup(x => x.AreRulesBeingApplied).Returns(false);
+        ruleInfoProviderMock.Setup(x => x.AreRulesBeingApplied).Returns(false);
         var selectedRule = typeof(_1ConnectionRule1);
         var mockSessionFactory = new Mock<ISessionFactory>();
         var mockSession = new Mock<ISession>();
 
-        mockRuleRepository.Setup(x => x.CompileOne(selectedRule.FullName!))
+        ruleRepositoryMock.Setup(x => x.CompileOne(selectedRule.FullName!))
                          .Returns(mockSessionFactory.Object);
         mockSessionFactory.Setup(x => x.CreateSession()).Returns(mockSession.Object);
         mockSession.Setup(x => x.Fire()).Returns(0); // No rules fired
@@ -203,7 +203,7 @@ public class HintProviderTests
         sut.GenerateHint(selectedRule);
 
         // Assert
-        mockDialogWrapper.Verify(x => x.Show(
+        dialogWrapperMock.Verify(x => x.Show(
             It.IsAny<string>(),
             It.IsAny<string>(),
             DialogButton.Ok,
@@ -214,12 +214,12 @@ public class HintProviderTests
     public void GenerateHint_WhenRulesFired_ShouldNotShowNoHintsDialog()
     {
         // Arrange
-        mockRuleInfoProvider.Setup(x => x.AreRulesBeingApplied).Returns(false);
+        ruleInfoProviderMock.Setup(x => x.AreRulesBeingApplied).Returns(false);
         var selectedRule = typeof(_1ConnectionRule1);
         var mockSessionFactory = new Mock<ISessionFactory>();
         var mockSession = new Mock<ISession>();
 
-        mockRuleRepository.Setup(x => x.CompileOne(selectedRule.FullName!))
+        ruleRepositoryMock.Setup(x => x.CompileOne(selectedRule.FullName!))
                          .Returns(mockSessionFactory.Object);
         mockSessionFactory.Setup(x => x.CreateSession()).Returns(mockSession.Object);
         mockSession.Setup(x => x.Fire()).Returns(1); // Rules fired
@@ -228,7 +228,7 @@ public class HintProviderTests
         sut.GenerateHint(selectedRule);
 
         // Assert
-        mockDialogWrapper.Verify(x => x.Show(
+        dialogWrapperMock.Verify(x => x.Show(
             It.IsAny<string>(),
             It.IsAny<string>(),
             It.IsAny<DialogButton>(),
@@ -239,13 +239,13 @@ public class HintProviderTests
     public void GenerateHint_WhenSessionExists_ShouldUpdateAllIslands()
     {
         // Arrange
-        mockRuleInfoProvider.Setup(x => x.AreRulesBeingApplied).Returns(false);
+        ruleInfoProviderMock.Setup(x => x.AreRulesBeingApplied).Returns(false);
         var selectedRule = typeof(_1ConnectionRule1);
         var mockSessionFactory = new Mock<ISessionFactory>();
         var mockSession = new Mock<ISession>();
 
         // First call to create session
-        mockRuleRepository.Setup(x => x.CompileOne(selectedRule.FullName!))
+        ruleRepositoryMock.Setup(x => x.CompileOne(selectedRule.FullName!))
                          .Returns(mockSessionFactory.Object);
         mockSessionFactory.Setup(x => x.CreateSession()).Returns(mockSession.Object);
         mockSession.Setup(x => x.Fire()).Returns(1);
@@ -253,26 +253,26 @@ public class HintProviderTests
         sut.GenerateHint(selectedRule); // Create session
 
         // Second call should update
-        mockRuleInfoProvider.Setup(x => x.AreRulesBeingApplied).Returns(false);
+        ruleInfoProviderMock.Setup(x => x.AreRulesBeingApplied).Returns(false);
 
         // Act
         sut.GenerateHint(selectedRule);
 
         // Assert
-        mockSession.Verify(x => x.UpdateAll(mockIslandProvider.Object.IslandsFlat), Times.Once);
-        mockSession.Verify(x => x.InsertAll(mockIslandProvider.Object.IslandsFlat), Times.Once);
+        mockSession.Verify(x => x.UpdateAll(islandProviderMock.Object.IslandsFlat), Times.Once);
+        mockSession.Verify(x => x.InsertAll(islandProviderMock.Object.IslandsFlat), Times.Once);
     }
 
     [Test]
     public void GenerateHint_WhenCalled_ShouldInsertAllIslands()
     {
         // Arrange
-        mockRuleInfoProvider.Setup(x => x.AreRulesBeingApplied).Returns(false);
+        ruleInfoProviderMock.Setup(x => x.AreRulesBeingApplied).Returns(false);
         var selectedRule = typeof(_1ConnectionRule1);
         var mockSessionFactory = new Mock<ISessionFactory>();
         var mockSession = new Mock<ISession>();
 
-        mockRuleRepository.Setup(x => x.CompileOne(selectedRule.FullName!))
+        ruleRepositoryMock.Setup(x => x.CompileOne(selectedRule.FullName!))
                          .Returns(mockSessionFactory.Object);
         mockSessionFactory.Setup(x => x.CreateSession()).Returns(mockSession.Object);
         mockSession.Setup(x => x.Fire()).Returns(1);
@@ -281,6 +281,6 @@ public class HintProviderTests
         sut.GenerateHint(selectedRule);
 
         // Assert
-        mockSession.Verify(x => x.InsertAll(mockIslandProvider.Object.IslandsFlat), Times.Once);
+        mockSession.Verify(x => x.InsertAll(islandProviderMock.Object.IslandsFlat), Times.Once);
     }
 }

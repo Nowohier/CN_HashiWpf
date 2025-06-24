@@ -12,12 +12,12 @@ namespace Hashi.Gui.Test.Providers;
 [TestFixture]
 public class SettingsProviderTests
 {
-    private Mock<IJsonWrapper> mockJsonWrapper;
-    private Mock<Func<ISettingsViewModel>> mockSettingsFactory;
-    private Mock<IPathProvider> mockPathProvider;
-    private Mock<ILoggerFactory> mockLoggerFactory;
-    private Mock<ILogger> mockLogger;
-    private Mock<ISettingsViewModel> mockSettingsViewModel;
+    private Mock<IJsonWrapper> jsonWrapperMock;
+    private Mock<Func<ISettingsViewModel>> settingsFactoryMock;
+    private Mock<IPathProvider> pathProviderMock;
+    private Mock<ILoggerFactory> loggerFactoryMock;
+    private Mock<ILogger> loggerMock;
+    private Mock<ISettingsViewModel> settingsViewModelMock;
     private SettingsProvider sut;
     private string testSettingsPath;
     private string testDirectoryPath;
@@ -25,29 +25,29 @@ public class SettingsProviderTests
     [SetUp]
     public void SetUp()
     {
-        mockJsonWrapper = new Mock<IJsonWrapper>();
-        mockSettingsFactory = new Mock<Func<ISettingsViewModel>>();
-        mockPathProvider = new Mock<IPathProvider>();
-        mockLoggerFactory = new Mock<ILoggerFactory>();
-        mockLogger = new Mock<ILogger>();
-        mockSettingsViewModel = new Mock<ISettingsViewModel>();
+        jsonWrapperMock = new Mock<IJsonWrapper>(MockBehavior.Strict);
+        settingsFactoryMock = new Mock<Func<ISettingsViewModel>>(MockBehavior.Strict);
+        pathProviderMock = new Mock<IPathProvider>(MockBehavior.Strict);
+        loggerFactoryMock = new Mock<ILoggerFactory>(MockBehavior.Strict);
+        loggerMock = new Mock<ILogger>(MockBehavior.Strict);
+        settingsViewModelMock = new Mock<ISettingsViewModel>(MockBehavior.Strict);
 
         testDirectoryPath = Path.Combine(Path.GetTempPath(), "HashiSettingsTest", Guid.NewGuid().ToString());
         testSettingsPath = Path.Combine(testDirectoryPath, "settings.json");
 
-        mockLoggerFactory.Setup(x => x.CreateLogger<SettingsProvider>()).Returns(mockLogger.Object);
-        mockPathProvider.Setup(x => x.HashiSettingsFilePath).Returns(testSettingsPath);
-        mockPathProvider.Setup(x => x.SettingsDirectoryPath).Returns(testDirectoryPath);
-        mockSettingsFactory.Setup(x => x.Invoke()).Returns(mockSettingsViewModel.Object);
+        loggerFactoryMock.Setup(x => x.CreateLogger<SettingsProvider>()).Returns(loggerMock.Object);
+        pathProviderMock.Setup(x => x.HashiSettingsFilePath).Returns(testSettingsPath);
+        pathProviderMock.Setup(x => x.SettingsDirectoryPath).Returns(testDirectoryPath);
+        settingsFactoryMock.Setup(x => x.Invoke()).Returns(settingsViewModelMock.Object);
 
         // Setup default return for settings that don't exist
-        mockSettingsViewModel.Setup(x => x.Languages).Returns([Mock.Of<ILanguageViewModel>(l => l.Culture == "en-GB")]);
+        settingsViewModelMock.Setup(x => x.Languages).Returns([Mock.Of<ILanguageViewModel>(l => l.Culture == "en-GB")]);
 
         sut = new SettingsProvider(
-            mockJsonWrapper.Object,
-            mockSettingsFactory.Object,
-            mockPathProvider.Object,
-            mockLoggerFactory.Object);
+            jsonWrapperMock.Object,
+            settingsFactoryMock.Object,
+            pathProviderMock.Object,
+            loggerFactoryMock.Object);
     }
 
     [TearDown]
@@ -71,21 +71,21 @@ public class SettingsProviderTests
     {
         // Arrange & Act
         var result = new SettingsProvider(
-            mockJsonWrapper.Object,
-            mockSettingsFactory.Object,
-            mockPathProvider.Object,
-            mockLoggerFactory.Object);
+            jsonWrapperMock.Object,
+            settingsFactoryMock.Object,
+            pathProviderMock.Object,
+            loggerFactoryMock.Object);
 
         // Assert
         result.Settings.Should().NotBeNull();
-        mockLogger.Verify(x => x.Info("SettingsProvider initialized"), Times.Once);
+        loggerMock.Verify(x => x.Info("SettingsProvider initialized"), Times.Once);
     }
 
     [Test]
     public void Constructor_WhenCalled_ShouldLoadSettings()
     {
         // Arrange & Act & Assert
-        mockLoggerFactory.Verify(x => x.CreateLogger<SettingsProvider>(), Times.AtLeastOnce);
+        loggerFactoryMock.Verify(x => x.CreateLogger<SettingsProvider>(), Times.AtLeastOnce);
         sut.Settings.Should().NotBeNull();
     }
 
@@ -97,21 +97,21 @@ public class SettingsProviderTests
 
         // Assert
         settings.Should().NotBeNull();
-        settings.Should().Be(mockSettingsViewModel.Object);
+        settings.Should().Be(settingsViewModelMock.Object);
     }
 
     [Test]
     public void SaveSettings_WhenSettingsIsNull_ShouldThrowInvalidOperationException()
     {
         // Arrange
-        var localMockSettingsFactory = new Mock<Func<ISettingsViewModel>>();
-        localMockSettingsFactory.Setup(x => x.Invoke()).Returns((ISettingsViewModel)null!);
+        var localSettingsFactoryMock = new Mock<Func<ISettingsViewModel>>(MockBehavior.Strict);
+        localSettingsFactoryMock.Setup(x => x.Invoke()).Returns((ISettingsViewModel)null!);
 
         var localSut = new SettingsProvider(
-            mockJsonWrapper.Object,
-            localMockSettingsFactory.Object,
-            mockPathProvider.Object,
-            mockLoggerFactory.Object);
+            jsonWrapperMock.Object,
+            localSettingsFactoryMock.Object,
+            pathProviderMock.Object,
+            loggerFactoryMock.Object);
 
         // Use reflection to set Settings to null since it's private set
         var settingsProperty = typeof(SettingsProvider).GetProperty("Settings");
@@ -126,21 +126,21 @@ public class SettingsProviderTests
     public void SaveSettings_WhenCalled_ShouldSerializeSettings()
     {
         // Arrange
-        mockJsonWrapper.Setup(x => x.SerializeObject(mockSettingsViewModel.Object))
+        jsonWrapperMock.Setup(x => x.SerializeObject(settingsViewModelMock.Object))
                       .Returns("serialized_settings");
 
         // Act
         sut.SaveSettings();
 
         // Assert
-        mockJsonWrapper.Verify(x => x.SerializeObject(mockSettingsViewModel.Object), Times.Once);
+        jsonWrapperMock.Verify(x => x.SerializeObject(settingsViewModelMock.Object), Times.Once);
     }
 
     [Test]
     public void SaveSettings_WhenDirectoryDoesNotExist_ShouldCreateDirectory()
     {
         // Arrange
-        mockJsonWrapper.Setup(x => x.SerializeObject(It.IsAny<object>()))
+        jsonWrapperMock.Setup(x => x.SerializeObject(It.IsAny<object>()))
                       .Returns("serialized_settings");
         Directory.Exists(testDirectoryPath).Should().BeFalse();
 
@@ -155,32 +155,32 @@ public class SettingsProviderTests
     public void SaveSettings_WhenSerializationFails_ShouldLogError()
     {
         // Arrange
-        mockJsonWrapper.Setup(x => x.SerializeObject(It.IsAny<object>()))
+        jsonWrapperMock.Setup(x => x.SerializeObject(It.IsAny<object>()))
                       .Throws(new Exception("Serialization failed"));
 
         // Act
         sut.SaveSettings();
 
         // Assert
-        mockLogger.Verify(x => x.Error("Failed to save settings", It.IsAny<Exception>()), Times.Once);
+        loggerMock.Verify(x => x.Error("Failed to save settings", It.IsAny<Exception>()), Times.Once);
     }
 
     [Test]
     public void SaveSettings_WhenFileWriteFails_ShouldLogError()
     {
         // Arrange
-        mockJsonWrapper.Setup(x => x.SerializeObject(It.IsAny<object>()))
+        jsonWrapperMock.Setup(x => x.SerializeObject(It.IsAny<object>()))
                       .Returns("serialized_settings");
 
         // Setup an invalid path to cause file write to fail
-        mockPathProvider.Setup(x => x.HashiSettingsFilePath).Returns("/invalid/path/settings.json");
-        mockPathProvider.Setup(x => x.SettingsDirectoryPath).Returns("/invalid/path");
+        pathProviderMock.Setup(x => x.HashiSettingsFilePath).Returns("/invalid/path/settings.json");
+        pathProviderMock.Setup(x => x.SettingsDirectoryPath).Returns("/invalid/path");
 
         // Act
         sut.SaveSettings();
 
         // Assert
-        mockLogger.Verify(x => x.Error("Failed to save settings", It.IsAny<Exception>()), Times.Once);
+        loggerMock.Verify(x => x.Error("Failed to save settings", It.IsAny<Exception>()), Times.Once);
     }
 
     [Test]
@@ -191,7 +191,7 @@ public class SettingsProviderTests
         var newMockSettings = new Mock<ISettingsViewModel>();
         newMockSettings.Setup(x => x.Languages).Returns([Mock.Of<ILanguageViewModel>(l => l.Culture == "de-DE")]);
 
-        mockSettingsFactory.Setup(x => x.Invoke()).Returns(newMockSettings.Object);
+        settingsFactoryMock.Setup(x => x.Invoke()).Returns(newMockSettings.Object);
 
         // Act
         sut.ResetSettings();
@@ -211,16 +211,16 @@ public class SettingsProviderTests
         var deserializedSettings = new Mock<ISettingsViewModel>();
         deserializedSettings.Setup(x => x.SelectedLanguageCulture).Returns("en-US");
 
-        mockJsonWrapper.Setup(x => x.DeserializeObject("file_content", typeof(SettingsViewModel)))
+        jsonWrapperMock.Setup(x => x.DeserializeObject("file_content", typeof(SettingsViewModel)))
                       .Returns(deserializedSettings.Object);
 
         // Act
         var result = sut.LoadSettings();
 
         // Assert
-        mockJsonWrapper.Verify(x => x.DeserializeObject("file_content", typeof(SettingsViewModel)), Times.Once);
+        jsonWrapperMock.Verify(x => x.DeserializeObject("file_content", typeof(SettingsViewModel)), Times.Once);
         result.Should().Be(deserializedSettings.Object);
-        mockLogger.Verify(x => x.Info("Settings loaded successfully from file"), Times.Once);
+        loggerMock.Verify(x => x.Info("Settings loaded successfully from file"), Times.Once);
     }
 
     [Test]
@@ -233,10 +233,10 @@ public class SettingsProviderTests
         var result = sut.LoadSettings();
 
         // Assert
-        mockSettingsFactory.Verify(x => x.Invoke(), Times.AtLeastOnce);
-        mockSettingsViewModel.Verify(x => x.InitializeHighScores(), Times.AtLeastOnce);
-        result.Should().Be(mockSettingsViewModel.Object);
-        mockLogger.Verify(x => x.Info("Created new default settings"), Times.AtLeastOnce);
+        settingsFactoryMock.Verify(x => x.Invoke(), Times.AtLeastOnce);
+        settingsViewModelMock.Verify(x => x.InitializeHighScores(), Times.AtLeastOnce);
+        result.Should().Be(settingsViewModelMock.Object);
+        loggerMock.Verify(x => x.Info("Created new default settings"), Times.AtLeastOnce);
     }
 
     [Test]
@@ -246,16 +246,16 @@ public class SettingsProviderTests
         Directory.CreateDirectory(testDirectoryPath);
         File.WriteAllText(testSettingsPath, "invalid_json");
 
-        mockJsonWrapper.Setup(x => x.DeserializeObject(It.IsAny<string>(), It.IsAny<Type>()))
+        jsonWrapperMock.Setup(x => x.DeserializeObject(It.IsAny<string>(), It.IsAny<Type>()))
                       .Throws(new Exception("Deserialization failed"));
 
         // Act
         var result = sut.LoadSettings();
 
         // Assert
-        mockLogger.Verify(x => x.Error("Failed to load settings, using defaults", It.IsAny<Exception>()), Times.Once);
-        mockSettingsFactory.Verify(x => x.Invoke(), Times.AtLeastOnce);
-        result.Should().Be(mockSettingsViewModel.Object);
+        loggerMock.Verify(x => x.Error("Failed to load settings, using defaults", It.IsAny<Exception>()), Times.Once);
+        settingsFactoryMock.Verify(x => x.Invoke(), Times.AtLeastOnce);
+        result.Should().Be(settingsViewModelMock.Object);
     }
 
     [Test]
@@ -268,7 +268,7 @@ public class SettingsProviderTests
         var deserializedSettings = new Mock<ISettingsViewModel>();
         deserializedSettings.Setup(x => x.SelectedLanguageCulture).Returns("de-DE");
 
-        mockJsonWrapper.Setup(x => x.DeserializeObject("file_content", typeof(SettingsViewModel)))
+        jsonWrapperMock.Setup(x => x.DeserializeObject("file_content", typeof(SettingsViewModel)))
                       .Returns(deserializedSettings.Object);
 
         // Act
@@ -287,13 +287,13 @@ public class SettingsProviderTests
         var mockLanguage = new Mock<ILanguageViewModel>();
         mockLanguage.Setup(x => x.Culture).Returns("fr-FR");
 
-        mockSettingsViewModel.Setup(x => x.Languages).Returns([mockLanguage.Object]);
+        settingsViewModelMock.Setup(x => x.Languages).Returns([mockLanguage.Object]);
 
         // Act
         var result = sut.LoadSettings();
 
         // Assert
-        mockSettingsViewModel.VerifySet(x => x.SelectedLanguageCulture = "fr-FR", Times.AtLeastOnce);
+        settingsViewModelMock.VerifySet(x => x.SelectedLanguageCulture = "fr-FR", Times.AtLeastOnce);
     }
 
     [Test]
@@ -303,6 +303,6 @@ public class SettingsProviderTests
         sut.LoadSettings();
 
         // Assert
-        mockLogger.Verify(x => x.Debug($"Loading settings from {testSettingsPath}"), Times.AtLeastOnce);
+        loggerMock.Verify(x => x.Debug($"Loading settings from {testSettingsPath}"), Times.AtLeastOnce);
     }
 }

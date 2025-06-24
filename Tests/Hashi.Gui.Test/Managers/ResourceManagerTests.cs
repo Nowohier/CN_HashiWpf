@@ -9,7 +9,7 @@ namespace Hashi.Gui.Test.Managers;
 [TestFixture]
 public class ResourceManagerTests
 {
-    private Mock<IPathProvider> mockPathProvider;
+    private Mock<IPathProvider> pathProviderMock;
     private Mock<ILogger> loggerMock;
     private ResourceManager sut;
     private string testDirectoryPath;
@@ -23,17 +23,17 @@ public class ResourceManagerTests
         testSettingsFilePath = Path.Combine(testDirectoryPath, "hashisettings.json");
         testTestFieldsFilePath = Path.Combine(testDirectoryPath, "hashitestfields.json");
 
-        mockPathProvider = new Mock<IPathProvider>();
-        mockPathProvider.Setup(x => x.SettingsDirectoryPath).Returns(testDirectoryPath);
-        mockPathProvider.Setup(x => x.HashiSettingsFilePath).Returns(testSettingsFilePath);
-        mockPathProvider.Setup(x => x.HashiTestFieldsFilePath).Returns(testTestFieldsFilePath);
-        mockPathProvider.Setup(x => x.HashiSettingsFileName).Returns("hashisettings.json");
-        mockPathProvider.Setup(x => x.HashiTestFieldsFileName).Returns("hashitestfields.json");
+        pathProviderMock = new Mock<IPathProvider>(MockBehavior.Strict);
+        pathProviderMock.Setup(x => x.SettingsDirectoryPath).Returns(testDirectoryPath);
+        pathProviderMock.Setup(x => x.HashiSettingsFilePath).Returns(testSettingsFilePath);
+        pathProviderMock.Setup(x => x.HashiTestFieldsFilePath).Returns(testTestFieldsFilePath);
+        pathProviderMock.Setup(x => x.HashiSettingsFileName).Returns("hashisettings.json");
+        pathProviderMock.Setup(x => x.HashiTestFieldsFileName).Returns("hashitestfields.json");
 
         loggerMock = new Mock<ILogger>(MockBehavior.Strict);
         loggerMock.Setup(x => x.Error(It.IsAny<string>())).Verifiable();
 
-        sut = new ResourceManager(mockPathProvider.Object, loggerMock.Object);
+        sut = new ResourceManager(pathProviderMock.Object, loggerMock.Object);
     }
 
     [TearDown]
@@ -57,7 +57,7 @@ public class ResourceManagerTests
     public void Constructor_WhenCalledWithValidPathProvider_ShouldNotThrow()
     {
         // Arrange & Act & Assert
-        var act = () => new ResourceManager(mockPathProvider.Object, loggerMock.Object);
+        var act = () => new ResourceManager(pathProviderMock.Object, loggerMock.Object);
         act.Should().NotThrow();
     }
 
@@ -177,11 +177,11 @@ public class ResourceManagerTests
         sut.PrepareUi();
 
         // Assert
-        mockPathProvider.Verify(x => x.SettingsDirectoryPath, Times.AtLeastOnce);
-        mockPathProvider.Verify(x => x.HashiSettingsFilePath, Times.AtLeastOnce);
-        mockPathProvider.Verify(x => x.HashiTestFieldsFilePath, Times.AtLeastOnce);
-        mockPathProvider.Verify(x => x.HashiSettingsFileName, Times.AtLeastOnce);
-        mockPathProvider.Verify(x => x.HashiTestFieldsFileName, Times.AtLeastOnce);
+        pathProviderMock.Verify(x => x.SettingsDirectoryPath, Times.AtLeastOnce);
+        pathProviderMock.Verify(x => x.HashiSettingsFilePath, Times.AtLeastOnce);
+        pathProviderMock.Verify(x => x.HashiTestFieldsFilePath, Times.AtLeastOnce);
+        pathProviderMock.Verify(x => x.HashiSettingsFileName, Times.AtLeastOnce);
+        pathProviderMock.Verify(x => x.HashiTestFieldsFileName, Times.AtLeastOnce);
     }
 
     [Test]
@@ -191,27 +191,27 @@ public class ResourceManagerTests
         sut.ResetSettingsAndLoadFromDefault();
 
         // Assert
-        mockPathProvider.Verify(x => x.SettingsDirectoryPath, Times.AtLeastOnce);
-        mockPathProvider.Verify(x => x.HashiSettingsFilePath, Times.AtLeastOnce);
-        mockPathProvider.Verify(x => x.HashiTestFieldsFilePath, Times.AtLeastOnce);
-        mockPathProvider.Verify(x => x.HashiSettingsFileName, Times.AtLeastOnce);
-        mockPathProvider.Verify(x => x.HashiTestFieldsFileName, Times.AtLeastOnce);
+        pathProviderMock.Verify(x => x.SettingsDirectoryPath, Times.AtLeastOnce);
+        pathProviderMock.Verify(x => x.HashiSettingsFilePath, Times.AtLeastOnce);
+        pathProviderMock.Verify(x => x.HashiTestFieldsFilePath, Times.AtLeastOnce);
+        pathProviderMock.Verify(x => x.HashiSettingsFileName, Times.AtLeastOnce);
+        pathProviderMock.Verify(x => x.HashiTestFieldsFileName, Times.AtLeastOnce);
     }
 
     [Test]
     public void PrepareUi_WhenPathProviderReturnsInvalidPath_ShouldHandleGracefully()
     {
         // Arrange
-        var invalidPathProvider = new Mock<IPathProvider>();
-        invalidPathProvider.Setup(x => x.SettingsDirectoryPath).Returns("");
-        invalidPathProvider.Setup(x => x.HashiSettingsFilePath).Returns("");
-        invalidPathProvider.Setup(x => x.HashiTestFieldsFilePath).Returns("");
-        invalidPathProvider.Setup(x => x.HashiSettingsFileName).Returns("settings.json");
-        invalidPathProvider.Setup(x => x.HashiTestFieldsFileName).Returns("testfields.json");
+        var invalidPathProviderMock = new Mock<IPathProvider>(MockBehavior.Strict);
+        invalidPathProviderMock.Setup(x => x.SettingsDirectoryPath).Returns("");
+        invalidPathProviderMock.Setup(x => x.HashiSettingsFilePath).Returns("");
+        invalidPathProviderMock.Setup(x => x.HashiTestFieldsFilePath).Returns("");
+        invalidPathProviderMock.Setup(x => x.HashiSettingsFileName).Returns("settings.json");
+        invalidPathProviderMock.Setup(x => x.HashiTestFieldsFileName).Returns("testfields.json");
 
-        var errorMessage = string.Format(ResourceManager.ErrorMessage, invalidPathProvider.Object.SettingsDirectoryPath, "*");
+        var errorMessage = string.Format(ResourceManager.ErrorMessage, invalidPathProviderMock.Object.SettingsDirectoryPath, "*");
 
-        var resourceManager = new ResourceManager(invalidPathProvider.Object, loggerMock.Object);
+        var resourceManager = new ResourceManager(invalidPathProviderMock.Object, loggerMock.Object);
 
         // Act & Assert
         resourceManager
@@ -225,16 +225,16 @@ public class ResourceManagerTests
     public void ResetSettingsAndLoadFromDefault_WhenPathProviderReturnsInvalidPath_ShouldHandleGracefully()
     {
         // Arrange
-        var invalidPathProvider = new Mock<IPathProvider>();
-        invalidPathProvider.Setup(x => x.SettingsDirectoryPath).Returns("");
-        invalidPathProvider.Setup(x => x.HashiSettingsFilePath).Returns("");
-        invalidPathProvider.Setup(x => x.HashiTestFieldsFilePath).Returns("");
-        invalidPathProvider.Setup(x => x.HashiSettingsFileName).Returns("settings.json");
-        invalidPathProvider.Setup(x => x.HashiTestFieldsFileName).Returns("testfields.json");
+        var invalidPathProviderMock = new Mock<IPathProvider>(MockBehavior.Strict);
+        invalidPathProviderMock.Setup(x => x.SettingsDirectoryPath).Returns("");
+        invalidPathProviderMock.Setup(x => x.HashiSettingsFilePath).Returns("");
+        invalidPathProviderMock.Setup(x => x.HashiTestFieldsFilePath).Returns("");
+        invalidPathProviderMock.Setup(x => x.HashiSettingsFileName).Returns("settings.json");
+        invalidPathProviderMock.Setup(x => x.HashiTestFieldsFileName).Returns("testfields.json");
 
-        var errorMessage = string.Format(ResourceManager.ErrorMessage, invalidPathProvider.Object.SettingsDirectoryPath, "*");
+        var errorMessage = string.Format(ResourceManager.ErrorMessage, invalidPathProviderMock.Object.SettingsDirectoryPath, "*");
 
-        var resourceManager = new ResourceManager(invalidPathProvider.Object, loggerMock.Object);
+        var resourceManager = new ResourceManager(invalidPathProviderMock.Object, loggerMock.Object);
 
         // Act & Assert
         resourceManager
