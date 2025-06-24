@@ -75,8 +75,6 @@ public class MainViewModelTests
 
         // Setup HintProvider methods
         hintProviderMock.Setup(x => x.ResetSession()).Verifiable();
-        hintProviderMock.Setup(x => x.GetHintForSelectedRule()).Verifiable();
-        hintProviderMock.Setup(x => x.GetHintForAllRules()).Verifiable();
 
         timerProviderMock.Setup(x => x.Timer).Returns(new System.Diagnostics.Stopwatch());
         timerProviderMock.Setup(x => x.IsTimerRunning).Returns(false);
@@ -93,6 +91,10 @@ public class MainViewModelTests
         timerProviderMock.Setup(x => x.StopTimer()).Verifiable();
         islandProviderMock.Setup(x => x.InitializeNewSolution(It.IsAny<ISolutionProvider>())).Verifiable();
         islandProviderMock.Setup(x => x.RemoveAllHighlights()).Verifiable();
+        islandProviderMock.Setup(x => x.RefreshIslandColors()).Verifiable();
+        islandProviderMock.Setup(x => x.ClearTemporaryDropTargets()).Verifiable();
+        islandProviderMock.Setup(x => x.GetVisibleNeighbor(It.IsAny<IIslandViewModel>(), It.IsAny<DirectionEnum>())).Returns((IIslandViewModel?)null);
+        islandProviderMock.Setup(x => x.HighlightPathToTargetIsland(It.IsAny<IIslandViewModel>(), It.IsAny<IIslandViewModel>())).Verifiable();
         testSolutionProviderMock.Setup(x => x.SaveTestFields()).Verifiable();
         testSolutionProviderMock.Setup(x => x.ResetSettings()).Verifiable();
         testSolutionProviderMock.Setup(x => x.ConvertIslandsToSolutionProvider(It.IsAny<IEnumerable<IIslandViewModel>>())).Verifiable();
