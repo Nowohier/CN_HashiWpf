@@ -99,7 +99,7 @@ public class MainViewModelTests
         testSolutionProviderMock.Setup(x => x.SaveTestFields()).Verifiable();
         testSolutionProviderMock.Setup(x => x.ResetSettings()).Verifiable();
         testSolutionProviderMock.Setup(x => x.ConvertIslandsToSolutionProvider(It.IsAny<IEnumerable<IIslandViewModel>>())).Verifiable();
-        hashiGeneratorMock.Setup(x => x.Generate(It.IsAny<DifficultyEnum>())).Returns(Mock.Of<ISolutionProvider>());
+        hashiGeneratorMock.Setup(x => x.GenerateHashAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(Mock.Of<ISolutionProvider>());
 
         // Setup DialogWrapper methods
         dialogWrapperMock.Setup(x => x.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DialogButton>(), It.IsAny<DialogImage>())).Verifiable();
