@@ -3,6 +3,7 @@ using FluentAssertions;
 using Hashi.Generator.Interfaces;
 using Hashi.Generator.Interfaces.Models;
 using Hashi.Generator.Interfaces.Providers;
+using Hashi.LinearSolver.Interfaces;
 using Hashi.Logging.Interfaces;
 using Moq;
 using System.Drawing;
