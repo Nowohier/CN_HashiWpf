@@ -16,19 +16,24 @@
 - Solver folder: Contains the linear solver project for hashi fields as well as the interface definitions project. Also contains the rules project which defines the rules for the hashi game.
 - Enums: Contains all enums used in the project.
 
+## Unit Tests
+- Write unit tests for new functionality. 
+- Use FluentAssertions and Moq for testing. 
+- Use MockBehavior.Strict for all Mocks.
+- UnitTest class name: [NameOfClassToTest]Tests.cs
+- Unit Test naming: [MethodName]_When[TestConditions]_Should[ExpectedResult]
+- Use pattern "Arrange, Act, Assert" for structuring tests.
+   - Arrange: Set up the context and inputs
+   - Act: Execute the code under test
+   - Assert: Verify the outcome
+
 ## Key Guidelines
 1. Follow C# best practices and idiomatic patterns
 2. Maintain existing code structure and organization
 3. Document everything. InheritDoc for all public methods and classes. Summary, etc. belongs in the interface.
 4. New classes require new interfaces
 5. Use autofac for dependency injection in constructors
-4. Write unit tests for new functionality. Use FluentAssertions and Moq for testing. 
-   UnitTest class name: [NameOfClassToTest]Tests.cs
-   Unit Test naming: [MethodName]_When[TestConditions]_Should[ExpectedResult]
-   Use pattern "Arrange, Act, Assert" for structuring tests.
-   - Arrange: Set up the context and inputs
-   - Act: Execute the code under test
-   - Assert: Verify the outcome
+4. Write unit tests for new functionality. 
 5. Use camel case for private fields
 6. Use braces for if, for, foreach
 7. Use namespace declaration
