@@ -21,10 +21,17 @@ namespace Hashi.Generator.Test
             var builder = new ContainerBuilder();
 
             // Register the logging dependencies as mocks since they're required
-            builder.RegisterInstance(Mock.Of<ILoggerFactory>()).As<ILoggerFactory>();
+            var loggerFactoryMock = new Mock<ILoggerFactory>(MockBehavior.Strict);
+            var loggerMock = new Mock<ILogger>(MockBehavior.Strict);
+            
+            // Setup the logger factory to return a mock logger
+            loggerFactoryMock.Setup(f => f.CreateLogger<It.IsAnyType>()).Returns(loggerMock.Object);
+            
+            builder.RegisterInstance(loggerFactoryMock.Object).As<ILoggerFactory>();
             
             // Register the solver dependency as mock since it's required
-            builder.RegisterInstance(Mock.Of<IHashiSolver>()).As<IHashiSolver>();
+            var hashiSolverMock = new Mock<IHashiSolver>(MockBehavior.Strict);
+            builder.RegisterInstance(hashiSolverMock.Object).As<IHashiSolver>();
 
             builder.RegisterModule<AutoFacGeneratorModule>();
             container = builder.Build();

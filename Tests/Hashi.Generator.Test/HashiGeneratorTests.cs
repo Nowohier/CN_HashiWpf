@@ -26,14 +26,20 @@ namespace Hashi.Generator.Test
         public void Setup()
         {
             // Arrange - Set up mocks
-            hashiSolverMock = new Mock<IHashiSolver>();
-            loggerMock = new Mock<ILogger>();
-            loggerFactoryMock = new Mock<ILoggerFactory>();
-            islandFactoryMock = new Mock<Func<int, int, int, IIsland>>();
-            bridgeFactoryMock = new Mock<Func<IIsland, IIsland, int, IBridge>>();
-            solutionContainerFactoryMock = new Mock<Func<int[][], IList<IBridgeCoordinates>, ISolutionProvider>>();
+            hashiSolverMock = new Mock<IHashiSolver>(MockBehavior.Strict);
+            loggerMock = new Mock<ILogger>(MockBehavior.Strict);
+            loggerFactoryMock = new Mock<ILoggerFactory>(MockBehavior.Strict);
+            islandFactoryMock = new Mock<Func<int, int, int, IIsland>>(MockBehavior.Strict);
+            bridgeFactoryMock = new Mock<Func<IIsland, IIsland, int, IBridge>>(MockBehavior.Strict);
+            solutionContainerFactoryMock = new Mock<Func<int[][], IList<IBridgeCoordinates>, ISolutionProvider>>(MockBehavior.Strict);
 
             loggerFactoryMock.Setup(f => f.CreateLogger<It.IsAnyType>()).Returns(loggerMock.Object);
+
+            // Setup logger methods that might be called
+            loggerMock.Setup(l => l.Info(It.IsAny<string>()));
+            loggerMock.Setup(l => l.Warn(It.IsAny<string>()));
+            loggerMock.Setup(l => l.Error(It.IsAny<string>()));
+            loggerMock.Setup(l => l.Debug(It.IsAny<string>()));
 
             // Setup default successful solver behavior
             hashiSolverMock.Setup(s => s.SolveLazy(It.IsAny<int[][]>(), It.IsAny<bool>()))
@@ -48,7 +54,7 @@ namespace Hashi.Generator.Test
                             .Returns((IIsland i1, IIsland i2, int count) => new Hashi.Generator.Models.Bridge(i1, i2, count));
 
             // Setup solution container factory
-            var mockSolution = new Mock<ISolutionProvider>();
+            var mockSolution = new Mock<ISolutionProvider>(MockBehavior.Strict);
             solutionContainerFactoryMock.Setup(f => f(It.IsAny<int[][]>(), It.IsAny<IList<IBridgeCoordinates>>()))
                                        .Returns(mockSolution.Object);
 
