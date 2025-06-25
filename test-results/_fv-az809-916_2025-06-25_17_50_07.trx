@@ -1,0 +1,929 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="de874fcb-7fee-4861-ad43-49f80caee914" name="@fv-az809-916 2025-06-25 17:50:07" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2025-06-25T17:50:07.8059827+00:00" queuing="2025-06-25T17:50:07.8059828+00:00" start="2025-06-25T17:50:05.9783438+00:00" finish="2025-06-25T17:50:08.5320096+00:00" />
+  <TestSettings name="default" id="bcbaebc2-4a8c-4c40-9378-5a4adeba8738">
+    <Deployment runDeploymentRoot="_fv-az809-916_2025-06-25_17_50_07" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="c8336447-5236-4a8a-8b3f-572c7385f7d3" testId="a14edb2e-8b63-4d46-6551-f1cac8e76c0b" testName="GetDifficultySettings_WhenValidDifficulty_ShouldReturnCorrectSettings(1,14,16,14,16,4,50,20)" computerName="fv-az809-916" duration="00:00:00.0044620" startTime="2025-06-25T17:50:08.2257322+00:00" endTime="2025-06-25T17:50:08.2301941+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c8336447-5236-4a8a-8b3f-572c7385f7d3" />
+    <UnitTestResult executionId="ad855641-e625-4b74-9f00-7d3ad41ade23" testId="618d21c5-0d87-1c5e-70a1-2824451f7508" testName="GetDifficultySettings_WhenInvalidDifficulty_ShouldThrowArgumentException(10)" computerName="fv-az809-916" duration="00:00:00.0049970" startTime="2025-06-25T17:50:08.2052939+00:00" endTime="2025-06-25T17:50:08.2102911+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ad855641-e625-4b74-9f00-7d3ad41ade23" />
+    <UnitTestResult executionId="cc6b90ec-dd39-4bc4-bed2-3da0e75ee768" testId="c4743bd0-abce-65a3-1bd1-ff900aae0532" testName="Constructor_WhenNullBridgeCoordinates_ShouldInitializeWithNull" computerName="fv-az809-916" duration="00:00:00.0004390" startTime="2025-06-25T17:50:08.4324892+00:00" endTime="2025-06-25T17:50:08.4329284+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cc6b90ec-dd39-4bc4-bed2-3da0e75ee768" />
+    <UnitTestResult executionId="8478984e-c611-439f-9fac-0a052d82e429" testId="2a003473-0eb6-3495-b554-f566e9fe845d" testName="GetDifficultySettings_WhenInvalidDifficulty_ShouldThrowArgumentException(-1)" computerName="fv-az809-916" duration="00:00:00.0065460" startTime="2025-06-25T17:50:08.1985330+00:00" endTime="2025-06-25T17:50:08.2050786+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8478984e-c611-439f-9fac-0a052d82e429" />
+    <UnitTestResult executionId="30a6f5d9-a849-4fe4-844f-68f68b739bb6" testId="70066b11-e589-8625-4e7e-8b94093fd5d3" testName="Load_WhenCalled_ShouldRegisterHashiGenerator" computerName="fv-az809-916" duration="00:00:00.0384370" startTime="2025-06-25T17:50:07.5047156+00:00" endTime="2025-06-25T17:50:07.5431530+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="30a6f5d9-a849-4fe4-844f-68f68b739bb6">
+      <Output>
+        <ErrorInfo>
+          <Message>Autofac.Core.DependencyResolutionException : An exception was thrown while activating Hashi.Generator.HashiGenerator.
+Data:
+  ActivatorChain: Hashi.Generator.HashiGenerator
+  ----&gt; Autofac.Core.DependencyResolutionException : None of the constructors found on type 'Hashi.Generator.HashiGenerator' can be invoked with the available services and parameters:
+Cannot resolve parameter 'Hashi.LinearSolver.Interfaces.IHashiSolver hashiSolver' of constructor 'Void .ctor(System.Func`4[System.Int32,System.Int32,System.Int32,Hashi.Generator.Interfaces.Models.IIsland], System.Func`4[Hashi.Generator.Interfaces.Models.IIsland,Hashi.Generator.Interfaces.Models.IIsland,System.Int32,Hashi.Generator.Interfaces.Models.IBridge], System.Func`3[System.Int32[][],System.Collections.Generic.IList`1[Hashi.Generator.Interfaces.Models.IBridgeCoordinates],Hashi.Generator.Interfaces.Providers.ISolutionProvider], Hashi.LinearSolver.Interfaces.IHashiSolver, Hashi.Logging.Interfaces.ILoggerFactory)'.
+
+See https://autofac.rtfd.io/help/no-constructors-bindable for more info.</Message>
+          <StackTrace>   at Autofac.Core.Resolving.Middleware.ActivatorErrorHandlingMiddleware.Execute(ResolveRequestContext context, Action`1 next)
+   at Autofac.Core.Resolving.Pipeline.ResolvePipelineBuilder.&lt;&gt;c__DisplayClass14_0.&lt;BuildPipeline&gt;b__1(ResolveRequestContext context)
+   at Autofac.Core.Pipeline.ResolvePipeline.Invoke(ResolveRequestContext context)
+   at Autofac.Core.Resolving.Middleware.RegistrationPipelineInvokeMiddleware.Execute(ResolveRequestContext context, Action`1 next)
+   at Autofac.Core.Resolving.Pipeline.ResolvePipelineBuilder.&lt;&gt;c__DisplayClass14_0.&lt;BuildPipeline&gt;b__1(ResolveRequestContext context)
+   at Autofac.Core.Resolving.Middleware.SharingMiddleware.&lt;&gt;c__DisplayClass5_0.&lt;Execute&gt;b__0()
+   at Autofac.Core.Lifetime.LifetimeScope.CreateSharedInstance(Guid id, Func`1 creator)
+   at Autofac.Core.Lifetime.LifetimeScope.CreateSharedInstance(Guid primaryId, Nullable`1 qualifyingId, Func`1 creator)
+   at Autofac.Core.Resolving.Middleware.SharingMiddleware.Execute(ResolveRequestContext context, Action`1 next)
+   at Autofac.Core.Resolving.Pipeline.ResolvePipelineBuilder.&lt;&gt;c__DisplayClass14_0.&lt;BuildPipeline&gt;b__1(ResolveRequestContext context)
+   at Autofac.Core.Resolving.Pipeline.ResolvePipelineBuilder.&lt;&gt;c__DisplayClass14_0.&lt;BuildPipeline&gt;b__1(ResolveRequestContext context)
+   at Autofac.Core.Resolving.Middleware.CircularDependencyDetectorMiddleware.Execute(ResolveRequestContext context, Action`1 next)
+   at Autofac.Core.Resolving.Pipeline.ResolvePipelineBuilder.&lt;&gt;c__DisplayClass14_0.&lt;BuildPipeline&gt;b__1(ResolveRequestContext context)
+   at Autofac.Core.Pipeline.ResolvePipeline.Invoke(ResolveRequestContext context)
+   at Autofac.Core.Resolving.ResolveOperation.GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, ResolveRequest&amp; request)
+   at Autofac.Core.Resolving.ResolveOperation.ExecuteOperation(ResolveRequest&amp; request)
+   at Autofac.Core.Resolving.ResolveOperation.Execute(ResolveRequest&amp; request)
+   at Autofac.Core.Lifetime.LifetimeScope.ResolveComponent(ResolveRequest&amp; request)
+   at Autofac.Core.Container.ResolveComponent(ResolveRequest&amp; request)
+   at Autofac.Core.Container.Autofac.IComponentContext.ResolveComponent(ResolveRequest&amp; request)
+   at Autofac.ResolutionExtensions.TryResolveService(IComponentContext context, Service service, IEnumerable`1 parameters, Object&amp; instance)
+   at Autofac.ResolutionExtensions.ResolveService(IComponentContext context, Service service, IEnumerable`1 parameters)
+   at Autofac.ResolutionExtensions.Resolve(IComponentContext context, Type serviceType, IEnumerable`1 parameters)
+   at Autofac.ResolutionExtensions.Resolve[TService](IComponentContext context, IEnumerable`1 parameters)
+   at Autofac.ResolutionExtensions.Resolve[TService](IComponentContext context)
+   at Hashi.Generator.Test.AutoFacGeneratorModuleTests.Load_WhenCalled_ShouldRegisterHashiGenerator() in /home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/AutoFacGeneratorModuleTests.cs:line 39
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+--DependencyResolutionException
+   at Autofac.Core.Activators.Reflection.ReflectionActivator.&lt;&gt;c__DisplayClass14_0.&lt;UseSingleConstructorActivation&gt;b__0(ResolveRequestContext context, Action`1 next)
+   at Autofac.Core.Resolving.Middleware.DelegateMiddleware.Execute(ResolveRequestContext context, Action`1 next)
+   at Autofac.Core.Resolving.Pipeline.ResolvePipelineBuilder.&lt;&gt;c__DisplayClass14_0.&lt;BuildPipeline&gt;b__1(ResolveRequestContext context)
+   at Autofac.Core.Resolving.Middleware.DisposalTrackingMiddleware.Execute(ResolveRequestContext context, Action`1 next)
+   at Autofac.Core.Resolving.Pipeline.ResolvePipelineBuilder.&lt;&gt;c__DisplayClass14_0.&lt;BuildPipeline&gt;b__1(ResolveRequestContext context)
+   at Autofac.Core.Resolving.Middleware.ActivatorErrorHandlingMiddleware.Execute(ResolveRequestContext context, Action`1 next)
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f7d12292-6f65-473e-997d-d497c40011ed" testId="ef24de11-f4ea-1d58-69bd-1ec7f03b90ee" testName="Properties_WhenInitialized_ShouldBeReadOnly" computerName="fv-az809-916" duration="00:00:00.0003720" startTime="2025-06-25T17:50:08.4351016+00:00" endTime="2025-06-25T17:50:08.4354734+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f7d12292-6f65-473e-997d-d497c40011ed" />
+    <UnitTestResult executionId="c2090fac-0028-4e27-85fa-fb799086ac28" testId="f2e0ae72-aefe-11eb-3717-8eb66ec0102c" testName="AmountBridgesConnectable_WhenSet_ShouldUpdateValue" computerName="fv-az809-916" duration="00:00:00.0001610" startTime="2025-06-25T17:50:08.4175377+00:00" endTime="2025-06-25T17:50:08.4176990+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c2090fac-0028-4e27-85fa-fb799086ac28" />
+    <UnitTestResult executionId="246d8537-2f75-4313-80cb-08e3738f6080" testId="5e4b69b8-6745-917f-70bd-45d1173277bf" testName="Constructor_WhenNoNameProvided_ShouldInitializeWithEmptyString" computerName="fv-az809-916" duration="00:00:00.0005290" startTime="2025-06-25T17:50:08.4319376+00:00" endTime="2025-06-25T17:50:08.4324668+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="246d8537-2f75-4313-80cb-08e3738f6080" />
+    <UnitTestResult executionId="96e68de8-661d-439b-8273-34e3ddf7bfd1" testId="da186355-3819-af31-387c-3c7e675afa55" testName="SetAllNeighbors_WhenIslandBelow_ShouldSetIslandDown" computerName="fv-az809-916" duration="00:00:00.0002930" startTime="2025-06-25T17:50:08.4187188+00:00" endTime="2025-06-25T17:50:08.4190122+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="96e68de8-661d-439b-8273-34e3ddf7bfd1" />
+    <UnitTestResult executionId="8ac09f36-6554-466a-8ef3-4fde7d1dc75c" testId="51e373ee-1d75-5066-6f73-13194de38c7d" testName="Load_WhenCalled_ShouldRegisterBridgeFactory" computerName="fv-az809-916" duration="00:00:00.0012240" startTime="2025-06-25T17:50:07.5034765+00:00" endTime="2025-06-25T17:50:07.5047010+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8ac09f36-6554-466a-8ef3-4fde7d1dc75c" />
+    <UnitTestResult executionId="614615bb-ace2-4a9c-b01c-928c0833b4c8" testId="4279ccc5-596f-4190-ff77-1a05932dc08b" testName="GetBetaForDifficulty_WhenInvalidDifficulty_ShouldReturnZero(-1)" computerName="fv-az809-916" duration="00:00:00.1061840" startTime="2025-06-25T17:50:08.0320942+00:00" endTime="2025-06-25T17:50:08.1382775+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="614615bb-ace2-4a9c-b01c-928c0833b4c8">
+      <Output>
+        <ErrorInfo>
+          <Message>Expected result to be 0, but found 20 (difference of 20).</Message>
+          <StackTrace>   at FluentAssertions.Execution.LateBoundTestFramework.Throw(String message)
+   at FluentAssertions.Execution.DefaultAssertionStrategy.HandleFailure(String message)
+   at FluentAssertions.Execution.AssertionScope.AddPreFormattedFailure(String formattedFailureMessage)
+   at FluentAssertions.Execution.AssertionChain.FailWith(Func`1 getFailureReason)
+   at FluentAssertions.Execution.AssertionChain.FailWith(Func`1 getFailureReason)
+   at FluentAssertions.Execution.AssertionChain.FailWith(String message, Object[] args)
+   at FluentAssertions.Numeric.NumericAssertionsBase`3.Be(T expected, String because, Object[] becauseArgs)
+   at Hashi.Generator.Test.HashiGeneratorTests.GetBetaForDifficulty_WhenInvalidDifficulty_ShouldReturnZero(Int32 difficulty) in /home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/HashiGeneratorTests.cs:line 215
+
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b014b2ca-73bd-407c-8b88-33621e491e49" testId="712ac09c-21f9-43b0-a1eb-ccd1d8dcea5c" testName="SetAllNeighbors_WhenMultipleNeighbors_ShouldSetAllDirections" computerName="fv-az809-916" duration="00:00:00.0003640" startTime="2025-06-25T17:50:08.4195669+00:00" endTime="2025-06-25T17:50:08.4199303+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b014b2ca-73bd-407c-8b88-33621e491e49" />
+    <UnitTestResult executionId="cea14e80-93c2-4830-9e15-6b6600c8b8d6" testId="aba83d8e-24d8-bb0e-4bf6-8bacea75a485" testName="InitializeField_WhenValidDimensions_ShouldCreateCorrectSizedField" computerName="fv-az809-916" duration="00:00:00.0095580" startTime="2025-06-25T17:50:08.3139835+00:00" endTime="2025-06-25T17:50:08.3235414+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cea14e80-93c2-4830-9e15-6b6600c8b8d6" />
+    <UnitTestResult executionId="e6bc32b3-3afd-4709-8de3-a59c2f69b0f3" testId="3a2b82e6-4c56-03f4-9ff1-eb120f86434e" testName="SetAllNeighbors_WhenNoNeighbors_ShouldLeaveAllNeighborsNull" computerName="fv-az809-916" duration="00:00:00.0002590" startTime="2025-06-25T17:50:08.4199429+00:00" endTime="2025-06-25T17:50:08.4202022+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e6bc32b3-3afd-4709-8de3-a59c2f69b0f3" />
+    <UnitTestResult executionId="ce8ac236-ae78-4616-af31-d341520781ef" testId="7cefb498-83f9-cdca-eded-c8ab05179c33" testName="Load_WhenCalled_ShouldRegisterIslandFactory" computerName="fv-az809-916" duration="00:00:00.0013250" startTime="2025-06-25T17:50:07.6657248+00:00" endTime="2025-06-25T17:50:07.6670499+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ce8ac236-ae78-4616-af31-d341520781ef" />
+    <UnitTestResult executionId="afb92fa3-6423-471b-b16c-572571dde438" testId="81c20c01-29a9-e4dd-a624-e6bd99caa397" testName="ShuffleArray_WhenCalledWithSingleElementArray_ShouldNotThrow" computerName="fv-az809-916" duration="00:00:00.0048080" startTime="2025-06-25T17:50:08.3697127+00:00" endTime="2025-06-25T17:50:08.3745209+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="afb92fa3-6423-471b-b16c-572571dde438" />
+    <UnitTestResult executionId="31f656d7-6acf-4793-a605-a253cd1d1514" testId="97f3ace9-9c78-ae63-8e06-b35f00278265" testName="Constructor_WhenNegativeCoordinates_ShouldInitializeCorrectly" computerName="fv-az809-916" duration="00:00:00.0003790" startTime="2025-06-25T17:50:08.3963032+00:00" endTime="2025-06-25T17:50:08.3966825+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="31f656d7-6acf-4793-a605-a253cd1d1514" />
+    <UnitTestResult executionId="f76e84f3-5f5f-4b7d-b15a-d92e98a0f5cb" testId="0dda2aa6-1a52-0f4d-7f13-f5c1ab67df7d" testName="InitializeField_WhenInvalidDimensions_ShouldThrowException(5,-1)" computerName="fv-az809-916" duration="00:00:00.0043880" startTime="2025-06-25T17:50:08.3060854+00:00" endTime="2025-06-25T17:50:08.3104736+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f76e84f3-5f5f-4b7d-b15a-d92e98a0f5cb" />
+    <UnitTestResult executionId="6c471d95-bc80-4566-96d4-4164121ab47e" testId="7bceaa13-9724-29d1-8730-647afd949fe6" testName="GetAlphaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectAlpha(7,50)" computerName="fv-az809-916" duration="00:00:00.0055550" startTime="2025-06-25T17:50:08.0072609+00:00" endTime="2025-06-25T17:50:08.0128160+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6c471d95-bc80-4566-96d4-4164121ab47e" />
+    <UnitTestResult executionId="6a714bf9-e084-4406-bbb2-893d530a98e2" testId="154a331e-4023-cd62-7f7a-10dc240786ca" testName="SetAllNeighbors_WhenIslandAbove_ShouldSetIslandUp" computerName="fv-az809-916" duration="00:00:00.0002910" startTime="2025-06-25T17:50:08.4184150+00:00" endTime="2025-06-25T17:50:08.4187061+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6a714bf9-e084-4406-bbb2-893d530a98e2" />
+    <UnitTestResult executionId="44b83816-3e77-4eea-b84a-328323681228" testId="0dc8ad2a-36bd-0444-c9a0-e3324a2a8252" testName="AddBridge_WhenIslandLeftConnection_ShouldIncrementBridgeCountAndIslandValues" computerName="fv-az809-916" duration="00:00:00.0004350" startTime="2025-06-25T17:50:08.4019900+00:00" endTime="2025-06-25T17:50:08.4024250+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="44b83816-3e77-4eea-b84a-328323681228" />
+    <UnitTestResult executionId="de017389-0f4d-41d7-9dc6-11572893bf50" testId="d125876f-a572-8a66-4511-4c3bdeaaedad" testName="GetBetaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectBeta(6,10)" computerName="fv-az809-916" duration="00:00:00.0040879" startTime="2025-06-25T17:50:08.1802668+00:00" endTime="2025-06-25T17:50:08.1843551+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="de017389-0f4d-41d7-9dc6-11572893bf50" />
+    <UnitTestResult executionId="3c624ef7-bfef-434f-a882-1346cb980584" testId="187c4543-482b-ab40-e5eb-d50ddfc3e2a2" testName="InitializeField_WhenInvalidDimensions_ShouldThrowException(5,0)" computerName="fv-az809-916" duration="00:00:00.0052290" startTime="2025-06-25T17:50:08.2955778+00:00" endTime="2025-06-25T17:50:08.3008070+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3c624ef7-bfef-434f-a882-1346cb980584">
+      <Output>
+        <ErrorInfo>
+          <Message>Expected a &lt;System.Exception&gt; to be thrown, but no exception was thrown.</Message>
+          <StackTrace>   at FluentAssertions.Execution.LateBoundTestFramework.Throw(String message)
+   at FluentAssertions.Execution.DefaultAssertionStrategy.HandleFailure(String message)
+   at FluentAssertions.Execution.AssertionScope.AddPreFormattedFailure(String formattedFailureMessage)
+   at FluentAssertions.Execution.AssertionChain.FailWith(Func`1 getFailureReason)
+   at FluentAssertions.Execution.AssertionChain.FailWith(Func`1 getFailureReason)
+   at FluentAssertions.Execution.AssertionChain.FailWith(String message)
+   at FluentAssertions.Specialized.DelegateAssertionsBase`2.&lt;&gt;c__DisplayClass8_0`1.&lt;ThrowInternal&gt;b__0(AssertionChain chain)
+   at FluentAssertions.Execution.AssertionChain.WithExpectation(String message, Action`1 chain, Object[] args)
+   at FluentAssertions.Execution.AssertionChain.WithExpectation(String message, Object arg1, Action`1 chain)
+   at FluentAssertions.Specialized.DelegateAssertionsBase`2.ThrowInternal[TException](Exception exception, String because, Object[] becauseArgs)
+   at FluentAssertions.Specialized.DelegateAssertions`2.Throw[TException](String because, Object[] becauseArgs)
+   at Hashi.Generator.Test.HashiGeneratorTests.InitializeField_WhenInvalidDimensions_ShouldThrowException(Int32 length, Int32 width) in /home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/HashiGeneratorTests.cs:line 143
+   at InvokeStub_HashiGeneratorTests.InitializeField_WhenInvalidDimensions_ShouldThrowException(Object, Span`1)
+
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c7ea0bfd-c6ad-4349-9549-a3cdf22226ca" testId="7c0d989e-6591-b2fd-2315-244c3223b997" testName="Name_WhenSet_ShouldUpdateValue" computerName="fv-az809-916" duration="00:00:00.0004110" startTime="2025-06-25T17:50:08.4343485+00:00" endTime="2025-06-25T17:50:08.4347592+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c7ea0bfd-c6ad-4349-9549-a3cdf22226ca" />
+    <UnitTestResult executionId="5186a62a-38f5-4d33-980c-180e48e58835" testId="03d1b497-0639-48a5-8161-1a0dce80a32a" testName="SolutionProviderFactory_WhenInvoked_ShouldCreateSolutionProviderWithCorrectProperties" computerName="fv-az809-916" duration="00:00:00.0085760" startTime="2025-06-25T17:50:07.6744787+00:00" endTime="2025-06-25T17:50:07.6830550+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5186a62a-38f5-4d33-980c-180e48e58835" />
+    <UnitTestResult executionId="56668502-3094-42cf-bae4-b4dd5286d294" testId="8195d505-adc9-c993-2126-afa963983ce3" testName="HasAdjacentIsland_WhenAdjacentCellHasIsland_ShouldReturnTrue" computerName="fv-az809-916" duration="00:00:00.0049520" startTime="2025-06-25T17:50:08.2708553+00:00" endTime="2025-06-25T17:50:08.2758077+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="56668502-3094-42cf-bae4-b4dd5286d294" />
+    <UnitTestResult executionId="7b51be15-3105-48af-b9dc-75837eae995f" testId="4959d24a-9c3e-5baa-8844-e5f4590d220c" testName="Constructor_WhenEmptyCollections_ShouldInitializeCorrectly" computerName="fv-az809-916" duration="00:00:00.0065640" startTime="2025-06-25T17:50:08.4227026+00:00" endTime="2025-06-25T17:50:08.4292672+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7b51be15-3105-48af-b9dc-75837eae995f" />
+    <UnitTestResult executionId="6afb2a1f-9a6e-41c7-84a8-d3d694b6fcc1" testId="9521ef1f-6ff5-a05c-76b3-7a5ff9b32483" testName="Load_WhenCalled_ShouldRegisterIslandAsInstancePerDependency" computerName="fv-az809-916" duration="00:00:00.1112800" startTime="2025-06-25T17:50:07.5544201+00:00" endTime="2025-06-25T17:50:07.6656995+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6afb2a1f-9a6e-41c7-84a8-d3d694b6fcc1" />
+    <UnitTestResult executionId="8fbf906b-2b58-48b9-b1b0-204be4603a58" testId="08b6cc7a-68d9-d80f-4a2c-bc49f4e02358" testName="AddBridge_WhenIslandRightConnection_ShouldIncrementBridgeCountAndIslandValues" computerName="fv-az809-916" duration="00:00:00.0004730" startTime="2025-06-25T17:50:08.4028735+00:00" endTime="2025-06-25T17:50:08.4033462+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8fbf906b-2b58-48b9-b1b0-204be4603a58" />
+    <UnitTestResult executionId="d508389f-2d13-41d1-a614-f2efce136761" testId="1f8010a1-40df-81ae-6494-ab06644788c4" testName="GenerateHashAsync_WhenDifficultySpecified_ShouldCallGenerateWithDifficulty" computerName="fv-az809-916" duration="00:00:00.1723030" startTime="2025-06-25T17:50:07.7009179+00:00" endTime="2025-06-25T17:50:07.8732209+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d508389f-2d13-41d1-a614-f2efce136761" />
+    <UnitTestResult executionId="c9d836cb-26fc-436f-8fad-1541d9ef2d7e" testId="4de0d9d9-368b-7a6f-68ea-64eae0c5f183" testName="Constructor_WhenNullName_ShouldInitializeWithEmptyString" computerName="fv-az809-916" duration="00:00:00.0004550" startTime="2025-06-25T17:50:08.4333301+00:00" endTime="2025-06-25T17:50:08.4337845+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c9d836cb-26fc-436f-8fad-1541d9ef2d7e" />
+    <UnitTestResult executionId="1b1f4de8-c2c4-450c-9519-98783326bb45" testId="15acff25-1fa2-60dc-f923-74434058f516" testName="HasAdjacentIsland_WhenAtEdgeOfField_ShouldCheckOnlyValidPositions" computerName="fv-az809-916" duration="00:00:00.0044490" startTime="2025-06-25T17:50:08.2762069+00:00" endTime="2025-06-25T17:50:08.2806556+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1b1f4de8-c2c4-450c-9519-98783326bb45" />
+    <UnitTestResult executionId="0cc07229-fc9a-448d-9da5-5b1fe8e7f7c0" testId="3dcb5a17-b5c4-d51c-dca9-176a24817b81" testName="AddOtherSide_WhenVerticalBridgeIsland1Below_ShouldUpdateBridgeCounts" computerName="fv-az809-916" duration="00:00:00.0001860" startTime="2025-06-25T17:50:08.4169801+00:00" endTime="2025-06-25T17:50:08.4171663+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0cc07229-fc9a-448d-9da5-5b1fe8e7f7c0" />
+    <UnitTestResult executionId="eb058c98-b819-436c-bfc7-5742695d7691" testId="c9fc000d-929a-78d1-6d4c-8226e998cf9b" testName="GetAlphaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectAlpha(6,25)" computerName="fv-az809-916" duration="00:00:00.0061870" startTime="2025-06-25T17:50:08.0008586+00:00" endTime="2025-06-25T17:50:08.0070453+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="eb058c98-b819-436c-bfc7-5742695d7691" />
+    <UnitTestResult executionId="6e56aafd-53f9-4e07-882a-d518dc35e029" testId="44b3fda2-688f-a855-dd43-d0d0fd6473ac" testName="GetDifficultySettings_WhenValidDifficulty_ShouldReturnCorrectSettings(0,5,10,5,10,4,25,20)" computerName="fv-az809-916" duration="00:00:00.0045779" startTime="2025-06-25T17:50:08.2207168+00:00" endTime="2025-06-25T17:50:08.2252949+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6e56aafd-53f9-4e07-882a-d518dc35e029" />
+    <UnitTestResult executionId="ccf9f271-3e75-4f49-9b49-193073686a2a" testId="7ae8bb7a-9bae-cacb-1f72-86c23ab8c291" testName="AddBridge_WhenIslandUpConnection_ShouldIncrementBridgeCountAndIslandValues" computerName="fv-az809-916" duration="00:00:00.0013400" startTime="2025-06-25T17:50:08.4065019+00:00" endTime="2025-06-25T17:50:08.4078420+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ccf9f271-3e75-4f49-9b49-193073686a2a">
+      <Output>
+        <ErrorInfo>
+          <Message>Expected bottomIsland.AmountBridgesUp to be 1, but found 0 (difference of -1).</Message>
+          <StackTrace>   at FluentAssertions.Execution.LateBoundTestFramework.Throw(String message)
+   at FluentAssertions.Execution.DefaultAssertionStrategy.HandleFailure(String message)
+   at FluentAssertions.Execution.AssertionScope.AddPreFormattedFailure(String formattedFailureMessage)
+   at FluentAssertions.Execution.AssertionChain.FailWith(Func`1 getFailureReason)
+   at FluentAssertions.Execution.AssertionChain.FailWith(Func`1 getFailureReason)
+   at FluentAssertions.Execution.AssertionChain.FailWith(String message, Object[] args)
+   at FluentAssertions.Numeric.NumericAssertionsBase`3.Be(T expected, String because, Object[] becauseArgs)
+   at Hashi.Generator.Test.Models.BridgeTests.AddBridge_WhenIslandUpConnection_ShouldIncrementBridgeCountAndIslandValues() in /home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/Models/BridgeTests.cs:line 148
+
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="642fb32f-1a2c-4530-a667-8457ecf24429" testId="2a056c6f-c361-3a2a-bbbb-7fc3d401ecf4" testName="GetBetaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectBeta(3,15)" computerName="fv-az809-916" duration="00:00:00.0063920" startTime="2025-06-25T17:50:08.1617768+00:00" endTime="2025-06-25T17:50:08.1681691+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="642fb32f-1a2c-4530-a667-8457ecf24429" />
+    <UnitTestResult executionId="a0dee88f-2799-4371-a3db-94a6108d80b4" testId="bebd41fa-90bc-4532-218c-588be485e1b3" testName="SetAllNeighbors_WhenObstaclesBetweenIslands_ShouldStillSetNeighbors" computerName="fv-az809-916" duration="00:00:00.0023160" startTime="2025-06-25T17:50:08.4202170+00:00" endTime="2025-06-25T17:50:08.4225332+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a0dee88f-2799-4371-a3db-94a6108d80b4" />
+    <UnitTestResult executionId="6c469cfb-b391-4932-9459-d2954ce3c7c6" testId="b6d97014-6861-327a-d16e-4f2d4fae7f7d" testName="Load_WhenCalled_ShouldRegisterSolutionProviderFactory" computerName="fv-az809-916" duration="00:00:00.0016500" startTime="2025-06-25T17:50:07.6707488+00:00" endTime="2025-06-25T17:50:07.6723992+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6c469cfb-b391-4932-9459-d2954ce3c7c6" />
+    <UnitTestResult executionId="143f72af-ed89-46c1-ab98-daf540ace4a6" testId="95f6e09f-ee54-a4a4-fcd1-eaf059fb2777" testName="AddOtherSide_WhenVerticalBridgeIsland1Above_ShouldUpdateBridgeCounts" computerName="fv-az809-916" duration="00:00:00.0002500" startTime="2025-06-25T17:50:08.4167174+00:00" endTime="2025-06-25T17:50:08.4169675+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="143f72af-ed89-46c1-ab98-daf540ace4a6" />
+    <UnitTestResult executionId="e778a084-7ffd-4fd0-80d7-55dac66ffb47" testId="8b06f05d-d614-ee7e-d395-c263d21b37d0" testName="GetAlphaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectAlpha(4,50)" computerName="fv-az809-916" duration="00:00:00.0040830" startTime="2025-06-25T17:50:07.9903036+00:00" endTime="2025-06-25T17:50:07.9943864+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e778a084-7ffd-4fd0-80d7-55dac66ffb47" />
+    <UnitTestResult executionId="77afd42e-a6c8-4459-8973-3499cb17732c" testId="e924699f-558f-a642-d833-716b2330ead9" testName="AddBridge_WhenNoDirectConnection_ShouldOnlyIncrementBridgeCount" computerName="fv-az809-916" duration="00:00:00.0077320" startTime="2025-06-25T17:50:08.4082013+00:00" endTime="2025-06-25T17:50:08.4159332+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="77afd42e-a6c8-4459-8973-3499cb17732c">
+      <Output>
+        <ErrorInfo>
+          <Message>Expected field[1][1] to be 3, but found 1.</Message>
+          <StackTrace>   at FluentAssertions.Execution.LateBoundTestFramework.Throw(String message)
+   at FluentAssertions.Execution.DefaultAssertionStrategy.HandleFailure(String message)
+   at FluentAssertions.Execution.AssertionScope.AddPreFormattedFailure(String formattedFailureMessage)
+   at FluentAssertions.Execution.AssertionChain.FailWith(Func`1 getFailureReason)
+   at FluentAssertions.Execution.AssertionChain.FailWith(Func`1 getFailureReason)
+   at FluentAssertions.Execution.AssertionChain.FailWith(String message, Object[] args)
+   at FluentAssertions.Numeric.NumericAssertionsBase`3.Be(T expected, String because, Object[] becauseArgs)
+   at Hashi.Generator.Test.Models.BridgeTests.AddBridge_WhenNoDirectConnection_ShouldOnlyIncrementBridgeCount() in /home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/Models/BridgeTests.cs:line 304
+
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4093ec68-c0f1-412f-92f5-0dbc65b7c03d" testId="740345ac-b7c3-62bd-5974-307609850537" testName="GetDifficultySettings_WhenValidDifficulty_ShouldReturnCorrectSettings(4,10,18,10,18,3,50,15)" computerName="fv-az809-916" duration="00:00:00.0040040" startTime="2025-06-25T17:50:08.2390247+00:00" endTime="2025-06-25T17:50:08.2430283+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4093ec68-c0f1-412f-92f5-0dbc65b7c03d" />
+    <UnitTestResult executionId="f962cb2a-9c6a-4f10-9873-f2c94991a81e" testId="cb9c44bb-fbf0-4f21-c0d1-1c13b35ccae2" testName="Load_WhenCalled_ShouldRegisterBridgeCoordinatesFactory" computerName="fv-az809-916" duration="00:00:00.0010910" startTime="2025-06-25T17:50:07.5002622+00:00" endTime="2025-06-25T17:50:07.5013533+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f962cb2a-9c6a-4f10-9873-f2c94991a81e" />
+    <UnitTestResult executionId="7aab8a25-b161-4627-9791-2aa1c9e7d603" testId="bf7b7aa3-a37c-f13b-d6d4-6e65b624ee41" testName="Name_WhenSetToNull_ShouldSetToNull" computerName="fv-az809-916" duration="00:00:00.0002910" startTime="2025-06-25T17:50:08.4347831+00:00" endTime="2025-06-25T17:50:08.4350745+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7aab8a25-b161-4627-9791-2aa1c9e7d603" />
+    <UnitTestResult executionId="541ef6bd-77bf-41d8-90f0-d9d24e06775f" testId="3a89f0d4-c4d5-7381-bfda-12791842369e" testName="GetDifficultySettings_WhenValidDifficulty_ShouldReturnCorrectSettings(3,11,18,11,18,3,25,15)" computerName="fv-az809-916" duration="00:00:00.0039100" startTime="2025-06-25T17:50:08.2347501+00:00" endTime="2025-06-25T17:50:08.2386600+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="541ef6bd-77bf-41d8-90f0-d9d24e06775f" />
+    <UnitTestResult executionId="eb7265f1-b488-4e0d-89fb-bfb389a4336f" testId="60293f19-7ec1-bf30-c942-baccb3bb3119" testName="BridgeCoordinatesFactory_WhenInvoked_ShouldCreateBridgeCoordinatesWithCorrectProperties" computerName="fv-az809-916" duration="00:00:00.3242720" startTime="2025-06-25T17:50:07.1504664+00:00" endTime="2025-06-25T17:50:07.4745981+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="eb7265f1-b488-4e0d-89fb-bfb389a4336f">
+      <Output>
+        <StdOut>Warning:
+     The component "Fluent Assertions" is governed by the rules defined in the Xceed License Agreement and
+     the Xceed Fluent Assertions Community License. You may use Fluent Assertions free of charge for
+     non-commercial use only. An active subscription is required to use Fluent Assertions for commercial use.
+
+     Please contact Xceed Sales mailto:sales@xceed.com to acquire a subscription at a very low cost.
+
+     A paid commercial license supports the development and continued increasing support of
+     Fluent Assertions users under both commercial and community licenses. Help us
+     keep Fluent Assertions at the forefront of unit testing.
+
+     For more information, visit https://xceed.com/products/unit-testing/fluent-assertions/</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b0b2a9c7-d707-439b-833b-a8ef36fed652" testId="13720df8-3d62-fd31-1053-fac4e319fccf" testName="GetAlphaForDifficulty_WhenInvalidDifficulty_ShouldReturnZero(10)" computerName="fv-az809-916" duration="00:00:00.0046800" startTime="2025-06-25T17:50:07.9649140+00:00" endTime="2025-06-25T17:50:07.9695944+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b0b2a9c7-d707-439b-833b-a8ef36fed652" />
+    <UnitTestResult executionId="568c45d6-2fdf-4d19-a3ca-e7bd657c94d1" testId="8fed7067-f075-7377-cef6-8b280cbd2ea2" testName="GenerateWithDifficultyAsync_WhenValidDifficulty_ShouldReturnSolutionProvider" computerName="fv-az809-916" duration="00:00:00.0238910" startTime="2025-06-25T17:50:07.9352015+00:00" endTime="2025-06-25T17:50:07.9590922+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="568c45d6-2fdf-4d19-a3ca-e7bd657c94d1">
+      <Output>
+        <ErrorInfo>
+          <Message>Moq.MockException : 
+Expected invocation on the mock at least once, but was never performed: f =&gt; f(It.IsAny&lt;int[][]&gt;(), It.IsAny&lt;IList&lt;IBridgeCoordinates&gt;&gt;())
+
+Performed invocations:
+
+   Mock&lt;Func&lt;int[][], IList&lt;IBridgeCoordinates&gt;, ISolutionProvider&gt;:5&gt; (f):
+   No invocations performed.
+</Message>
+          <StackTrace>   at Moq.Mock.Verify(Mock mock, LambdaExpression expression, Times times, String failMessage) in /_/src/Moq/Mock.cs:line 332
+   at Moq.Mock`1.Verify[TResult](Expression`1 expression, Func`1 times) in /_/src/Moq/Mock`1.cs:line 840
+   at Hashi.Generator.Test.HashiGeneratorTests.GenerateWithDifficultyAsync_WhenValidDifficulty_ShouldReturnSolutionProvider() in /home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/HashiGeneratorTests.cs:line 414
+   at NUnit.Framework.Internal.TaskAwaitAdapter.GenericAdapter`1.BlockUntilCompleted()
+   at NUnit.Framework.Internal.MessagePumpStrategy.NoMessagePumpStrategy.WaitForCompletion(AwaitAdapter awaiter)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await[TResult](Func`1 invoke)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await(Func`1 invoke)
+   at NUnit.Framework.Internal.Commands.TestMethodCommand.RunTestMethod(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.TestMethodCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.BeforeAndAfterTestCommand.&lt;&gt;c__DisplayClass1_0.&lt;Execute&gt;b__0()
+   at NUnit.Framework.Internal.Commands.DelegatingTestCommand.RunTestMethodInThreadAbortSafeZone(TestExecutionContext context, Action action)
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="25ca2576-9717-43cc-8751-2381853c5223" testId="50fcc213-e9d5-4cf9-f4ce-27d1cfbccb70" testName="SetAllNeighbors_WhenIslandRight_ShouldSetIslandRight" computerName="fv-az809-916" duration="00:00:00.0002650" startTime="2025-06-25T17:50:08.4192898+00:00" endTime="2025-06-25T17:50:08.4195545+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="25ca2576-9717-43cc-8751-2381853c5223" />
+    <UnitTestResult executionId="8fa7c1be-e6fc-40c5-8dbf-91f59a5091de" testId="285fe57b-2b76-65e2-be88-000cb65b85a0" testName="SetBeta_WhenBetaIsZero_ShouldNotModifyBridges" computerName="fv-az809-916" duration="00:00:00.0047110" startTime="2025-06-25T17:50:08.3346518+00:00" endTime="2025-06-25T17:50:08.3393632+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8fa7c1be-e6fc-40c5-8dbf-91f59a5091de">
+      <Output>
+        <StdOut>SetBeta completed without throwing for beta = 0</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="525e737c-2fbf-4ac9-9d40-3da17d6c4560" testId="46accd22-e254-f353-a3f1-e0dd10db3364" testName="Constructor_WhenSameLocations_ShouldInitializeCorrectly" computerName="fv-az809-916" duration="00:00:00.0003100" startTime="2025-06-25T17:50:08.3967104+00:00" endTime="2025-06-25T17:50:08.3970207+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="525e737c-2fbf-4ac9-9d40-3da17d6c4560" />
+    <UnitTestResult executionId="08beef32-c595-4a0c-8a01-965d68ea3abf" testId="94fc5438-b10d-81f4-54d0-c02343728d1c" testName="AddOtherSide_WhenHorizontalBridgeIsland1Left_ShouldUpdateBridgeCounts" computerName="fv-az809-916" duration="00:00:00.0002670" startTime="2025-06-25T17:50:08.4159483+00:00" endTime="2025-06-25T17:50:08.4162150+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="08beef32-c595-4a0c-8a01-965d68ea3abf" />
+    <UnitTestResult executionId="721e8d1a-ddc1-418a-bc8e-beb60fad724d" testId="0131ae53-294b-a1a3-413a-6dd2850463ec" testName="ShuffleList_WhenCalledWithEmptyList_ShouldNotThrow" computerName="fv-az809-916" duration="00:00:00.0044070" startTime="2025-06-25T17:50:08.3749530+00:00" endTime="2025-06-25T17:50:08.3793605+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="721e8d1a-ddc1-418a-bc8e-beb60fad724d" />
+    <UnitTestResult executionId="c06ecd30-888d-4599-81cb-ec8039898aee" testId="382a102f-b02e-7854-e617-8b6753b566d1" testName="Load_WhenCalled_ShouldRegisterBridgeCoordinatesAsInstancePerDependency" computerName="fv-az809-916" duration="00:00:00.0007440" startTime="2025-06-25T17:50:07.4995023+00:00" endTime="2025-06-25T17:50:07.5002465+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c06ecd30-888d-4599-81cb-ec8039898aee" />
+    <UnitTestResult executionId="55cf057c-377d-4b13-b452-b340ecaef595" testId="e1198c6b-bdd7-1156-5dee-b1ef0e38c103" testName="GetDifficultySettings_WhenValidDifficulty_ShouldReturnCorrectSettings(2,10,16,10,16,3,75,20)" computerName="fv-az809-916" duration="00:00:00.0037610" startTime="2025-06-25T17:50:08.2305868+00:00" endTime="2025-06-25T17:50:08.2343475+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="55cf057c-377d-4b13-b452-b340ecaef595" />
+    <UnitTestResult executionId="41dd083e-7ce4-4c54-86c6-f45f1561f6bc" testId="5ee36e19-9357-83fd-67a9-aa58ce8fb67e" testName="Constructor_WhenValidParameters_ShouldInitializeProperties" computerName="fv-az809-916" duration="00:00:00.0005170" startTime="2025-06-25T17:50:08.4338080+00:00" endTime="2025-06-25T17:50:08.4343252+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="41dd083e-7ce4-4c54-86c6-f45f1561f6bc" />
+    <UnitTestResult executionId="be339905-6483-406e-a909-140fc7c70018" testId="04c3925f-6c56-d622-ad58-14a9d4773c08" testName="ShuffleList_WhenCalledWithList_ShouldModifyList" computerName="fv-az809-916" duration="00:00:00.0076330" startTime="2025-06-25T17:50:08.3797481+00:00" endTime="2025-06-25T17:50:08.3873813+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="be339905-6483-406e-a909-140fc7c70018" />
+    <UnitTestResult executionId="4f028175-9bcf-4349-95d3-3405c7058464" testId="b13b37fc-d496-f6d0-26e9-aeb16992b53a" testName="GetDifficultySettings_WhenValidDifficulty_ShouldReturnCorrectSettings(7,14,20,14,20,3,50,10)" computerName="fv-az809-916" duration="00:00:00.0040080" startTime="2025-06-25T17:50:08.2520590+00:00" endTime="2025-06-25T17:50:08.2560670+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4f028175-9bcf-4349-95d3-3405c7058464" />
+    <UnitTestResult executionId="28ef0364-ba66-4709-b126-6879e49e292c" testId="6d88c11b-6a3b-e5fe-426d-1705a5b7cd29" testName="BridgeFactory_WhenInvoked_ShouldCreateBridgeWithCorrectProperties" computerName="fv-az809-916" duration="00:00:00.0102290" startTime="2025-06-25T17:50:07.4798680+00:00" endTime="2025-06-25T17:50:07.4900971+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="28ef0364-ba66-4709-b126-6879e49e292c" />
+    <UnitTestResult executionId="10bdd0c9-1257-4906-93a2-7132d08bb416" testId="d15b903a-a727-120b-3725-c75ada77d23b" testName="GetBetaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectBeta(8,10)" computerName="fv-az809-916" duration="00:00:00.0040330" startTime="2025-06-25T17:50:08.1892936+00:00" endTime="2025-06-25T17:50:08.1933270+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="10bdd0c9-1257-4906-93a2-7132d08bb416" />
+    <UnitTestResult executionId="d28ee20f-f648-4a91-8add-b750731a73cd" testId="a88ac496-2cca-8df3-d4f6-6a2f37b756f5" testName="GetBetaForDifficulty_WhenInvalidDifficulty_ShouldReturnZero(10)" computerName="fv-az809-916" duration="00:00:00.0047920" startTime="2025-06-25T17:50:08.1411785+00:00" endTime="2025-06-25T17:50:08.1459706+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d28ee20f-f648-4a91-8add-b750731a73cd" />
+    <UnitTestResult executionId="72246dd0-47ce-4b28-b140-5ce6b16b35e4" testId="65769199-7960-700a-46e8-13aea65f50d8" testName="GetBetaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectBeta(1,20)" computerName="fv-az809-916" duration="00:00:00.0042530" startTime="2025-06-25T17:50:08.1514584+00:00" endTime="2025-06-25T17:50:08.1557113+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="72246dd0-47ce-4b28-b140-5ce6b16b35e4" />
+    <UnitTestResult executionId="90ad1679-af94-42e9-99bc-e50161f079f9" testId="5bf08703-491e-7def-85eb-e0cccb50acab" testName="GetAlphaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectAlpha(9,100)" computerName="fv-az809-916" duration="00:00:00.0041760" startTime="2025-06-25T17:50:08.0179142+00:00" endTime="2025-06-25T17:50:08.0220897+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="90ad1679-af94-42e9-99bc-e50161f079f9" />
+    <UnitTestResult executionId="6892abba-7b76-415d-b45b-5c52ca96344a" testId="4af5fa51-a61f-b2a8-08fb-d07b9c4c74f6" testName="AddBridge_WhenCalledMultipleTimes_ShouldIncrementCorrectly" computerName="fv-az809-916" duration="00:00:00.0008210" startTime="2025-06-25T17:50:08.3998229+00:00" endTime="2025-06-25T17:50:08.4006434+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6892abba-7b76-415d-b45b-5c52ca96344a" />
+    <UnitTestResult executionId="b27cc228-fae4-40d9-a0f3-46f9ec16e780" testId="b69c6d68-caa2-de15-8153-3eb174cf6276" testName="SetBeta_WhenBetaIsNegative_ShouldNotModifyBridges" computerName="fv-az809-916" duration="00:00:00.0099469" startTime="2025-06-25T17:50:08.3239188+00:00" endTime="2025-06-25T17:50:08.3338657+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b27cc228-fae4-40d9-a0f3-46f9ec16e780">
+      <Output>
+        <StdOut>SetBeta completed without throwing for negative beta</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="744776b2-a45e-4fae-beee-130096d65046" testId="e57a24ba-f049-2379-61cd-e852e0587d9b" testName="GetBetaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectBeta(7,10)" computerName="fv-az809-916" duration="00:00:00.0041020" startTime="2025-06-25T17:50:08.1847957+00:00" endTime="2025-06-25T17:50:08.1888975+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="744776b2-a45e-4fae-beee-130096d65046" />
+    <UnitTestResult executionId="eea52eaf-ecb3-4685-a68d-dd7b3e46d5ff" testId="0e4ce763-6d49-02bf-8bdb-72764fcb65b8" testName="GetDifficultySettings_WhenInvalidDifficulty_ShouldThrowArgumentException(100)" computerName="fv-az809-916" duration="00:00:00.0079780" startTime="2025-06-25T17:50:08.2124994+00:00" endTime="2025-06-25T17:50:08.2204771+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="eea52eaf-ecb3-4685-a68d-dd7b3e46d5ff" />
+    <UnitTestResult executionId="39e672ce-79c3-445e-bd25-ffa048d27f23" testId="851403d2-22db-612e-f912-d15112efba92" testName="GetDifficultySettings_WhenValidDifficulty_ShouldReturnCorrectSettings(5,13,18,13,18,3,75,15)" computerName="fv-az809-916" duration="00:00:00.0039040" startTime="2025-06-25T17:50:08.2434033+00:00" endTime="2025-06-25T17:50:08.2473071+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="39e672ce-79c3-445e-bd25-ffa048d27f23" />
+    <UnitTestResult executionId="ca865463-b0d1-4a27-ba31-14fc866be1a7" testId="f3f166ac-20b1-28c9-69a5-fdc75926ad64" testName="Load_WhenCalled_ShouldRegisterBridgeAsInstancePerDependency" computerName="fv-az809-916" duration="00:00:00.0019920" startTime="2025-06-25T17:50:07.4951440+00:00" endTime="2025-06-25T17:50:07.4971356+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ca865463-b0d1-4a27-ba31-14fc866be1a7" />
+    <UnitTestResult executionId="ddc21196-de44-4489-afbe-2cd367212193" testId="4285a6a4-3e6a-2c8e-2d48-a3c71c34cd90" testName="InitializeField_WhenInvalidDimensions_ShouldThrowException(-1,5)" computerName="fv-az809-916" duration="00:00:00.0043910" startTime="2025-06-25T17:50:08.3013051+00:00" endTime="2025-06-25T17:50:08.3056962+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ddc21196-de44-4489-afbe-2cd367212193" />
+    <UnitTestResult executionId="95667cfa-0b4e-417d-a5d8-30a7f17ab7cf" testId="6afe0f40-89d0-c1be-344d-27c05a439660" testName="GetAlphaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectAlpha(2,75)" computerName="fv-az809-916" duration="00:00:00.0043520" startTime="2025-06-25T17:50:07.9806896+00:00" endTime="2025-06-25T17:50:07.9850413+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="95667cfa-0b4e-417d-a5d8-30a7f17ab7cf" />
+    <UnitTestResult executionId="a48ec2b7-a3fa-482b-82c6-5d9755ee041b" testId="34900510-5025-ff0f-4758-957ddc008d6b" testName="GetAlphaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectAlpha(1,50)" computerName="fv-az809-916" duration="00:00:00.0045130" startTime="2025-06-25T17:50:07.9756571+00:00" endTime="2025-06-25T17:50:07.9801697+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a48ec2b7-a3fa-482b-82c6-5d9755ee041b" />
+    <UnitTestResult executionId="f2e5f767-f548-4585-90de-101bb8d9a705" testId="c990df5f-3d39-254e-9b70-f31b02084c8a" testName="GetDifficultySettings_WhenValidDifficulty_ShouldReturnCorrectSettings(6,15,20,15,20,3,25,10)" computerName="fv-az809-916" duration="00:00:00.0039320" startTime="2025-06-25T17:50:08.2477562+00:00" endTime="2025-06-25T17:50:08.2516881+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f2e5f767-f548-4585-90de-101bb8d9a705" />
+    <UnitTestResult executionId="a2fe4681-13fc-4a37-a848-98b35700e862" testId="00843b27-4423-7a4a-85b5-e68f305bf559" testName="GetDifficultySettings_WhenValidDifficulty_ShouldReturnCorrectSettings(9,20,31,20,31,3,100,0)" computerName="fv-az809-916" duration="00:00:00.0042890" startTime="2025-06-25T17:50:08.2658882+00:00" endTime="2025-06-25T17:50:08.2701768+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a2fe4681-13fc-4a37-a848-98b35700e862" />
+    <UnitTestResult executionId="ed7b5cde-060c-4851-a117-d1d7f92a3c7b" testId="c85a5c8e-87be-683d-3e6f-5971e43d49d3" testName="GetBetaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectBeta(2,20)" computerName="fv-az809-916" duration="00:00:00.0040549" startTime="2025-06-25T17:50:08.1561003+00:00" endTime="2025-06-25T17:50:08.1601555+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ed7b5cde-060c-4851-a117-d1d7f92a3c7b" />
+    <UnitTestResult executionId="2b82ba2a-3e34-4f8f-a70e-2fe334a8188a" testId="80485347-ce07-9632-5172-a7104202890c" testName="GetBetaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectBeta(0,20)" computerName="fv-az809-916" duration="00:00:00.0042530" startTime="2025-06-25T17:50:08.1467780+00:00" endTime="2025-06-25T17:50:08.1510311+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2b82ba2a-3e34-4f8f-a70e-2fe334a8188a" />
+    <UnitTestResult executionId="ee489630-de91-48fc-b026-5969c053cce9" testId="de73f6b7-45f4-a1ea-690f-cb6571cc5602" testName="BridgeDirections_WhenSet_ShouldUpdateValues" computerName="fv-az809-916" duration="00:00:00.0002030" startTime="2025-06-25T17:50:08.4177119+00:00" endTime="2025-06-25T17:50:08.4179144+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ee489630-de91-48fc-b026-5969c053cce9" />
+    <UnitTestResult executionId="831a21e0-03f2-4687-a582-194841531b37" testId="2c83c513-2a10-c2a8-ab7b-469a91cd5f8f" testName="GetBetaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectBeta(4,15)" computerName="fv-az809-916" duration="00:00:00.0070580" startTime="2025-06-25T17:50:08.1683475+00:00" endTime="2025-06-25T17:50:08.1754058+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="831a21e0-03f2-4687-a582-194841531b37" />
+    <UnitTestResult executionId="60674df0-572a-44bd-bc33-cc15724157d0" testId="e00be2a2-95a2-ade7-dad7-5c0234772596" testName="GetAlphaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectAlpha(8,75)" computerName="fv-az809-916" duration="00:00:00.0040380" startTime="2025-06-25T17:50:08.0133705+00:00" endTime="2025-06-25T17:50:08.0174090+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="60674df0-572a-44bd-bc33-cc15724157d0" />
+    <UnitTestResult executionId="9664c439-0e77-46d3-9627-e4def90eea95" testId="29b4356d-6734-31a7-adeb-e8aa5887a3ff" testName="GenerateHashAsync_WhenNoDifficultySpecified_ShouldUseOtherParameters" computerName="fv-az809-916" duration="00:00:00.0134040" startTime="2025-06-25T17:50:07.8736526+00:00" endTime="2025-06-25T17:50:07.8870570+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9664c439-0e77-46d3-9627-e4def90eea95" />
+    <UnitTestResult executionId="83cd053c-7e17-4c37-a35a-5f0bab8cc16a" testId="93c62edd-ff43-ffd0-a46b-a928cd71f050" testName="Constructor_WhenZeroBridges_ShouldInitializeCorrectly" computerName="fv-az809-916" duration="00:00:00.0003270" startTime="2025-06-25T17:50:08.3985972+00:00" endTime="2025-06-25T17:50:08.3989245+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="83cd053c-7e17-4c37-a35a-5f0bab8cc16a" />
+    <UnitTestResult executionId="d85a57e8-6f64-4025-9bf6-5ccf506158ce" testId="1f341fea-aa12-f898-cc6e-41875d5b7d18" testName="HasAdjacentIsland_WhenNoAdjacentIsland_ShouldReturnFalse" computerName="fv-az809-916" duration="00:00:00.0045180" startTime="2025-06-25T17:50:08.2810182+00:00" endTime="2025-06-25T17:50:08.2855358+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d85a57e8-6f64-4025-9bf6-5ccf506158ce" />
+    <UnitTestResult executionId="588ae2ce-7be1-4c49-9f1f-28882f394c72" testId="1d32006c-299e-7fbd-6f15-a27a9b24625a" testName="GetBetaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectBeta(9,0)" computerName="fv-az809-916" duration="00:00:00.0040300" startTime="2025-06-25T17:50:08.1937716+00:00" endTime="2025-06-25T17:50:08.1978019+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="588ae2ce-7be1-4c49-9f1f-28882f394c72" />
+    <UnitTestResult executionId="2b443da0-35b3-4d9c-8891-027c24d8a47d" testId="c01d46d0-05ce-91ca-5f9b-2e6926ed35c4" testName="ShuffleArray_WhenCalledWithEmptyArray_ShouldNotThrow" computerName="fv-az809-916" duration="00:00:00.0050470" startTime="2025-06-25T17:50:08.3642461+00:00" endTime="2025-06-25T17:50:08.3692933+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2b443da0-35b3-4d9c-8891-027c24d8a47d" />
+    <UnitTestResult executionId="053ec243-2fb6-405e-9b68-2aaa1623d245" testId="164fe134-30cd-f284-cebc-13491ea0bc8d" testName="Properties_ShouldBeReadOnly" computerName="fv-az809-916" duration="00:00:00.0003060" startTime="2025-06-25T17:50:08.3989406+00:00" endTime="2025-06-25T17:50:08.3992462+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="053ec243-2fb6-405e-9b68-2aaa1623d245" />
+    <UnitTestResult executionId="d10a9a7f-ab74-4045-9616-83a119dd3721" testId="53bb71fd-1d44-fa63-889f-45ffca240b44" testName="IslandFactory_WhenInvoked_ShouldCreateIslandWithCorrectProperties" computerName="fv-az809-916" duration="00:00:00.0016250" startTime="2025-06-25T17:50:07.4935014+00:00" endTime="2025-06-25T17:50:07.4951267+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d10a9a7f-ab74-4045-9616-83a119dd3721" />
+    <UnitTestResult executionId="3d8570e3-9360-488c-b7fe-c5d586c128c2" testId="c0b54c8d-e318-bbe9-42b8-290fd3653077" testName="GetBetaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectBeta(5,15)" computerName="fv-az809-916" duration="00:00:00.0040200" startTime="2025-06-25T17:50:08.1758222+00:00" endTime="2025-06-25T17:50:08.1798420+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3d8570e3-9360-488c-b7fe-c5d586c128c2" />
+    <UnitTestResult executionId="083c3a86-ef31-4f9c-9a84-c2aebef28153" testId="5cec07ac-da92-1ebd-de3d-a5c328c66184" testName="Constructor_WhenValidParameters_ShouldInitializeProperties" computerName="fv-az809-916" duration="00:00:00.0001910" startTime="2025-06-25T17:50:08.4171785+00:00" endTime="2025-06-25T17:50:08.4173696+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="083c3a86-ef31-4f9c-9a84-c2aebef28153" />
+    <UnitTestResult executionId="c0d31a88-9af3-4413-9c27-416eb2c8b940" testId="1d1d5721-2ba9-94aa-fd4c-47fe55da81cb" testName="GenerateWithDifficultyAsync_WhenInvalidDifficulty_ShouldThrowArgumentException(10)" computerName="fv-az809-916" duration="00:00:00.0053170" startTime="2025-06-25T17:50:07.9270935+00:00" endTime="2025-06-25T17:50:07.9324105+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c0d31a88-9af3-4413-9c27-416eb2c8b940" />
+    <UnitTestResult executionId="4678e565-3596-4211-9930-03cee98de2f3" testId="0c838be5-d69f-919e-4759-7c5a44dd62a1" testName="Load_WhenCalled_ShouldRegisterHashiGeneratorAsSingleton" computerName="fv-az809-916" duration="00:00:00.0078010" startTime="2025-06-25T17:50:07.5466028+00:00" endTime="2025-06-25T17:50:07.5544038+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4678e565-3596-4211-9930-03cee98de2f3">
+      <Output>
+        <ErrorInfo>
+          <Message>Autofac.Core.DependencyResolutionException : An exception was thrown while activating Hashi.Generator.HashiGenerator.
+Data:
+  ActivatorChain: Hashi.Generator.HashiGenerator
+  ----&gt; Autofac.Core.DependencyResolutionException : None of the constructors found on type 'Hashi.Generator.HashiGenerator' can be invoked with the available services and parameters:
+Cannot resolve parameter 'Hashi.LinearSolver.Interfaces.IHashiSolver hashiSolver' of constructor 'Void .ctor(System.Func`4[System.Int32,System.Int32,System.Int32,Hashi.Generator.Interfaces.Models.IIsland], System.Func`4[Hashi.Generator.Interfaces.Models.IIsland,Hashi.Generator.Interfaces.Models.IIsland,System.Int32,Hashi.Generator.Interfaces.Models.IBridge], System.Func`3[System.Int32[][],System.Collections.Generic.IList`1[Hashi.Generator.Interfaces.Models.IBridgeCoordinates],Hashi.Generator.Interfaces.Providers.ISolutionProvider], Hashi.LinearSolver.Interfaces.IHashiSolver, Hashi.Logging.Interfaces.ILoggerFactory)'.
+
+See https://autofac.rtfd.io/help/no-constructors-bindable for more info.</Message>
+          <StackTrace>   at Autofac.Core.Resolving.Middleware.ActivatorErrorHandlingMiddleware.Execute(ResolveRequestContext context, Action`1 next)
+   at Autofac.Core.Resolving.Pipeline.ResolvePipelineBuilder.&lt;&gt;c__DisplayClass14_0.&lt;BuildPipeline&gt;b__1(ResolveRequestContext context)
+   at Autofac.Core.Pipeline.ResolvePipeline.Invoke(ResolveRequestContext context)
+   at Autofac.Core.Resolving.Middleware.RegistrationPipelineInvokeMiddleware.Execute(ResolveRequestContext context, Action`1 next)
+   at Autofac.Core.Resolving.Pipeline.ResolvePipelineBuilder.&lt;&gt;c__DisplayClass14_0.&lt;BuildPipeline&gt;b__1(ResolveRequestContext context)
+   at Autofac.Core.Resolving.Middleware.SharingMiddleware.&lt;&gt;c__DisplayClass5_0.&lt;Execute&gt;b__0()
+   at Autofac.Core.Lifetime.LifetimeScope.CreateSharedInstance(Guid id, Func`1 creator)
+   at Autofac.Core.Lifetime.LifetimeScope.CreateSharedInstance(Guid primaryId, Nullable`1 qualifyingId, Func`1 creator)
+   at Autofac.Core.Resolving.Middleware.SharingMiddleware.Execute(ResolveRequestContext context, Action`1 next)
+   at Autofac.Core.Resolving.Pipeline.ResolvePipelineBuilder.&lt;&gt;c__DisplayClass14_0.&lt;BuildPipeline&gt;b__1(ResolveRequestContext context)
+   at Autofac.Core.Resolving.Pipeline.ResolvePipelineBuilder.&lt;&gt;c__DisplayClass14_0.&lt;BuildPipeline&gt;b__1(ResolveRequestContext context)
+   at Autofac.Core.Resolving.Middleware.CircularDependencyDetectorMiddleware.Execute(ResolveRequestContext context, Action`1 next)
+   at Autofac.Core.Resolving.Pipeline.ResolvePipelineBuilder.&lt;&gt;c__DisplayClass14_0.&lt;BuildPipeline&gt;b__1(ResolveRequestContext context)
+   at Autofac.Core.Pipeline.ResolvePipeline.Invoke(ResolveRequestContext context)
+   at Autofac.Core.Resolving.ResolveOperation.GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, ResolveRequest&amp; request)
+   at Autofac.Core.Resolving.ResolveOperation.ExecuteOperation(ResolveRequest&amp; request)
+   at Autofac.Core.Resolving.ResolveOperation.Execute(ResolveRequest&amp; request)
+   at Autofac.Core.Lifetime.LifetimeScope.ResolveComponent(ResolveRequest&amp; request)
+   at Autofac.Core.Container.ResolveComponent(ResolveRequest&amp; request)
+   at Autofac.Core.Container.Autofac.IComponentContext.ResolveComponent(ResolveRequest&amp; request)
+   at Autofac.ResolutionExtensions.TryResolveService(IComponentContext context, Service service, IEnumerable`1 parameters, Object&amp; instance)
+   at Autofac.ResolutionExtensions.ResolveService(IComponentContext context, Service service, IEnumerable`1 parameters)
+   at Autofac.ResolutionExtensions.Resolve(IComponentContext context, Type serviceType, IEnumerable`1 parameters)
+   at Autofac.ResolutionExtensions.Resolve[TService](IComponentContext context, IEnumerable`1 parameters)
+   at Autofac.ResolutionExtensions.Resolve[TService](IComponentContext context)
+   at Hashi.Generator.Test.AutoFacGeneratorModuleTests.Load_WhenCalled_ShouldRegisterHashiGeneratorAsSingleton() in /home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/AutoFacGeneratorModuleTests.cs:line 50
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+--DependencyResolutionException
+   at Autofac.Core.Activators.Reflection.ReflectionActivator.&lt;&gt;c__DisplayClass14_0.&lt;UseSingleConstructorActivation&gt;b__0(ResolveRequestContext context, Action`1 next)
+   at Autofac.Core.Resolving.Middleware.DelegateMiddleware.Execute(ResolveRequestContext context, Action`1 next)
+   at Autofac.Core.Resolving.Pipeline.ResolvePipelineBuilder.&lt;&gt;c__DisplayClass14_0.&lt;BuildPipeline&gt;b__1(ResolveRequestContext context)
+   at Autofac.Core.Resolving.Middleware.DisposalTrackingMiddleware.Execute(ResolveRequestContext context, Action`1 next)
+   at Autofac.Core.Resolving.Pipeline.ResolvePipelineBuilder.&lt;&gt;c__DisplayClass14_0.&lt;BuildPipeline&gt;b__1(ResolveRequestContext context)
+   at Autofac.Core.Resolving.Middleware.ActivatorErrorHandlingMiddleware.Execute(ResolveRequestContext context, Action`1 next)
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="d05331f5-a73d-403e-a6a3-02b30cc67599" testId="747b65f1-8452-39f3-be83-898ff2dc447f" testName="Constructor_WhenLargeCollections_ShouldInitializeCorrectly" computerName="fv-az809-916" duration="00:00:00.0007750" startTime="2025-06-25T17:50:08.4311400+00:00" endTime="2025-06-25T17:50:08.4319149+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d05331f5-a73d-403e-a6a3-02b30cc67599" />
+    <UnitTestResult executionId="11d78790-114b-4149-a16b-a75f0b5d4007" testId="505f3261-1abb-c977-3f49-83c5ae6b1de6" testName="AddOtherSide_WhenHorizontalBridgeIsland1Right_ShouldUpdateBridgeCounts" computerName="fv-az809-916" duration="00:00:00.0002020" startTime="2025-06-25T17:50:08.4162282+00:00" endTime="2025-06-25T17:50:08.4164306+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="11d78790-114b-4149-a16b-a75f0b5d4007" />
+    <UnitTestResult executionId="4d191077-22c1-4e12-912e-7c527c3ec477" testId="9a96dcfa-f62f-308d-0662-4918a52b966c" testName="GetAlphaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectAlpha(0,25)" computerName="fv-az809-916" duration="00:00:00.0045670" startTime="2025-06-25T17:50:07.9705858+00:00" endTime="2025-06-25T17:50:07.9751533+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4d191077-22c1-4e12-912e-7c527c3ec477" />
+    <UnitTestResult executionId="173f3f35-2fe9-4be4-96dd-b2668ab2525e" testId="6d052979-fe3a-87af-bc00-ef2c3fb99748" testName="AddOtherSide_WhenMultipleBridges_ShouldAddCorrectAmount" computerName="fv-az809-916" duration="00:00:00.0002110" startTime="2025-06-25T17:50:08.4164940+00:00" endTime="2025-06-25T17:50:08.4167048+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="173f3f35-2fe9-4be4-96dd-b2668ab2525e" />
+    <UnitTestResult executionId="77e2cf2d-040e-41f0-9c55-c440ce090823" testId="590c0c01-6a52-1d43-de91-f59e3f09c909" testName="GetDifficultySettings_WhenValidDifficulty_ShouldReturnCorrectSettings(8,16,31,16,31,3,75,10)" computerName="fv-az809-916" duration="00:00:00.0081320" startTime="2025-06-25T17:50:08.2575546+00:00" endTime="2025-06-25T17:50:08.2656864+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="77e2cf2d-040e-41f0-9c55-c440ce090823" />
+    <UnitTestResult executionId="99836dee-722c-4532-8078-faaf0ad15d37" testId="541f781b-d7c9-655c-ab64-df816f96c305" testName="Constructor_WhenNullHashiField_ShouldInitializeWithNull" computerName="fv-az809-916" duration="00:00:00.0003530" startTime="2025-06-25T17:50:08.4329527+00:00" endTime="2025-06-25T17:50:08.4333061+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="99836dee-722c-4532-8078-faaf0ad15d37" />
+    <UnitTestResult executionId="bc80710f-8c98-47f9-95c9-9e2a0e6cf2e8" testId="d3355e7f-5418-8f4d-a003-b69b0b1b4bdd" testName="ShuffleList_WhenCalledWithSingleElementList_ShouldNotThrow" computerName="fv-az809-916" duration="00:00:00.0047700" startTime="2025-06-25T17:50:08.3878035+00:00" endTime="2025-06-25T17:50:08.3925737+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bc80710f-8c98-47f9-95c9-9e2a0e6cf2e8" />
+    <UnitTestResult executionId="37e9ec02-2915-4bea-bb68-e820894243eb" testId="5eb122ff-ae17-1592-c141-9e4bcb076c1b" testName="Constructor_WhenValidParameters_ShouldInitializeProperties" computerName="fv-az809-916" duration="00:00:00.0004750" startTime="2025-06-25T17:50:08.4179271+00:00" endTime="2025-06-25T17:50:08.4184018+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="37e9ec02-2915-4bea-bb68-e820894243eb" />
+    <UnitTestResult executionId="404e80c9-1c86-48f2-af70-830850b1c550" testId="1d1a9575-0799-7fa6-c62a-591f06e546fc" testName="Constructor_WhenValidParameters_ShouldInitializeProperties" computerName="fv-az809-916" duration="00:00:00.0003070" startTime="2025-06-25T17:50:08.3970369+00:00" endTime="2025-06-25T17:50:08.3973443+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="404e80c9-1c86-48f2-af70-830850b1c550" />
+    <UnitTestResult executionId="557bf5c7-a2e2-49e8-89ea-414da1043510" testId="88337bd9-ae3b-209f-2376-8bce619bb157" testName="Load_WhenCalled_ShouldRegisterSolutionProviderAsInstancePerDependency" computerName="fv-az809-916" duration="00:00:00.0012530" startTime="2025-06-25T17:50:07.6694793+00:00" endTime="2025-06-25T17:50:07.6707328+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="557bf5c7-a2e2-49e8-89ea-414da1043510" />
+    <UnitTestResult executionId="8f9255f4-e30e-493c-bbac-2a9c354c607d" testId="f83f7d20-bb58-6495-de49-e552ddb092b2" testName="SetAllNeighbors_WhenIslandLeft_ShouldSetIslandLeft" computerName="fv-az809-916" duration="00:00:00.0002530" startTime="2025-06-25T17:50:08.4190248+00:00" endTime="2025-06-25T17:50:08.4192775+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8f9255f4-e30e-493c-bbac-2a9c354c607d" />
+    <UnitTestResult executionId="52b15bbc-9345-424c-9229-35bb234dc10c" testId="d7a7b79d-1593-4cee-da7b-a05e147774b0" testName="GenerateWithDifficultyAsync_WhenInvalidDifficulty_ShouldThrowArgumentException(-1)" computerName="fv-az809-916" duration="00:00:00.0388140" startTime="2025-06-25T17:50:07.8879098+00:00" endTime="2025-06-25T17:50:07.9267242+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="52b15bbc-9345-424c-9229-35bb234dc10c" />
+    <UnitTestResult executionId="aec2120b-fd93-4563-ab4a-91f302c15303" testId="327d81c3-494a-de83-5972-d460aef24423" testName="ShuffleArray_WhenCalledWithArray_ShouldModifyArray" computerName="fv-az809-916" duration="00:00:00.0238560" startTime="2025-06-25T17:50:08.3400302+00:00" endTime="2025-06-25T17:50:08.3638860+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="aec2120b-fd93-4563-ab4a-91f302c15303" />
+    <UnitTestResult executionId="836bd553-7f9a-468f-a6d7-8f1ff471c12d" testId="13600d21-b519-f2b4-b435-779bd42a3156" testName="GetAlphaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectAlpha(3,25)" computerName="fv-az809-916" duration="00:00:00.0042920" startTime="2025-06-25T17:50:07.9855546+00:00" endTime="2025-06-25T17:50:07.9898465+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="836bd553-7f9a-468f-a6d7-8f1ff471c12d" />
+    <UnitTestResult executionId="d8dfdabb-a332-4aea-ab7e-b89f1a8bb788" testId="9ebf0b11-ba5f-a638-04fa-a66d303d8d7e" testName="InitializeField_WhenInvalidDimensions_ShouldThrowException(0,5)" computerName="fv-az809-916" duration="00:00:00.0089370" startTime="2025-06-25T17:50:08.2860917+00:00" endTime="2025-06-25T17:50:08.2950283+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d8dfdabb-a332-4aea-ab7e-b89f1a8bb788">
+      <Output>
+        <ErrorInfo>
+          <Message>Expected a &lt;System.Exception&gt; to be thrown, but no exception was thrown.</Message>
+          <StackTrace>   at FluentAssertions.Execution.LateBoundTestFramework.Throw(String message)
+   at FluentAssertions.Execution.DefaultAssertionStrategy.HandleFailure(String message)
+   at FluentAssertions.Execution.AssertionScope.AddPreFormattedFailure(String formattedFailureMessage)
+   at FluentAssertions.Execution.AssertionChain.FailWith(Func`1 getFailureReason)
+   at FluentAssertions.Execution.AssertionChain.FailWith(Func`1 getFailureReason)
+   at FluentAssertions.Execution.AssertionChain.FailWith(String message)
+   at FluentAssertions.Specialized.DelegateAssertionsBase`2.&lt;&gt;c__DisplayClass8_0`1.&lt;ThrowInternal&gt;b__0(AssertionChain chain)
+   at FluentAssertions.Execution.AssertionChain.WithExpectation(String message, Action`1 chain, Object[] args)
+   at FluentAssertions.Execution.AssertionChain.WithExpectation(String message, Object arg1, Action`1 chain)
+   at FluentAssertions.Specialized.DelegateAssertionsBase`2.ThrowInternal[TException](Exception exception, String because, Object[] becauseArgs)
+   at FluentAssertions.Specialized.DelegateAssertions`2.Throw[TException](String because, Object[] becauseArgs)
+   at Hashi.Generator.Test.HashiGeneratorTests.InitializeField_WhenInvalidDimensions_ShouldThrowException(Int32 length, Int32 width) in /home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/HashiGeneratorTests.cs:line 143
+
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3cea2d31-c274-4569-a1d5-ad447b14f2cf" testId="ef1df0c2-1c5e-87e2-4cf2-2efa9accadb5" testName="AddBridge_WhenIslandDownConnection_ShouldIncrementBridgeCountAndIslandValues" computerName="fv-az809-916" duration="00:00:00.0005760" startTime="2025-06-25T17:50:08.4011946+00:00" endTime="2025-06-25T17:50:08.4017710+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3cea2d31-c274-4569-a1d5-ad447b14f2cf" />
+    <UnitTestResult executionId="bdb74599-bc1e-4ccf-b846-7bf732c81292" testId="02ebb762-66e2-67e5-c3f1-2a92302cdf2e" testName="GetAlphaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectAlpha(5,75)" computerName="fv-az809-916" duration="00:00:00.0043819" startTime="2025-06-25T17:50:07.9948908+00:00" endTime="2025-06-25T17:50:07.9992729+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bdb74599-bc1e-4ccf-b846-7bf732c81292" />
+    <UnitTestResult executionId="d23f1c3f-104f-4de5-950f-5a24b81c7b94" testId="04809ca7-e61a-451a-78d2-ae1147ba6b5c" testName="GetAlphaForDifficulty_WhenInvalidDifficulty_ShouldReturnZero(-1)" computerName="fv-az809-916" duration="00:00:00.0046110" startTime="2025-06-25T17:50:07.9597025+00:00" endTime="2025-06-25T17:50:07.9643136+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d23f1c3f-104f-4de5-950f-5a24b81c7b94" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="SetAllNeighbors_WhenMultipleNeighbors_ShouldSetAllDirections" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="712ac09c-21f9-43b0-a1eb-ccd1d8dcea5c">
+      <Execution id="b014b2ca-73bd-407c-8b88-33621e491e49" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Models.IslandTests" name="SetAllNeighbors_WhenMultipleNeighbors_ShouldSetAllDirections" />
+    </UnitTest>
+    <UnitTest name="GetBetaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectBeta(0,20)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="80485347-ce07-9632-5172-a7104202890c">
+      <Execution id="2b82ba2a-3e34-4f8f-a70e-2fe334a8188a" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetBetaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectBeta(0,20)" />
+    </UnitTest>
+    <UnitTest name="GetAlphaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectAlpha(5,75)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="02ebb762-66e2-67e5-c3f1-2a92302cdf2e">
+      <Execution id="bdb74599-bc1e-4ccf-b846-7bf732c81292" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetAlphaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectAlpha(5,75)" />
+    </UnitTest>
+    <UnitTest name="GetBetaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectBeta(2,20)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="c85a5c8e-87be-683d-3e6f-5971e43d49d3">
+      <Execution id="ed7b5cde-060c-4851-a117-d1d7f92a3c7b" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetBetaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectBeta(2,20)" />
+    </UnitTest>
+    <UnitTest name="GetAlphaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectAlpha(1,50)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="34900510-5025-ff0f-4758-957ddc008d6b">
+      <Execution id="a48ec2b7-a3fa-482b-82c6-5d9755ee041b" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetAlphaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectAlpha(1,50)" />
+    </UnitTest>
+    <UnitTest name="GetDifficultySettings_WhenValidDifficulty_ShouldReturnCorrectSettings(6,15,20,15,20,3,25,10)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="c990df5f-3d39-254e-9b70-f31b02084c8a">
+      <Execution id="f2e5f767-f548-4585-90de-101bb8d9a705" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetDifficultySettings_WhenValidDifficulty_ShouldReturnCorrectSettings(6,15,20,15,20,3,25,10)" />
+    </UnitTest>
+    <UnitTest name="GetBetaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectBeta(8,10)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="d15b903a-a727-120b-3725-c75ada77d23b">
+      <Execution id="10bdd0c9-1257-4906-93a2-7132d08bb416" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetBetaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectBeta(8,10)" />
+    </UnitTest>
+    <UnitTest name="Constructor_WhenValidParameters_ShouldInitializeProperties" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="1d1a9575-0799-7fa6-c62a-591f06e546fc">
+      <Execution id="404e80c9-1c86-48f2-af70-830850b1c550" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Models.BridgeCoordinatesTests" name="Constructor_WhenValidParameters_ShouldInitializeProperties" />
+    </UnitTest>
+    <UnitTest name="AddOtherSide_WhenHorizontalBridgeIsland1Left_ShouldUpdateBridgeCounts" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="94fc5438-b10d-81f4-54d0-c02343728d1c">
+      <Execution id="08beef32-c595-4a0c-8a01-965d68ea3abf" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Models.BridgeTests" name="AddOtherSide_WhenHorizontalBridgeIsland1Left_ShouldUpdateBridgeCounts" />
+    </UnitTest>
+    <UnitTest name="Constructor_WhenValidParameters_ShouldInitializeProperties" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="5eb122ff-ae17-1592-c141-9e4bcb076c1b">
+      <Execution id="37e9ec02-2915-4bea-bb68-e820894243eb" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Models.IslandTests" name="Constructor_WhenValidParameters_ShouldInitializeProperties" />
+    </UnitTest>
+    <UnitTest name="GetDifficultySettings_WhenValidDifficulty_ShouldReturnCorrectSettings(9,20,31,20,31,3,100,0)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="00843b27-4423-7a4a-85b5-e68f305bf559">
+      <Execution id="a2fe4681-13fc-4a37-a848-98b35700e862" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetDifficultySettings_WhenValidDifficulty_ShouldReturnCorrectSettings(9,20,31,20,31,3,100,0)" />
+    </UnitTest>
+    <UnitTest name="Constructor_WhenLargeCollections_ShouldInitializeCorrectly" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="747b65f1-8452-39f3-be83-898ff2dc447f">
+      <Execution id="d05331f5-a73d-403e-a6a3-02b30cc67599" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Providers.SolutionProviderTests" name="Constructor_WhenLargeCollections_ShouldInitializeCorrectly" />
+    </UnitTest>
+    <UnitTest name="BridgeCoordinatesFactory_WhenInvoked_ShouldCreateBridgeCoordinatesWithCorrectProperties" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="60293f19-7ec1-bf30-c942-baccb3bb3119">
+      <Execution id="eb7265f1-b488-4e0d-89fb-bfb389a4336f" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.AutoFacGeneratorModuleTests" name="BridgeCoordinatesFactory_WhenInvoked_ShouldCreateBridgeCoordinatesWithCorrectProperties" />
+    </UnitTest>
+    <UnitTest name="Constructor_WhenNullHashiField_ShouldInitializeWithNull" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="541f781b-d7c9-655c-ab64-df816f96c305">
+      <Execution id="99836dee-722c-4532-8078-faaf0ad15d37" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Providers.SolutionProviderTests" name="Constructor_WhenNullHashiField_ShouldInitializeWithNull" />
+    </UnitTest>
+    <UnitTest name="GetAlphaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectAlpha(8,75)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="e00be2a2-95a2-ade7-dad7-5c0234772596">
+      <Execution id="60674df0-572a-44bd-bc33-cc15724157d0" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetAlphaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectAlpha(8,75)" />
+    </UnitTest>
+    <UnitTest name="GetDifficultySettings_WhenValidDifficulty_ShouldReturnCorrectSettings(5,13,18,13,18,3,75,15)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="851403d2-22db-612e-f912-d15112efba92">
+      <Execution id="39e672ce-79c3-445e-bd25-ffa048d27f23" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetDifficultySettings_WhenValidDifficulty_ShouldReturnCorrectSettings(5,13,18,13,18,3,75,15)" />
+    </UnitTest>
+    <UnitTest name="GetAlphaForDifficulty_WhenInvalidDifficulty_ShouldReturnZero(-1)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="04809ca7-e61a-451a-78d2-ae1147ba6b5c">
+      <Execution id="d23f1c3f-104f-4de5-950f-5a24b81c7b94" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetAlphaForDifficulty_WhenInvalidDifficulty_ShouldReturnZero(-1)" />
+    </UnitTest>
+    <UnitTest name="Load_WhenCalled_ShouldRegisterBridgeCoordinatesAsInstancePerDependency" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="382a102f-b02e-7854-e617-8b6753b566d1">
+      <Execution id="c06ecd30-888d-4599-81cb-ec8039898aee" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.AutoFacGeneratorModuleTests" name="Load_WhenCalled_ShouldRegisterBridgeCoordinatesAsInstancePerDependency" />
+    </UnitTest>
+    <UnitTest name="InitializeField_WhenInvalidDimensions_ShouldThrowException(0,5)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="9ebf0b11-ba5f-a638-04fa-a66d303d8d7e">
+      <Execution id="d8dfdabb-a332-4aea-ab7e-b89f1a8bb788" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="InitializeField_WhenInvalidDimensions_ShouldThrowException(0,5)" />
+    </UnitTest>
+    <UnitTest name="Constructor_WhenNullName_ShouldInitializeWithEmptyString" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="4de0d9d9-368b-7a6f-68ea-64eae0c5f183">
+      <Execution id="c9d836cb-26fc-436f-8fad-1541d9ef2d7e" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Providers.SolutionProviderTests" name="Constructor_WhenNullName_ShouldInitializeWithEmptyString" />
+    </UnitTest>
+    <UnitTest name="SetAllNeighbors_WhenNoNeighbors_ShouldLeaveAllNeighborsNull" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="3a2b82e6-4c56-03f4-9ff1-eb120f86434e">
+      <Execution id="e6bc32b3-3afd-4709-8de3-a59c2f69b0f3" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Models.IslandTests" name="SetAllNeighbors_WhenNoNeighbors_ShouldLeaveAllNeighborsNull" />
+    </UnitTest>
+    <UnitTest name="ShuffleList_WhenCalledWithList_ShouldModifyList" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="04c3925f-6c56-d622-ad58-14a9d4773c08">
+      <Execution id="be339905-6483-406e-a909-140fc7c70018" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="ShuffleList_WhenCalledWithList_ShouldModifyList" />
+    </UnitTest>
+    <UnitTest name="AddBridge_WhenIslandDownConnection_ShouldIncrementBridgeCountAndIslandValues" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="ef1df0c2-1c5e-87e2-4cf2-2efa9accadb5">
+      <Execution id="3cea2d31-c274-4569-a1d5-ad447b14f2cf" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Models.BridgeTests" name="AddBridge_WhenIslandDownConnection_ShouldIncrementBridgeCountAndIslandValues" />
+    </UnitTest>
+    <UnitTest name="SetBeta_WhenBetaIsZero_ShouldNotModifyBridges" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="285fe57b-2b76-65e2-be88-000cb65b85a0">
+      <Execution id="8fa7c1be-e6fc-40c5-8dbf-91f59a5091de" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="SetBeta_WhenBetaIsZero_ShouldNotModifyBridges" />
+    </UnitTest>
+    <UnitTest name="GenerateWithDifficultyAsync_WhenInvalidDifficulty_ShouldThrowArgumentException(10)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="1d1d5721-2ba9-94aa-fd4c-47fe55da81cb">
+      <Execution id="c0d31a88-9af3-4413-9c27-416eb2c8b940" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GenerateWithDifficultyAsync_WhenInvalidDifficulty_ShouldThrowArgumentException(10)" />
+    </UnitTest>
+    <UnitTest name="Name_WhenSet_ShouldUpdateValue" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="7c0d989e-6591-b2fd-2315-244c3223b997">
+      <Execution id="c7ea0bfd-c6ad-4349-9549-a3cdf22226ca" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Providers.SolutionProviderTests" name="Name_WhenSet_ShouldUpdateValue" />
+    </UnitTest>
+    <UnitTest name="ShuffleArray_WhenCalledWithArray_ShouldModifyArray" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="327d81c3-494a-de83-5972-d460aef24423">
+      <Execution id="aec2120b-fd93-4563-ab4a-91f302c15303" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="ShuffleArray_WhenCalledWithArray_ShouldModifyArray" />
+    </UnitTest>
+    <UnitTest name="GetBetaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectBeta(6,10)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="d125876f-a572-8a66-4511-4c3bdeaaedad">
+      <Execution id="de017389-0f4d-41d7-9dc6-11572893bf50" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetBetaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectBeta(6,10)" />
+    </UnitTest>
+    <UnitTest name="Load_WhenCalled_ShouldRegisterSolutionProviderAsInstancePerDependency" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="88337bd9-ae3b-209f-2376-8bce619bb157">
+      <Execution id="557bf5c7-a2e2-49e8-89ea-414da1043510" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.AutoFacGeneratorModuleTests" name="Load_WhenCalled_ShouldRegisterSolutionProviderAsInstancePerDependency" />
+    </UnitTest>
+    <UnitTest name="GetAlphaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectAlpha(4,50)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="8b06f05d-d614-ee7e-d395-c263d21b37d0">
+      <Execution id="e778a084-7ffd-4fd0-80d7-55dac66ffb47" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetAlphaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectAlpha(4,50)" />
+    </UnitTest>
+    <UnitTest name="Load_WhenCalled_ShouldRegisterHashiGenerator" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="70066b11-e589-8625-4e7e-8b94093fd5d3">
+      <Execution id="30a6f5d9-a849-4fe4-844f-68f68b739bb6" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.AutoFacGeneratorModuleTests" name="Load_WhenCalled_ShouldRegisterHashiGenerator" />
+    </UnitTest>
+    <UnitTest name="GetBetaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectBeta(4,15)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="2c83c513-2a10-c2a8-ab7b-469a91cd5f8f">
+      <Execution id="831a21e0-03f2-4687-a582-194841531b37" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetBetaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectBeta(4,15)" />
+    </UnitTest>
+    <UnitTest name="Constructor_WhenNoNameProvided_ShouldInitializeWithEmptyString" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="5e4b69b8-6745-917f-70bd-45d1173277bf">
+      <Execution id="246d8537-2f75-4313-80cb-08e3738f6080" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Providers.SolutionProviderTests" name="Constructor_WhenNoNameProvided_ShouldInitializeWithEmptyString" />
+    </UnitTest>
+    <UnitTest name="GetDifficultySettings_WhenValidDifficulty_ShouldReturnCorrectSettings(7,14,20,14,20,3,50,10)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="b13b37fc-d496-f6d0-26e9-aeb16992b53a">
+      <Execution id="4f028175-9bcf-4349-95d3-3405c7058464" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetDifficultySettings_WhenValidDifficulty_ShouldReturnCorrectSettings(7,14,20,14,20,3,50,10)" />
+    </UnitTest>
+    <UnitTest name="ShuffleList_WhenCalledWithEmptyList_ShouldNotThrow" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="0131ae53-294b-a1a3-413a-6dd2850463ec">
+      <Execution id="721e8d1a-ddc1-418a-bc8e-beb60fad724d" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="ShuffleList_WhenCalledWithEmptyList_ShouldNotThrow" />
+    </UnitTest>
+    <UnitTest name="Load_WhenCalled_ShouldRegisterBridgeFactory" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="51e373ee-1d75-5066-6f73-13194de38c7d">
+      <Execution id="8ac09f36-6554-466a-8ef3-4fde7d1dc75c" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.AutoFacGeneratorModuleTests" name="Load_WhenCalled_ShouldRegisterBridgeFactory" />
+    </UnitTest>
+    <UnitTest name="HasAdjacentIsland_WhenAtEdgeOfField_ShouldCheckOnlyValidPositions" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="15acff25-1fa2-60dc-f923-74434058f516">
+      <Execution id="1b1f4de8-c2c4-450c-9519-98783326bb45" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="HasAdjacentIsland_WhenAtEdgeOfField_ShouldCheckOnlyValidPositions" />
+    </UnitTest>
+    <UnitTest name="AddBridge_WhenIslandUpConnection_ShouldIncrementBridgeCountAndIslandValues" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="7ae8bb7a-9bae-cacb-1f72-86c23ab8c291">
+      <Execution id="ccf9f271-3e75-4f49-9b49-193073686a2a" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Models.BridgeTests" name="AddBridge_WhenIslandUpConnection_ShouldIncrementBridgeCountAndIslandValues" />
+    </UnitTest>
+    <UnitTest name="AddOtherSide_WhenMultipleBridges_ShouldAddCorrectAmount" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="6d052979-fe3a-87af-bc00-ef2c3fb99748">
+      <Execution id="173f3f35-2fe9-4be4-96dd-b2668ab2525e" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Models.BridgeTests" name="AddOtherSide_WhenMultipleBridges_ShouldAddCorrectAmount" />
+    </UnitTest>
+    <UnitTest name="HasAdjacentIsland_WhenNoAdjacentIsland_ShouldReturnFalse" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="1f341fea-aa12-f898-cc6e-41875d5b7d18">
+      <Execution id="d85a57e8-6f64-4025-9bf6-5ccf506158ce" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="HasAdjacentIsland_WhenNoAdjacentIsland_ShouldReturnFalse" />
+    </UnitTest>
+    <UnitTest name="Load_WhenCalled_ShouldRegisterBridgeCoordinatesFactory" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="cb9c44bb-fbf0-4f21-c0d1-1c13b35ccae2">
+      <Execution id="f962cb2a-9c6a-4f10-9873-f2c94991a81e" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.AutoFacGeneratorModuleTests" name="Load_WhenCalled_ShouldRegisterBridgeCoordinatesFactory" />
+    </UnitTest>
+    <UnitTest name="GetBetaForDifficulty_WhenInvalidDifficulty_ShouldReturnZero(-1)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="4279ccc5-596f-4190-ff77-1a05932dc08b">
+      <Execution id="614615bb-ace2-4a9c-b01c-928c0833b4c8" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetBetaForDifficulty_WhenInvalidDifficulty_ShouldReturnZero(-1)" />
+    </UnitTest>
+    <UnitTest name="GetBetaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectBeta(9,0)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="1d32006c-299e-7fbd-6f15-a27a9b24625a">
+      <Execution id="588ae2ce-7be1-4c49-9f1f-28882f394c72" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetBetaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectBeta(9,0)" />
+    </UnitTest>
+    <UnitTest name="GetDifficultySettings_WhenValidDifficulty_ShouldReturnCorrectSettings(0,5,10,5,10,4,25,20)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="44b3fda2-688f-a855-dd43-d0d0fd6473ac">
+      <Execution id="6e56aafd-53f9-4e07-882a-d518dc35e029" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetDifficultySettings_WhenValidDifficulty_ShouldReturnCorrectSettings(0,5,10,5,10,4,25,20)" />
+    </UnitTest>
+    <UnitTest name="GetAlphaForDifficulty_WhenInvalidDifficulty_ShouldReturnZero(10)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="13720df8-3d62-fd31-1053-fac4e319fccf">
+      <Execution id="b0b2a9c7-d707-439b-833b-a8ef36fed652" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetAlphaForDifficulty_WhenInvalidDifficulty_ShouldReturnZero(10)" />
+    </UnitTest>
+    <UnitTest name="GetAlphaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectAlpha(2,75)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="6afe0f40-89d0-c1be-344d-27c05a439660">
+      <Execution id="95667cfa-0b4e-417d-a5d8-30a7f17ab7cf" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetAlphaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectAlpha(2,75)" />
+    </UnitTest>
+    <UnitTest name="Constructor_WhenSameLocations_ShouldInitializeCorrectly" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="46accd22-e254-f353-a3f1-e0dd10db3364">
+      <Execution id="525e737c-2fbf-4ac9-9d40-3da17d6c4560" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Models.BridgeCoordinatesTests" name="Constructor_WhenSameLocations_ShouldInitializeCorrectly" />
+    </UnitTest>
+    <UnitTest name="Load_WhenCalled_ShouldRegisterSolutionProviderFactory" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="b6d97014-6861-327a-d16e-4f2d4fae7f7d">
+      <Execution id="6c469cfb-b391-4932-9459-d2954ce3c7c6" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.AutoFacGeneratorModuleTests" name="Load_WhenCalled_ShouldRegisterSolutionProviderFactory" />
+    </UnitTest>
+    <UnitTest name="Name_WhenSetToNull_ShouldSetToNull" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="bf7b7aa3-a37c-f13b-d6d4-6e65b624ee41">
+      <Execution id="7aab8a25-b161-4627-9791-2aa1c9e7d603" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Providers.SolutionProviderTests" name="Name_WhenSetToNull_ShouldSetToNull" />
+    </UnitTest>
+    <UnitTest name="GetDifficultySettings_WhenInvalidDifficulty_ShouldThrowArgumentException(-1)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="2a003473-0eb6-3495-b554-f566e9fe845d">
+      <Execution id="8478984e-c611-439f-9fac-0a052d82e429" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetDifficultySettings_WhenInvalidDifficulty_ShouldThrowArgumentException(-1)" />
+    </UnitTest>
+    <UnitTest name="ShuffleArray_WhenCalledWithEmptyArray_ShouldNotThrow" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="c01d46d0-05ce-91ca-5f9b-2e6926ed35c4">
+      <Execution id="2b443da0-35b3-4d9c-8891-027c24d8a47d" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="ShuffleArray_WhenCalledWithEmptyArray_ShouldNotThrow" />
+    </UnitTest>
+    <UnitTest name="ShuffleList_WhenCalledWithSingleElementList_ShouldNotThrow" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="d3355e7f-5418-8f4d-a003-b69b0b1b4bdd">
+      <Execution id="bc80710f-8c98-47f9-95c9-9e2a0e6cf2e8" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="ShuffleList_WhenCalledWithSingleElementList_ShouldNotThrow" />
+    </UnitTest>
+    <UnitTest name="Constructor_WhenNullBridgeCoordinates_ShouldInitializeWithNull" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="c4743bd0-abce-65a3-1bd1-ff900aae0532">
+      <Execution id="cc6b90ec-dd39-4bc4-bed2-3da0e75ee768" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Providers.SolutionProviderTests" name="Constructor_WhenNullBridgeCoordinates_ShouldInitializeWithNull" />
+    </UnitTest>
+    <UnitTest name="AddBridge_WhenNoDirectConnection_ShouldOnlyIncrementBridgeCount" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="e924699f-558f-a642-d833-716b2330ead9">
+      <Execution id="77afd42e-a6c8-4459-8973-3499cb17732c" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Models.BridgeTests" name="AddBridge_WhenNoDirectConnection_ShouldOnlyIncrementBridgeCount" />
+    </UnitTest>
+    <UnitTest name="InitializeField_WhenInvalidDimensions_ShouldThrowException(5,-1)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="0dda2aa6-1a52-0f4d-7f13-f5c1ab67df7d">
+      <Execution id="f76e84f3-5f5f-4b7d-b15a-d92e98a0f5cb" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="InitializeField_WhenInvalidDimensions_ShouldThrowException(5,-1)" />
+    </UnitTest>
+    <UnitTest name="GenerateHashAsync_WhenNoDifficultySpecified_ShouldUseOtherParameters" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="29b4356d-6734-31a7-adeb-e8aa5887a3ff">
+      <Execution id="9664c439-0e77-46d3-9627-e4def90eea95" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GenerateHashAsync_WhenNoDifficultySpecified_ShouldUseOtherParameters" />
+    </UnitTest>
+    <UnitTest name="AddOtherSide_WhenHorizontalBridgeIsland1Right_ShouldUpdateBridgeCounts" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="505f3261-1abb-c977-3f49-83c5ae6b1de6">
+      <Execution id="11d78790-114b-4149-a16b-a75f0b5d4007" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Models.BridgeTests" name="AddOtherSide_WhenHorizontalBridgeIsland1Right_ShouldUpdateBridgeCounts" />
+    </UnitTest>
+    <UnitTest name="SetAllNeighbors_WhenObstaclesBetweenIslands_ShouldStillSetNeighbors" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="bebd41fa-90bc-4532-218c-588be485e1b3">
+      <Execution id="a0dee88f-2799-4371-a3db-94a6108d80b4" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Models.IslandTests" name="SetAllNeighbors_WhenObstaclesBetweenIslands_ShouldStillSetNeighbors" />
+    </UnitTest>
+    <UnitTest name="BridgeDirections_WhenSet_ShouldUpdateValues" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="de73f6b7-45f4-a1ea-690f-cb6571cc5602">
+      <Execution id="ee489630-de91-48fc-b026-5969c053cce9" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Models.IslandTests" name="BridgeDirections_WhenSet_ShouldUpdateValues" />
+    </UnitTest>
+    <UnitTest name="Load_WhenCalled_ShouldRegisterIslandAsInstancePerDependency" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="9521ef1f-6ff5-a05c-76b3-7a5ff9b32483">
+      <Execution id="6afb2a1f-9a6e-41c7-84a8-d3d694b6fcc1" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.AutoFacGeneratorModuleTests" name="Load_WhenCalled_ShouldRegisterIslandAsInstancePerDependency" />
+    </UnitTest>
+    <UnitTest name="GetDifficultySettings_WhenValidDifficulty_ShouldReturnCorrectSettings(8,16,31,16,31,3,75,10)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="590c0c01-6a52-1d43-de91-f59e3f09c909">
+      <Execution id="77e2cf2d-040e-41f0-9c55-c440ce090823" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetDifficultySettings_WhenValidDifficulty_ShouldReturnCorrectSettings(8,16,31,16,31,3,75,10)" />
+    </UnitTest>
+    <UnitTest name="Constructor_WhenEmptyCollections_ShouldInitializeCorrectly" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="4959d24a-9c3e-5baa-8844-e5f4590d220c">
+      <Execution id="7b51be15-3105-48af-b9dc-75837eae995f" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Providers.SolutionProviderTests" name="Constructor_WhenEmptyCollections_ShouldInitializeCorrectly" />
+    </UnitTest>
+    <UnitTest name="GetDifficultySettings_WhenInvalidDifficulty_ShouldThrowArgumentException(100)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="0e4ce763-6d49-02bf-8bdb-72764fcb65b8">
+      <Execution id="eea52eaf-ecb3-4685-a68d-dd7b3e46d5ff" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetDifficultySettings_WhenInvalidDifficulty_ShouldThrowArgumentException(100)" />
+    </UnitTest>
+    <UnitTest name="BridgeFactory_WhenInvoked_ShouldCreateBridgeWithCorrectProperties" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="6d88c11b-6a3b-e5fe-426d-1705a5b7cd29">
+      <Execution id="28ef0364-ba66-4709-b126-6879e49e292c" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.AutoFacGeneratorModuleTests" name="BridgeFactory_WhenInvoked_ShouldCreateBridgeWithCorrectProperties" />
+    </UnitTest>
+    <UnitTest name="GetDifficultySettings_WhenValidDifficulty_ShouldReturnCorrectSettings(2,10,16,10,16,3,75,20)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="e1198c6b-bdd7-1156-5dee-b1ef0e38c103">
+      <Execution id="55cf057c-377d-4b13-b452-b340ecaef595" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetDifficultySettings_WhenValidDifficulty_ShouldReturnCorrectSettings(2,10,16,10,16,3,75,20)" />
+    </UnitTest>
+    <UnitTest name="GetBetaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectBeta(3,15)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="2a056c6f-c361-3a2a-bbbb-7fc3d401ecf4">
+      <Execution id="642fb32f-1a2c-4530-a667-8457ecf24429" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetBetaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectBeta(3,15)" />
+    </UnitTest>
+    <UnitTest name="GetBetaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectBeta(7,10)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="e57a24ba-f049-2379-61cd-e852e0587d9b">
+      <Execution id="744776b2-a45e-4fae-beee-130096d65046" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetBetaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectBeta(7,10)" />
+    </UnitTest>
+    <UnitTest name="InitializeField_WhenValidDimensions_ShouldCreateCorrectSizedField" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="aba83d8e-24d8-bb0e-4bf6-8bacea75a485">
+      <Execution id="cea14e80-93c2-4830-9e15-6b6600c8b8d6" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="InitializeField_WhenValidDimensions_ShouldCreateCorrectSizedField" />
+    </UnitTest>
+    <UnitTest name="GetBetaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectBeta(1,20)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="65769199-7960-700a-46e8-13aea65f50d8">
+      <Execution id="72246dd0-47ce-4b28-b140-5ce6b16b35e4" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetBetaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectBeta(1,20)" />
+    </UnitTest>
+    <UnitTest name="GetDifficultySettings_WhenValidDifficulty_ShouldReturnCorrectSettings(3,11,18,11,18,3,25,15)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="3a89f0d4-c4d5-7381-bfda-12791842369e">
+      <Execution id="541ef6bd-77bf-41d8-90f0-d9d24e06775f" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetDifficultySettings_WhenValidDifficulty_ShouldReturnCorrectSettings(3,11,18,11,18,3,25,15)" />
+    </UnitTest>
+    <UnitTest name="GenerateHashAsync_WhenDifficultySpecified_ShouldCallGenerateWithDifficulty" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="1f8010a1-40df-81ae-6494-ab06644788c4">
+      <Execution id="d508389f-2d13-41d1-a614-f2efce136761" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GenerateHashAsync_WhenDifficultySpecified_ShouldCallGenerateWithDifficulty" />
+    </UnitTest>
+    <UnitTest name="AddBridge_WhenIslandRightConnection_ShouldIncrementBridgeCountAndIslandValues" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="08b6cc7a-68d9-d80f-4a2c-bc49f4e02358">
+      <Execution id="8fbf906b-2b58-48b9-b1b0-204be4603a58" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Models.BridgeTests" name="AddBridge_WhenIslandRightConnection_ShouldIncrementBridgeCountAndIslandValues" />
+    </UnitTest>
+    <UnitTest name="InitializeField_WhenInvalidDimensions_ShouldThrowException(-1,5)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="4285a6a4-3e6a-2c8e-2d48-a3c71c34cd90">
+      <Execution id="ddc21196-de44-4489-afbe-2cd367212193" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="InitializeField_WhenInvalidDimensions_ShouldThrowException(-1,5)" />
+    </UnitTest>
+    <UnitTest name="Constructor_WhenZeroBridges_ShouldInitializeCorrectly" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="93c62edd-ff43-ffd0-a46b-a928cd71f050">
+      <Execution id="83cd053c-7e17-4c37-a35a-5f0bab8cc16a" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Models.BridgeCoordinatesTests" name="Constructor_WhenZeroBridges_ShouldInitializeCorrectly" />
+    </UnitTest>
+    <UnitTest name="GenerateWithDifficultyAsync_WhenInvalidDifficulty_ShouldThrowArgumentException(-1)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="d7a7b79d-1593-4cee-da7b-a05e147774b0">
+      <Execution id="52b15bbc-9345-424c-9229-35bb234dc10c" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GenerateWithDifficultyAsync_WhenInvalidDifficulty_ShouldThrowArgumentException(-1)" />
+    </UnitTest>
+    <UnitTest name="GetDifficultySettings_WhenInvalidDifficulty_ShouldThrowArgumentException(10)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="618d21c5-0d87-1c5e-70a1-2824451f7508">
+      <Execution id="ad855641-e625-4b74-9f00-7d3ad41ade23" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetDifficultySettings_WhenInvalidDifficulty_ShouldThrowArgumentException(10)" />
+    </UnitTest>
+    <UnitTest name="Load_WhenCalled_ShouldRegisterIslandFactory" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="7cefb498-83f9-cdca-eded-c8ab05179c33">
+      <Execution id="ce8ac236-ae78-4616-af31-d341520781ef" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.AutoFacGeneratorModuleTests" name="Load_WhenCalled_ShouldRegisterIslandFactory" />
+    </UnitTest>
+    <UnitTest name="SetAllNeighbors_WhenIslandLeft_ShouldSetIslandLeft" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="f83f7d20-bb58-6495-de49-e552ddb092b2">
+      <Execution id="8f9255f4-e30e-493c-bbac-2a9c354c607d" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Models.IslandTests" name="SetAllNeighbors_WhenIslandLeft_ShouldSetIslandLeft" />
+    </UnitTest>
+    <UnitTest name="Properties_ShouldBeReadOnly" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="164fe134-30cd-f284-cebc-13491ea0bc8d">
+      <Execution id="053ec243-2fb6-405e-9b68-2aaa1623d245" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Models.BridgeCoordinatesTests" name="Properties_ShouldBeReadOnly" />
+    </UnitTest>
+    <UnitTest name="AddBridge_WhenCalledMultipleTimes_ShouldIncrementCorrectly" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="4af5fa51-a61f-b2a8-08fb-d07b9c4c74f6">
+      <Execution id="6892abba-7b76-415d-b45b-5c52ca96344a" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Models.BridgeTests" name="AddBridge_WhenCalledMultipleTimes_ShouldIncrementCorrectly" />
+    </UnitTest>
+    <UnitTest name="AddOtherSide_WhenVerticalBridgeIsland1Below_ShouldUpdateBridgeCounts" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="3dcb5a17-b5c4-d51c-dca9-176a24817b81">
+      <Execution id="0cc07229-fc9a-448d-9da5-5b1fe8e7f7c0" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Models.BridgeTests" name="AddOtherSide_WhenVerticalBridgeIsland1Below_ShouldUpdateBridgeCounts" />
+    </UnitTest>
+    <UnitTest name="GetAlphaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectAlpha(9,100)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="5bf08703-491e-7def-85eb-e0cccb50acab">
+      <Execution id="90ad1679-af94-42e9-99bc-e50161f079f9" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetAlphaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectAlpha(9,100)" />
+    </UnitTest>
+    <UnitTest name="Constructor_WhenNegativeCoordinates_ShouldInitializeCorrectly" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="97f3ace9-9c78-ae63-8e06-b35f00278265">
+      <Execution id="31f656d7-6acf-4793-a605-a253cd1d1514" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Models.BridgeCoordinatesTests" name="Constructor_WhenNegativeCoordinates_ShouldInitializeCorrectly" />
+    </UnitTest>
+    <UnitTest name="GetDifficultySettings_WhenValidDifficulty_ShouldReturnCorrectSettings(4,10,18,10,18,3,50,15)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="740345ac-b7c3-62bd-5974-307609850537">
+      <Execution id="4093ec68-c0f1-412f-92f5-0dbc65b7c03d" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetDifficultySettings_WhenValidDifficulty_ShouldReturnCorrectSettings(4,10,18,10,18,3,50,15)" />
+    </UnitTest>
+    <UnitTest name="GetBetaForDifficulty_WhenInvalidDifficulty_ShouldReturnZero(10)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="a88ac496-2cca-8df3-d4f6-6a2f37b756f5">
+      <Execution id="d28ee20f-f648-4a91-8add-b750731a73cd" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetBetaForDifficulty_WhenInvalidDifficulty_ShouldReturnZero(10)" />
+    </UnitTest>
+    <UnitTest name="GetAlphaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectAlpha(3,25)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="13600d21-b519-f2b4-b435-779bd42a3156">
+      <Execution id="836bd553-7f9a-468f-a6d7-8f1ff471c12d" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetAlphaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectAlpha(3,25)" />
+    </UnitTest>
+    <UnitTest name="IslandFactory_WhenInvoked_ShouldCreateIslandWithCorrectProperties" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="53bb71fd-1d44-fa63-889f-45ffca240b44">
+      <Execution id="d10a9a7f-ab74-4045-9616-83a119dd3721" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.AutoFacGeneratorModuleTests" name="IslandFactory_WhenInvoked_ShouldCreateIslandWithCorrectProperties" />
+    </UnitTest>
+    <UnitTest name="SetAllNeighbors_WhenIslandBelow_ShouldSetIslandDown" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="da186355-3819-af31-387c-3c7e675afa55">
+      <Execution id="96e68de8-661d-439b-8273-34e3ddf7bfd1" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Models.IslandTests" name="SetAllNeighbors_WhenIslandBelow_ShouldSetIslandDown" />
+    </UnitTest>
+    <UnitTest name="GetAlphaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectAlpha(6,25)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="c9fc000d-929a-78d1-6d4c-8226e998cf9b">
+      <Execution id="eb058c98-b819-436c-bfc7-5742695d7691" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetAlphaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectAlpha(6,25)" />
+    </UnitTest>
+    <UnitTest name="GetAlphaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectAlpha(7,50)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="7bceaa13-9724-29d1-8730-647afd949fe6">
+      <Execution id="6c471d95-bc80-4566-96d4-4164121ab47e" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetAlphaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectAlpha(7,50)" />
+    </UnitTest>
+    <UnitTest name="InitializeField_WhenInvalidDimensions_ShouldThrowException(5,0)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="187c4543-482b-ab40-e5eb-d50ddfc3e2a2">
+      <Execution id="3c624ef7-bfef-434f-a882-1346cb980584" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="InitializeField_WhenInvalidDimensions_ShouldThrowException(5,0)" />
+    </UnitTest>
+    <UnitTest name="SetAllNeighbors_WhenIslandRight_ShouldSetIslandRight" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="50fcc213-e9d5-4cf9-f4ce-27d1cfbccb70">
+      <Execution id="25ca2576-9717-43cc-8751-2381853c5223" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Models.IslandTests" name="SetAllNeighbors_WhenIslandRight_ShouldSetIslandRight" />
+    </UnitTest>
+    <UnitTest name="AmountBridgesConnectable_WhenSet_ShouldUpdateValue" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="f2e0ae72-aefe-11eb-3717-8eb66ec0102c">
+      <Execution id="c2090fac-0028-4e27-85fa-fb799086ac28" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Models.IslandTests" name="AmountBridgesConnectable_WhenSet_ShouldUpdateValue" />
+    </UnitTest>
+    <UnitTest name="SetAllNeighbors_WhenIslandAbove_ShouldSetIslandUp" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="154a331e-4023-cd62-7f7a-10dc240786ca">
+      <Execution id="6a714bf9-e084-4406-bbb2-893d530a98e2" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Models.IslandTests" name="SetAllNeighbors_WhenIslandAbove_ShouldSetIslandUp" />
+    </UnitTest>
+    <UnitTest name="GetDifficultySettings_WhenValidDifficulty_ShouldReturnCorrectSettings(1,14,16,14,16,4,50,20)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="a14edb2e-8b63-4d46-6551-f1cac8e76c0b">
+      <Execution id="c8336447-5236-4a8a-8b3f-572c7385f7d3" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetDifficultySettings_WhenValidDifficulty_ShouldReturnCorrectSettings(1,14,16,14,16,4,50,20)" />
+    </UnitTest>
+    <UnitTest name="Load_WhenCalled_ShouldRegisterBridgeAsInstancePerDependency" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="f3f166ac-20b1-28c9-69a5-fdc75926ad64">
+      <Execution id="ca865463-b0d1-4a27-ba31-14fc866be1a7" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.AutoFacGeneratorModuleTests" name="Load_WhenCalled_ShouldRegisterBridgeAsInstancePerDependency" />
+    </UnitTest>
+    <UnitTest name="Constructor_WhenValidParameters_ShouldInitializeProperties" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="5ee36e19-9357-83fd-67a9-aa58ce8fb67e">
+      <Execution id="41dd083e-7ce4-4c54-86c6-f45f1561f6bc" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Providers.SolutionProviderTests" name="Constructor_WhenValidParameters_ShouldInitializeProperties" />
+    </UnitTest>
+    <UnitTest name="AddOtherSide_WhenVerticalBridgeIsland1Above_ShouldUpdateBridgeCounts" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="95f6e09f-ee54-a4a4-fcd1-eaf059fb2777">
+      <Execution id="143f72af-ed89-46c1-ab98-daf540ace4a6" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Models.BridgeTests" name="AddOtherSide_WhenVerticalBridgeIsland1Above_ShouldUpdateBridgeCounts" />
+    </UnitTest>
+    <UnitTest name="Properties_WhenInitialized_ShouldBeReadOnly" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="ef24de11-f4ea-1d58-69bd-1ec7f03b90ee">
+      <Execution id="f7d12292-6f65-473e-997d-d497c40011ed" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Providers.SolutionProviderTests" name="Properties_WhenInitialized_ShouldBeReadOnly" />
+    </UnitTest>
+    <UnitTest name="Constructor_WhenValidParameters_ShouldInitializeProperties" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="5cec07ac-da92-1ebd-de3d-a5c328c66184">
+      <Execution id="083c3a86-ef31-4f9c-9a84-c2aebef28153" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Models.BridgeTests" name="Constructor_WhenValidParameters_ShouldInitializeProperties" />
+    </UnitTest>
+    <UnitTest name="GetAlphaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectAlpha(0,25)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="9a96dcfa-f62f-308d-0662-4918a52b966c">
+      <Execution id="4d191077-22c1-4e12-912e-7c527c3ec477" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetAlphaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectAlpha(0,25)" />
+    </UnitTest>
+    <UnitTest name="SolutionProviderFactory_WhenInvoked_ShouldCreateSolutionProviderWithCorrectProperties" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="03d1b497-0639-48a5-8161-1a0dce80a32a">
+      <Execution id="5186a62a-38f5-4d33-980c-180e48e58835" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.AutoFacGeneratorModuleTests" name="SolutionProviderFactory_WhenInvoked_ShouldCreateSolutionProviderWithCorrectProperties" />
+    </UnitTest>
+    <UnitTest name="HasAdjacentIsland_WhenAdjacentCellHasIsland_ShouldReturnTrue" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="8195d505-adc9-c993-2126-afa963983ce3">
+      <Execution id="56668502-3094-42cf-bae4-b4dd5286d294" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="HasAdjacentIsland_WhenAdjacentCellHasIsland_ShouldReturnTrue" />
+    </UnitTest>
+    <UnitTest name="AddBridge_WhenIslandLeftConnection_ShouldIncrementBridgeCountAndIslandValues" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="0dc8ad2a-36bd-0444-c9a0-e3324a2a8252">
+      <Execution id="44b83816-3e77-4eea-b84a-328323681228" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.Models.BridgeTests" name="AddBridge_WhenIslandLeftConnection_ShouldIncrementBridgeCountAndIslandValues" />
+    </UnitTest>
+    <UnitTest name="GenerateWithDifficultyAsync_WhenValidDifficulty_ShouldReturnSolutionProvider" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="8fed7067-f075-7377-cef6-8b280cbd2ea2">
+      <Execution id="568c45d6-2fdf-4d19-a3ca-e7bd657c94d1" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GenerateWithDifficultyAsync_WhenValidDifficulty_ShouldReturnSolutionProvider" />
+    </UnitTest>
+    <UnitTest name="ShuffleArray_WhenCalledWithSingleElementArray_ShouldNotThrow" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="81c20c01-29a9-e4dd-a624-e6bd99caa397">
+      <Execution id="afb92fa3-6423-471b-b16c-572571dde438" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="ShuffleArray_WhenCalledWithSingleElementArray_ShouldNotThrow" />
+    </UnitTest>
+    <UnitTest name="Load_WhenCalled_ShouldRegisterHashiGeneratorAsSingleton" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="0c838be5-d69f-919e-4759-7c5a44dd62a1">
+      <Execution id="4678e565-3596-4211-9930-03cee98de2f3" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.AutoFacGeneratorModuleTests" name="Load_WhenCalled_ShouldRegisterHashiGeneratorAsSingleton" />
+    </UnitTest>
+    <UnitTest name="SetBeta_WhenBetaIsNegative_ShouldNotModifyBridges" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="b69c6d68-caa2-de15-8153-3eb174cf6276">
+      <Execution id="b27cc228-fae4-40d9-a0f3-46f9ec16e780" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="SetBeta_WhenBetaIsNegative_ShouldNotModifyBridges" />
+    </UnitTest>
+    <UnitTest name="GetBetaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectBeta(5,15)" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.generator.test/bin/debug/net8.0/hashi.generator.test.dll" id="c0b54c8d-e318-bbe9-42b8-290fd3653077">
+      <Execution id="3d8570e3-9360-488c-b7fe-c5d586c128c2" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.Generator.Test.HashiGeneratorTests" name="GetBetaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectBeta(5,15)" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="a14edb2e-8b63-4d46-6551-f1cac8e76c0b" executionId="c8336447-5236-4a8a-8b3f-572c7385f7d3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="618d21c5-0d87-1c5e-70a1-2824451f7508" executionId="ad855641-e625-4b74-9f00-7d3ad41ade23" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c4743bd0-abce-65a3-1bd1-ff900aae0532" executionId="cc6b90ec-dd39-4bc4-bed2-3da0e75ee768" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2a003473-0eb6-3495-b554-f566e9fe845d" executionId="8478984e-c611-439f-9fac-0a052d82e429" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="70066b11-e589-8625-4e7e-8b94093fd5d3" executionId="30a6f5d9-a849-4fe4-844f-68f68b739bb6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ef24de11-f4ea-1d58-69bd-1ec7f03b90ee" executionId="f7d12292-6f65-473e-997d-d497c40011ed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f2e0ae72-aefe-11eb-3717-8eb66ec0102c" executionId="c2090fac-0028-4e27-85fa-fb799086ac28" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5e4b69b8-6745-917f-70bd-45d1173277bf" executionId="246d8537-2f75-4313-80cb-08e3738f6080" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="da186355-3819-af31-387c-3c7e675afa55" executionId="96e68de8-661d-439b-8273-34e3ddf7bfd1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="51e373ee-1d75-5066-6f73-13194de38c7d" executionId="8ac09f36-6554-466a-8ef3-4fde7d1dc75c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4279ccc5-596f-4190-ff77-1a05932dc08b" executionId="614615bb-ace2-4a9c-b01c-928c0833b4c8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="712ac09c-21f9-43b0-a1eb-ccd1d8dcea5c" executionId="b014b2ca-73bd-407c-8b88-33621e491e49" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="aba83d8e-24d8-bb0e-4bf6-8bacea75a485" executionId="cea14e80-93c2-4830-9e15-6b6600c8b8d6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3a2b82e6-4c56-03f4-9ff1-eb120f86434e" executionId="e6bc32b3-3afd-4709-8de3-a59c2f69b0f3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7cefb498-83f9-cdca-eded-c8ab05179c33" executionId="ce8ac236-ae78-4616-af31-d341520781ef" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="81c20c01-29a9-e4dd-a624-e6bd99caa397" executionId="afb92fa3-6423-471b-b16c-572571dde438" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="97f3ace9-9c78-ae63-8e06-b35f00278265" executionId="31f656d7-6acf-4793-a605-a253cd1d1514" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0dda2aa6-1a52-0f4d-7f13-f5c1ab67df7d" executionId="f76e84f3-5f5f-4b7d-b15a-d92e98a0f5cb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7bceaa13-9724-29d1-8730-647afd949fe6" executionId="6c471d95-bc80-4566-96d4-4164121ab47e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="154a331e-4023-cd62-7f7a-10dc240786ca" executionId="6a714bf9-e084-4406-bbb2-893d530a98e2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0dc8ad2a-36bd-0444-c9a0-e3324a2a8252" executionId="44b83816-3e77-4eea-b84a-328323681228" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d125876f-a572-8a66-4511-4c3bdeaaedad" executionId="de017389-0f4d-41d7-9dc6-11572893bf50" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="187c4543-482b-ab40-e5eb-d50ddfc3e2a2" executionId="3c624ef7-bfef-434f-a882-1346cb980584" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7c0d989e-6591-b2fd-2315-244c3223b997" executionId="c7ea0bfd-c6ad-4349-9549-a3cdf22226ca" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="03d1b497-0639-48a5-8161-1a0dce80a32a" executionId="5186a62a-38f5-4d33-980c-180e48e58835" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8195d505-adc9-c993-2126-afa963983ce3" executionId="56668502-3094-42cf-bae4-b4dd5286d294" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4959d24a-9c3e-5baa-8844-e5f4590d220c" executionId="7b51be15-3105-48af-b9dc-75837eae995f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9521ef1f-6ff5-a05c-76b3-7a5ff9b32483" executionId="6afb2a1f-9a6e-41c7-84a8-d3d694b6fcc1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="08b6cc7a-68d9-d80f-4a2c-bc49f4e02358" executionId="8fbf906b-2b58-48b9-b1b0-204be4603a58" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1f8010a1-40df-81ae-6494-ab06644788c4" executionId="d508389f-2d13-41d1-a614-f2efce136761" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4de0d9d9-368b-7a6f-68ea-64eae0c5f183" executionId="c9d836cb-26fc-436f-8fad-1541d9ef2d7e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="15acff25-1fa2-60dc-f923-74434058f516" executionId="1b1f4de8-c2c4-450c-9519-98783326bb45" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3dcb5a17-b5c4-d51c-dca9-176a24817b81" executionId="0cc07229-fc9a-448d-9da5-5b1fe8e7f7c0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c9fc000d-929a-78d1-6d4c-8226e998cf9b" executionId="eb058c98-b819-436c-bfc7-5742695d7691" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="44b3fda2-688f-a855-dd43-d0d0fd6473ac" executionId="6e56aafd-53f9-4e07-882a-d518dc35e029" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7ae8bb7a-9bae-cacb-1f72-86c23ab8c291" executionId="ccf9f271-3e75-4f49-9b49-193073686a2a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2a056c6f-c361-3a2a-bbbb-7fc3d401ecf4" executionId="642fb32f-1a2c-4530-a667-8457ecf24429" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bebd41fa-90bc-4532-218c-588be485e1b3" executionId="a0dee88f-2799-4371-a3db-94a6108d80b4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b6d97014-6861-327a-d16e-4f2d4fae7f7d" executionId="6c469cfb-b391-4932-9459-d2954ce3c7c6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="95f6e09f-ee54-a4a4-fcd1-eaf059fb2777" executionId="143f72af-ed89-46c1-ab98-daf540ace4a6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8b06f05d-d614-ee7e-d395-c263d21b37d0" executionId="e778a084-7ffd-4fd0-80d7-55dac66ffb47" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e924699f-558f-a642-d833-716b2330ead9" executionId="77afd42e-a6c8-4459-8973-3499cb17732c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="740345ac-b7c3-62bd-5974-307609850537" executionId="4093ec68-c0f1-412f-92f5-0dbc65b7c03d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cb9c44bb-fbf0-4f21-c0d1-1c13b35ccae2" executionId="f962cb2a-9c6a-4f10-9873-f2c94991a81e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bf7b7aa3-a37c-f13b-d6d4-6e65b624ee41" executionId="7aab8a25-b161-4627-9791-2aa1c9e7d603" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3a89f0d4-c4d5-7381-bfda-12791842369e" executionId="541ef6bd-77bf-41d8-90f0-d9d24e06775f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="60293f19-7ec1-bf30-c942-baccb3bb3119" executionId="eb7265f1-b488-4e0d-89fb-bfb389a4336f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="13720df8-3d62-fd31-1053-fac4e319fccf" executionId="b0b2a9c7-d707-439b-833b-a8ef36fed652" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8fed7067-f075-7377-cef6-8b280cbd2ea2" executionId="568c45d6-2fdf-4d19-a3ca-e7bd657c94d1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="50fcc213-e9d5-4cf9-f4ce-27d1cfbccb70" executionId="25ca2576-9717-43cc-8751-2381853c5223" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="285fe57b-2b76-65e2-be88-000cb65b85a0" executionId="8fa7c1be-e6fc-40c5-8dbf-91f59a5091de" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="46accd22-e254-f353-a3f1-e0dd10db3364" executionId="525e737c-2fbf-4ac9-9d40-3da17d6c4560" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="94fc5438-b10d-81f4-54d0-c02343728d1c" executionId="08beef32-c595-4a0c-8a01-965d68ea3abf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0131ae53-294b-a1a3-413a-6dd2850463ec" executionId="721e8d1a-ddc1-418a-bc8e-beb60fad724d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="382a102f-b02e-7854-e617-8b6753b566d1" executionId="c06ecd30-888d-4599-81cb-ec8039898aee" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e1198c6b-bdd7-1156-5dee-b1ef0e38c103" executionId="55cf057c-377d-4b13-b452-b340ecaef595" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5ee36e19-9357-83fd-67a9-aa58ce8fb67e" executionId="41dd083e-7ce4-4c54-86c6-f45f1561f6bc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="04c3925f-6c56-d622-ad58-14a9d4773c08" executionId="be339905-6483-406e-a909-140fc7c70018" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b13b37fc-d496-f6d0-26e9-aeb16992b53a" executionId="4f028175-9bcf-4349-95d3-3405c7058464" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6d88c11b-6a3b-e5fe-426d-1705a5b7cd29" executionId="28ef0364-ba66-4709-b126-6879e49e292c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d15b903a-a727-120b-3725-c75ada77d23b" executionId="10bdd0c9-1257-4906-93a2-7132d08bb416" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a88ac496-2cca-8df3-d4f6-6a2f37b756f5" executionId="d28ee20f-f648-4a91-8add-b750731a73cd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="65769199-7960-700a-46e8-13aea65f50d8" executionId="72246dd0-47ce-4b28-b140-5ce6b16b35e4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5bf08703-491e-7def-85eb-e0cccb50acab" executionId="90ad1679-af94-42e9-99bc-e50161f079f9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4af5fa51-a61f-b2a8-08fb-d07b9c4c74f6" executionId="6892abba-7b76-415d-b45b-5c52ca96344a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b69c6d68-caa2-de15-8153-3eb174cf6276" executionId="b27cc228-fae4-40d9-a0f3-46f9ec16e780" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e57a24ba-f049-2379-61cd-e852e0587d9b" executionId="744776b2-a45e-4fae-beee-130096d65046" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0e4ce763-6d49-02bf-8bdb-72764fcb65b8" executionId="eea52eaf-ecb3-4685-a68d-dd7b3e46d5ff" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="851403d2-22db-612e-f912-d15112efba92" executionId="39e672ce-79c3-445e-bd25-ffa048d27f23" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f3f166ac-20b1-28c9-69a5-fdc75926ad64" executionId="ca865463-b0d1-4a27-ba31-14fc866be1a7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4285a6a4-3e6a-2c8e-2d48-a3c71c34cd90" executionId="ddc21196-de44-4489-afbe-2cd367212193" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6afe0f40-89d0-c1be-344d-27c05a439660" executionId="95667cfa-0b4e-417d-a5d8-30a7f17ab7cf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="34900510-5025-ff0f-4758-957ddc008d6b" executionId="a48ec2b7-a3fa-482b-82c6-5d9755ee041b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c990df5f-3d39-254e-9b70-f31b02084c8a" executionId="f2e5f767-f548-4585-90de-101bb8d9a705" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="00843b27-4423-7a4a-85b5-e68f305bf559" executionId="a2fe4681-13fc-4a37-a848-98b35700e862" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c85a5c8e-87be-683d-3e6f-5971e43d49d3" executionId="ed7b5cde-060c-4851-a117-d1d7f92a3c7b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="80485347-ce07-9632-5172-a7104202890c" executionId="2b82ba2a-3e34-4f8f-a70e-2fe334a8188a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="de73f6b7-45f4-a1ea-690f-cb6571cc5602" executionId="ee489630-de91-48fc-b026-5969c053cce9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2c83c513-2a10-c2a8-ab7b-469a91cd5f8f" executionId="831a21e0-03f2-4687-a582-194841531b37" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e00be2a2-95a2-ade7-dad7-5c0234772596" executionId="60674df0-572a-44bd-bc33-cc15724157d0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="29b4356d-6734-31a7-adeb-e8aa5887a3ff" executionId="9664c439-0e77-46d3-9627-e4def90eea95" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="93c62edd-ff43-ffd0-a46b-a928cd71f050" executionId="83cd053c-7e17-4c37-a35a-5f0bab8cc16a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1f341fea-aa12-f898-cc6e-41875d5b7d18" executionId="d85a57e8-6f64-4025-9bf6-5ccf506158ce" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1d32006c-299e-7fbd-6f15-a27a9b24625a" executionId="588ae2ce-7be1-4c49-9f1f-28882f394c72" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c01d46d0-05ce-91ca-5f9b-2e6926ed35c4" executionId="2b443da0-35b3-4d9c-8891-027c24d8a47d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="164fe134-30cd-f284-cebc-13491ea0bc8d" executionId="053ec243-2fb6-405e-9b68-2aaa1623d245" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="53bb71fd-1d44-fa63-889f-45ffca240b44" executionId="d10a9a7f-ab74-4045-9616-83a119dd3721" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c0b54c8d-e318-bbe9-42b8-290fd3653077" executionId="3d8570e3-9360-488c-b7fe-c5d586c128c2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5cec07ac-da92-1ebd-de3d-a5c328c66184" executionId="083c3a86-ef31-4f9c-9a84-c2aebef28153" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1d1d5721-2ba9-94aa-fd4c-47fe55da81cb" executionId="c0d31a88-9af3-4413-9c27-416eb2c8b940" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0c838be5-d69f-919e-4759-7c5a44dd62a1" executionId="4678e565-3596-4211-9930-03cee98de2f3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="747b65f1-8452-39f3-be83-898ff2dc447f" executionId="d05331f5-a73d-403e-a6a3-02b30cc67599" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="505f3261-1abb-c977-3f49-83c5ae6b1de6" executionId="11d78790-114b-4149-a16b-a75f0b5d4007" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9a96dcfa-f62f-308d-0662-4918a52b966c" executionId="4d191077-22c1-4e12-912e-7c527c3ec477" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6d052979-fe3a-87af-bc00-ef2c3fb99748" executionId="173f3f35-2fe9-4be4-96dd-b2668ab2525e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="590c0c01-6a52-1d43-de91-f59e3f09c909" executionId="77e2cf2d-040e-41f0-9c55-c440ce090823" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="541f781b-d7c9-655c-ab64-df816f96c305" executionId="99836dee-722c-4532-8078-faaf0ad15d37" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d3355e7f-5418-8f4d-a003-b69b0b1b4bdd" executionId="bc80710f-8c98-47f9-95c9-9e2a0e6cf2e8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5eb122ff-ae17-1592-c141-9e4bcb076c1b" executionId="37e9ec02-2915-4bea-bb68-e820894243eb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1d1a9575-0799-7fa6-c62a-591f06e546fc" executionId="404e80c9-1c86-48f2-af70-830850b1c550" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="88337bd9-ae3b-209f-2376-8bce619bb157" executionId="557bf5c7-a2e2-49e8-89ea-414da1043510" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f83f7d20-bb58-6495-de49-e552ddb092b2" executionId="8f9255f4-e30e-493c-bbac-2a9c354c607d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d7a7b79d-1593-4cee-da7b-a05e147774b0" executionId="52b15bbc-9345-424c-9229-35bb234dc10c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="327d81c3-494a-de83-5972-d460aef24423" executionId="aec2120b-fd93-4563-ab4a-91f302c15303" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="13600d21-b519-f2b4-b435-779bd42a3156" executionId="836bd553-7f9a-468f-a6d7-8f1ff471c12d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9ebf0b11-ba5f-a638-04fa-a66d303d8d7e" executionId="d8dfdabb-a332-4aea-ab7e-b89f1a8bb788" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ef1df0c2-1c5e-87e2-4cf2-2efa9accadb5" executionId="3cea2d31-c274-4569-a1d5-ad447b14f2cf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="02ebb762-66e2-67e5-c3f1-2a92302cdf2e" executionId="bdb74599-bc1e-4ccf-b846-7bf732c81292" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="04809ca7-e61a-451a-78d2-ae1147ba6b5c" executionId="d23f1c3f-104f-4de5-950f-5a24b81c7b94" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="109" executed="109" passed="101" failed="8" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>NUnit Adapter 4.6.0.0: Test execution started
+Running all tests in /home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.Generator.Test/bin/Debug/net8.0/Hashi.Generator.Test.dll
+   NUnit3TestExecutor discovered 109 of 109 NUnit test cases using Current Discovery mode, Non-Explicit run
+     Warning:
+     The component "Fluent Assertions" is governed by the rules defined in the Xceed License Agreement and
+     the Xceed Fluent Assertions Community License. You may use Fluent Assertions free of charge for
+     non-commercial use only. An active subscription is required to use Fluent Assertions for commercial use.
+
+     Please contact Xceed Sales mailto:sales@xceed.com to acquire a subscription at a very low cost.
+
+     A paid commercial license supports the development and continued increasing support of
+     Fluent Assertions users under both commercial and community licenses. Help us
+     keep Fluent Assertions at the forefront of unit testing.
+
+     For more information, visit https://xceed.com/products/unit-testing/fluent-assertions/
+
+SetBeta_WhenBetaIsNegative_ShouldNotModifyBridges: SetBeta completed without throwing for negative beta
+SetBeta_WhenBetaIsZero_ShouldNotModifyBridges: SetBeta completed without throwing for beta = 0
+NUnit Adapter 4.6.0.0: Test execution complete
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>
