@@ -1,0 +1,262 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="4fc2d9c4-58b7-496d-a6ac-0eb61b8d19ab" name="@pkrvmxyh4eaekms 2025-06-25 17:03:57" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2025-06-25T17:03:57.8361590+00:00" queuing="2025-06-25T17:03:57.8361591+00:00" start="2025-06-25T17:03:55.3275705+00:00" finish="2025-06-25T17:03:58.2400083+00:00" />
+  <TestSettings name="default" id="ef490b8b-3cf3-4760-b962-05ddb3744c14">
+    <Deployment runDeploymentRoot="_pkrvmxyh4eaekms_2025-06-25_17_03_57" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="0aad4f2b-829c-43d5-a0c2-e2c1f99e4e0e" testId="186970d3-8ce1-da23-e7ed-a4b97fb9adbc" testName="ConvertData_WhenTwoVerticalIslands_ShouldReturnCorrectNeighbors" computerName="pkrvmxyh4eaekms" duration="00:00:00.0027500" startTime="2025-06-25T17:03:57.7097268+00:00" endTime="2025-06-25T17:03:57.7124765+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0aad4f2b-829c-43d5-a0c2-e2c1f99e4e0e" />
+    <UnitTestResult executionId="ff2df0f2-db50-491c-812b-acff63d86ddc" testId="ce73c058-d536-252d-fd4b-c61da445b155" testName="ReadFile_WhenValidFile_ShouldReturnCorrectData" computerName="pkrvmxyh4eaekms" duration="00:00:00.0119150" startTime="2025-06-25T17:03:58.0534868+00:00" endTime="2025-06-25T17:03:58.0654018+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ff2df0f2-db50-491c-812b-acff63d86ddc" />
+    <UnitTestResult executionId="2abc98a2-933a-4aed-a2da-3ba6b0f0fb7d" testId="032ff801-5ace-5dae-7720-5d293e5396db" testName="Constructor_WhenZeroValues_ShouldSetProperties" computerName="pkrvmxyh4eaekms" duration="00:00:00.0009940" startTime="2025-06-25T17:03:58.1156084+00:00" endTime="2025-06-25T17:03:58.1166022+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2abc98a2-933a-4aed-a2da-3ba6b0f0fb7d" />
+    <UnitTestResult executionId="a3bc1da0-33ce-4c99-92ab-f129fe419912" testId="1754419c-6427-48a3-efac-97eaa375d9ab" testName="IslandFactory_WhenInvoked_ShouldCreateIslandWithCorrectProperties" computerName="pkrvmxyh4eaekms" duration="00:00:00.0078440" startTime="2025-06-25T17:03:57.5181731+00:00" endTime="2025-06-25T17:03:57.5260172+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a3bc1da0-33ce-4c99-92ab-f129fe419912" />
+    <UnitTestResult executionId="52161cd6-4049-4de3-9bd9-ec50980ae9a2" testId="a6b3ae8a-4603-51cf-fcff-2d7af6e7c28a" testName="ReadFile_WhenInvalidFileFormat_ShouldThrowException" computerName="pkrvmxyh4eaekms" duration="00:00:00.0515619" startTime="2025-06-25T17:03:58.0012356+00:00" endTime="2025-06-25T17:03:58.0527970+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="52161cd6-4049-4de3-9bd9-ec50980ae9a2" />
+    <UnitTestResult executionId="a5c0d9ee-1629-415e-97d6-bba002f99200" testId="a56ab76b-ced7-02b6-ee6e-acb674d6e247" testName="HashiSolver_WhenLoggerWritesInfo_ShouldCallLogger" computerName="pkrvmxyh4eaekms" duration="00:00:00.2362110" startTime="2025-06-25T17:03:57.7367984+00:00" endTime="2025-06-25T17:03:57.9730097+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a5c0d9ee-1629-415e-97d6-bba002f99200" />
+    <UnitTestResult executionId="44f07310-eead-4527-932b-c2640f280c79" testId="abab3063-d20d-e3fe-fbe5-d6b8b6ae0a26" testName="Constructor_WhenNegativeValues_ShouldSetProperties" computerName="pkrvmxyh4eaekms" duration="00:00:00.0002920" startTime="2025-06-25T17:03:57.5675164+00:00" endTime="2025-06-25T17:03:57.5678087+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="44f07310-eead-4527-932b-c2640f280c79" />
+    <UnitTestResult executionId="b5565e24-938d-43a5-94f5-9923196d58ce" testId="3ba64591-d4e0-b60d-c328-06f9f2128892" testName="SolveLazy_WhenUnsolvablePuzzle_ShouldReturnInfeasible" computerName="pkrvmxyh4eaekms" duration="00:00:00.0058450" startTime="2025-06-25T17:03:58.0782599+00:00" endTime="2025-06-25T17:03:58.0841051+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b5565e24-938d-43a5-94f5-9923196d58ce" />
+    <UnitTestResult executionId="56607441-fae9-411d-829d-2c0fff6bc7ce" testId="d66e4001-1dd0-b256-3ad4-5cc0c8093662" testName="Load_WhenCalled_ShouldRegisterHashiSolverAsSingleton" computerName="pkrvmxyh4eaekms" duration="00:00:00.0023240" startTime="2025-06-25T17:03:57.5524608+00:00" endTime="2025-06-25T17:03:57.5547851+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="56607441-fae9-411d-829d-2c0fff6bc7ce" />
+    <UnitTestResult executionId="931cbd48-b6d1-41cc-89b9-80bec80d4ce7" testId="6735e272-2576-51d3-6eb8-5043ac368875" testName="Load_WhenCalled_ShouldRegisterIslandFactory" computerName="pkrvmxyh4eaekms" duration="00:00:00.0011700" startTime="2025-06-25T17:03:57.5567310+00:00" endTime="2025-06-25T17:03:57.5579014+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="931cbd48-b6d1-41cc-89b9-80bec80d4ce7" />
+    <UnitTestResult executionId="04143f18-3dfe-4f17-8aed-792c2788580c" testId="ac36963d-2f66-bb1e-fdb9-0b3063695ebe" testName="SolveLazy_WhenSimpleSolvablePuzzle_ShouldReturnOptimal" computerName="pkrvmxyh4eaekms" duration="00:00:00.0111480" startTime="2025-06-25T17:03:58.0658756+00:00" endTime="2025-06-25T17:03:58.0770231+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="04143f18-3dfe-4f17-8aed-792c2788580c" />
+    <UnitTestResult executionId="e1c250a3-44b3-43c9-8069-aa26e1c20017" testId="2173d15a-97f6-8b2a-8ba1-16707fd455fe" testName="Load_WhenCalled_ShouldRegisterHashiSolver" computerName="pkrvmxyh4eaekms" duration="00:00:00.0221100" startTime="2025-06-25T17:03:57.5303270+00:00" endTime="2025-06-25T17:03:57.5524367+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e1c250a3-44b3-43c9-8069-aa26e1c20017" />
+    <UnitTestResult executionId="c1aeecf5-785f-4f13-9e70-56586af37c0c" testId="9799d587-43bb-ddb5-6255-eb34518c0a5e" testName="Constructor_WhenValidParameters_ShouldSetAllProperties" computerName="pkrvmxyh4eaekms" duration="00:00:00.0004950" startTime="2025-06-25T17:03:58.1150792+00:00" endTime="2025-06-25T17:03:58.1155740+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c1aeecf5-785f-4f13-9e70-56586af37c0c" />
+    <UnitTestResult executionId="5efbf2ef-5bc9-4449-9d1f-3274124912bc" testId="7dee2c01-c25c-ef1c-fbf2-f0c0084296ff" testName="ConvertData_WhenValidSimplePuzzle_ShouldReturnCorrectIslandsAndNeighbors" computerName="pkrvmxyh4eaekms" duration="00:00:00.0200429" startTime="2025-06-25T17:03:57.7167249+00:00" endTime="2025-06-25T17:03:57.7367676+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5efbf2ef-5bc9-4449-9d1f-3274124912bc" />
+    <UnitTestResult executionId="d26a9dfc-a3a2-4bb4-9367-92c3e78c9cd5" testId="9cd002a6-22de-ab20-4786-6a5709b30454" testName="PrettyPrint_WhenCalledWithoutSolution_ShouldStillComplete" computerName="pkrvmxyh4eaekms" duration="00:00:00.0113600" startTime="2025-06-25T17:03:57.9736781+00:00" endTime="2025-06-25T17:03:57.9850381+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d26a9dfc-a3a2-4bb4-9367-92c3e78c9cd5" />
+    <UnitTestResult executionId="d7dbbc45-fa80-46cb-89e3-fbafb00965be" testId="c8f999cf-1f47-fe48-7459-e2d7b16041e0" testName="ConvertData_WhenEmptyData_ShouldReturnEmptyLists" computerName="pkrvmxyh4eaekms" duration="00:00:00.0212980" startTime="2025-06-25T17:03:57.6640933+00:00" endTime="2025-06-25T17:03:57.6853909+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d7dbbc45-fa80-46cb-89e3-fbafb00965be" />
+    <UnitTestResult executionId="47a6d9e4-a69b-4468-9119-ff5b32bdb410" testId="e5e58a5f-f12c-b65d-b82b-b319eba8a07c" testName="Constructor_WhenZeroValues_ShouldSetProperties" computerName="pkrvmxyh4eaekms" duration="00:00:00.0002530" startTime="2025-06-25T17:03:57.5683504+00:00" endTime="2025-06-25T17:03:57.5686033+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="47a6d9e4-a69b-4468-9119-ff5b32bdb410" />
+    <UnitTestResult executionId="e637f904-5154-4aa5-a3ce-e1a9ea734f00" testId="852dc22c-a19d-acda-b290-606fc529c48f" testName="SolveLazy_WithIslands_WhenValidInput_ShouldReturnOptimal" computerName="pkrvmxyh4eaekms" duration="00:00:00.0088370" startTime="2025-06-25T17:03:58.1011020+00:00" endTime="2025-06-25T17:03:58.1099396+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e637f904-5154-4aa5-a3ce-e1a9ea734f00" />
+    <UnitTestResult executionId="45ffde4c-c2ee-44de-90a6-2b53159683d9" testId="72649049-5842-20ea-3b88-3cf841d6f962" testName="IslandFactory_WhenInvokedMultipleTimes_ShouldCreateDifferentInstances" computerName="pkrvmxyh4eaekms" duration="00:00:00.0011710" startTime="2025-06-25T17:03:57.5260329+00:00" endTime="2025-06-25T17:03:57.5272027+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="45ffde4c-c2ee-44de-90a6-2b53159683d9" />
+    <UnitTestResult executionId="4385a209-7b27-41c5-b05f-06aafe0a6048" testId="e940afbe-3696-4fca-c9be-bb58e4fed5d7" testName="Neighbors_WhenAddingDuplicateIds_ShouldContainDuplicates" computerName="pkrvmxyh4eaekms" duration="00:00:00.0083700" startTime="2025-06-25T17:03:58.1167288+00:00" endTime="2025-06-25T17:03:58.1250986+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4385a209-7b27-41c5-b05f-06aafe0a6048" />
+    <UnitTestResult executionId="5ac39332-f5dc-462e-b19b-6512bdaa0f0b" testId="4c11bf2f-2847-6cf1-3d09-9866a50211d3" testName="ConvertData_WhenTwoHorizontalIslands_ShouldReturnCorrectNeighbors" computerName="pkrvmxyh4eaekms" duration="00:00:00.0097760" startTime="2025-06-25T17:03:57.6999334+00:00" endTime="2025-06-25T17:03:57.7097094+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5ac39332-f5dc-462e-b19b-6512bdaa0f0b" />
+    <UnitTestResult executionId="84f76894-62f0-463c-8cb3-32dd418f1c98" testId="267bfe75-759c-3d73-d1c2-22f0b3c2ab3d" testName="SolveLazy_WithFile_WhenSimpleSolvablePuzzle_ShouldReturnOptimal" computerName="pkrvmxyh4eaekms" duration="00:00:00.0160800" startTime="2025-06-25T17:03:58.0845867+00:00" endTime="2025-06-25T17:03:58.1006664+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="84f76894-62f0-463c-8cb3-32dd418f1c98" />
+    <UnitTestResult executionId="b8a513fa-014c-4f19-bd14-8cbed323ee5f" testId="8e3d5e1a-b83a-7ec9-27fd-76520cc1c7bc" testName="EdgeFactory_WhenInvokedMultipleTimes_ShouldCreateDifferentInstances" computerName="pkrvmxyh4eaekms" duration="00:00:00.0086850" startTime="2025-06-25T17:03:57.5094632+00:00" endTime="2025-06-25T17:03:57.5181481+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b8a513fa-014c-4f19-bd14-8cbed323ee5f" />
+    <UnitTestResult executionId="d5656c12-1198-4b86-9fda-cda428dad7fd" testId="7129ea06-fff8-1b60-117e-ad8be6798f52" testName="Neighbors_WhenAddingIds_ShouldContainAllIds" computerName="pkrvmxyh4eaekms" duration="00:00:00.0004500" startTime="2025-06-25T17:03:58.1255577+00:00" endTime="2025-06-25T17:03:58.1260077+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d5656c12-1198-4b86-9fda-cda428dad7fd" />
+    <UnitTestResult executionId="3ef0ff4c-4183-41ec-8d29-0c3d275c5b80" testId="234bbf57-e9c0-f618-e722-069845459615" testName="EdgeFactory_WhenInvoked_ShouldCreateEdgeWithCorrectProperties" computerName="pkrvmxyh4eaekms" duration="00:00:00.4738470" startTime="2025-06-25T17:03:57.0304491+00:00" endTime="2025-06-25T17:03:57.5041658+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3ef0ff4c-4183-41ec-8d29-0c3d275c5b80">
+      <Output>
+        <StdOut>Warning:
+     The component "Fluent Assertions" is governed by the rules defined in the Xceed License Agreement and
+     the Xceed Fluent Assertions Community License. You may use Fluent Assertions free of charge for
+     non-commercial use only. An active subscription is required to use Fluent Assertions for commercial use.
+
+     Please contact Xceed Sales mailto:sales@xceed.com to acquire a subscription at a very low cost.
+
+     A paid commercial license supports the development and continued increasing support of
+     Fluent Assertions users under both commercial and community licenses. Help us
+     keep Fluent Assertions at the forefront of unit testing.
+
+     For more information, visit https://xceed.com/products/unit-testing/fluent-assertions/</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="220ce8b0-1380-439f-9f06-a7cfdb32e572" testId="c01b0da1-e9b6-72e5-a680-31cded8b2875" testName="ConvertData_WhenSingleIsland_ShouldReturnOneIslandNoIntersections" computerName="pkrvmxyh4eaekms" duration="00:00:00.0144900" startTime="2025-06-25T17:03:57.6854182+00:00" endTime="2025-06-25T17:03:57.6999079+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="220ce8b0-1380-439f-9f06-a7cfdb32e572" />
+    <UnitTestResult executionId="2a070043-f9b9-4952-99fb-9fb276ffe38b" testId="a2cc5899-5372-ea62-e5a8-8923a9ad2f88" testName="ConvertData_WhenCrossPattern_ShouldReturnIntersection" computerName="pkrvmxyh4eaekms" duration="00:00:00.0931600" startTime="2025-06-25T17:03:57.5709019+00:00" endTime="2025-06-25T17:03:57.6640614+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2a070043-f9b9-4952-99fb-9fb276ffe38b" />
+    <UnitTestResult executionId="d26d81af-0cf4-4071-9eb8-d38ba1ed5e02" testId="703a70e9-26ed-0288-0f86-9b20408c9855" testName="SolveLazy_WhenCalled_ShouldSolveAllPuzzlesOptimal" computerName="pkrvmxyh4eaekms" duration="00:00:00.0004400" startTime="2025-06-25T17:03:58.1140602+00:00" endTime="2025-06-25T17:03:58.1145007+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d26d81af-0cf4-4071-9eb8-d38ba1ed5e02">
+      <Output>
+        <StdOut>Should not be run every time</StdOut>
+        <ErrorInfo>
+          <Message>Should not be run every time</Message>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="79cfbddb-6d50-41d6-9b78-b52a29a0b5ea" testId="99d80832-d919-a786-448c-f0e334f48edb" testName="Neighbors_WhenClearingList_ShouldBeEmpty" computerName="pkrvmxyh4eaekms" duration="00:00:00.0002380" startTime="2025-06-25T17:03:58.1262620+00:00" endTime="2025-06-25T17:03:58.1264998+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="79cfbddb-6d50-41d6-9b78-b52a29a0b5ea" />
+    <UnitTestResult executionId="0ecc2e9f-90dc-4811-828e-13569c3897d3" testId="0fc1fa54-f0c1-c202-bf54-1f17ab5f3b5b" testName="Load_WhenCalled_ShouldRegisterEdgeFactory" computerName="pkrvmxyh4eaekms" duration="00:00:00.0030890" startTime="2025-06-25T17:03:57.5272232+00:00" endTime="2025-06-25T17:03:57.5303121+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0ecc2e9f-90dc-4811-828e-13569c3897d3" />
+    <UnitTestResult executionId="406ab815-3f5d-4318-9675-5b49e238eabf" testId="af80ab9b-268b-43f2-af25-e51802114582" testName="Constructor_WhenValidParameters_ShouldSetAllProperties" computerName="pkrvmxyh4eaekms" duration="00:00:00.0002560" startTime="2025-06-25T17:03:57.5680795+00:00" endTime="2025-06-25T17:03:57.5683354+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="406ab815-3f5d-4318-9675-5b49e238eabf" />
+    <UnitTestResult executionId="368cd94d-6481-403e-8af2-fdba3288b6f6" testId="9131fc6f-7560-e206-c350-f98b4b87016c" testName="Constructor_WhenSameIslandIds_ShouldSetProperties" computerName="pkrvmxyh4eaekms" duration="00:00:00.0002400" startTime="2025-06-25T17:03:57.5678249+00:00" endTime="2025-06-25T17:03:57.5680645+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="368cd94d-6481-403e-8af2-fdba3288b6f6" />
+    <UnitTestResult executionId="f1c6c560-8e7d-456f-b916-0c48b31bc146" testId="6d5c4a72-1cdb-a356-67b3-e343b8cbf004" testName="ReadFile_WhenFileDoesNotExist_ShouldThrowException" computerName="pkrvmxyh4eaekms" duration="00:00:00.0149770" startTime="2025-06-25T17:03:57.9855477+00:00" endTime="2025-06-25T17:03:58.0005245+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f1c6c560-8e7d-456f-b916-0c48b31bc146" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="ConvertData_WhenSingleIsland_ShouldReturnOneIslandNoIntersections" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.linearsolver.test/bin/debug/net8.0/hashi.linearsolver.test.dll" id="c01b0da1-e9b6-72e5-a680-31cded8b2875">
+      <Execution id="220ce8b0-1380-439f-9f06-a7cfdb32e572" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.LinearSolver.Test/bin/Debug/net8.0/Hashi.LinearSolver.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.LinearSolver.Test.HashiSolverExtensiveTests" name="ConvertData_WhenSingleIsland_ShouldReturnOneIslandNoIntersections" />
+    </UnitTest>
+    <UnitTest name="Constructor_WhenZeroValues_ShouldSetProperties" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.linearsolver.test/bin/debug/net8.0/hashi.linearsolver.test.dll" id="032ff801-5ace-5dae-7720-5d293e5396db">
+      <Execution id="2abc98a2-933a-4aed-a2da-3ba6b0f0fb7d" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.LinearSolver.Test/bin/Debug/net8.0/Hashi.LinearSolver.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.LinearSolver.Test.IslandTests" name="Constructor_WhenZeroValues_ShouldSetProperties" />
+    </UnitTest>
+    <UnitTest name="Neighbors_WhenAddingDuplicateIds_ShouldContainDuplicates" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.linearsolver.test/bin/debug/net8.0/hashi.linearsolver.test.dll" id="e940afbe-3696-4fca-c9be-bb58e4fed5d7">
+      <Execution id="4385a209-7b27-41c5-b05f-06aafe0a6048" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.LinearSolver.Test/bin/Debug/net8.0/Hashi.LinearSolver.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.LinearSolver.Test.IslandTests" name="Neighbors_WhenAddingDuplicateIds_ShouldContainDuplicates" />
+    </UnitTest>
+    <UnitTest name="SolveLazy_WhenSimpleSolvablePuzzle_ShouldReturnOptimal" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.linearsolver.test/bin/debug/net8.0/hashi.linearsolver.test.dll" id="ac36963d-2f66-bb1e-fdb9-0b3063695ebe">
+      <Execution id="04143f18-3dfe-4f17-8aed-792c2788580c" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.LinearSolver.Test/bin/Debug/net8.0/Hashi.LinearSolver.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.LinearSolver.Test.HashiSolverExtensiveTests" name="SolveLazy_WhenSimpleSolvablePuzzle_ShouldReturnOptimal" />
+    </UnitTest>
+    <UnitTest name="Constructor_WhenValidParameters_ShouldSetAllProperties" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.linearsolver.test/bin/debug/net8.0/hashi.linearsolver.test.dll" id="af80ab9b-268b-43f2-af25-e51802114582">
+      <Execution id="406ab815-3f5d-4318-9675-5b49e238eabf" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.LinearSolver.Test/bin/Debug/net8.0/Hashi.LinearSolver.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.LinearSolver.Test.EdgeTests" name="Constructor_WhenValidParameters_ShouldSetAllProperties" />
+    </UnitTest>
+    <UnitTest name="SolveLazy_WithIslands_WhenValidInput_ShouldReturnOptimal" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.linearsolver.test/bin/debug/net8.0/hashi.linearsolver.test.dll" id="852dc22c-a19d-acda-b290-606fc529c48f">
+      <Execution id="e637f904-5154-4aa5-a3ce-e1a9ea734f00" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.LinearSolver.Test/bin/Debug/net8.0/Hashi.LinearSolver.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.LinearSolver.Test.HashiSolverExtensiveTests" name="SolveLazy_WithIslands_WhenValidInput_ShouldReturnOptimal" />
+    </UnitTest>
+    <UnitTest name="PrettyPrint_WhenCalledWithoutSolution_ShouldStillComplete" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.linearsolver.test/bin/debug/net8.0/hashi.linearsolver.test.dll" id="9cd002a6-22de-ab20-4786-6a5709b30454">
+      <Execution id="d26a9dfc-a3a2-4bb4-9367-92c3e78c9cd5" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.LinearSolver.Test/bin/Debug/net8.0/Hashi.LinearSolver.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.LinearSolver.Test.HashiSolverExtensiveTests" name="PrettyPrint_WhenCalledWithoutSolution_ShouldStillComplete" />
+    </UnitTest>
+    <UnitTest name="Load_WhenCalled_ShouldRegisterEdgeFactory" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.linearsolver.test/bin/debug/net8.0/hashi.linearsolver.test.dll" id="0fc1fa54-f0c1-c202-bf54-1f17ab5f3b5b">
+      <Execution id="0ecc2e9f-90dc-4811-828e-13569c3897d3" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.LinearSolver.Test/bin/Debug/net8.0/Hashi.LinearSolver.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.LinearSolver.Test.AutoFacLinearSolverModuleTests" name="Load_WhenCalled_ShouldRegisterEdgeFactory" />
+    </UnitTest>
+    <UnitTest name="ConvertData_WhenTwoVerticalIslands_ShouldReturnCorrectNeighbors" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.linearsolver.test/bin/debug/net8.0/hashi.linearsolver.test.dll" id="186970d3-8ce1-da23-e7ed-a4b97fb9adbc">
+      <Execution id="0aad4f2b-829c-43d5-a0c2-e2c1f99e4e0e" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.LinearSolver.Test/bin/Debug/net8.0/Hashi.LinearSolver.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.LinearSolver.Test.HashiSolverExtensiveTests" name="ConvertData_WhenTwoVerticalIslands_ShouldReturnCorrectNeighbors" />
+    </UnitTest>
+    <UnitTest name="SolveLazy_WhenUnsolvablePuzzle_ShouldReturnInfeasible" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.linearsolver.test/bin/debug/net8.0/hashi.linearsolver.test.dll" id="3ba64591-d4e0-b60d-c328-06f9f2128892">
+      <Execution id="b5565e24-938d-43a5-94f5-9923196d58ce" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.LinearSolver.Test/bin/Debug/net8.0/Hashi.LinearSolver.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.LinearSolver.Test.HashiSolverExtensiveTests" name="SolveLazy_WhenUnsolvablePuzzle_ShouldReturnInfeasible" />
+    </UnitTest>
+    <UnitTest name="ConvertData_WhenCrossPattern_ShouldReturnIntersection" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.linearsolver.test/bin/debug/net8.0/hashi.linearsolver.test.dll" id="a2cc5899-5372-ea62-e5a8-8923a9ad2f88">
+      <Execution id="2a070043-f9b9-4952-99fb-9fb276ffe38b" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.LinearSolver.Test/bin/Debug/net8.0/Hashi.LinearSolver.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.LinearSolver.Test.HashiSolverExtensiveTests" name="ConvertData_WhenCrossPattern_ShouldReturnIntersection" />
+    </UnitTest>
+    <UnitTest name="ConvertData_WhenValidSimplePuzzle_ShouldReturnCorrectIslandsAndNeighbors" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.linearsolver.test/bin/debug/net8.0/hashi.linearsolver.test.dll" id="7dee2c01-c25c-ef1c-fbf2-f0c0084296ff">
+      <Execution id="5efbf2ef-5bc9-4449-9d1f-3274124912bc" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.LinearSolver.Test/bin/Debug/net8.0/Hashi.LinearSolver.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.LinearSolver.Test.HashiSolverExtensiveTests" name="ConvertData_WhenValidSimplePuzzle_ShouldReturnCorrectIslandsAndNeighbors" />
+    </UnitTest>
+    <UnitTest name="EdgeFactory_WhenInvokedMultipleTimes_ShouldCreateDifferentInstances" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.linearsolver.test/bin/debug/net8.0/hashi.linearsolver.test.dll" id="8e3d5e1a-b83a-7ec9-27fd-76520cc1c7bc">
+      <Execution id="b8a513fa-014c-4f19-bd14-8cbed323ee5f" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.LinearSolver.Test/bin/Debug/net8.0/Hashi.LinearSolver.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.LinearSolver.Test.AutoFacLinearSolverModuleTests" name="EdgeFactory_WhenInvokedMultipleTimes_ShouldCreateDifferentInstances" />
+    </UnitTest>
+    <UnitTest name="ReadFile_WhenValidFile_ShouldReturnCorrectData" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.linearsolver.test/bin/debug/net8.0/hashi.linearsolver.test.dll" id="ce73c058-d536-252d-fd4b-c61da445b155">
+      <Execution id="ff2df0f2-db50-491c-812b-acff63d86ddc" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.LinearSolver.Test/bin/Debug/net8.0/Hashi.LinearSolver.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.LinearSolver.Test.HashiSolverExtensiveTests" name="ReadFile_WhenValidFile_ShouldReturnCorrectData" />
+    </UnitTest>
+    <UnitTest name="SolveLazy_WithFile_WhenSimpleSolvablePuzzle_ShouldReturnOptimal" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.linearsolver.test/bin/debug/net8.0/hashi.linearsolver.test.dll" id="267bfe75-759c-3d73-d1c2-22f0b3c2ab3d">
+      <Execution id="84f76894-62f0-463c-8cb3-32dd418f1c98" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.LinearSolver.Test/bin/Debug/net8.0/Hashi.LinearSolver.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.LinearSolver.Test.HashiSolverExtensiveTests" name="SolveLazy_WithFile_WhenSimpleSolvablePuzzle_ShouldReturnOptimal" />
+    </UnitTest>
+    <UnitTest name="Constructor_WhenNegativeValues_ShouldSetProperties" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.linearsolver.test/bin/debug/net8.0/hashi.linearsolver.test.dll" id="abab3063-d20d-e3fe-fbe5-d6b8b6ae0a26">
+      <Execution id="44f07310-eead-4527-932b-c2640f280c79" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.LinearSolver.Test/bin/Debug/net8.0/Hashi.LinearSolver.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.LinearSolver.Test.EdgeTests" name="Constructor_WhenNegativeValues_ShouldSetProperties" />
+    </UnitTest>
+    <UnitTest name="Neighbors_WhenAddingIds_ShouldContainAllIds" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.linearsolver.test/bin/debug/net8.0/hashi.linearsolver.test.dll" id="7129ea06-fff8-1b60-117e-ad8be6798f52">
+      <Execution id="d5656c12-1198-4b86-9fda-cda428dad7fd" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.LinearSolver.Test/bin/Debug/net8.0/Hashi.LinearSolver.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.LinearSolver.Test.IslandTests" name="Neighbors_WhenAddingIds_ShouldContainAllIds" />
+    </UnitTest>
+    <UnitTest name="SolveLazy_WhenCalled_ShouldSolveAllPuzzlesOptimal" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.linearsolver.test/bin/debug/net8.0/hashi.linearsolver.test.dll" id="703a70e9-26ed-0288-0f86-9b20408c9855">
+      <Execution id="d26d81af-0cf4-4071-9eb8-d38ba1ed5e02" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.LinearSolver.Test/bin/Debug/net8.0/Hashi.LinearSolver.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.LinearSolver.Test.HashiSolverTest" name="SolveLazy_WhenCalled_ShouldSolveAllPuzzlesOptimal" />
+    </UnitTest>
+    <UnitTest name="Load_WhenCalled_ShouldRegisterIslandFactory" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.linearsolver.test/bin/debug/net8.0/hashi.linearsolver.test.dll" id="6735e272-2576-51d3-6eb8-5043ac368875">
+      <Execution id="931cbd48-b6d1-41cc-89b9-80bec80d4ce7" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.LinearSolver.Test/bin/Debug/net8.0/Hashi.LinearSolver.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.LinearSolver.Test.AutoFacLinearSolverModuleTests" name="Load_WhenCalled_ShouldRegisterIslandFactory" />
+    </UnitTest>
+    <UnitTest name="IslandFactory_WhenInvoked_ShouldCreateIslandWithCorrectProperties" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.linearsolver.test/bin/debug/net8.0/hashi.linearsolver.test.dll" id="1754419c-6427-48a3-efac-97eaa375d9ab">
+      <Execution id="a3bc1da0-33ce-4c99-92ab-f129fe419912" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.LinearSolver.Test/bin/Debug/net8.0/Hashi.LinearSolver.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.LinearSolver.Test.AutoFacLinearSolverModuleTests" name="IslandFactory_WhenInvoked_ShouldCreateIslandWithCorrectProperties" />
+    </UnitTest>
+    <UnitTest name="Constructor_WhenValidParameters_ShouldSetAllProperties" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.linearsolver.test/bin/debug/net8.0/hashi.linearsolver.test.dll" id="9799d587-43bb-ddb5-6255-eb34518c0a5e">
+      <Execution id="c1aeecf5-785f-4f13-9e70-56586af37c0c" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.LinearSolver.Test/bin/Debug/net8.0/Hashi.LinearSolver.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.LinearSolver.Test.IslandTests" name="Constructor_WhenValidParameters_ShouldSetAllProperties" />
+    </UnitTest>
+    <UnitTest name="EdgeFactory_WhenInvoked_ShouldCreateEdgeWithCorrectProperties" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.linearsolver.test/bin/debug/net8.0/hashi.linearsolver.test.dll" id="234bbf57-e9c0-f618-e722-069845459615">
+      <Execution id="3ef0ff4c-4183-41ec-8d29-0c3d275c5b80" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.LinearSolver.Test/bin/Debug/net8.0/Hashi.LinearSolver.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.LinearSolver.Test.AutoFacLinearSolverModuleTests" name="EdgeFactory_WhenInvoked_ShouldCreateEdgeWithCorrectProperties" />
+    </UnitTest>
+    <UnitTest name="Constructor_WhenZeroValues_ShouldSetProperties" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.linearsolver.test/bin/debug/net8.0/hashi.linearsolver.test.dll" id="e5e58a5f-f12c-b65d-b82b-b319eba8a07c">
+      <Execution id="47a6d9e4-a69b-4468-9119-ff5b32bdb410" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.LinearSolver.Test/bin/Debug/net8.0/Hashi.LinearSolver.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.LinearSolver.Test.EdgeTests" name="Constructor_WhenZeroValues_ShouldSetProperties" />
+    </UnitTest>
+    <UnitTest name="Load_WhenCalled_ShouldRegisterHashiSolver" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.linearsolver.test/bin/debug/net8.0/hashi.linearsolver.test.dll" id="2173d15a-97f6-8b2a-8ba1-16707fd455fe">
+      <Execution id="e1c250a3-44b3-43c9-8069-aa26e1c20017" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.LinearSolver.Test/bin/Debug/net8.0/Hashi.LinearSolver.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.LinearSolver.Test.AutoFacLinearSolverModuleTests" name="Load_WhenCalled_ShouldRegisterHashiSolver" />
+    </UnitTest>
+    <UnitTest name="IslandFactory_WhenInvokedMultipleTimes_ShouldCreateDifferentInstances" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.linearsolver.test/bin/debug/net8.0/hashi.linearsolver.test.dll" id="72649049-5842-20ea-3b88-3cf841d6f962">
+      <Execution id="45ffde4c-c2ee-44de-90a6-2b53159683d9" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.LinearSolver.Test/bin/Debug/net8.0/Hashi.LinearSolver.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.LinearSolver.Test.AutoFacLinearSolverModuleTests" name="IslandFactory_WhenInvokedMultipleTimes_ShouldCreateDifferentInstances" />
+    </UnitTest>
+    <UnitTest name="ConvertData_WhenEmptyData_ShouldReturnEmptyLists" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.linearsolver.test/bin/debug/net8.0/hashi.linearsolver.test.dll" id="c8f999cf-1f47-fe48-7459-e2d7b16041e0">
+      <Execution id="d7dbbc45-fa80-46cb-89e3-fbafb00965be" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.LinearSolver.Test/bin/Debug/net8.0/Hashi.LinearSolver.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.LinearSolver.Test.HashiSolverExtensiveTests" name="ConvertData_WhenEmptyData_ShouldReturnEmptyLists" />
+    </UnitTest>
+    <UnitTest name="ReadFile_WhenFileDoesNotExist_ShouldThrowException" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.linearsolver.test/bin/debug/net8.0/hashi.linearsolver.test.dll" id="6d5c4a72-1cdb-a356-67b3-e343b8cbf004">
+      <Execution id="f1c6c560-8e7d-456f-b916-0c48b31bc146" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.LinearSolver.Test/bin/Debug/net8.0/Hashi.LinearSolver.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.LinearSolver.Test.HashiSolverExtensiveTests" name="ReadFile_WhenFileDoesNotExist_ShouldThrowException" />
+    </UnitTest>
+    <UnitTest name="ConvertData_WhenTwoHorizontalIslands_ShouldReturnCorrectNeighbors" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.linearsolver.test/bin/debug/net8.0/hashi.linearsolver.test.dll" id="4c11bf2f-2847-6cf1-3d09-9866a50211d3">
+      <Execution id="5ac39332-f5dc-462e-b19b-6512bdaa0f0b" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.LinearSolver.Test/bin/Debug/net8.0/Hashi.LinearSolver.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.LinearSolver.Test.HashiSolverExtensiveTests" name="ConvertData_WhenTwoHorizontalIslands_ShouldReturnCorrectNeighbors" />
+    </UnitTest>
+    <UnitTest name="Neighbors_WhenClearingList_ShouldBeEmpty" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.linearsolver.test/bin/debug/net8.0/hashi.linearsolver.test.dll" id="99d80832-d919-a786-448c-f0e334f48edb">
+      <Execution id="79cfbddb-6d50-41d6-9b78-b52a29a0b5ea" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.LinearSolver.Test/bin/Debug/net8.0/Hashi.LinearSolver.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.LinearSolver.Test.IslandTests" name="Neighbors_WhenClearingList_ShouldBeEmpty" />
+    </UnitTest>
+    <UnitTest name="HashiSolver_WhenLoggerWritesInfo_ShouldCallLogger" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.linearsolver.test/bin/debug/net8.0/hashi.linearsolver.test.dll" id="a56ab76b-ced7-02b6-ee6e-acb674d6e247">
+      <Execution id="a5c0d9ee-1629-415e-97d6-bba002f99200" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.LinearSolver.Test/bin/Debug/net8.0/Hashi.LinearSolver.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.LinearSolver.Test.HashiSolverExtensiveTests" name="HashiSolver_WhenLoggerWritesInfo_ShouldCallLogger" />
+    </UnitTest>
+    <UnitTest name="Load_WhenCalled_ShouldRegisterHashiSolverAsSingleton" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.linearsolver.test/bin/debug/net8.0/hashi.linearsolver.test.dll" id="d66e4001-1dd0-b256-3ad4-5cc0c8093662">
+      <Execution id="56607441-fae9-411d-829d-2c0fff6bc7ce" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.LinearSolver.Test/bin/Debug/net8.0/Hashi.LinearSolver.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.LinearSolver.Test.AutoFacLinearSolverModuleTests" name="Load_WhenCalled_ShouldRegisterHashiSolverAsSingleton" />
+    </UnitTest>
+    <UnitTest name="ReadFile_WhenInvalidFileFormat_ShouldThrowException" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.linearsolver.test/bin/debug/net8.0/hashi.linearsolver.test.dll" id="a6b3ae8a-4603-51cf-fcff-2d7af6e7c28a">
+      <Execution id="52161cd6-4049-4de3-9bd9-ec50980ae9a2" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.LinearSolver.Test/bin/Debug/net8.0/Hashi.LinearSolver.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.LinearSolver.Test.HashiSolverExtensiveTests" name="ReadFile_WhenInvalidFileFormat_ShouldThrowException" />
+    </UnitTest>
+    <UnitTest name="Constructor_WhenSameIslandIds_ShouldSetProperties" storage="/home/runner/work/cn_hashiwpf/cn_hashiwpf/tests/hashi.linearsolver.test/bin/debug/net8.0/hashi.linearsolver.test.dll" id="9131fc6f-7560-e206-c350-f98b4b87016c">
+      <Execution id="368cd94d-6481-403e-8af2-fdba3288b6f6" />
+      <TestMethod codeBase="/home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.LinearSolver.Test/bin/Debug/net8.0/Hashi.LinearSolver.Test.dll" adapterTypeName="executor://nunit3testexecutor/" className="Hashi.LinearSolver.Test.EdgeTests" name="Constructor_WhenSameIslandIds_ShouldSetProperties" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="186970d3-8ce1-da23-e7ed-a4b97fb9adbc" executionId="0aad4f2b-829c-43d5-a0c2-e2c1f99e4e0e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ce73c058-d536-252d-fd4b-c61da445b155" executionId="ff2df0f2-db50-491c-812b-acff63d86ddc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="032ff801-5ace-5dae-7720-5d293e5396db" executionId="2abc98a2-933a-4aed-a2da-3ba6b0f0fb7d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1754419c-6427-48a3-efac-97eaa375d9ab" executionId="a3bc1da0-33ce-4c99-92ab-f129fe419912" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a6b3ae8a-4603-51cf-fcff-2d7af6e7c28a" executionId="52161cd6-4049-4de3-9bd9-ec50980ae9a2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a56ab76b-ced7-02b6-ee6e-acb674d6e247" executionId="a5c0d9ee-1629-415e-97d6-bba002f99200" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="abab3063-d20d-e3fe-fbe5-d6b8b6ae0a26" executionId="44f07310-eead-4527-932b-c2640f280c79" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3ba64591-d4e0-b60d-c328-06f9f2128892" executionId="b5565e24-938d-43a5-94f5-9923196d58ce" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d66e4001-1dd0-b256-3ad4-5cc0c8093662" executionId="56607441-fae9-411d-829d-2c0fff6bc7ce" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6735e272-2576-51d3-6eb8-5043ac368875" executionId="931cbd48-b6d1-41cc-89b9-80bec80d4ce7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ac36963d-2f66-bb1e-fdb9-0b3063695ebe" executionId="04143f18-3dfe-4f17-8aed-792c2788580c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2173d15a-97f6-8b2a-8ba1-16707fd455fe" executionId="e1c250a3-44b3-43c9-8069-aa26e1c20017" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9799d587-43bb-ddb5-6255-eb34518c0a5e" executionId="c1aeecf5-785f-4f13-9e70-56586af37c0c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7dee2c01-c25c-ef1c-fbf2-f0c0084296ff" executionId="5efbf2ef-5bc9-4449-9d1f-3274124912bc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9cd002a6-22de-ab20-4786-6a5709b30454" executionId="d26a9dfc-a3a2-4bb4-9367-92c3e78c9cd5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c8f999cf-1f47-fe48-7459-e2d7b16041e0" executionId="d7dbbc45-fa80-46cb-89e3-fbafb00965be" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e5e58a5f-f12c-b65d-b82b-b319eba8a07c" executionId="47a6d9e4-a69b-4468-9119-ff5b32bdb410" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="852dc22c-a19d-acda-b290-606fc529c48f" executionId="e637f904-5154-4aa5-a3ce-e1a9ea734f00" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="72649049-5842-20ea-3b88-3cf841d6f962" executionId="45ffde4c-c2ee-44de-90a6-2b53159683d9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e940afbe-3696-4fca-c9be-bb58e4fed5d7" executionId="4385a209-7b27-41c5-b05f-06aafe0a6048" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4c11bf2f-2847-6cf1-3d09-9866a50211d3" executionId="5ac39332-f5dc-462e-b19b-6512bdaa0f0b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="267bfe75-759c-3d73-d1c2-22f0b3c2ab3d" executionId="84f76894-62f0-463c-8cb3-32dd418f1c98" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8e3d5e1a-b83a-7ec9-27fd-76520cc1c7bc" executionId="b8a513fa-014c-4f19-bd14-8cbed323ee5f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7129ea06-fff8-1b60-117e-ad8be6798f52" executionId="d5656c12-1198-4b86-9fda-cda428dad7fd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="234bbf57-e9c0-f618-e722-069845459615" executionId="3ef0ff4c-4183-41ec-8d29-0c3d275c5b80" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c01b0da1-e9b6-72e5-a680-31cded8b2875" executionId="220ce8b0-1380-439f-9f06-a7cfdb32e572" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a2cc5899-5372-ea62-e5a8-8923a9ad2f88" executionId="2a070043-f9b9-4952-99fb-9fb276ffe38b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="703a70e9-26ed-0288-0f86-9b20408c9855" executionId="d26d81af-0cf4-4071-9eb8-d38ba1ed5e02" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="99d80832-d919-a786-448c-f0e334f48edb" executionId="79cfbddb-6d50-41d6-9b78-b52a29a0b5ea" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0fc1fa54-f0c1-c202-bf54-1f17ab5f3b5b" executionId="0ecc2e9f-90dc-4811-828e-13569c3897d3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="af80ab9b-268b-43f2-af25-e51802114582" executionId="406ab815-3f5d-4318-9675-5b49e238eabf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9131fc6f-7560-e206-c350-f98b4b87016c" executionId="368cd94d-6481-403e-8af2-fdba3288b6f6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6d5c4a72-1cdb-a356-67b3-e343b8cbf004" executionId="f1c6c560-8e7d-456f-b916-0c48b31bc146" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="33" executed="32" passed="32" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>NUnit Adapter 4.6.0.0: Test execution started
+Running all tests in /home/runner/work/CN_HashiWpf/CN_HashiWpf/Tests/Hashi.LinearSolver.Test/bin/Debug/net8.0/Hashi.LinearSolver.Test.dll
+   NUnit3TestExecutor discovered 33 of 33 NUnit test cases using Current Discovery mode, Non-Explicit run
+     Warning:
+     The component "Fluent Assertions" is governed by the rules defined in the Xceed License Agreement and
+     the Xceed Fluent Assertions Community License. You may use Fluent Assertions free of charge for
+     non-commercial use only. An active subscription is required to use Fluent Assertions for commercial use.
+
+     Please contact Xceed Sales mailto:sales@xceed.com to acquire a subscription at a very low cost.
+
+     A paid commercial license supports the development and continued increasing support of
+     Fluent Assertions users under both commercial and community licenses. Help us
+     keep Fluent Assertions at the forefront of unit testing.
+
+     For more information, visit https://xceed.com/products/unit-testing/fluent-assertions/
+
+SolveLazy_WhenCalled_ShouldSolveAllPuzzlesOptimal: Should not be run every time
+NUnit Adapter 4.6.0.0: Test execution complete
+Test 'SolveLazy_WhenCalled_ShouldSolveAllPuzzlesOptimal' was skipped in the test run.
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

@@ -6,7 +6,7 @@ using System.Diagnostics;
 
 namespace Hashi.LinearSolver.Test
 {
-    public class HashiSolverTest
+    public class HashiSolverIntegrationTest
     {
         private IContainer container;
 
