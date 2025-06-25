@@ -20,9 +20,13 @@ namespace Hashi.LinearSolver.Test
         [SetUp]
         public void Setup()
         {
-            loggerMock = new Mock<ILogger>();
-            loggerFactoryMock = new Mock<ILoggerFactory>();
+            loggerMock = new Mock<ILogger>(MockBehavior.Strict);
+            loggerFactoryMock = new Mock<ILoggerFactory>(MockBehavior.Strict);
             loggerFactoryMock.Setup(f => f.CreateLogger<It.IsAnyType>()).Returns(loggerMock.Object);
+            
+            // Setup logger methods that might be called
+            loggerMock.Setup(l => l.Info(It.IsAny<string>()));
+            loggerMock.Setup(l => l.Debug(It.IsAny<string>()));
 
             var builder = new ContainerBuilder();
             builder.RegisterInstance(loggerFactoryMock.Object).As<ILoggerFactory>();

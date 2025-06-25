@@ -18,7 +18,10 @@ namespace Hashi.LinearSolver.Test
             var builder = new ContainerBuilder();
 
             // Register the logging dependencies as mocks since they're required
-            builder.RegisterInstance(Mock.Of<ILoggerFactory>()).As<ILoggerFactory>();
+            var loggerMock = new Mock<ILogger>(MockBehavior.Strict);
+            var loggerFactoryMock = new Mock<ILoggerFactory>(MockBehavior.Strict);
+            loggerFactoryMock.Setup(f => f.CreateLogger<It.IsAnyType>()).Returns(loggerMock.Object);
+            builder.RegisterInstance(loggerFactoryMock.Object).As<ILoggerFactory>();
 
             builder.RegisterModule<AutoFacLinearSolverModule>();
             container = builder.Build();
