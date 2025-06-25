@@ -10,7 +10,7 @@ using Moq;
 namespace Hashi.LinearSolver.Test
 {
     [TestFixture]
-    public class HashiSolverExtensiveTests
+    public class HashiSolverTests
     {
         private IContainer container;
         private IHashiSolver hashiSolver;
@@ -28,14 +28,14 @@ namespace Hashi.LinearSolver.Test
             builder.RegisterInstance(loggerFactoryMock.Object).As<ILoggerFactory>();
             builder.RegisterModule<AutoFacLinearSolverModule>();
             container = builder.Build();
-            
+
             hashiSolver = container.Resolve<IHashiSolver>();
         }
 
         [TearDown]
         public void Teardown()
         {
-            container?.Dispose();
+            container.Dispose();
         }
 
         [Test]
@@ -44,9 +44,9 @@ namespace Hashi.LinearSolver.Test
             // arrange
             var data = new int[][]
             {
-                new int[] { 1, 0, 1 },
-                new int[] { 0, 0, 0 },
-                new int[] { 1, 0, 1 }
+                [1, 0, 1],
+                [0, 0, 0],
+                [1, 0, 1]
             };
 
             // act
@@ -54,7 +54,7 @@ namespace Hashi.LinearSolver.Test
 
             // assert
             islands.Should().HaveCount(4);
-            
+
             // Check island properties
             islands[0].Should().Match<IIsland>(i => i.Id == 0 && i.Row == 0 && i.Col == 0 && i.BridgesRequired == 1);
             islands[1].Should().Match<IIsland>(i => i.Id == 1 && i.Row == 0 && i.Col == 2 && i.BridgesRequired == 1);
@@ -62,10 +62,10 @@ namespace Hashi.LinearSolver.Test
             islands[3].Should().Match<IIsland>(i => i.Id == 3 && i.Row == 2 && i.Col == 2 && i.BridgesRequired == 1);
 
             // Check neighbors - each island should see the other islands
-            islands[0].Neighbors.Should().Contain(new[] { 1, 2 }); // top-left sees top-right and bottom-left
-            islands[1].Neighbors.Should().Contain(new[] { 0, 3 }); // top-right sees top-left and bottom-right
-            islands[2].Neighbors.Should().Contain(new[] { 0, 3 }); // bottom-left sees top-left and bottom-right
-            islands[3].Neighbors.Should().Contain(new[] { 1, 2 }); // bottom-right sees top-right and bottom-left
+            islands[0].Neighbors.Should().Contain([1, 2]); // top-left sees top-right and bottom-left
+            islands[1].Neighbors.Should().Contain([0, 3]); // top-right sees top-left and bottom-right
+            islands[2].Neighbors.Should().Contain([0, 3]); // bottom-left sees top-left and bottom-right
+            islands[3].Neighbors.Should().Contain([1, 2]); // bottom-right sees top-right and bottom-left
 
             // Note: Intersections require 4 neighbors from a single empty cell, which this simple case doesn't create
             intersections.Should().BeEmpty();
@@ -77,8 +77,8 @@ namespace Hashi.LinearSolver.Test
             // arrange
             var data = new int[][]
             {
-                new int[] { 0, 0 },
-                new int[] { 0, 0 }
+                [0, 0],
+                [0, 0]
             };
 
             // act
@@ -95,9 +95,9 @@ namespace Hashi.LinearSolver.Test
             // arrange
             var data = new int[][]
             {
-                new int[] { 0, 0, 0 },
-                new int[] { 0, 2, 0 },
-                new int[] { 0, 0, 0 }
+                [0, 0, 0],
+                [0, 2, 0],
+                [0, 0, 0]
             };
 
             // act
@@ -116,7 +116,7 @@ namespace Hashi.LinearSolver.Test
             // arrange
             var data = new int[][]
             {
-                new int[] { 1, 0, 1 }
+                [1, 0, 1]
             };
 
             // act
@@ -135,9 +135,9 @@ namespace Hashi.LinearSolver.Test
             // arrange
             var data = new int[][]
             {
-                new int[] { 1 },
-                new int[] { 0 },
-                new int[] { 1 }
+                [1],
+                [0],
+                [1]
             };
 
             // act
@@ -160,7 +160,7 @@ namespace Hashi.LinearSolver.Test
                 await File.WriteAllTextAsync(tempFile, "2 2\n1 1\n1 1");
 
                 // act
-                var (islands, intersections) = await hashiSolver.ReadFile(tempFile);
+                var (islands, _) = await hashiSolver.ReadFile(tempFile);
 
                 // assert
                 islands.Should().HaveCount(4);
@@ -172,7 +172,9 @@ namespace Hashi.LinearSolver.Test
             finally
             {
                 if (File.Exists(tempFile))
+                {
                     File.Delete(tempFile);
+                }
             }
         }
 
@@ -213,7 +215,7 @@ namespace Hashi.LinearSolver.Test
             // arrange
             var data = new int[][]
             {
-                new int[] { 1, 0, 1 }
+                [1, 0, 1]
             };
 
             // act
@@ -229,7 +231,7 @@ namespace Hashi.LinearSolver.Test
             // arrange
             var data = new int[][]
             {
-                new int[] { 3 } // Single island requiring 3 bridges but having no neighbors
+                [3] // Single island requiring 3 bridges but having no neighbors
             };
 
             // act
@@ -271,11 +273,11 @@ namespace Hashi.LinearSolver.Test
                 islandFactory(0, 0, 0, 1),
                 islandFactory(1, 0, 2, 1)
             };
-            
+
             // Add neighbors
             islands[0].Neighbors.Add(1);
             islands[1].Neighbors.Add(0);
-            
+
             var intersections = new List<(int, int, int, int)>();
 
             // act
@@ -291,9 +293,9 @@ namespace Hashi.LinearSolver.Test
             // arrange - create a cross pattern with center intersection
             var data = new int[][]
             {
-                new int[] { 0, 1, 0 },
-                new int[] { 1, 0, 1 },
-                new int[] { 0, 1, 0 }
+                [0, 1, 0],
+                [1, 0, 1],
+                [0, 1, 0]
             };
 
             // act
@@ -303,7 +305,7 @@ namespace Hashi.LinearSolver.Test
             islands.Should().HaveCount(4);
             intersections.Should().HaveCount(1);
             // The intersection should have the IDs of the 4 islands
-            intersections[0].Should().Match<(int, int, int, int)>(t => 
+            intersections[0].Should().Match<(int, int, int, int)>(t =>
                 new[] { t.Item1, t.Item2, t.Item3, t.Item4 }.OrderBy(x => x).SequenceEqual(new[] { 0, 1, 2, 3 }));
         }
 
@@ -313,7 +315,7 @@ namespace Hashi.LinearSolver.Test
             // arrange
             var islandFactory = container.Resolve<Func<int, int, int, int, IIsland>>();
             var edgeFactory = container.Resolve<Func<int, int, int, IEdge>>();
-            
+
             var islands = new List<IIsland>
             {
                 islandFactory(0, 0, 0, 1),
@@ -324,14 +326,15 @@ namespace Hashi.LinearSolver.Test
             var x = new IntVar[2, 3];
             x[1, 1] = model.NewBoolVar("x_1_1");
             x[1, 2] = model.NewBoolVar("x_1_2");
-            
+
             // Set values manually to 0 (no bridge)
             model.Add(x[1, 1] == 0);
             model.Add(x[1, 2] == 0);
 
             var solver = new CpSolver();
+            // ReSharper disable once UnusedVariable
             var status = solver.Solve(model);
-            
+
             var edgeMap = new Dictionary<int, IEdge>
             {
                 { 1, edgeFactory(1, 0, 1) }
@@ -348,7 +351,7 @@ namespace Hashi.LinearSolver.Test
             // arrange
             var data = new int[][]
             {
-                new int[] { 1, 0, 1 }
+                [1, 0, 1]
             };
 
             // act

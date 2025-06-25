@@ -16,10 +16,10 @@ namespace Hashi.LinearSolver.Test
         public void Setup()
         {
             var builder = new ContainerBuilder();
-            
+
             // Register the logging dependencies as mocks since they're required
             builder.RegisterInstance(Mock.Of<ILoggerFactory>()).As<ILoggerFactory>();
-            
+
             builder.RegisterModule<AutoFacLinearSolverModule>();
             container = builder.Build();
         }
@@ -27,7 +27,7 @@ namespace Hashi.LinearSolver.Test
         [TearDown]
         public void Teardown()
         {
-            container?.Dispose();
+            container.Dispose();
         }
 
         [Test]

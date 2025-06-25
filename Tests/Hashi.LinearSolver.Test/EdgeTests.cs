@@ -41,7 +41,7 @@ namespace Hashi.LinearSolver.Test
         }
 
         [Test]
-        public void Constructor_WhenNegativeValues_ShouldSetProperties()
+        public void Constructor_WhenNegativeValues_ShouldSetProperties() //ToDo: This should not be possible
         {
             // arrange
             const int id = -1;
@@ -58,7 +58,7 @@ namespace Hashi.LinearSolver.Test
         }
 
         [Test]
-        public void Constructor_WhenSameIslandIds_ShouldSetProperties()
+        public void Constructor_WhenSameIslandIds_ShouldSetProperties() //ToDo: This should not be possible
         {
             // arrange
             const int id = 1;
