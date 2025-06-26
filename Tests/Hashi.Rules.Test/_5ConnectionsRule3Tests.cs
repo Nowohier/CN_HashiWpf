@@ -38,6 +38,21 @@ public class _5ConnectionsRule3Tests : TestBase<_5ConnectionsRule3>
         result.Should().NotBeNull();
         result.Should().BeOfType<_5ConnectionsRule3>();
     }
+    [Test]
+    public void RuleMessage_WhenAccessed_ShouldReturnExpectedValue()
+    {
+        // Arrange
+        var rule = new _5ConnectionsRule3(RuleInfoProviderMock.Object, IslandProviderMock.Object);
+
+        // Act
+        var ruleMessageProperty = typeof(_5ConnectionsRule3).GetProperty("RuleMessage", 
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        var result = ruleMessageProperty?.GetValue(rule) as string;
+
+        // Assert
+        result.Should().NotBeNullOrEmpty();
+        result.Should().BeOfType<string>();
+    }
 
     [Test]
     public void Rule_WhenConditionsAreMet_ShouldTrigger()
