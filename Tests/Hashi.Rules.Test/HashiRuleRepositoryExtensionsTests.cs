@@ -1,7 +1,9 @@
 using FluentAssertions;
 using Hashi.Rules.Extensions;
+using Moq;
 using NRules;
 using NRules.Fluent;
+using NRules.RuleModel;
 
 namespace Hashi.Rules.Test;
 
