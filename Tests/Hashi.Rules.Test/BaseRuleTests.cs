@@ -314,6 +314,220 @@ public class BaseRuleTests
         result.Should().BeFalse();
     }
 
+    [Test]
+    public void AreAllNeighborsConnected_WhenAllNeighborsConnected_ShouldReturnTrue()
+    {
+        // Arrange
+        var source = CreateIslandMock(1, 1, 2, false);
+        var neighbor1 = CreateIslandMock(2, 1, 2, false);
+        var neighbor2 = CreateIslandMock(1, 2, 2, false);
+        
+        // The neighbors should contain the source's coordinates in their connections
+        neighbor1.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint> { source.Object.Coordinates });
+        neighbor2.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint> { source.Object.Coordinates });
+        
+        var neighbors = new List<IIslandViewModel> { neighbor1.Object, neighbor2.Object };
+
+        // Act
+        var result = baseRule.AreAllNeighborsConnected(source.Object, neighbors);
+
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Test]
+    public void AreAllNeighborsConnected_WhenNotAllNeighborsConnected_ShouldReturnFalse()
+    {
+        // Arrange
+        var source = CreateIslandMock(1, 1, 2, false);
+        var neighbor1 = CreateIslandMock(2, 1, 2, false);
+        var neighbor2 = CreateIslandMock(1, 2, 2, false);
+        
+        // Only neighbor1 contains the source's coordinates
+        neighbor1.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint> { source.Object.Coordinates });
+        neighbor2.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint>());
+        
+        var neighbors = new List<IIslandViewModel> { neighbor1.Object, neighbor2.Object };
+
+        // Act
+        var result = baseRule.AreAllNeighborsConnected(source.Object, neighbors);
+
+        // Assert
+        result.Should().BeFalse();
+    }
+
+    [Test]
+    public void CountConnectionsToNeighbors_WhenNeighborsHaveConnections_ShouldReturnCorrectCount()
+    {
+        // Arrange
+        var source = CreateIslandMock(1, 1, 2, false);
+        var neighbor1 = CreateIslandMock(2, 1, 2, false);
+        var neighbor2 = CreateIslandMock(1, 2, 2, false);
+        
+        // neighbor1 has 2 connections to source, neighbor2 has 1 connection to source
+        neighbor1.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint> { source.Object.Coordinates, source.Object.Coordinates });
+        neighbor2.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint> { source.Object.Coordinates });
+        
+        var neighbors = new List<IIslandViewModel> { neighbor1.Object, neighbor2.Object };
+
+        // Act
+        var result = baseRule.CountConnectionsToNeighbors(source.Object, neighbors);
+
+        // Assert
+        result.Should().Be(3);
+    }
+
+    [Test]
+    public void CountConnectionsToNeighbors_WhenNoConnections_ShouldReturnZero()
+    {
+        // Arrange
+        var source = CreateIslandMock(1, 1, 2, false);
+        var neighbor1 = CreateIslandMock(2, 1, 2, false);
+        var neighbor2 = CreateIslandMock(1, 2, 2, false);
+        
+        neighbor1.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint>());
+        neighbor2.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint>());
+        
+        var neighbors = new List<IIslandViewModel> { neighbor1.Object, neighbor2.Object };
+
+        // Act
+        var result = baseRule.CountConnectionsToNeighbors(source.Object, neighbors);
+
+        // Assert
+        result.Should().Be(0);
+    }
+
+    [Test]
+    public void GetConnectedNeighbors_WhenAmountConnectionsIsNull_ShouldReturnAllConnectedNeighbors()
+    {
+        // Arrange
+        var source = CreateIslandMock(1, 1, 2, false);
+        var neighbor1 = CreateIslandMock(2, 1, 2, false);
+        var neighbor2 = CreateIslandMock(1, 2, 2, false);
+        var neighbor3 = CreateIslandMock(3, 1, 2, false);
+        
+        // neighbor1 and neighbor2 have connections to source, neighbor3 doesn't
+        neighbor1.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint> { source.Object.Coordinates });
+        neighbor2.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint> { source.Object.Coordinates });
+        neighbor3.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint>());
+        
+        var neighbors = new List<IIslandViewModel> { neighbor1.Object, neighbor2.Object, neighbor3.Object };
+
+        // Act
+        var result = baseRule.GetConnectedNeighbors(source.Object, neighbors, null);
+
+        // Assert
+        result.Should().HaveCount(2);
+        result.Should().Contain(neighbor1.Object);
+        result.Should().Contain(neighbor2.Object);
+    }
+
+    [Test]
+    public void GetConnectedNeighbors_WhenAmountConnectionsSpecified_ShouldReturnMatchingNeighbors()
+    {
+        // Arrange
+        var source = CreateIslandMock(1, 1, 2, false);
+        var neighbor1 = CreateIslandMock(2, 1, 2, false);
+        var neighbor2 = CreateIslandMock(1, 2, 2, false);
+        
+        // neighbor1 has 2 connections to source, neighbor2 has 1 connection to source
+        neighbor1.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint> { source.Object.Coordinates, source.Object.Coordinates });
+        neighbor2.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint> { source.Object.Coordinates });
+        
+        var neighbors = new List<IIslandViewModel> { neighbor1.Object, neighbor2.Object };
+
+        // Act
+        var result = baseRule.GetConnectedNeighbors(source.Object, neighbors, 2);
+
+        // Assert
+        result.Should().HaveCount(1);
+        result.Should().Contain(neighbor1.Object);
+    }
+
+    [Test]
+    public void GetMaxedOutConnectedNeighbors_WhenNeighborsMaxedOut_ShouldReturnMaxedOutNeighbors()
+    {
+        // Arrange
+        var source = CreateIslandMock(1, 1, 2, false);
+        var neighbor1 = CreateIslandMock(2, 1, 2, true); // Maxed out
+        var neighbor2 = CreateIslandMock(1, 2, 2, false); // Not maxed out
+        
+        // Both neighbors have connections to source
+        neighbor1.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint> { source.Object.Coordinates });
+        neighbor2.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint> { source.Object.Coordinates });
+        
+        var neighbors = new List<IIslandViewModel> { neighbor1.Object, neighbor2.Object };
+
+        // Act
+        var result = baseRule.GetMaxedOutConnectedNeighbors(source.Object, neighbors, null);
+
+        // Assert
+        result.Should().HaveCount(1);
+        result.Should().Contain(neighbor1.Object);
+    }
+
+    [Test]
+    public void SetTestConnectionAndIfGroupIsIsolatedReturnValidNeighbor_WhenNoIsolatedGroups_ShouldReturnNull()
+    {
+        // Arrange
+        var source = CreateIslandMock(1, 1, 2, false);
+        var neighbor1 = CreateIslandMock(2, 1, 2, false);
+        var connectableNeighbors = new List<IIslandViewModel> { neighbor1.Object };
+        var allNeighbors = new List<IIslandViewModel> { neighbor1.Object };
+        
+        islandProviderMock.Setup(x => x.CountIsolatedIslandGroups()).Returns(0);
+        islandProviderMock.Setup(x => x.AddConnection(It.IsAny<IIslandViewModel>(), It.IsAny<IIslandViewModel>(), It.IsAny<HashiPointTypeEnum>()));
+        islandProviderMock.Setup(x => x.RemoveAllBridges(It.IsAny<HashiPointTypeEnum>()));
+
+        // Act
+        var result = baseRule.SetTestConnectionAndIfGroupIsIsolatedReturnValidNeighbor(source.Object, connectableNeighbors, allNeighbors);
+
+        // Assert
+        result.Should().BeNull();
+        islandProviderMock.Verify(x => x.RemoveAllBridges(HashiPointTypeEnum.Test), Times.Once);
+    }
+
+    [Test]
+    public void ExecuteAddConnection_WhenSourceAndTargetAreAlreadyConnected_ShouldReturnFalse()
+    {
+        // Arrange
+        var source = CreateIslandMock(1, 1, 2, false);
+        var target = CreateIslandMock(2, 1, 2, false);
+        
+        // Setup that target already has 2 connections to source (max connections for a bridge pair)
+        target.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint> { source.Object.Coordinates, source.Object.Coordinates });
+        source.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint>());
+
+        // Act
+        var result = baseRule.ExecuteAddConnection(source.Object, target.Object);
+
+        // Assert
+        result.Should().BeFalse();
+    }
+
+    [Test]
+    public void GetConnectableNeighborsWithoutConnection_WhenNeighborHasConnectionToSource_ShouldExcludeNeighbor()
+    {
+        // Arrange
+        var source = CreateIslandMock(1, 1, 2, false);
+        var neighbor1 = CreateIslandMock(2, 1, 2, false); // Has connection to source
+        var neighbor2 = CreateIslandMock(1, 2, 2, false); // No connection to source
+        
+        // neighbor1 has a connection to source coordinates
+        neighbor1.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint> { source.Object.Coordinates });
+        neighbor2.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint>());
+        
+        var neighbors = new List<IIslandViewModel> { neighbor1.Object, neighbor2.Object };
+
+        // Act
+        var result = baseRule.GetConnectableNeighborsWithoutConnection(source.Object, neighbors);
+
+        // Assert
+        result.Should().HaveCount(1);
+        result.Should().Contain(neighbor2.Object);
+        result.Should().NotContain(neighbor1.Object);
+    }
+
     #endregion
 
     #region Helper Methods
@@ -367,4 +581,10 @@ public class TestableBaseRule : BaseRule
     public new bool ExecuteAddConnection(IIslandViewModel? source, IIslandViewModel? target) => base.ExecuteAddConnection(source, target);
     public new void FinalizeConnection(IIslandViewModel? source, IIslandViewModel? target) => base.FinalizeConnection(source, target);
     public new bool DoCoordinatesMatch(IHashiPoint source, IHashiPoint target) => base.DoCoordinatesMatch(source, target);
+    public new bool AreAllNeighborsConnected(IIslandViewModel source, IEnumerable<IIslandViewModel> allNeighbors) => base.AreAllNeighborsConnected(source, allNeighbors);
+    public new int CountConnectionsToNeighbors(IIslandViewModel source, IEnumerable<IIslandViewModel> neighbors) => base.CountConnectionsToNeighbors(source, neighbors);
+    public new List<IIslandViewModel> GetConnectedNeighbors(IIslandViewModel source, IEnumerable<IIslandViewModel> allNeighbors, int? amountConnections) => base.GetConnectedNeighbors(source, allNeighbors, amountConnections);
+    public new List<IIslandViewModel> GetMaxedOutConnectedNeighbors(IIslandViewModel source, IEnumerable<IIslandViewModel> allNeighbors, int? amountConnections) => base.GetMaxedOutConnectedNeighbors(source, allNeighbors, amountConnections);
+    public new IIslandViewModel? SetTestConnectionAndIfGroupIsIsolatedReturnValidNeighbor(IIslandViewModel source, List<IIslandViewModel> connectableNeighbors, List<IIslandViewModel> allNeighbors) => base.SetTestConnectionAndIfGroupIsIsolatedReturnValidNeighbor(source, connectableNeighbors, allNeighbors);
+    public new List<IIslandViewModel> GetConnectableNeighborsWithoutConnection(IIslandViewModel source, IEnumerable<IIslandViewModel> allNeighbors) => base.GetConnectableNeighborsWithoutConnection(source, allNeighbors);
 }

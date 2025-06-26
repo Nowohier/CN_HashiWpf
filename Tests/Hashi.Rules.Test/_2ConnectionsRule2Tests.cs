@@ -41,6 +41,22 @@ public class _2ConnectionsRule2Tests : TestBase<_2ConnectionsRule2>
     }
 
     [Test]
+    public void RuleMessage_WhenAccessed_ShouldReturnExpectedValue()
+    {
+        // Arrange
+        var rule = new _2ConnectionsRule2(RuleInfoProviderMock.Object, IslandProviderMock.Object);
+
+        // Act
+        var ruleMessageProperty = typeof(_2ConnectionsRule2).GetProperty("RuleMessage", 
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        var result = ruleMessageProperty?.GetValue(rule) as string;
+
+        // Assert
+        result.Should().NotBeNullOrEmpty();
+        result.Should().BeOfType<string>();
+    }
+
+    [Test]
     public void Rule_WhenConditionsAreMet_ShouldTrigger()
     {
         // Arrange

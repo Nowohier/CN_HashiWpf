@@ -38,6 +38,21 @@ public class _4ConnectionsRule2Tests : TestBase<_4ConnectionsRule2>
         result.Should().NotBeNull();
         result.Should().BeOfType<_4ConnectionsRule2>();
     }
+    [Test]
+    public void RuleMessage_WhenAccessed_ShouldReturnExpectedValue()
+    {
+        // Arrange
+        var rule = new _4ConnectionsRule2(RuleInfoProviderMock.Object, IslandProviderMock.Object);
+
+        // Act
+        var ruleMessageProperty = typeof(_4ConnectionsRule2).GetProperty("RuleMessage", 
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        var result = ruleMessageProperty?.GetValue(rule) as string;
+
+        // Assert
+        result.Should().NotBeNullOrEmpty();
+        result.Should().BeOfType<string>();
+    }
 
     [Test]
     public void Rule_WhenConditionsAreMet_ShouldTrigger()
