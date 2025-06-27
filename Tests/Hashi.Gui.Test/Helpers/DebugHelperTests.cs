@@ -8,16 +8,6 @@ namespace Hashi.Gui.Test.Helpers;
 /// </summary>
 public class DebugHelperTests
 {
-    [Test]
-    public void IsDebugBuild_WhenAccessed_ShouldReturnBooleanValue()
-    {
-        // Arrange & Act
-        var result = DebugHelper.IsDebugBuild;
-
-        // Assert
-        result.Should().BeOfType<bool>();
-    }
-
 #if DEBUG
     [Test]
     public void IsDebugBuild_WhenInDebugConfiguration_ShouldReturnTrue()

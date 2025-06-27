@@ -38,10 +38,10 @@ public class TestSolutionProviderTests
 
         loggerFactoryMock.Setup(f => f.CreateLogger<TestSolutionProvider>()).Returns(loggerMock.Object);
         loggerMock.Setup(l => l.Info(It.IsAny<string>()));
-        
+
         // Setup for LoadSettings method call in constructor
         pathProviderMock.Setup(p => p.HashiTestFieldsFilePath).Returns("/test/path/testfields.json");
-        jsonWrapperMock.Setup(j => j.DeserializeObject<List<ISolutionProvider>>(It.IsAny<string>()))
+        jsonWrapperMock.Setup(j => j.DeserializeObject(It.IsAny<string>(), typeof(List<ISolutionProvider>)))
             .Returns(new List<ISolutionProvider>());
 
         sut = new TestSolutionProvider(
@@ -95,7 +95,7 @@ public class TestSolutionProviderTests
     public void Constructor_WhenValidParameters_ShouldCreateInstance()
     {
         // Arrange & Act (done in SetUp)
-        
+
         // Assert
         sut.Should().NotBeNull();
         sut.Should().BeAssignableTo<ITestSolutionProvider>();
@@ -132,7 +132,7 @@ public class TestSolutionProviderTests
         // Arrange
         var mockSolutionProvider = new Mock<ISolutionProvider>(MockBehavior.Strict);
         var mockMessage = new Mock<ISetTestSolutionMessage>(MockBehavior.Strict);
-        
+
         setTestSolutionMessageFactoryMock.Setup(f => f.Invoke(mockSolutionProvider.Object))
             .Returns(mockMessage.Object);
 
@@ -161,7 +161,7 @@ public class TestSolutionProviderTests
         // Arrange
         var mockSolutionProvider = new Mock<ISolutionProvider>(MockBehavior.Strict);
         var mockMessage = new Mock<ISetTestSolutionMessage>(MockBehavior.Strict);
-        
+
         setTestSolutionMessageFactoryMock.Setup(f => f.Invoke(mockSolutionProvider.Object))
             .Returns(mockMessage.Object);
 
@@ -180,9 +180,9 @@ public class TestSolutionProviderTests
     {
         // Arrange
         var initialCount = sut.SolutionProviders.Count;
-        
+
         // Additional setup for the LoadSettings call within ResetSettings
-        jsonWrapperMock.Setup(j => j.DeserializeObject<List<ISolutionProvider>>(It.IsAny<string>()))
+        jsonWrapperMock.Setup(j => j.DeserializeObject(It.IsAny<string>(), typeof(List<ISolutionProvider>)))
             .Returns(new List<ISolutionProvider>());
 
         // Act
