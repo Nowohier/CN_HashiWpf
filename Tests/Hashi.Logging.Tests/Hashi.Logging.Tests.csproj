@@ -20,8 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\PuzzleLoader\Hashi.SolvedPuzzles\Hashi.SolvedPuzzles.csproj" />
-    <ProjectReference Include="..\..\PuzzleLoader\Hashi.SolvedPuzzles.Interfaces\Hashi.SolvedPuzzles.Interfaces.csproj" />
+    <ProjectReference Include="..\..\Logging\Hashi.Logging\Hashi.Logging.csproj" />
+    <ProjectReference Include="..\..\Logging\Hashi.Logging.Interfaces\Hashi.Logging.Interfaces.csproj" />
   </ItemGroup>
 
   <ItemGroup>

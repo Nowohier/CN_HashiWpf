@@ -7,6 +7,9 @@ using Hashi.Generator.Interfaces.Providers;
 using Hashi.LinearSolver.Interfaces;
 using Hashi.Logging.Interfaces;
 using Moq;
+#pragma warning disable CS8605 // Unboxing a possibly null value.
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
 
 namespace Hashi.Generator.Test
 {
@@ -90,7 +93,7 @@ namespace Hashi.Generator.Test
         [TestCase(8, 16, 31, 16, 31, 3, 75, 10)]
         [TestCase(9, 20, 31, 20, 31, 3, 100, 0)]
         public void GetDifficultySettings_WhenValidDifficulty_ShouldReturnCorrectSettings(
-            int difficulty, int expectedMinLength, int expectedMaxLength, int expectedMinWidth, 
+            int difficulty, int expectedMinLength, int expectedMaxLength, int expectedMinWidth,
             int expectedMaxWidth, int expectedDivisor, int expectedAlpha, int expectedBeta)
         {
             // Act
@@ -337,9 +340,9 @@ namespace Hashi.Generator.Test
             var generator = (HashiGenerator)hashiGenerator;
             var field = new int[][]
             {
-                new int[] { 0, 0, 0 },
-                new int[] { 0, 1, 2 }, // (1,1) has adjacent island at (1,2)
-                new int[] { 0, 0, 0 }
+                [0, 0, 0],
+                [0, 1, 2], // (1,1) has adjacent island at (1,2)
+                [0, 0, 0]
             };
 
             // Act
@@ -356,9 +359,9 @@ namespace Hashi.Generator.Test
             var generator = (HashiGenerator)hashiGenerator;
             var field = new int[][]
             {
-                new int[] { 0, 0, 0 },
-                new int[] { 0, 1, 0 }, // (1,1) has no adjacent islands
-                new int[] { 0, 0, 0 }
+                [0, 0, 0],
+                [0, 1, 0], // (1,1) has no adjacent islands
+                [0, 0, 0]
             };
 
             // Act
@@ -375,8 +378,8 @@ namespace Hashi.Generator.Test
             var generator = (HashiGenerator)hashiGenerator;
             var field = new int[][]
             {
-                new int[] { 1, 2 }, // (0,0) is at top-left corner
-                new int[] { 0, 0 }
+                [1, 2], // (0,0) is at top-left corner
+                [0, 0]
             };
 
             // Act
@@ -396,7 +399,7 @@ namespace Hashi.Generator.Test
             // Arrange
             var generator = (HashiGenerator)hashiGenerator;
             var field = HashiGenerator.InitializeField(5, 5);
-            
+
             // Act
             generator.SetBeta(field, 0);
 
@@ -411,7 +414,7 @@ namespace Hashi.Generator.Test
             // Arrange
             var generator = (HashiGenerator)hashiGenerator;
             var field = HashiGenerator.InitializeField(5, 5);
-            
+
             // Act
             generator.SetBeta(field, -10);
 
@@ -527,8 +530,8 @@ namespace Hashi.Generator.Test
         {
             // Arrange
             var generator = (HashiGenerator)hashiGenerator;
-            var field = new int[][] { new int[] { 0, 0, 0 }, new int[] { 0, 0, 0 } };
-            
+            var field = new int[][] { [0, 0, 0], [0, 0, 0] };
+
             // Act
             generator.AddAdditionalBridges(field, 0);
 
@@ -542,8 +545,8 @@ namespace Hashi.Generator.Test
         {
             // Arrange
             var generator = (HashiGenerator)hashiGenerator;
-            var field = new int[][] { new int[] { 1, 0, 1 }, new int[] { 0, 0, 0 } };
-            
+            var field = new int[][] { [1, 0, 1], [0, 0, 0] };
+
             // Act - Use low alpha to test early break condition
             generator.AddAdditionalBridges(field, 1);
 
@@ -562,7 +565,7 @@ namespace Hashi.Generator.Test
             var generator = (HashiGenerator)hashiGenerator;
             var mockIsland = new Mock<IIsland>(MockBehavior.Strict);
             mockIsland.Setup(i => i.IslandDown).Returns((IIsland?)null);
-            var field = new int[][] { new int[] { 0, 0, 0 } };
+            var field = new int[][] { [0, 0, 0] };
 
             // Act
             var result = generator.GetDownBlockedd(mockIsland.Object, field);
@@ -578,7 +581,7 @@ namespace Hashi.Generator.Test
             var generator = (HashiGenerator)hashiGenerator;
             var mockIsland = new Mock<IIsland>(MockBehavior.Strict);
             mockIsland.Setup(i => i.IslandRight).Returns((IIsland?)null);
-            var field = new int[][] { new int[] { 0, 0, 0 } };
+            var field = new int[][] { [0, 0, 0] };
 
             // Act
             var result = generator.GetRightBlockedd(mockIsland.Object, field);
@@ -594,17 +597,17 @@ namespace Hashi.Generator.Test
             var generator = (HashiGenerator)hashiGenerator;
             var mockIslandDown = new Mock<IIsland>(MockBehavior.Strict);
             mockIslandDown.Setup(i => i.Y).Returns(3);
-            
+
             var mockIsland = new Mock<IIsland>(MockBehavior.Strict);
             mockIsland.Setup(i => i.X).Returns(1);
             mockIsland.Setup(i => i.Y).Returns(1);
             mockIsland.Setup(i => i.IslandDown).Returns(mockIslandDown.Object);
-            
-            var field = new int[][] { 
-                new int[] { 0, 0, 0 }, 
-                new int[] { 0, 0, 0 }, 
-                new int[] { 0, 0, 0 },
-                new int[] { 0, 0, 0 }
+
+            var field = new int[][] {
+                [0, 0, 0],
+                [0, 0, 0],
+                [0, 0, 0],
+                [0, 0, 0]
             };
 
             // Act - Call twice to test cache
@@ -622,16 +625,16 @@ namespace Hashi.Generator.Test
             var generator = (HashiGenerator)hashiGenerator;
             var mockIslandRight = new Mock<IIsland>(MockBehavior.Strict);
             mockIslandRight.Setup(i => i.X).Returns(3);
-            
+
             var mockIsland = new Mock<IIsland>(MockBehavior.Strict);
             mockIsland.Setup(i => i.X).Returns(1);
             mockIsland.Setup(i => i.Y).Returns(1);
             mockIsland.Setup(i => i.IslandRight).Returns(mockIslandRight.Object);
-            
-            var field = new int[][] { 
-                new int[] { 0, 0, 0, 0 }, 
-                new int[] { 0, 0, 0, 0 }, 
-                new int[] { 0, 0, 0, 0 }
+
+            var field = new int[][] {
+                [0, 0, 0, 0],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0]
             };
 
             // Act - Call twice to test cache
@@ -651,7 +654,7 @@ namespace Hashi.Generator.Test
         {
             // Arrange
             var generator = (HashiGenerator)hashiGenerator;
-            var field = new int[][] { new int[] { 0, 0, 0 } };
+            var field = new int[][] { [0, 0, 0] };
 
             // Act & Assert - Should not throw even with no bridges
             generator.SetBeta(field, 50);
@@ -663,7 +666,7 @@ namespace Hashi.Generator.Test
         {
             // Arrange
             var generator = (HashiGenerator)hashiGenerator;
-            var field = new int[][] { new int[] { 0, 0, 0 } };
+            var field = new int[][] { [0, 0, 0] };
 
             // Act - Use very low beta that would result in 0 bridges to add
             generator.SetBeta(field, 1);
@@ -681,10 +684,10 @@ namespace Hashi.Generator.Test
         {
             // Arrange
             var generator = (HashiGenerator)hashiGenerator;
-            
+
             // Act - Use parameters that would result in parallel processing (> 20 islands)
             var createMethod = typeof(HashiGenerator).GetMethod("CreateHashAsync", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            var task = (Task<int[][]>)createMethod.Invoke(generator, new object[] { 25, 20, 20, 5, 10, true });
+            var task = (Task<int[][]>)createMethod.Invoke(generator, [25, 20, 20, 5, 10, true]);
             var result = await task;
 
             // Assert
@@ -697,10 +700,10 @@ namespace Hashi.Generator.Test
         {
             // Arrange
             var generator = (HashiGenerator)hashiGenerator;
-            
+
             // Act - Use parameters that would result in sequential processing (< 20 islands)
             var createMethod = typeof(HashiGenerator).GetMethod("CreateHashAsync", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            var task = (Task<int[][]>)createMethod.Invoke(generator, new object[] { 5, 10, 10, 3, 5, true });
+            var task = (Task<int[][]>)createMethod.Invoke(generator, [5, 10, 10, 3, 5, true]);
             var result = await task;
 
             // Assert
@@ -713,10 +716,10 @@ namespace Hashi.Generator.Test
         {
             // Arrange
             var generator = (HashiGenerator)hashiGenerator;
-            
+
             // Act - Use parameters that might cause early termination
             var createMethod = typeof(HashiGenerator).GetMethod("CreateHashAsync", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            var task = (Task<int[][]>)createMethod.Invoke(generator, new object[] { 3, 5, 5, 1, 1, false });
+            var task = (Task<int[][]>)createMethod.Invoke(generator, [3, 5, 5, 1, 1, false]);
             var result = await task;
 
             // Assert
@@ -733,7 +736,7 @@ namespace Hashi.Generator.Test
         {
             // Arrange & Act
             var initMethod = typeof(HashiGenerator).GetMethod("InitializeField", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
-            var result = (int[][])initMethod.Invoke(null, new object[] { 5, 7 });
+            var result = (int[][])initMethod.Invoke(null, [5, 7]);
 
             // Assert
             result.Should().NotBeNull();
@@ -747,11 +750,11 @@ namespace Hashi.Generator.Test
         {
             // Arrange & Act
             var alphaMethod = typeof(HashiGenerator).GetMethod("GetAlphaForDifficulty", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
-            
-            var alpha0 = (int)alphaMethod.Invoke(null, new object[] { 0 });
-            var alpha3 = (int)alphaMethod.Invoke(null, new object[] { 3 });
-            var alpha1 = (int)alphaMethod.Invoke(null, new object[] { 1 });
-            var alpha9 = (int)alphaMethod.Invoke(null, new object[] { 9 });
+
+            var alpha0 = (int)alphaMethod.Invoke(null, [0]);
+            var alpha3 = (int)alphaMethod.Invoke(null, [3]);
+            var alpha1 = (int)alphaMethod.Invoke(null, [1]);
+            var alpha9 = (int)alphaMethod.Invoke(null, [9]);
 
             // Assert
             alpha0.Should().Be(25); // difficulty 0, 3, 6 should return 25
@@ -765,10 +768,10 @@ namespace Hashi.Generator.Test
         {
             // Arrange & Act
             var betaMethod = typeof(HashiGenerator).GetMethod("GetBetaForDifficulty", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
-            
-            var beta0 = (int)betaMethod.Invoke(null, new object[] { 0 });
-            var beta5 = (int)betaMethod.Invoke(null, new object[] { 5 });
-            var beta9 = (int)betaMethod.Invoke(null, new object[] { 9 });
+
+            var beta0 = (int)betaMethod.Invoke(null, [0]);
+            var beta5 = (int)betaMethod.Invoke(null, [5]);
+            var beta9 = (int)betaMethod.Invoke(null, [9]);
 
             // Assert
             beta0.Should().Be(20); // difficulty <= 2 should return 20
