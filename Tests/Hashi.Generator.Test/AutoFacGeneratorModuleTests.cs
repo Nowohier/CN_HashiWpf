@@ -23,12 +23,12 @@ namespace Hashi.Generator.Test
             // Register the logging dependencies as mocks since they're required
             var loggerFactoryMock = new Mock<ILoggerFactory>(MockBehavior.Strict);
             var loggerMock = new Mock<ILogger>(MockBehavior.Strict);
-            
+
             // Setup the logger factory to return a mock logger
             loggerFactoryMock.Setup(f => f.CreateLogger<It.IsAnyType>()).Returns(loggerMock.Object);
-            
+
             builder.RegisterInstance(loggerFactoryMock.Object).As<ILoggerFactory>();
-            
+
             // Register the solver dependency as mock since it's required
             var hashiSolverMock = new Mock<IHashiSolver>(MockBehavior.Strict);
             builder.RegisterInstance(hashiSolverMock.Object).As<IHashiSolver>();
@@ -140,9 +140,9 @@ namespace Hashi.Generator.Test
             var solutionProviderFactory = container.Resolve<Func<int[][], IList<IBridgeCoordinates>, ISolutionProvider>>();
             var hashiField = new int[][]
             {
-                new int[] { 0, 1, 0 },
-                new int[] { 1, 0, 2 },
-                new int[] { 0, 2, 0 }
+                [0, 1, 0],
+                [1, 0, 2],
+                [0, 2, 0]
             };
             var bridgeCoordinates = new List<IBridgeCoordinates>();
 
@@ -171,7 +171,7 @@ namespace Hashi.Generator.Test
             // Arrange
             var bridgeFactory = container.Resolve<Func<IIsland, IIsland, int, IBridge>>();
             var islandFactory = container.Resolve<Func<int, int, int, IIsland>>();
-            
+
             var island1 = islandFactory(2, 1, 1);
             var island2 = islandFactory(2, 1, 3);
             int amountBridgesSet = 1;
@@ -253,7 +253,7 @@ namespace Hashi.Generator.Test
             // Arrange
             var hashiField = new int[][]
             {
-                new int[] { 1, 2, 1 }
+                [1, 2, 1]
             };
             var bridgeCoordinates = new List<IBridgeCoordinates>();
 
