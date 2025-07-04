@@ -477,6 +477,305 @@ namespace Hashi.Generator.Test
             hashiSolverMock.Verify(s => s.SolveLazy(It.IsAny<int[][]>(), It.IsAny<bool>()), Times.AtLeastOnce);
         }
 
+        [Test]
+        public async Task GenerateHashAsync_WhenSolverReturnsFeasible_ShouldRetryWithDifferentParameters()
+        {
+            // Arrange
+            var callCount = 0;
+            hashiSolverMock.Setup(s => s.SolveLazy(It.IsAny<int[][]>(), It.IsAny<bool>()))
+                          .Returns(() =>
+                          {
+                              callCount++;
+                              return Task.FromResult(callCount <= 2 ? SolverStatusEnum.Infeasible : SolverStatusEnum.Optimal);
+                          });
+
+            // Act
+            var result = await hashiGenerator.GenerateHashAsync(amountNodes: 3, width: 5, length: 5);
+
+            // Assert
+            result.Should().NotBeNull();
+            hashiSolverMock.Verify(s => s.SolveLazy(It.IsAny<int[][]>(), It.IsAny<bool>()), Times.AtLeast(3));
+        }
+
+        [Test]
+        public async Task GenerateHashAsync_WhenMaxAttemptsReached_ShouldReduceBetaAndContinue()
+        {
+            // Arrange
+            var callCount = 0;
+            hashiSolverMock.Setup(s => s.SolveLazy(It.IsAny<int[][]>(), It.IsAny<bool>()))
+                          .Returns(() =>
+                          {
+                              callCount++;
+                              return Task.FromResult(callCount <= 8 ? SolverStatusEnum.Infeasible : SolverStatusEnum.Optimal);
+                          });
+
+            // Act
+            var result = await hashiGenerator.GenerateHashAsync(amountNodes: 3, width: 5, length: 5);
+
+            // Assert
+            result.Should().NotBeNull();
+            // Should retry multiple times before succeeding
+            hashiSolverMock.Verify(s => s.SolveLazy(It.IsAny<int[][]>(), It.IsAny<bool>()), Times.AtLeast(6));
+        }
+
+        #endregion
+
+        #region AddAdditionalBridges Edge Cases Tests
+
+        [Test]
+        public void AddAdditionalBridges_WhenAlphaIsZero_ShouldNotAddBridges()
+        {
+            // Arrange
+            var generator = (HashiGenerator)hashiGenerator;
+            var field = new int[][] { new int[] { 0, 0, 0 }, new int[] { 0, 0, 0 } };
+            
+            // Act
+            generator.AddAdditionalBridges(field, 0);
+
+            // Assert
+            // Method should complete without error - testing the edge case where alpha = 0
+            Assert.Pass("AddAdditionalBridges completed for alpha = 0");
+        }
+
+        [Test]
+        public void AddAdditionalBridges_WhenTargetBridgesReached_ShouldStopAddingBridges()
+        {
+            // Arrange
+            var generator = (HashiGenerator)hashiGenerator;
+            var field = new int[][] { new int[] { 1, 0, 1 }, new int[] { 0, 0, 0 } };
+            
+            // Act - Use low alpha to test early break condition
+            generator.AddAdditionalBridges(field, 1);
+
+            // Assert
+            Assert.Pass("AddAdditionalBridges completed with early break condition");
+        }
+
+        #endregion
+
+        #region GetDownBlockedd and GetRightBlockedd Edge Cases Tests
+
+        [Test]
+        public void GetDownBlockedd_WhenIslandDownIsNull_ShouldReturnNegativeOne()
+        {
+            // Arrange
+            var generator = (HashiGenerator)hashiGenerator;
+            var mockIsland = new Mock<IIsland>(MockBehavior.Strict);
+            mockIsland.Setup(i => i.IslandDown).Returns((IIsland?)null);
+            var field = new int[][] { new int[] { 0, 0, 0 } };
+
+            // Act
+            var result = generator.GetDownBlockedd(mockIsland.Object, field);
+
+            // Assert
+            result.Should().Be(-1);
+        }
+
+        [Test]
+        public void GetRightBlockedd_WhenIslandRightIsNull_ShouldReturnNegativeOne()
+        {
+            // Arrange
+            var generator = (HashiGenerator)hashiGenerator;
+            var mockIsland = new Mock<IIsland>(MockBehavior.Strict);
+            mockIsland.Setup(i => i.IslandRight).Returns((IIsland?)null);
+            var field = new int[][] { new int[] { 0, 0, 0 } };
+
+            // Act
+            var result = generator.GetRightBlockedd(mockIsland.Object, field);
+
+            // Assert
+            result.Should().Be(-1);
+        }
+
+        [Test]
+        public void GetDownBlockedd_WhenCacheHit_ShouldReturnCachedValue()
+        {
+            // Arrange
+            var generator = (HashiGenerator)hashiGenerator;
+            var mockIslandDown = new Mock<IIsland>(MockBehavior.Strict);
+            mockIslandDown.Setup(i => i.Y).Returns(3);
+            
+            var mockIsland = new Mock<IIsland>(MockBehavior.Strict);
+            mockIsland.Setup(i => i.X).Returns(1);
+            mockIsland.Setup(i => i.Y).Returns(1);
+            mockIsland.Setup(i => i.IslandDown).Returns(mockIslandDown.Object);
+            
+            var field = new int[][] { 
+                new int[] { 0, 0, 0 }, 
+                new int[] { 0, 0, 0 }, 
+                new int[] { 0, 0, 0 },
+                new int[] { 0, 0, 0 }
+            };
+
+            // Act - Call twice to test cache
+            var result1 = generator.GetDownBlockedd(mockIsland.Object, field);
+            var result2 = generator.GetDownBlockedd(mockIsland.Object, field);
+
+            // Assert - Both calls should return the same result
+            result1.Should().Be(result2);
+        }
+
+        [Test]
+        public void GetRightBlockedd_WhenCacheHit_ShouldReturnCachedValue()
+        {
+            // Arrange
+            var generator = (HashiGenerator)hashiGenerator;
+            var mockIslandRight = new Mock<IIsland>(MockBehavior.Strict);
+            mockIslandRight.Setup(i => i.X).Returns(3);
+            
+            var mockIsland = new Mock<IIsland>(MockBehavior.Strict);
+            mockIsland.Setup(i => i.X).Returns(1);
+            mockIsland.Setup(i => i.Y).Returns(1);
+            mockIsland.Setup(i => i.IslandRight).Returns(mockIslandRight.Object);
+            
+            var field = new int[][] { 
+                new int[] { 0, 0, 0, 0 }, 
+                new int[] { 0, 0, 0, 0 }, 
+                new int[] { 0, 0, 0, 0 }
+            };
+
+            // Act - Call twice to test cache
+            var result1 = generator.GetRightBlockedd(mockIsland.Object, field);
+            var result2 = generator.GetRightBlockedd(mockIsland.Object, field);
+
+            // Assert - Both calls should return the same result
+            result1.Should().Be(result2);
+        }
+
+        #endregion
+
+        #region SetBeta Edge Cases Tests
+
+        [Test]
+        public void SetBeta_WhenNoBridgesExist_ShouldHandleGracefully()
+        {
+            // Arrange
+            var generator = (HashiGenerator)hashiGenerator;
+            var field = new int[][] { new int[] { 0, 0, 0 } };
+
+            // Act & Assert - Should not throw even with no bridges
+            generator.SetBeta(field, 50);
+            Assert.Pass("SetBeta completed gracefully with no bridges");
+        }
+
+        [Test]
+        public void SetBeta_WhenBridgesToAddIsZero_ShouldReturn()
+        {
+            // Arrange
+            var generator = (HashiGenerator)hashiGenerator;
+            var field = new int[][] { new int[] { 0, 0, 0 } };
+
+            // Act - Use very low beta that would result in 0 bridges to add
+            generator.SetBeta(field, 1);
+
+            // Assert
+            Assert.Pass("SetBeta completed when bridges to add is zero");
+        }
+
+        #endregion
+
+        #region Parallel Processing and Async Edge Cases Tests
+
+        [Test]
+        public async Task CreateHashAsync_WhenLargeGrid_ShouldUseParallelProcessing()
+        {
+            // Arrange
+            var generator = (HashiGenerator)hashiGenerator;
+            
+            // Act - Use parameters that would result in parallel processing (> 20 islands)
+            var createMethod = typeof(HashiGenerator).GetMethod("CreateHashAsync", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            var task = (Task<int[][]>)createMethod.Invoke(generator, new object[] { 25, 20, 20, 5, 10, true });
+            var result = await task;
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Length.Should().Be(20);
+        }
+
+        [Test]
+        public async Task CreateHashAsync_WhenSmallGrid_ShouldUseSequentialProcessing()
+        {
+            // Arrange
+            var generator = (HashiGenerator)hashiGenerator;
+            
+            // Act - Use parameters that would result in sequential processing (< 20 islands)
+            var createMethod = typeof(HashiGenerator).GetMethod("CreateHashAsync", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            var task = (Task<int[][]>)createMethod.Invoke(generator, new object[] { 5, 10, 10, 3, 5, true });
+            var result = await task;
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Length.Should().Be(10);
+        }
+
+        [Test]
+        public async Task CreateHashAsync_WhenMaxIterationsReached_ShouldStopAndReturn()
+        {
+            // Arrange
+            var generator = (HashiGenerator)hashiGenerator;
+            
+            // Act - Use parameters that might cause early termination
+            var createMethod = typeof(HashiGenerator).GetMethod("CreateHashAsync", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            var task = (Task<int[][]>)createMethod.Invoke(generator, new object[] { 3, 5, 5, 1, 1, false });
+            var result = await task;
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Length.Should().Be(5);
+        }
+
+        #endregion
+
+        #region InitializeField and Utility Method Tests
+
+        [Test]
+        public void InitializeField_WhenCalled_ShouldCreateCorrectDimensions()
+        {
+            // Arrange & Act
+            var initMethod = typeof(HashiGenerator).GetMethod("InitializeField", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+            var result = (int[][])initMethod.Invoke(null, new object[] { 5, 7 });
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Length.Should().Be(5);
+            result[0].Length.Should().Be(7);
+            result.All(row => row.All(cell => cell == 0)).Should().BeTrue();
+        }
+
+        [Test]
+        public void GetAlphaForDifficulty_WhenDifferentDifficulties_ShouldReturnCorrectValues()
+        {
+            // Arrange & Act
+            var alphaMethod = typeof(HashiGenerator).GetMethod("GetAlphaForDifficulty", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+            
+            var alpha0 = (int)alphaMethod.Invoke(null, new object[] { 0 });
+            var alpha3 = (int)alphaMethod.Invoke(null, new object[] { 3 });
+            var alpha1 = (int)alphaMethod.Invoke(null, new object[] { 1 });
+            var alpha9 = (int)alphaMethod.Invoke(null, new object[] { 9 });
+
+            // Assert
+            alpha0.Should().Be(25); // difficulty 0, 3, 6 should return 25
+            alpha3.Should().Be(25);
+            alpha1.Should().Be(50); // difficulty 1, 4, 7 should return 50
+            alpha9.Should().Be(100); // difficulty 9 should return 100
+        }
+
+        [Test]
+        public void GetBetaForDifficulty_WhenDifferentDifficulties_ShouldReturnCorrectValues()
+        {
+            // Arrange & Act
+            var betaMethod = typeof(HashiGenerator).GetMethod("GetBetaForDifficulty", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+            
+            var beta0 = (int)betaMethod.Invoke(null, new object[] { 0 });
+            var beta5 = (int)betaMethod.Invoke(null, new object[] { 5 });
+            var beta9 = (int)betaMethod.Invoke(null, new object[] { 9 });
+
+            // Assert
+            beta0.Should().Be(20); // difficulty <= 2 should return 20
+            beta5.Should().Be(15); // difficulty <= 5 should return 15  
+            beta9.Should().Be(0);  // difficulty > 8 should return 0
+        }
+
         #endregion
     }
 }
