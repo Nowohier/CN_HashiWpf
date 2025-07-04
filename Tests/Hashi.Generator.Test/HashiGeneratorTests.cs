@@ -673,5 +673,109 @@ namespace Hashi.Generator.Test
         }
 
         #endregion
+
+        #region Parallel Processing and Async Edge Cases Tests
+
+        [Test]
+        public async Task CreateHashAsync_WhenLargeGrid_ShouldUseParallelProcessing()
+        {
+            // Arrange
+            var generator = (HashiGenerator)hashiGenerator;
+            
+            // Act - Use parameters that would result in parallel processing (> 20 islands)
+            var createMethod = typeof(HashiGenerator).GetMethod("CreateHashAsync", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            var task = (Task<int[][]>)createMethod.Invoke(generator, new object[] { 25, 20, 20, 5, 10, true });
+            var result = await task;
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Length.Should().Be(20);
+        }
+
+        [Test]
+        public async Task CreateHashAsync_WhenSmallGrid_ShouldUseSequentialProcessing()
+        {
+            // Arrange
+            var generator = (HashiGenerator)hashiGenerator;
+            
+            // Act - Use parameters that would result in sequential processing (< 20 islands)
+            var createMethod = typeof(HashiGenerator).GetMethod("CreateHashAsync", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            var task = (Task<int[][]>)createMethod.Invoke(generator, new object[] { 5, 10, 10, 3, 5, true });
+            var result = await task;
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Length.Should().Be(10);
+        }
+
+        [Test]
+        public async Task CreateHashAsync_WhenMaxIterationsReached_ShouldStopAndReturn()
+        {
+            // Arrange
+            var generator = (HashiGenerator)hashiGenerator;
+            
+            // Act - Use parameters that might cause early termination
+            var createMethod = typeof(HashiGenerator).GetMethod("CreateHashAsync", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            var task = (Task<int[][]>)createMethod.Invoke(generator, new object[] { 3, 5, 5, 1, 1, false });
+            var result = await task;
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Length.Should().Be(5);
+        }
+
+        #endregion
+
+        #region InitializeField and Utility Method Tests
+
+        [Test]
+        public void InitializeField_WhenCalled_ShouldCreateCorrectDimensions()
+        {
+            // Arrange & Act
+            var initMethod = typeof(HashiGenerator).GetMethod("InitializeField", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+            var result = (int[][])initMethod.Invoke(null, new object[] { 5, 7 });
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Length.Should().Be(5);
+            result[0].Length.Should().Be(7);
+            result.All(row => row.All(cell => cell == 0)).Should().BeTrue();
+        }
+
+        [Test]
+        public void GetAlphaForDifficulty_WhenDifferentDifficulties_ShouldReturnCorrectValues()
+        {
+            // Arrange & Act
+            var alphaMethod = typeof(HashiGenerator).GetMethod("GetAlphaForDifficulty", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+            
+            var alpha0 = (int)alphaMethod.Invoke(null, new object[] { 0 });
+            var alpha3 = (int)alphaMethod.Invoke(null, new object[] { 3 });
+            var alpha1 = (int)alphaMethod.Invoke(null, new object[] { 1 });
+            var alpha9 = (int)alphaMethod.Invoke(null, new object[] { 9 });
+
+            // Assert
+            alpha0.Should().Be(25); // difficulty 0, 3, 6 should return 25
+            alpha3.Should().Be(25);
+            alpha1.Should().Be(50); // difficulty 1, 4, 7 should return 50
+            alpha9.Should().Be(100); // difficulty 9 should return 100
+        }
+
+        [Test]
+        public void GetBetaForDifficulty_WhenDifferentDifficulties_ShouldReturnCorrectValues()
+        {
+            // Arrange & Act
+            var betaMethod = typeof(HashiGenerator).GetMethod("GetBetaForDifficulty", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+            
+            var beta0 = (int)betaMethod.Invoke(null, new object[] { 0 });
+            var beta5 = (int)betaMethod.Invoke(null, new object[] { 5 });
+            var beta9 = (int)betaMethod.Invoke(null, new object[] { 9 });
+
+            // Assert
+            beta0.Should().Be(20); // difficulty <= 2 should return 20
+            beta5.Should().Be(15); // difficulty <= 5 should return 15  
+            beta9.Should().Be(0);  // difficulty > 8 should return 0
+        }
+
+        #endregion
     }
 }
