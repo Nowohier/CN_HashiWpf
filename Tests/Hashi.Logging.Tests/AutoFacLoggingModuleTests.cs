@@ -57,7 +57,7 @@ public class AutoFacLoggingModuleTests
 
         // Act
         factoryFromRoot = container.Resolve<ILoggerFactory>();
-        
+
         using (var scope = container.BeginLifetimeScope())
         {
             factoryFromScope = scope.Resolve<ILoggerFactory>();
@@ -85,6 +85,7 @@ public class AutoFacLoggingModuleTests
     public void AutoFacLoggingModule_WhenInstantiated_ShouldNotThrow()
     {
         // Act & Assert
+        // ReSharper disable once ObjectCreationAsStatement
         Assert.DoesNotThrow(() => new AutoFacLoggingModule());
     }
 

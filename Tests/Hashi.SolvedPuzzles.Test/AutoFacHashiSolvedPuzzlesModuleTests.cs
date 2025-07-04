@@ -56,7 +56,7 @@ public class AutoFacHashiSolvedPuzzlesModuleTests
 
         // Act
         loaderFromRoot = container.Resolve<IHashiPuzzleLoader>();
-        
+
         using (var scope = container.BeginLifetimeScope())
         {
             loaderFromScope = scope.Resolve<IHashiPuzzleLoader>();
@@ -84,6 +84,7 @@ public class AutoFacHashiSolvedPuzzlesModuleTests
     public void AutoFacHashiSolvedPuzzlesModule_WhenInstantiated_ShouldNotThrow()
     {
         // Act & Assert
+        // ReSharper disable once ObjectCreationAsStatement
         Assert.DoesNotThrow(() => new AutoFacHashiSolvedPuzzlesModule());
     }
 
@@ -109,20 +110,20 @@ public class AutoFacHashiSolvedPuzzlesModuleTests
         var testPuzzleEnum = HashiFileEnum.Hs_16_100_25_00_001;
         var testPuzzleData = new int[][]
         {
-            new int[] { 1, 2 },
-            new int[] { 3, 4 }
+            [1, 2],
+            [3, 4]
         };
-        
+
         // Create test file
         var testFileName = GetTestFileName(testPuzzleEnum);
         var testFileContent = System.Text.Json.JsonSerializer.Serialize(testPuzzleData).Replace("[", "{").Replace("]", "}");
         var testFileDirectory = Path.GetDirectoryName(testFileName);
-        
+
         if (!Directory.Exists(testFileDirectory))
         {
             Directory.CreateDirectory(testFileDirectory!);
         }
-        
+
         File.WriteAllText(testFileName, testFileContent);
 
         try

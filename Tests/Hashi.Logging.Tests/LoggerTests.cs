@@ -1,6 +1,5 @@
 using Autofac;
 using FluentAssertions;
-using Moq;
 using NLog;
 using ILogger = Hashi.Logging.Interfaces.ILogger;
 
@@ -18,7 +17,7 @@ public class LoggerTests
         // Create a real NLog logger for testing
         var nlogLogger = LogManager.GetLogger("TestLogger");
         logger = new Logger(nlogLogger);
-        
+
         var builder = new ContainerBuilder();
         builder.RegisterModule<AutoFacLoggingModule>();
         container = builder.Build();
@@ -39,11 +38,11 @@ public class LoggerTests
         var nlogLogger = LogManager.GetLogger("TestLogger");
 
         // Act
-        var logger = new Logger(nlogLogger);
+        var logger1 = new Logger(nlogLogger);
 
         // Assert
-        logger.Should().NotBeNull();
-        logger.Should().BeOfType<Logger>();
+        logger1.Should().NotBeNull();
+        logger1.Should().BeOfType<Logger>();
     }
 
     [Test]
@@ -51,8 +50,8 @@ public class LoggerTests
     {
         // Act & Assert
         // Note: This will create a logger but may fail when methods are called
-        var logger = new Logger(null!);
-        logger.Should().NotBeNull();
+        var logger1 = new Logger(null!);
+        logger1.Should().NotBeNull();
     }
 
     #endregion
@@ -312,10 +311,10 @@ public class LoggerTests
     {
         // Arrange & Act
         var nlogLogger = LogManager.GetLogger("TestLogger");
-        var logger = new Logger(nlogLogger);
+        var logger1 = new Logger(nlogLogger);
 
         // Assert
-        logger.Should().BeAssignableTo<ILogger>();
+        logger1.Should().BeAssignableTo<ILogger>();
     }
 
     #endregion
@@ -365,7 +364,7 @@ public class LoggerTests
     {
         // Arrange
         var simpleException = new Exception("Simple exception");
-        var complexException = new InvalidOperationException("Complex exception", 
+        var complexException = new InvalidOperationException("Complex exception",
             new ArgumentException("Inner exception"));
 
         // Act & Assert
@@ -386,15 +385,15 @@ public class LoggerTests
     {
         // Arrange
         var nlogLogger = LogManager.GetLogger("TestLogger");
-        var logger = new Logger(nlogLogger);
+        var logger1 = new Logger(nlogLogger);
 
         // Act
-        var field = typeof(Logger).GetField("logger", 
+        var field = typeof(Logger).GetField("logger",
             System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 
         // Assert
         field.Should().NotBeNull();
-        var fieldValue = field!.GetValue(logger);
+        var fieldValue = field.GetValue(logger1);
         fieldValue.Should().Be(nlogLogger);
     }
 

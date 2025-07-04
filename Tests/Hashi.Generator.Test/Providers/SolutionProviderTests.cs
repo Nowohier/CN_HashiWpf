@@ -2,8 +2,8 @@ using FluentAssertions;
 using Hashi.Generator.Interfaces.Models;
 using Hashi.Generator.Models;
 using Hashi.Generator.Providers;
-using Moq;
 using System.Drawing;
+// ReSharper disable CollectionNeverUpdated.Local
 
 namespace Hashi.Generator.Test.Providers
 {
@@ -16,9 +16,9 @@ namespace Hashi.Generator.Test.Providers
             // Arrange
             var hashiField = new List<int[]>
             {
-                new int[] { 0, 1, 0 },
-                new int[] { 1, 0, 2 },
-                new int[] { 0, 2, 0 }
+                new[] { 0, 1, 0 },
+                new[] { 1, 0, 2 },
+                new[] { 0, 2, 0 }
             };
             var bridgeCoordinates = new List<IBridgeCoordinates>
             {
@@ -59,7 +59,7 @@ namespace Hashi.Generator.Test.Providers
             // Arrange
             var hashiField = new List<int[]>
             {
-                new int[] { 1, 2, 1 }
+                new[] { 1, 2, 1 }
             };
             List<IBridgeCoordinates>? bridgeCoordinates = null;
             string name = "Test Puzzle";
@@ -79,7 +79,7 @@ namespace Hashi.Generator.Test.Providers
             // Arrange
             var hashiField = new List<int[]>
             {
-                new int[] { 1, 2, 1 }
+                new[] { 1, 2, 1 }
             };
             var bridgeCoordinates = new List<IBridgeCoordinates>();
             string? name = null;
@@ -99,7 +99,7 @@ namespace Hashi.Generator.Test.Providers
             // Arrange
             var hashiField = new List<int[]>
             {
-                new int[] { 1, 2, 1 }
+                new[] { 1, 2, 1 }
             };
             var bridgeCoordinates = new List<IBridgeCoordinates>();
 
@@ -135,7 +135,7 @@ namespace Hashi.Generator.Test.Providers
             // Arrange
             var hashiField = new List<int[]>
             {
-                new int[] { 1, 2, 1 }
+                new[] { 1, 2, 1 }
             };
             var bridgeCoordinates = new List<IBridgeCoordinates>();
             var solutionProvider = new SolutionProvider(hashiField, bridgeCoordinates, "Original Name");
@@ -153,7 +153,7 @@ namespace Hashi.Generator.Test.Providers
             // Arrange
             var hashiField = new List<int[]>
             {
-                new int[] { 1, 2, 1 }
+                new[] { 1, 2, 1 }
             };
             var bridgeCoordinates = new List<IBridgeCoordinates>();
             var solutionProvider = new SolutionProvider(hashiField, bridgeCoordinates, "Original Name");
@@ -171,7 +171,7 @@ namespace Hashi.Generator.Test.Providers
             // Arrange
             var hashiField = new List<int[]>
             {
-                new int[] { 1, 2, 1 }
+                new[] { 1, 2, 1 }
             };
             var bridgeCoordinates = new List<IBridgeCoordinates>
             {
@@ -182,7 +182,7 @@ namespace Hashi.Generator.Test.Providers
             // Act & Assert - HashiField and BridgeCoordinates should not have setters
             solutionProvider.HashiField.Should().NotBeNull();
             solutionProvider.BridgeCoordinates.Should().NotBeNull();
-            
+
             // These properties should not have setters (compile-time check)
             // The following would not compile if setters exist:
             // solutionProvider.HashiField = new List<int[]>(); // Should not compile

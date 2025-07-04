@@ -1,8 +1,7 @@
-using System.Text.Json;
 using Autofac;
 using FluentAssertions;
 using Hashi.SolvedPuzzles.Interfaces;
-using Moq;
+using System.Text.Json;
 
 namespace Hashi.SolvedPuzzles.Test;
 
@@ -36,21 +35,21 @@ public class HashiPuzzleLoaderTests
         var testPuzzleEnum = HashiFileEnum.Hs_16_100_25_00_001;
         var testPuzzleData = new int[][]
         {
-            new int[] { 1, 2, 3 },
-            new int[] { 4, 5, 6 },
-            new int[] { 7, 8, 9 }
+            [1, 2, 3],
+            [4, 5, 6],
+            [7, 8, 9]
         };
-        
+
         // Create a test puzzle file
         var testFileName = GetTestFileName(testPuzzleEnum);
         var testFileContent = JsonSerializer.Serialize(testPuzzleData).Replace("[", "{").Replace("]", "}");
         var testFileDirectory = Path.GetDirectoryName(testFileName);
-        
+
         if (!Directory.Exists(testFileDirectory))
         {
             Directory.CreateDirectory(testFileDirectory!);
         }
-        
+
         File.WriteAllText(testFileName, testFileContent);
 
         try
@@ -78,7 +77,7 @@ public class HashiPuzzleLoaderTests
         // Arrange
         var testPuzzleEnum = HashiFileEnum.Hs_16_100_25_00_002;
         var testFileName = GetTestFileName(testPuzzleEnum);
-        
+
         // Ensure file doesn't exist
         if (File.Exists(testFileName))
         {
@@ -97,12 +96,12 @@ public class HashiPuzzleLoaderTests
         var testPuzzleEnum = HashiFileEnum.Hs_16_100_25_00_003;
         var testFileName = GetTestFileName(testPuzzleEnum);
         var testFileDirectory = Path.GetDirectoryName(testFileName);
-        
+
         if (!Directory.Exists(testFileDirectory))
         {
             Directory.CreateDirectory(testFileDirectory!);
         }
-        
+
         // Create an invalid JSON file
         File.WriteAllText(testFileName, "invalid json content");
 
@@ -129,12 +128,12 @@ public class HashiPuzzleLoaderTests
         var testPuzzleEnum = HashiFileEnum.Hs_16_100_25_00_004;
         var testFileName = GetTestFileName(testPuzzleEnum);
         var testFileDirectory = Path.GetDirectoryName(testFileName);
-        
+
         if (!Directory.Exists(testFileDirectory))
         {
             Directory.CreateDirectory(testFileDirectory!);
         }
-        
+
         // Create a file with null content
         File.WriteAllText(testFileName, "null");
 
@@ -161,12 +160,12 @@ public class HashiPuzzleLoaderTests
         var testPuzzleEnum = HashiFileEnum.Hs_16_100_25_00_005;
         var testFileName = GetTestFileName(testPuzzleEnum);
         var testFileDirectory = Path.GetDirectoryName(testFileName);
-        
+
         if (!Directory.Exists(testFileDirectory))
         {
             Directory.CreateDirectory(testFileDirectory!);
         }
-        
+
         // Create an empty file
         File.WriteAllText(testFileName, "");
 
@@ -193,22 +192,22 @@ public class HashiPuzzleLoaderTests
         var testPuzzleEnum = HashiFileEnum.Hs_16_100_25_00_006;
         var testPuzzleData = new int[][]
         {
-            new int[] { 1, 0, 2, 0, 3 },
-            new int[] { 0, 4, 0, 5, 0 },
-            new int[] { 2, 0, 6, 0, 1 },
-            new int[] { 0, 3, 0, 2, 0 },
-            new int[] { 4, 0, 1, 0, 5 }
+            [1, 0, 2, 0, 3],
+            [0, 4, 0, 5, 0],
+            [2, 0, 6, 0, 1],
+            [0, 3, 0, 2, 0],
+            [4, 0, 1, 0, 5]
         };
-        
+
         var testFileName = GetTestFileName(testPuzzleEnum);
         var testFileContent = JsonSerializer.Serialize(testPuzzleData).Replace("[", "{").Replace("]", "}");
         var testFileDirectory = Path.GetDirectoryName(testFileName);
-        
+
         if (!Directory.Exists(testFileDirectory))
         {
             Directory.CreateDirectory(testFileDirectory!);
         }
-        
+
         File.WriteAllText(testFileName, testFileContent);
 
         try
@@ -322,19 +321,19 @@ public class HashiPuzzleLoaderTests
         var testPuzzleEnum = HashiFileEnum.Hs_16_100_25_00_008;
         var testPuzzleData = new int[][]
         {
-            new int[] { 1, 2 },
-            new int[] { 3, 4 }
+            [1, 2],
+            [3, 4]
         };
-        
+
         var testFileName = GetTestFileName(testPuzzleEnum);
         var testFileContent = JsonSerializer.Serialize(testPuzzleData).Replace("[", "{").Replace("]", "}");
         var testFileDirectory = Path.GetDirectoryName(testFileName);
-        
+
         if (!Directory.Exists(testFileDirectory))
         {
             Directory.CreateDirectory(testFileDirectory!);
         }
-        
+
         File.WriteAllText(testFileName, testFileContent);
 
         try
@@ -372,10 +371,10 @@ public class HashiPuzzleLoaderTests
 
     private string GetHashiFileNameViaReflection(HashiFileEnum hashiFileEnum)
     {
-        var method = typeof(HashiPuzzleLoader).GetMethod("GetHashiFileName", 
+        var method = typeof(HashiPuzzleLoader).GetMethod("GetHashiFileName",
             System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
         method.Should().NotBeNull();
-        return (string)method!.Invoke(hashiPuzzleLoader, new object[] { hashiFileEnum })!;
+        return (string)method.Invoke(hashiPuzzleLoader, [hashiFileEnum])!;
     }
 
     #endregion

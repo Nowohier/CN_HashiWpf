@@ -1,6 +1,5 @@
 using Autofac;
 using FluentAssertions;
-using Moq;
 using System.Reflection;
 using ILogger = Hashi.Logging.Interfaces.ILogger;
 using ILoggerFactory = Hashi.Logging.Interfaces.ILoggerFactory;
@@ -17,7 +16,7 @@ public class LoggerFactoryTests
     public void Setup()
     {
         loggerFactory = new LoggerFactory();
-        
+
         var builder = new ContainerBuilder();
         builder.RegisterModule<AutoFacLoggingModule>();
         container = builder.Build();
@@ -46,6 +45,7 @@ public class LoggerFactoryTests
     public void Constructor_WhenCalled_ShouldConfigureNLog()
     {
         // Arrange & Act
+        // ReSharper disable once UnusedVariable
         var factory = new LoggerFactory();
 
         // Assert
@@ -99,7 +99,7 @@ public class LoggerFactoryTests
     public void CreateLogger_WhenClassWithNamespace_ShouldReturnValidLogger()
     {
         // Act
-        var logger = loggerFactory.CreateLogger<System.Collections.Generic.List<string>>();
+        var logger = loggerFactory.CreateLogger<List<string>>();
 
         // Assert
         logger.Should().NotBeNull();
@@ -219,10 +219,12 @@ public class LoggerFactoryTests
     public void ConfigureNLog_WhenCalledMultipleTimes_ShouldOnlyConfigureOnce()
     {
         // Arrange
+        // ReSharper disable once UnusedVariable
         var factory1 = new LoggerFactory();
         var initialConfig = NLog.LogManager.Configuration;
 
         // Act
+        // ReSharper disable once UnusedVariable
         var factory2 = new LoggerFactory();
         var secondConfig = NLog.LogManager.Configuration;
 
@@ -234,12 +236,12 @@ public class LoggerFactoryTests
     public void GetLogsDirectory_WhenCalled_ShouldReturnValidPath()
     {
         // Arrange
-        var method = typeof(LoggerFactory).GetMethod("GetLogsDirectory", 
+        var method = typeof(LoggerFactory).GetMethod("GetLogsDirectory",
             BindingFlags.NonPublic | BindingFlags.Static);
         method.Should().NotBeNull();
 
         // Act
-        var logsDirectory = (string)method!.Invoke(null, null)!;
+        var logsDirectory = (string)method.Invoke(null, null)!;
 
         // Assert
         logsDirectory.Should().NotBeNullOrEmpty();
@@ -251,6 +253,7 @@ public class LoggerFactoryTests
     public void ConfigureNLog_ShouldSetupFileTarget()
     {
         // Arrange & Act
+        // ReSharper disable once UnusedVariable
         var factory = new LoggerFactory();
 
         // Assert
@@ -264,6 +267,7 @@ public class LoggerFactoryTests
     public void ConfigureNLog_ShouldSetupLoggingRules()
     {
         // Arrange & Act
+        // ReSharper disable once UnusedVariable
         var factory = new LoggerFactory();
 
         // Assert
@@ -319,7 +323,7 @@ public class LoggerFactoryTests
         // Assert
         logger1.Should().NotBeNull();
         logger2.Should().NotBeNull();
-        
+
         // Both should be able to log without issues
         Assert.DoesNotThrow(() =>
         {
