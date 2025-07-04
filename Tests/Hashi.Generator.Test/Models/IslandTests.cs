@@ -41,9 +41,9 @@ namespace Hashi.Generator.Test.Models
             var islands = new List<IIsland> { mainIsland, upIsland };
             var field = new int[][]
             {
-                new int[] { 0, 0, 0 },
-                new int[] { 0, 1, 0 }, // upIsland at (1,1)
-                new int[] { 0, 2, 0 }, // mainIsland at (2,1)
+                [0, 0, 0],
+                [0, 1, 0], // upIsland at (1,1)
+                [0, 2, 0], // mainIsland at (2,1)
             };
 
             // Act
@@ -65,9 +65,9 @@ namespace Hashi.Generator.Test.Models
             var islands = new List<IIsland> { mainIsland, downIsland };
             var field = new int[][]
             {
-                new int[] { 0, 0, 0 },
-                new int[] { 0, 2, 0 }, // mainIsland at (1,1)
-                new int[] { 0, 1, 0 }, // downIsland at (2,1)
+                [0, 0, 0],
+                [0, 2, 0], // mainIsland at (1,1)
+                [0, 1, 0], // downIsland at (2,1)
             };
 
             // Act
@@ -89,9 +89,9 @@ namespace Hashi.Generator.Test.Models
             var islands = new List<IIsland> { mainIsland, leftIsland };
             var field = new int[][]
             {
-                new int[] { 0, 0, 0 },
-                new int[] { 0, 1, 2 }, // leftIsland at (1,1), mainIsland at (1,2)
-                new int[] { 0, 0, 0 },
+                [0, 0, 0],
+                [0, 1, 2], // leftIsland at (1,1), mainIsland at (1,2)
+                [0, 0, 0],
             };
 
             // Act
@@ -113,9 +113,9 @@ namespace Hashi.Generator.Test.Models
             var islands = new List<IIsland> { mainIsland, rightIsland };
             var field = new int[][]
             {
-                new int[] { 0, 0, 0 },
-                new int[] { 0, 2, 1 }, // mainIsland at (1,1), rightIsland at (1,2)
-                new int[] { 0, 0, 0 },
+                [0, 0, 0],
+                [0, 2, 1], // mainIsland at (1,1), rightIsland at (1,2)
+                [0, 0, 0],
             };
 
             // Act
@@ -140,11 +140,11 @@ namespace Hashi.Generator.Test.Models
             var islands = new List<IIsland> { mainIsland, upIsland, downIsland, leftIsland, rightIsland };
             var field = new int[][]
             {
-                new int[] { 0, 0, 0, 0, 0 },
-                new int[] { 0, 0, 1, 0, 0 }, // upIsland at (1,2)
-                new int[] { 0, 1, 4, 1, 0 }, // leftIsland at (2,1), mainIsland at (2,2), rightIsland at (2,3)
-                new int[] { 0, 0, 1, 0, 0 }, // downIsland at (3,2)
-                new int[] { 0, 0, 0, 0, 0 },
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 0, 0], // upIsland at (1,2)
+                [0, 1, 4, 1, 0], // leftIsland at (2,1), mainIsland at (2,2), rightIsland at (2,3)
+                [0, 0, 1, 0, 0], // downIsland at (3,2)
+                [0, 0, 0, 0, 0],
             };
 
             // Act
@@ -165,11 +165,11 @@ namespace Hashi.Generator.Test.Models
             var islands = new List<IIsland> { mainIsland };
             var field = new int[][]
             {
-                new int[] { 0, 0, 0, 0, 0 },
-                new int[] { 0, 0, 0, 0, 0 },
-                new int[] { 0, 0, 1, 0, 0 }, // mainIsland at (2,2) - isolated
-                new int[] { 0, 0, 0, 0, 0 },
-                new int[] { 0, 0, 0, 0, 0 },
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 0, 0], // mainIsland at (2,2) - isolated
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
             };
 
             // Act
@@ -191,11 +191,11 @@ namespace Hashi.Generator.Test.Models
             var islands = new List<IIsland> { mainIsland, potentialNeighbor };
             var field = new int[][]
             {
-                new int[] { 0, 0, 0, 0, 0 },
-                new int[] { 0, 0, 0, 0, 0 },
-                new int[] { 0, 0, 2, 0, 1 }, // mainIsland at (2,2), gap at (2,3), neighbor at (2,4)
-                new int[] { 0, 0, 0, 0, 0 },
-                new int[] { 0, 0, 0, 0, 0 },
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 2, 0, 1], // mainIsland at (2,2), gap at (2,3), neighbor at (2,4)
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
             };
 
             // Act

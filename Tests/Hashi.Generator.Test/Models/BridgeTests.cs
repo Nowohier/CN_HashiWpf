@@ -1,6 +1,7 @@
 using FluentAssertions;
 using Hashi.Generator.Interfaces.Models;
 using Hashi.Generator.Models;
+// ReSharper disable LocalVariableHidesMember
 
 namespace Hashi.Generator.Test.Models
 {
@@ -126,18 +127,18 @@ namespace Hashi.Generator.Test.Models
             var bottomIsland = new Island(2, 2, 1);
             var topIsland = new Island(2, 1, 1);
             var islands = new List<IIsland> { bottomIsland, topIsland };
-            
+
             var field = new int[][]
             {
-                new int[] { 0, 0, 0 }, 
-                new int[] { 0, 2, 0 }, // topIsland at (1,1)
-                new int[] { 0, 2, 0 }  // bottomIsland at (2,1)
+                [0, 0, 0],
+                [0, 2, 0], // topIsland at (1,1)
+                [0, 2, 0] // bottomIsland at (2,1)
             };
 
             // Set up neighbors using SetAllNeighbors
             bottomIsland.SetAllNeighbors(field, islands);
             topIsland.SetAllNeighbors(field, islands);
-            
+
             var bridge = new Bridge(bottomIsland, topIsland, 0);
 
             // Act
@@ -160,18 +161,18 @@ namespace Hashi.Generator.Test.Models
             var topIsland = new Island(2, 1, 1);
             var bottomIsland = new Island(2, 2, 1);
             var islands = new List<IIsland> { topIsland, bottomIsland };
-            
+
             var field = new int[][]
             {
-                new int[] { 0, 0, 0 },
-                new int[] { 0, 2, 0 }, // topIsland at (1,1)
-                new int[] { 0, 2, 0 }  // bottomIsland at (2,1)
+                [0, 0, 0],
+                [0, 2, 0], // topIsland at (1,1)
+                [0, 2, 0] // bottomIsland at (2,1)
             };
 
             // Set up neighbors using SetAllNeighbors
             topIsland.SetAllNeighbors(field, islands);
             bottomIsland.SetAllNeighbors(field, islands);
-            
+
             var bridge = new Bridge(topIsland, bottomIsland, 0);
 
             // Act
@@ -190,18 +191,18 @@ namespace Hashi.Generator.Test.Models
             var rightIsland = new Island(2, 1, 2);
             var leftIsland = new Island(2, 1, 1);
             var islands = new List<IIsland> { rightIsland, leftIsland };
-            
+
             var field = new int[][]
             {
-                new int[] { 0, 0, 0 },
-                new int[] { 0, 2, 2 }, // leftIsland at (1,1), rightIsland at (1,2)
-                new int[] { 0, 0, 0 }
+                [0, 0, 0],
+                [0, 2, 2], // leftIsland at (1,1), rightIsland at (1,2)
+                [0, 0, 0]
             };
 
             // Set up neighbors using SetAllNeighbors
             rightIsland.SetAllNeighbors(field, islands);
             leftIsland.SetAllNeighbors(field, islands);
-            
+
             var bridge = new Bridge(rightIsland, leftIsland, 0);
 
             // Act
@@ -220,18 +221,18 @@ namespace Hashi.Generator.Test.Models
             var leftIsland = new Island(2, 1, 1);
             var rightIsland = new Island(2, 1, 2);
             var islands = new List<IIsland> { leftIsland, rightIsland };
-            
+
             var field = new int[][]
             {
-                new int[] { 0, 0, 0 },
-                new int[] { 0, 2, 2 }, // leftIsland at (1,1), rightIsland at (1,2)
-                new int[] { 0, 0, 0 }
+                [0, 0, 0],
+                [0, 2, 2], // leftIsland at (1,1), rightIsland at (1,2)
+                [0, 0, 0]
             };
 
             // Set up neighbors using SetAllNeighbors
             leftIsland.SetAllNeighbors(field, islands);
             rightIsland.SetAllNeighbors(field, islands);
-            
+
             var bridge = new Bridge(leftIsland, rightIsland, 0);
 
             // Act
@@ -250,18 +251,18 @@ namespace Hashi.Generator.Test.Models
             var leftIsland = new Island(4, 1, 1);
             var rightIsland = new Island(4, 1, 2);
             var islands = new List<IIsland> { leftIsland, rightIsland };
-            
+
             var field = new int[][]
             {
-                new int[] { 0, 0, 0 },
-                new int[] { 0, 4, 4 }, // leftIsland at (1,1), rightIsland at (1,2)
-                new int[] { 0, 0, 0 }
+                [0, 0, 0],
+                [0, 4, 4], // leftIsland at (1,1), rightIsland at (1,2)
+                [0, 0, 0]
             };
 
             // Set up neighbors using SetAllNeighbors
             leftIsland.SetAllNeighbors(field, islands);
             rightIsland.SetAllNeighbors(field, islands);
-            
+
             var bridge = new Bridge(leftIsland, rightIsland, 0);
 
             // Act
@@ -284,14 +285,14 @@ namespace Hashi.Generator.Test.Models
             // Arrange - Islands that are not connected as neighbors
             var island1 = new Island(2, 1, 1);
             var island2 = new Island(2, 3, 3);
-            
+
             var bridge = new Bridge(island1, island2, 0);
             var field = new int[][]
             {
-                new int[] { 0, 0, 0, 0 },
-                new int[] { 0, 2, 0, 0 }, // island1 at (1,1)
-                new int[] { 0, 0, 0, 0 },
-                new int[] { 0, 0, 0, 2 }  // island2 at (3,3)
+                [0, 0, 0, 0],
+                [0, 2, 0, 0], // island1 at (1,1)
+                [0, 0, 0, 0],
+                [0, 0, 0, 2] // island2 at (3,3)
             };
 
             // Act
@@ -303,7 +304,7 @@ namespace Hashi.Generator.Test.Models
             island2.AmountBridgesConnectable.Should().Be(3); // 2 + 1
             field[1][1].Should().Be(3); // island1 field value incremented
             field[3][3].Should().Be(3); // island2 field value incremented
-            
+
             // Direction specific bridge counts should remain 0 since they're not connected
             island1.AmountBridgesUp.Should().Be(0);
             island1.AmountBridgesDown.Should().Be(0);
