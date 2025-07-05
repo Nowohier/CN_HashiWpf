@@ -1,0 +1,21 @@
+# Documentation build artifacts
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+
+# Editor temporary files
+*~
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Generated files
+*.pdf
+*.docx
+*.html
+
+# Backup files
+*.bak
+*.backup
