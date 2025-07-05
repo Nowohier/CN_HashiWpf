@@ -15,5 +15,10 @@ namespace Hashi.Gui.Wrappers
         {
             Directory.CreateDirectory(path);
         }
+
+        public void Delete(string path, bool recursive)
+        {
+            Directory.Delete(path, recursive);
+        }
     }
 }
