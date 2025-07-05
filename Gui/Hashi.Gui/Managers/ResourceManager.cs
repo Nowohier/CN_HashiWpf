@@ -1,5 +1,6 @@
 ﻿using Hashi.Gui.Interfaces.Managers;
 using Hashi.Gui.Interfaces.Providers;
+using Hashi.Gui.Interfaces.Wrappers;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -7,7 +8,10 @@ using System.Text;
 namespace Hashi.Gui.Managers
 {
     /// <inheritdoc cref="IResourceManager"/>
-    public class ResourceManager(IPathProvider pathProvider) : IResourceManager
+    public class ResourceManager(
+        IPathProvider pathProvider,
+        IFileWrapper fileWrapper,
+        IDirectoryWrapper directoryWrapper) : IResourceManager
     {
         private readonly string[] embeddedResourceNames = Assembly.GetExecutingAssembly().GetManifestResourceNames();
 
@@ -28,22 +32,23 @@ namespace Hashi.Gui.Managers
 
         private void RemoveSettingsDirectory(string directoryPath)
         {
-            if (!Directory.Exists(directoryPath)) return;
-            Directory.Delete(directoryPath, true);
+            if (!directoryWrapper.Exists(directoryPath)) return;
+            directoryWrapper.Delete(directoryPath, true);
         }
 
         private void EnsureDirectoryExists(string directoryPath)
         {
-            if (Directory.Exists(directoryPath)) return;
-            Directory.CreateDirectory(directoryPath);
+            if (directoryWrapper.Exists(directoryPath)) return;
+            directoryWrapper.CreateDirectory(directoryPath);
         }
 
         private void EnsureFileExists(string filePath, string embeddedFileName)
         {
-            if (File.Exists(filePath) || !TryGetEmbeddedResourceName(embeddedFileName, out var resourceName)) return;
+            if (fileWrapper.Exists(filePath) ||
+                !TryGetEmbeddedResourceName(embeddedFileName, out var resourceName)) return;
 
             var content = GetEmbeddedResource(resourceName);
-            File.WriteAllText(filePath, content);
+            fileWrapper.WriteAllText(filePath, content);
         }
 
         private bool TryGetEmbeddedResourceName(string fileName, out string resourceName)
