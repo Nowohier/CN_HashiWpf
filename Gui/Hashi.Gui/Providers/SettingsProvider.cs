@@ -19,14 +19,23 @@ public class SettingsProvider : ISettingsProvider
     private readonly ILogger logger;
 
     /// <inheritdoc cref="ISettingsProvider" />
-    public SettingsProvider(IJsonWrapper jsonWrapper, Func<ISettingsViewModel> settingsFactory, IPathProvider pathProvider, ILoggerFactory loggerFactory, IFileWrapper fileWrapper, IDirectoryWrapper directoryWrapper)
+    public SettingsProvider
+    (
+        IJsonWrapper jsonWrapper,
+        Func<ISettingsViewModel> settingsFactory,
+        IPathProvider pathProvider,
+        ILoggerFactory loggerFactory,
+        IFileWrapper fileWrapper,
+        IDirectoryWrapper directoryWrapper
+    )
     {
         this.jsonWrapper = jsonWrapper ?? throw new ArgumentNullException(nameof(jsonWrapper));
         this.settingsFactory = settingsFactory ?? throw new ArgumentNullException(nameof(settingsFactory));
         this.pathProvider = pathProvider ?? throw new ArgumentNullException(nameof(pathProvider));
         this.fileWrapper = fileWrapper ?? throw new ArgumentNullException(nameof(fileWrapper));
         this.directoryWrapper = directoryWrapper ?? throw new ArgumentNullException(nameof(directoryWrapper));
-        this.logger = (loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory))).CreateLogger<SettingsProvider>();
+        this.logger = (loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory)))
+            .CreateLogger<SettingsProvider>();
         Settings = LoadSettings();
         logger.Info("SettingsProvider initialized");
     }
@@ -49,7 +58,8 @@ public class SettingsProvider : ISettingsProvider
         var path = pathProvider.HashiSettingsFilePath;
         try
         {
-            if (!directoryWrapper.Exists(pathProvider.SettingsDirectoryPath)) directoryWrapper.CreateDirectory(pathProvider.SettingsDirectoryPath);
+            if (!directoryWrapper.Exists(pathProvider.SettingsDirectoryPath))
+                directoryWrapper.CreateDirectory(pathProvider.SettingsDirectoryPath);
 
             fileWrapper.WriteAllText(path, jsonArray);
         }
