@@ -66,16 +66,16 @@ public class MainViewModel : AsyncObservableRecipient,
         IResourceManager resourceManager,
         ILoggerFactory loggerFactory)
     {
-        this.brushFactory = brushFactory;
-        SettingsProvider = settingsProvider;
-        TimerProvider = timerProvider;
-        IslandProvider = islandProvider;
-        HintProvider = hintProvider;
-        TestSolutionProvider = testSolutionProvider;
-        this.dialogWrapper = dialogWrapper;
-        this.hashiGenerator = hashiGenerator;
-        this.resourceManager = resourceManager;
-        logger = loggerFactory.CreateLogger<MainViewModel>();
+        this.brushFactory = brushFactory ?? throw new ArgumentNullException(nameof(brushFactory));
+        SettingsProvider = settingsProvider ?? throw new ArgumentNullException(nameof(settingsProvider));
+        TimerProvider = timerProvider ?? throw new ArgumentNullException(nameof(timerProvider));
+        IslandProvider = islandProvider ?? throw new ArgumentNullException(nameof(islandProvider));
+        HintProvider = hintProvider ?? throw new ArgumentNullException(nameof(hintProvider));
+        TestSolutionProvider = testSolutionProvider ?? throw new ArgumentNullException(nameof(testSolutionProvider));
+        this.dialogWrapper = dialogWrapper ?? throw new ArgumentNullException(nameof(dialogWrapper));
+        this.hashiGenerator = hashiGenerator ?? throw new ArgumentNullException(nameof(hashiGenerator));
+        this.resourceManager = resourceManager ?? throw new ArgumentNullException(nameof(resourceManager));
+        logger = (loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory))).CreateLogger<MainViewModel>();
 
         WeakReferenceMessenger.Default.Register<IBridgeConnectionChangedMessage>(this);
         WeakReferenceMessenger.Default.Register<IAllConnectionsSetMessage>(this);

@@ -83,14 +83,14 @@ public class IslandViewModel :
     )
     {
         MaxConnections = maxConnections;
-        Coordinates = hashiPointFactory.Invoke(x, y, HashiPointTypeEnum.Normal);
-        this.viewBoxControl = (FrameworkElement)viewBoxControl.ViewBoxControl;
-        this.brushFactory = brushFactory;
-        this.updateAllIslandColorsMessageFactory = updateAllIslandColorsMessageFactory;
-        this.connectionInformationContainerFactory = connectionInformationContainerFactory;
-        this.bridgeConnectionChangedMessageFactory = bridgeConnectionChangedMessageFactory;
-        this.isTestModeRequestMessageFactory = isTestModeRequestMessageFactory;
-        this.dragDirectionChangedRequestTargetMessageFactory = dragDirectionChangedRequestTargetMessageFactory;
+        Coordinates = (hashiPointFactory ?? throw new ArgumentNullException(nameof(hashiPointFactory))).Invoke(x, y, HashiPointTypeEnum.Normal);
+        this.viewBoxControl = (FrameworkElement)(viewBoxControl ?? throw new ArgumentNullException(nameof(viewBoxControl))).ViewBoxControl;
+        this.brushFactory = brushFactory ?? throw new ArgumentNullException(nameof(brushFactory));
+        this.updateAllIslandColorsMessageFactory = updateAllIslandColorsMessageFactory ?? throw new ArgumentNullException(nameof(updateAllIslandColorsMessageFactory));
+        this.connectionInformationContainerFactory = connectionInformationContainerFactory ?? throw new ArgumentNullException(nameof(connectionInformationContainerFactory));
+        this.bridgeConnectionChangedMessageFactory = bridgeConnectionChangedMessageFactory ?? throw new ArgumentNullException(nameof(bridgeConnectionChangedMessageFactory));
+        this.isTestModeRequestMessageFactory = isTestModeRequestMessageFactory ?? throw new ArgumentNullException(nameof(isTestModeRequestMessageFactory));
+        this.dragDirectionChangedRequestTargetMessageFactory = dragDirectionChangedRequestTargetMessageFactory ?? throw new ArgumentNullException(nameof(dragDirectionChangedRequestTargetMessageFactory));
 
         DragEnterCommand = new RelayCommand<DragEventArgs>(DragEnterCommandExecute);
         DropCommand = new RelayCommand<DragEventArgs>(DropCommandExecute);
@@ -253,7 +253,7 @@ public class IslandViewModel :
     /// <inheritdoc />
     public bool IsValidDropTarget(IIslandViewModel? target)
     {
-        return target != null && MaxConnections > 0 && target.MaxConnections > 0 &&
+        return target != null && target != this && MaxConnections > 0 && target.MaxConnections > 0 &&
                !MaxConnectionsReached && !target.MaxConnectionsReached &&
                GetConnectionType(target) != ConnectionTypeEnum.Diagonal;
     }

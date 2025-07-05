@@ -36,11 +36,11 @@ public class IslandProvider :
         ILoggerFactory loggerFactory
     )
     {
-        this.islandFactory = islandFactory;
-        this.bridgeFactory = bridgeFactory;
-        this.allConnectionsSetMessageFactory = allConnectionsSetMessageFactory;
-        this.dialogWrapper = dialogWrapper;
-        this.logger = loggerFactory.CreateLogger<IslandProvider>();
+        this.islandFactory = islandFactory ?? throw new ArgumentNullException(nameof(islandFactory));
+        this.bridgeFactory = bridgeFactory ?? throw new ArgumentNullException(nameof(bridgeFactory));
+        this.allConnectionsSetMessageFactory = allConnectionsSetMessageFactory ?? throw new ArgumentNullException(nameof(allConnectionsSetMessageFactory));
+        this.dialogWrapper = dialogWrapper ?? throw new ArgumentNullException(nameof(dialogWrapper));
+        this.logger = (loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory))).CreateLogger<IslandProvider>();
 
         WeakReferenceMessenger.Default.Register(this);
         logger.Info("IslandProvider initialized");
@@ -417,6 +417,12 @@ public class IslandProvider :
 
     private IIslandViewModel GetIslandByCoordinates(IHashiPoint coordinates)
     {
+        if (coordinates.Y < 0 || coordinates.Y >= Islands.Count)
+            throw new ArgumentOutOfRangeException(nameof(coordinates), "Y coordinate is out of range.");
+
+        if (coordinates.X < 0 || coordinates.X >= Islands[coordinates.Y].Count)
+            throw new ArgumentOutOfRangeException(nameof(coordinates), "X coordinate is out of range.");
+
         return Islands[coordinates.Y][coordinates.X];
     }
 
