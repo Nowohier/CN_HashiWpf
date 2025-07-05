@@ -10,5 +10,7 @@ public class AutoFacWrapperModule : Module
         // Register your wrappers here
         builder.RegisterType<DialogWrapper>().As<IDialogWrapper>().SingleInstance();
         builder.RegisterType<JsonWrapper>().As<IJsonWrapper>().SingleInstance();
+        builder.RegisterType<FileWrapper>().As<IFileWrapper>().SingleInstance();
+        builder.RegisterType<DirectoryWrapper>().As<IDirectoryWrapper>().SingleInstance();
     }
 }
