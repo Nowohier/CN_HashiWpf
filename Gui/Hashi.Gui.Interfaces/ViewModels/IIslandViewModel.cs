@@ -1,6 +1,7 @@
-﻿using System.Collections.ObjectModel;
-using Hashi.Enums;
+﻿using Hashi.Enums;
+using Hashi.Gui.Interfaces.Helpers;
 using Hashi.Gui.Interfaces.Models;
+using System.Collections.ObjectModel;
 
 namespace Hashi.Gui.Interfaces.ViewModels;
 
@@ -78,6 +79,11 @@ public interface IIslandViewModel
     ///     Gets the coordinates of the island.
     /// </summary>
     IHashiPoint Coordinates { get; }
+
+    /// <summary>
+    /// Gets the helper instance for performing color-related operations.
+    /// </summary>
+    IHashiBrushResolver BrushResolver { get; }
 
     /// <summary>
     ///     Resets the drop target.

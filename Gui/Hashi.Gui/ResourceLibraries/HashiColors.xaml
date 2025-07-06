@@ -11,4 +11,5 @@
     <SolidColorBrush x:Key="TestModeBrush" Color="#d28982" />
     <SolidColorBrush x:Key="PotentialConnectionBrush" Color="AliceBlue" />
     <SolidColorBrush x:Key="GridLineBrush" Color="LightGray" />
+    <SolidColorBrush x:Key="LightBlueBrush" Color="LightBlue" />
 </ResourceDictionary>

@@ -4,7 +4,7 @@ using Hashi.Enums;
 using Hashi.Generator.Interfaces;
 using Hashi.Generator.Interfaces.Providers;
 using Hashi.Generator.Providers;
-using Hashi.Gui.Helpers;
+using Hashi.Gui.Interfaces.Helpers;
 using Hashi.Gui.Interfaces.Managers;
 using Hashi.Gui.Interfaces.Messages;
 using Hashi.Gui.Interfaces.Models;
@@ -16,7 +16,6 @@ using Hashi.Gui.Translation;
 using Hashi.Logging.Interfaces;
 using System.Globalization;
 using System.Windows.Input;
-using System.Windows.Media;
 
 namespace Hashi.Gui.ViewModels;
 
@@ -27,10 +26,10 @@ public class MainViewModel : AsyncObservableRecipient,
     IRecipient<IAllConnectionsSetMessage>,
     IRecipient<ISetTestSolutionMessage>
 {
-    private readonly Func<SolidColorBrush, IHashiBrush> brushFactory;
     private readonly IDialogWrapper dialogWrapper;
     private readonly IHashiGenerator hashiGenerator;
     private readonly IResourceManager resourceManager;
+    private readonly IHashiBrushResolver brushResolver;
     private readonly ILogger logger;
 
     private bool isCheating;
@@ -43,7 +42,6 @@ public class MainViewModel : AsyncObservableRecipient,
     /// <summary>
     ///     Initializes a new instance of the <see cref="MainViewModel" /> class.
     /// </summary>
-    /// <param name="brushFactory">The solid color brush factory.</param>
     /// <param name="dialogWrapper">The dialog wrapper.</param>
     /// <param name="hashiGenerator">The hashi generator.</param>
     /// <param name="settingsProvider">The settings provider.</param>
@@ -53,9 +51,9 @@ public class MainViewModel : AsyncObservableRecipient,
     /// <param name="testSolutionProvider">The test solution provider.</param>
     /// <param name="resourceManager">The resource manager.</param>
     /// <param name="loggerFactory">The logger factory.</param>
+    /// <param name="brushResolver">The brush resolver instance.</param>
     public MainViewModel
     (
-        Func<SolidColorBrush, IHashiBrush> brushFactory,
         IDialogWrapper dialogWrapper,
         IHashiGenerator hashiGenerator,
         ISettingsProvider settingsProvider,
@@ -64,9 +62,9 @@ public class MainViewModel : AsyncObservableRecipient,
         IHintProvider hintProvider,
         ITestSolutionProvider testSolutionProvider,
         IResourceManager resourceManager,
-        ILoggerFactory loggerFactory)
+        ILoggerFactory loggerFactory,
+        IHashiBrushResolver brushResolver)
     {
-        this.brushFactory = brushFactory ?? throw new ArgumentNullException(nameof(brushFactory));
         SettingsProvider = settingsProvider ?? throw new ArgumentNullException(nameof(settingsProvider));
         TimerProvider = timerProvider ?? throw new ArgumentNullException(nameof(timerProvider));
         IslandProvider = islandProvider ?? throw new ArgumentNullException(nameof(islandProvider));
@@ -75,6 +73,7 @@ public class MainViewModel : AsyncObservableRecipient,
         this.dialogWrapper = dialogWrapper ?? throw new ArgumentNullException(nameof(dialogWrapper));
         this.hashiGenerator = hashiGenerator ?? throw new ArgumentNullException(nameof(hashiGenerator));
         this.resourceManager = resourceManager ?? throw new ArgumentNullException(nameof(resourceManager));
+        this.brushResolver = brushResolver;
         logger = (loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory))).CreateLogger<MainViewModel>();
 
         WeakReferenceMessenger.Default.Register<IBridgeConnectionChangedMessage>(this);
@@ -106,7 +105,7 @@ public class MainViewModel : AsyncObservableRecipient,
     {
         resourceManager.PrepareUi();
         selectedRule = HintProvider.Rules.First();
-        WindowColorBrush = brushFactory.Invoke(HashiColorHelper.BasicBrush);
+        WindowColorBrush = brushResolver.ResolveBrush(HashiColor.BasicBrush);
         _ = CreateNewGameAsync();
     }
 
@@ -171,8 +170,8 @@ public class MainViewModel : AsyncObservableRecipient,
         {
             if (!SetProperty(ref isTestFieldMode, value)) return;
             WindowColorBrush = isTestFieldMode
-                ? brushFactory.Invoke(HashiColorHelper.TestModeBrush)
-                : brushFactory.Invoke(HashiColorHelper.BasicBrush);
+                ? brushResolver.ResolveBrush(HashiColor.TestModeBrush)
+                : brushResolver.ResolveBrush(HashiColor.BasicBrush);
             OnPropertyChanged(nameof(WindowColorBrush));
             OnPropertyChanged(nameof(Title));
         }
@@ -342,8 +341,6 @@ public class MainViewModel : AsyncObservableRecipient,
         var caption = TranslationSource.Instance["MessageGameOverCaption"]!;
         var dialogMessage = string.Format(TranslationSource.Instance["MessageGameOverText"]!, actualScore.ToString(@"hh\:mm\:ss"));
 
-        //ToDo: Check if all islands are connected
-
         if (IsCheating || IsTestFieldMode)
         {
             dialogWrapper.Show(caption, dialogMessage, DialogButton.Ok, DialogImage.Success);
@@ -437,8 +434,8 @@ public class MainViewModel : AsyncObservableRecipient,
 
         IslandProvider.RefreshIslandColors();
         IslandProvider.RemoveAllHighlights();
-        message.Source.IslandColor = brushFactory.Invoke(HashiColorHelper.GreenIslandBrush);
-        target.IslandColor = brushFactory.Invoke(HashiColorHelper.GreenIslandBrush);
+        message.Source.IslandColor = brushResolver.ResolveBrush(HashiColor.GreenIslandBrush);
+        target.IslandColor = brushResolver.ResolveBrush(HashiColor.GreenIslandBrush);
         IslandProvider.HighlightPathToTargetIsland(message.Source, target);
 
         message.Reply(target);

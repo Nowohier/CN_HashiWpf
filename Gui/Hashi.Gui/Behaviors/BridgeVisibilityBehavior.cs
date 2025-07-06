@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Enums;
-using Hashi.Gui.Helpers;
+using Hashi.Gui.Interfaces.Helpers;
 using Hashi.Gui.Interfaces.Messages;
 using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.ViewModels;
@@ -35,6 +35,13 @@ public class BridgeVisibilityBehavior : Behavior<Line>, IRecipient<IRuleMessageC
         DependencyProperty.Register(nameof(BridgeType), typeof(BridgeTypeEnum), typeof(BridgeVisibilityBehavior),
             new PropertyMetadata(BridgeTypeEnum.None, OnPropertiesChanged));
 
+    /// <summary>
+    ///     Identifies the <see cref="AllConnections" /> dependency property.
+    /// </summary>
+    public static readonly DependencyProperty BrushResolverProperty =
+        DependencyProperty.Register(nameof(BrushResolver), typeof(IHashiBrushResolver),
+            typeof(BridgeVisibilityBehavior));
+
     private readonly DoubleAnimation fadeInAnimation = new()
     {
         From = 0.0,
@@ -43,13 +50,7 @@ public class BridgeVisibilityBehavior : Behavior<Line>, IRecipient<IRuleMessageC
         EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut }
     };
 
-    private readonly ColorAnimation fadeOutAnimation = new()
-    {
-        From = HashiColorHelper.IntenseGreenBrush.Color,
-        To = Colors.Black,
-        Duration = TimeSpan.FromSeconds(0.5),
-        EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut }
-    };
+    private ColorAnimation? fadeOutAnimation;
 
     /// <summary>
     ///     Gets or sets the collection of all connections for the island.
@@ -58,6 +59,15 @@ public class BridgeVisibilityBehavior : Behavior<Line>, IRecipient<IRuleMessageC
     {
         get => (ObservableCollection<IHashiPoint>)GetValue(AllConnectionsProperty);
         set => SetValue(AllConnectionsProperty, value);
+    }
+
+    /// <summary>
+    /// Gets or sets the helper used for color-related operations.
+    /// </summary>
+    public IHashiBrushResolver BrushResolver
+    {
+        get => (IHashiBrushResolver)GetValue(BrushResolverProperty);
+        set => SetValue(BrushResolverProperty, value);
     }
 
     /// <summary>
@@ -93,6 +103,14 @@ public class BridgeVisibilityBehavior : Behavior<Line>, IRecipient<IRuleMessageC
     protected override void OnAttached()
     {
         base.OnAttached();
+        fadeOutAnimation = new()
+        {
+            From = ((SolidColorBrush)BrushResolver.ResolveBrush(HashiColor.IntenseGreenBrush).Brush).Color,
+            To = Colors.Black,
+            Duration = TimeSpan.FromSeconds(0.5),
+            EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut }
+        };
+
         WeakReferenceMessenger.Default.Register(this);
         AssociatedObject.IsVisibleChanged += AssociatedObject_IsVisibleChanged;
         UpdateVisibility();
@@ -211,7 +229,7 @@ public class BridgeVisibilityBehavior : Behavior<Line>, IRecipient<IRuleMessageC
 
         if (!runFadeInAnimation) return;
 
-        line.Stroke = (SolidColorBrush)new BrushConverter().ConvertFrom(HashiColorHelper.IntenseGreenBrush.Color.ToString())!;
+        line.Stroke = (SolidColorBrush)new BrushConverter().ConvertFrom(((SolidColorBrush)BrushResolver.ResolveBrush(HashiColor.IntenseGreenBrush).Brush).Color.ToString())!;
         line.Effect = new BlurEffect { Radius = 10 };
         line.BeginAnimation(UIElement.OpacityProperty, fadeInAnimation);
     }

@@ -12,5 +12,6 @@ public class AutoFacWrapperModule : Module
         builder.RegisterType<JsonWrapper>().As<IJsonWrapper>().SingleInstance();
         builder.RegisterType<FileWrapper>().As<IFileWrapper>().SingleInstance();
         builder.RegisterType<DirectoryWrapper>().As<IDirectoryWrapper>().SingleInstance();
+        builder.RegisterType<ApplicationWrapper>().As<IApplicationWrapper>().SingleInstance();
     }
 }
