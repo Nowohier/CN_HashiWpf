@@ -5,6 +5,7 @@ using Hashi.Enums;
 using Hashi.Gui.EventArgs;
 using Hashi.Gui.Extensions;
 using Hashi.Gui.Helpers;
+using Hashi.Gui.Interfaces.Helpers;
 using Hashi.Gui.Interfaces.Messages;
 using Hashi.Gui.Interfaces.Messages.MessageContainers;
 using Hashi.Gui.Interfaces.Models;
@@ -13,7 +14,6 @@ using Hashi.Gui.Interfaces.Views;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
 
 namespace Hashi.Gui.ViewModels;
 
@@ -23,8 +23,6 @@ public class IslandViewModel :
 {
     private readonly Func<IBridgeConnectionInformationContainer, IBridgeConnectionChangedMessage>
         bridgeConnectionChangedMessageFactory;
-
-    private readonly Func<SolidColorBrush, IHashiBrush> brushFactory;
 
     private readonly
         Func<BridgeOperationTypeEnum, IIslandViewModel, IIslandViewModel?, IBridgeConnectionInformationContainer>
@@ -55,15 +53,12 @@ public class IslandViewModel :
     /// <param name="maxConnections">The max connections of the otherIsland.</param>
     /// <param name="viewBoxControl">The viewBox.</param>
     /// <param name="hashiPointFactory">The hashi point factory.</param>
-    /// <param name="brushFactory">The brush factory.</param>
     /// <param name="updateAllIslandColorsMessageFactory">The update all island colors message factory.</param>
     /// <param name="connectionInformationContainerFactory">The bridge connection information container factory.</param>
     /// <param name="bridgeConnectionChangedMessageFactory">The bridge connection changed message factory.</param>
     /// <param name="isTestModeRequestMessageFactory">The is isTestModeRequestMessageFactory.</param>
-    /// <param name="dragDirectionChangedRequestTargetMessageFactory">
-    ///     The drag direction changed request target message
-    ///     factory.
-    /// </param>
+    /// <param name="dragDirectionChangedRequestTargetMessageFactory">The drag direction changed request target message factory.</param>
+    /// <param name="brushResolver">The hashi brush resolver.</param>
     public IslandViewModel
     (
         int x,
@@ -71,7 +66,6 @@ public class IslandViewModel :
         int maxConnections,
         IViewBoxControl viewBoxControl,
         Func<int, int, HashiPointTypeEnum, IHashiPoint> hashiPointFactory,
-        Func<SolidColorBrush, IHashiBrush> brushFactory,
         Func<bool?, IUpdateAllIslandColorsMessage> updateAllIslandColorsMessageFactory,
         Func<BridgeOperationTypeEnum, IIslandViewModel, IIslandViewModel?, IBridgeConnectionInformationContainer>
             connectionInformationContainerFactory,
@@ -79,18 +73,19 @@ public class IslandViewModel :
             bridgeConnectionChangedMessageFactory,
         Func<IIsTestModeRequestMessage> isTestModeRequestMessageFactory,
         Func<IIslandViewModel, DirectionEnum, IDragDirectionChangedRequestTargetMessage>
-            dragDirectionChangedRequestTargetMessageFactory
+            dragDirectionChangedRequestTargetMessageFactory,
+        IHashiBrushResolver brushResolver
     )
     {
         MaxConnections = maxConnections;
         Coordinates = (hashiPointFactory ?? throw new ArgumentNullException(nameof(hashiPointFactory))).Invoke(x, y, HashiPointTypeEnum.Normal);
         this.viewBoxControl = (FrameworkElement)(viewBoxControl ?? throw new ArgumentNullException(nameof(viewBoxControl))).ViewBoxControl;
-        this.brushFactory = brushFactory ?? throw new ArgumentNullException(nameof(brushFactory));
         this.updateAllIslandColorsMessageFactory = updateAllIslandColorsMessageFactory ?? throw new ArgumentNullException(nameof(updateAllIslandColorsMessageFactory));
         this.connectionInformationContainerFactory = connectionInformationContainerFactory ?? throw new ArgumentNullException(nameof(connectionInformationContainerFactory));
         this.bridgeConnectionChangedMessageFactory = bridgeConnectionChangedMessageFactory ?? throw new ArgumentNullException(nameof(bridgeConnectionChangedMessageFactory));
         this.isTestModeRequestMessageFactory = isTestModeRequestMessageFactory ?? throw new ArgumentNullException(nameof(isTestModeRequestMessageFactory));
         this.dragDirectionChangedRequestTargetMessageFactory = dragDirectionChangedRequestTargetMessageFactory ?? throw new ArgumentNullException(nameof(dragDirectionChangedRequestTargetMessageFactory));
+        BrushResolver = brushResolver;
 
         DragEnterCommand = new RelayCommand<DragEventArgs>(DragEnterCommandExecute);
         DropCommand = new RelayCommand<DragEventArgs>(DropCommandExecute);
@@ -102,7 +97,7 @@ public class IslandViewModel :
         MouseRightButtonDownCommand = new RelayCommand<MouseButtonEventArgs>(MouseRightButtonDownCommandExecute);
         MouseRightButtonUpCommand = new RelayCommand<MouseButtonEventArgs>(MouseRightButtonUpCommandExecute);
 
-        islandColor = brushFactory.Invoke(Brushes.LightBlue);
+        islandColor = BrushResolver.ResolveBrush(HashiColor.LightBlueBrush);
         mouseDownPosition = hashiPointFactory.Invoke(0, 0, HashiPointTypeEnum.Normal);
     }
 
@@ -150,6 +145,9 @@ public class IslandViewModel :
     ///     Gets or sets the command that is executed when the right mouse button is released.
     /// </summary>
     public ICommand MouseRightButtonUpCommand { get; }
+
+    /// <inheritdoc />
+    public IHashiBrushResolver BrushResolver { get; }
 
     /// <inheritdoc />
     public ObservableCollection<IHashiPoint> AllConnections { get; } = [];
@@ -277,8 +275,8 @@ public class IslandViewModel :
     public void RefreshIslandColor()
     {
         IslandColor = MaxConnectionsReached
-            ? brushFactory.Invoke(HashiColorHelper.MaxBridgesReachedBrush)
-            : brushFactory.Invoke(HashiColorHelper.BasicIslandBrush);
+            ? BrushResolver.ResolveBrush(HashiColor.MaxBridgesReachedBrush)
+            : BrushResolver.ResolveBrush(HashiColor.BasicIslandBrush);
     }
 
     /// <inheritdoc />
@@ -296,7 +294,7 @@ public class IslandViewModel :
     protected virtual void DragEnterCommandExecute(DragEventArgs? e)
     {
         if (e == null) throw new ArgumentNullException(nameof(e));
-        if (!MaxConnectionsReached) IslandColor = brushFactory.Invoke(HashiColorHelper.GreenIslandBrush);
+        if (!MaxConnectionsReached) IslandColor = BrushResolver.ResolveBrush(HashiColor.GreenIslandBrush);
     }
 
     /// <summary>
@@ -381,7 +379,7 @@ public class IslandViewModel :
         isDragging = false;
         OnPropertyChanged(nameof(MaxConnections));
         if (MaxConnectionsReached) return;
-        IslandColor = brushFactory.Invoke(HashiColorHelper.GreenIslandBrush);
+        IslandColor = BrushResolver.ResolveBrush(HashiColor.GreenIslandBrush);
     }
 
     /// <summary>

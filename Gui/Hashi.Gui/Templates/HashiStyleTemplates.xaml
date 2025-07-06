@@ -195,6 +195,7 @@
                 <collections:ArrayList>
                     <behaviors:BridgeVisibilityBehavior
                         AllConnections="{Binding AllConnections}"
+                        BrushResolver="{Binding BrushResolver}"
                         BridgeType="{Binding RelativeSource={RelativeSource AncestorType=Line, Mode=FindAncestor}, Path=Tag, Converter={StaticResource TagToBridgeTypeEnumConverter}}" />
                 </collections:ArrayList>
             </Setter.Value>

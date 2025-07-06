@@ -103,3 +103,18 @@ public enum BridgeTypeEnum
     VerticalDoubleDown = 11,
     None = 12
 }
+
+public enum HashiColor
+{
+    MenuBackgroundBrush,
+    BackgroundBrush,
+    BasicBrush,
+    BasicIslandBrush,
+    GreenIslandBrush,
+    IntenseGreenBrush,
+    MaxBridgesReachedBrush,
+    PotentialConnectionBrush,
+    GridLineBrush,
+    TestModeBrush,
+    LightBlueBrush
+}
