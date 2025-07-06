@@ -2,6 +2,7 @@ using FluentAssertions;
 using Hashi.Enums;
 using Hashi.Generator.Interfaces;
 using Hashi.Generator.Interfaces.Providers;
+using Hashi.Gui.Interfaces.Helpers;
 using Hashi.Gui.Interfaces.Managers;
 using Hashi.Gui.Interfaces.Messages;
 using Hashi.Gui.Interfaces.Messages.MessageContainers;
@@ -13,7 +14,6 @@ using Hashi.Gui.ViewModels;
 using Hashi.Logging.Interfaces;
 using Moq;
 using System.Diagnostics;
-using System.Windows.Media;
 
 namespace Hashi.Gui.Test.ViewModels;
 
@@ -23,7 +23,7 @@ public class MainViewModelTests
     [SetUp]
     public void SetUp()
     {
-        brushFactoryMock = new Mock<Func<SolidColorBrush, IHashiBrush>>(MockBehavior.Strict);
+        hashiBrushResolverMock = new Mock<IHashiBrushResolver>(MockBehavior.Strict);
         dialogWrapperMock = new Mock<IDialogWrapper>(MockBehavior.Strict);
         hashiGeneratorMock = new Mock<IHashiGenerator>(MockBehavior.Strict);
         settingsProviderMock = new Mock<ISettingsProvider>(MockBehavior.Strict);
@@ -48,7 +48,7 @@ public class MainViewModelTests
         loggerMock.Setup(x => x.Error(It.IsAny<string>()));
 
         // Setup brush factory
-        brushFactoryMock.Setup(x => x.Invoke(It.IsAny<SolidColorBrush>())).Returns(hashiBrushMock.Object);
+        hashiBrushResolverMock.Setup(x => x.ResolveBrush(It.IsAny<HashiColor>())).Returns(hashiBrushMock.Object);
 
         // Setup hint provider
         var ruleInfoProviderMock = new Mock<IRuleInfoProvider>(MockBehavior.Strict);
@@ -116,7 +116,6 @@ public class MainViewModelTests
         solutionProviderMock.Setup(x => x.Name).Returns("TestSolution");
 
         mainViewModel = new MainViewModel(
-            brushFactoryMock.Object,
             dialogWrapperMock.Object,
             hashiGeneratorMock.Object,
             settingsProviderMock.Object,
@@ -125,10 +124,11 @@ public class MainViewModelTests
             hintProviderMock.Object,
             testSolutionProviderMock.Object,
             resourceManagerMock.Object,
-            loggerFactoryMock.Object);
+            loggerFactoryMock.Object,
+            hashiBrushResolverMock.Object);
     }
 
-    private Mock<Func<SolidColorBrush, IHashiBrush>> brushFactoryMock;
+    private Mock<IHashiBrushResolver> hashiBrushResolverMock;
     private Mock<IDialogWrapper> dialogWrapperMock;
     private Mock<IHashiGenerator> hashiGeneratorMock;
     private Mock<ISettingsProvider> settingsProviderMock;
@@ -170,11 +170,10 @@ public class MainViewModelTests
     }
 
     [Test]
-    public void Constructor_WhenBrushFactoryIsNull_ShouldThrowArgumentNullException()
+    public void Constructor_WhenBrushResolverIsNull_ShouldThrowArgumentNullException()
     {
         // Arrange & Act & Assert
         var action = () => new MainViewModel(
-            null!,
             dialogWrapperMock.Object,
             hashiGeneratorMock.Object,
             settingsProviderMock.Object,
@@ -183,7 +182,8 @@ public class MainViewModelTests
             hintProviderMock.Object,
             testSolutionProviderMock.Object,
             resourceManagerMock.Object,
-            loggerFactoryMock.Object);
+            loggerFactoryMock.Object,
+            null!);
 
         action.Should().Throw<ArgumentNullException>();
     }
@@ -193,7 +193,6 @@ public class MainViewModelTests
     {
         // Arrange & Act & Assert
         var action = () => new MainViewModel(
-            brushFactoryMock.Object,
             null!,
             hashiGeneratorMock.Object,
             settingsProviderMock.Object,
@@ -202,7 +201,8 @@ public class MainViewModelTests
             hintProviderMock.Object,
             testSolutionProviderMock.Object,
             resourceManagerMock.Object,
-            loggerFactoryMock.Object);
+            loggerFactoryMock.Object,
+            hashiBrushResolverMock.Object);
 
         action.Should().Throw<ArgumentNullException>();
     }
