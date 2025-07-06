@@ -73,7 +73,7 @@ public class MainViewModel : AsyncObservableRecipient,
         this.dialogWrapper = dialogWrapper ?? throw new ArgumentNullException(nameof(dialogWrapper));
         this.hashiGenerator = hashiGenerator ?? throw new ArgumentNullException(nameof(hashiGenerator));
         this.resourceManager = resourceManager ?? throw new ArgumentNullException(nameof(resourceManager));
-        this.brushResolver = brushResolver;
+        this.brushResolver = brushResolver ?? throw new ArgumentNullException(nameof(brushResolver));
         logger = (loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory))).CreateLogger<MainViewModel>();
 
         WeakReferenceMessenger.Default.Register<IBridgeConnectionChangedMessage>(this);

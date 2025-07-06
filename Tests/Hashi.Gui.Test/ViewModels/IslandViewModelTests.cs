@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Hashi.Enums;
+using Hashi.Gui.Interfaces.Helpers;
 using Hashi.Gui.Interfaces.Messages;
 using Hashi.Gui.Interfaces.Messages.MessageContainers;
 using Hashi.Gui.Interfaces.Models;
@@ -9,7 +10,6 @@ using Hashi.Gui.ViewModels;
 using Moq;
 using System.Collections.ObjectModel;
 using System.Windows;
-using System.Windows.Media;
 
 namespace Hashi.Gui.Test.ViewModels;
 
@@ -22,7 +22,6 @@ public class IslandViewModelTests
     {
         viewBoxControlMock = new Mock<IViewBoxControl>(MockBehavior.Strict);
         hashiPointFactoryMock = new Mock<Func<int, int, HashiPointTypeEnum, IHashiPoint>>(MockBehavior.Strict);
-        brushFactoryMock = new Mock<Func<SolidColorBrush, IHashiBrush>>(MockBehavior.Strict);
         updateAllIslandColorsMessageFactoryMock =
             new Mock<Func<bool?, IUpdateAllIslandColorsMessage>>(MockBehavior.Strict);
         connectionInformationContainerFactoryMock =
@@ -34,6 +33,7 @@ public class IslandViewModelTests
         dragDirectionChangedRequestTargetMessageFactoryMock =
             new Mock<Func<IIslandViewModel, DirectionEnum, IDragDirectionChangedRequestTargetMessage>>(MockBehavior
                 .Strict);
+        hashiBrushResolverMock = new Mock<IHashiBrushResolver>(MockBehavior.Strict);
         hashiPointMock = new Mock<IHashiPoint>(MockBehavior.Strict);
         hashiBrushMock = new Mock<IHashiBrush>(MockBehavior.Strict);
 
@@ -44,7 +44,7 @@ public class IslandViewModelTests
         viewBoxControlMock.Setup(x => x.ViewBoxControl).Returns(frameworkElement);
         hashiPointFactoryMock.Setup(x => x.Invoke(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<HashiPointTypeEnum>()))
             .Returns(hashiPointMock.Object);
-        brushFactoryMock.Setup(x => x.Invoke(It.IsAny<SolidColorBrush>())).Returns(hashiBrushMock.Object);
+        hashiBrushResolverMock.Setup(x => x.ResolveBrush(It.IsAny<HashiColor>())).Returns(hashiBrushMock.Object);
 
         // Setup hashiPoint properties
         hashiPointMock.Setup(x => x.X).Returns(2);
@@ -58,17 +58,17 @@ public class IslandViewModelTests
             2, 3, 4,
             viewBoxControlMock.Object,
             hashiPointFactoryMock.Object,
-            brushFactoryMock.Object,
             updateAllIslandColorsMessageFactoryMock.Object,
             connectionInformationContainerFactoryMock.Object,
             bridgeConnectionChangedMessageFactoryMock.Object,
             isTestModeRequestMessageFactoryMock.Object,
-            dragDirectionChangedRequestTargetMessageFactoryMock.Object);
+            dragDirectionChangedRequestTargetMessageFactoryMock.Object,
+            hashiBrushResolverMock.Object);
     }
 
     private Mock<IViewBoxControl> viewBoxControlMock;
     private Mock<Func<int, int, HashiPointTypeEnum, IHashiPoint>> hashiPointFactoryMock;
-    private Mock<Func<SolidColorBrush, IHashiBrush>> brushFactoryMock;
+    private Mock<IHashiBrushResolver> hashiBrushResolverMock;
     private Mock<Func<bool?, IUpdateAllIslandColorsMessage>> updateAllIslandColorsMessageFactoryMock;
 
     private Mock<Func<BridgeOperationTypeEnum, IIslandViewModel, IIslandViewModel?,
@@ -114,12 +114,12 @@ public class IslandViewModelTests
             2, 3, 4,
             null!,
             hashiPointFactoryMock.Object,
-            brushFactoryMock.Object,
             updateAllIslandColorsMessageFactoryMock.Object,
             connectionInformationContainerFactoryMock.Object,
             bridgeConnectionChangedMessageFactoryMock.Object,
             isTestModeRequestMessageFactoryMock.Object,
-            dragDirectionChangedRequestTargetMessageFactoryMock.Object);
+            dragDirectionChangedRequestTargetMessageFactoryMock.Object,
+            hashiBrushResolverMock.Object);
 
         action.Should().Throw<ArgumentNullException>().WithParameterName("viewBoxControl");
     }
@@ -132,18 +132,19 @@ public class IslandViewModelTests
             2, 3, 4,
             viewBoxControlMock.Object,
             null!,
-            brushFactoryMock.Object,
+
             updateAllIslandColorsMessageFactoryMock.Object,
             connectionInformationContainerFactoryMock.Object,
             bridgeConnectionChangedMessageFactoryMock.Object,
             isTestModeRequestMessageFactoryMock.Object,
-            dragDirectionChangedRequestTargetMessageFactoryMock.Object);
+            dragDirectionChangedRequestTargetMessageFactoryMock.Object,
+            hashiBrushResolverMock.Object);
 
         action.Should().Throw<ArgumentNullException>().WithParameterName("hashiPointFactory");
     }
 
     [Test]
-    public void Constructor_WhenBrushFactoryIsNull_ShouldThrowArgumentNullException()
+    public void Constructor_WhenUpdateAllIslandColorsMessageFactoryIsNull_ShouldThrowArgumentNullException()
     {
         // Arrange & Act & Assert
         var action = () => new IslandViewModel(
@@ -151,13 +152,85 @@ public class IslandViewModelTests
             viewBoxControlMock.Object,
             hashiPointFactoryMock.Object,
             null!,
+            connectionInformationContainerFactoryMock.Object,
+            bridgeConnectionChangedMessageFactoryMock.Object,
+            isTestModeRequestMessageFactoryMock.Object,
+            dragDirectionChangedRequestTargetMessageFactoryMock.Object,
+            hashiBrushResolverMock.Object);
+
+        action.Should().Throw<ArgumentNullException>().WithParameterName("updateAllIslandColorsMessageFactory");
+    }
+
+    [Test]
+    public void Constructor_WhenConnectionInformationContainerFactoryIsNull_ShouldThrowArgumentNullException()
+    {
+        // Arrange & Act & Assert
+        var action = () => new IslandViewModel(
+            2, 3, 4,
+            viewBoxControlMock.Object,
+            hashiPointFactoryMock.Object,
+            updateAllIslandColorsMessageFactoryMock.Object,
+            null!,
+            bridgeConnectionChangedMessageFactoryMock.Object,
+            isTestModeRequestMessageFactoryMock.Object,
+            dragDirectionChangedRequestTargetMessageFactoryMock.Object,
+            hashiBrushResolverMock.Object);
+
+        action.Should().Throw<ArgumentNullException>().WithParameterName("connectionInformationContainerFactory");
+    }
+
+    [Test]
+    public void Constructor_WhenBridgeConnectionChangedMessageFactoryIsNull_ShouldThrowArgumentNullException()
+    {
+        // Arrange & Act & Assert
+        var action = () => new IslandViewModel(
+            2, 3, 4,
+            viewBoxControlMock.Object,
+            hashiPointFactoryMock.Object,
+            updateAllIslandColorsMessageFactoryMock.Object,
+            connectionInformationContainerFactoryMock.Object,
+            null!,
+            isTestModeRequestMessageFactoryMock.Object,
+            dragDirectionChangedRequestTargetMessageFactoryMock.Object,
+            hashiBrushResolverMock.Object);
+
+        action.Should().Throw<ArgumentNullException>().WithParameterName("bridgeConnectionChangedMessageFactory");
+    }
+
+    [Test]
+    public void Constructor_WhenIsTestModeRequestMessageFactoryIsNull_ShouldThrowArgumentNullException()
+    {
+        // Arrange & Act & Assert
+        var action = () => new IslandViewModel(
+            2, 3, 4,
+            viewBoxControlMock.Object,
+            hashiPointFactoryMock.Object,
+            updateAllIslandColorsMessageFactoryMock.Object,
+            connectionInformationContainerFactoryMock.Object,
+            bridgeConnectionChangedMessageFactoryMock.Object,
+            null!,
+            dragDirectionChangedRequestTargetMessageFactoryMock.Object,
+            hashiBrushResolverMock.Object);
+
+        action.Should().Throw<ArgumentNullException>().WithParameterName("isTestModeRequestMessageFactory");
+    }
+
+    [Test]
+    public void Constructor_WhenDragDirectionChangedRequestTargetMessageFactoryIsNull_ShouldThrowArgumentNullException()
+    {
+        // Arrange & Act & Assert
+        var action = () => new IslandViewModel(
+            2, 3, 4,
+            viewBoxControlMock.Object,
+            hashiPointFactoryMock.Object,
             updateAllIslandColorsMessageFactoryMock.Object,
             connectionInformationContainerFactoryMock.Object,
             bridgeConnectionChangedMessageFactoryMock.Object,
             isTestModeRequestMessageFactoryMock.Object,
-            dragDirectionChangedRequestTargetMessageFactoryMock.Object);
+            null!,
+            hashiBrushResolverMock.Object);
 
-        action.Should().Throw<ArgumentNullException>().WithParameterName("brushFactory");
+        action.Should().Throw<ArgumentNullException>().WithParameterName("dragDirectionChangedRequestTargetMessageFactory");
     }
 
     [Test]
