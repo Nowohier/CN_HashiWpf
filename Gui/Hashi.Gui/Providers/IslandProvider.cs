@@ -127,11 +127,20 @@ public class IslandProvider :
 
         ManageConnections(sourceIsland, targetIsland, (island, coordinates) => island.AddConnection(coordinates),
             pointType);
-        if (AreAllConnectionsSet) WeakReferenceMessenger.Default.Send(allConnectionsSetMessageFactory.Invoke(null));
 
-        if (CountIsolatedIslandGroups() > 0 && !pointType.Equals(HashiPointTypeEnum.Test))
+        var isolatedGroupCount = CountIsolatedIslandGroups();
+
+        if (AreAllConnectionsSet && isolatedGroupCount == 1)
+        {
+            WeakReferenceMessenger.Default.Send(allConnectionsSetMessageFactory.Invoke(null));
+            return;
+        }
+
+        if (isolatedGroupCount > 0 && !pointType.Equals(HashiPointTypeEnum.Test))
+        {
             dialogWrapper.Show(TranslationSource.Instance["MessageIsolatedGroupCaption"]!,
                 TranslationSource.Instance["MessageIsolatedGroupText"]!, DialogButton.Ok, DialogImage.Warning);
+        }
     }
 
     /// <inheritdoc />

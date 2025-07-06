@@ -336,10 +336,11 @@ public class MainViewModel : AsyncObservableRecipient,
     /// <inheritdoc cref="IMainViewModel.Receive(IAllConnectionsSetMessage)" />
     public void Receive(IAllConnectionsSetMessage message)
     {
-        var caption = TranslationSource.Instance["MessageGameOverCaption"]!;
-        var dialogMessage = TranslationSource.Instance["MessageGameOverText"]!;
         var actualScore = TimerProvider.Timer.Elapsed;
         TimerProvider.StopTimer();
+
+        var caption = TranslationSource.Instance["MessageGameOverCaption"]!;
+        var dialogMessage = string.Format(TranslationSource.Instance["MessageGameOverText"]!, actualScore.ToString(@"hh\:mm\:ss"));
 
         //ToDo: Check if all islands are connected
 

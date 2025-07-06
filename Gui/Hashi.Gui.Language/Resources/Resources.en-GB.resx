@@ -223,7 +223,7 @@
     <value>Game Over</value>
   </data>
   <data name="MessageGameOverText" xml:space="preserve">
-    <value>All connections are set!</value>
+    <value>All connections are set! Your time: {0}</value>
   </data>
   <data name="DialogYes" xml:space="preserve">
     <value>YES</value>
