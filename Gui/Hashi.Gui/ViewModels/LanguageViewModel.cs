@@ -11,19 +11,14 @@ public class LanguageViewModel(string languageNameEnglish, string languageNameNa
     private string languageNameEnglish = languageNameEnglish;
     private string languageNameNative = languageNameNative;
 
-    /// <summary>
-    /// The name of the language in English.
-    /// </summary>
+    /// <inheritdoc />
     public string LanguageNameEnglish
     {
         get => languageNameEnglish;
         set => SetProperty(ref languageNameEnglish, value);
     }
 
-    /// <summary>
-    /// The name of the language in its native form.
-    /// </summary>
-    // ReSharper disable once UnusedMember.Global
+    /// <inheritdoc />
     public string LanguageNameNative
     {
         get => languageNameNative;
