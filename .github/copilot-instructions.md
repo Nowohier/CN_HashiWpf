@@ -27,6 +27,14 @@
    - Act: Execute the code under test
    - Assert: Verify the outcome
 
+## Copilot Agent Instructions
+After executing ANY shell or terminal command:
+- IMMEDIATELY use `getTerminalOutput` to monitor execution in real-time
+- Poll output every 5000ms until command completion
+- Watch for errors, unexpected delays, or hanging processes
+- Raise alerts for timeouts or abnormal behavior
+- Never wait passively for terminal results 
+
 ## Key Guidelines
 1. Follow C# best practices and idiomatic patterns
 2. Maintain existing code structure and organization
