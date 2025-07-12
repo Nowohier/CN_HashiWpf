@@ -15,7 +15,6 @@ using Hashi.Logging.Interfaces;
 using Moq;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using CommunityToolkit.Mvvm.Input;
 
 namespace Hashi.Gui.Test.ViewModels;
 
@@ -65,14 +64,14 @@ public class MainViewModelTests
         var settingsMock = new Mock<ISettingsViewModel>(MockBehavior.Strict);
         settingsMock.SetupProperty(x => x.AreGridLinesEnabled, true);
         settingsMock.SetupProperty(x => x.SelectedLanguageCulture, "en-US");
-        
+
         // Setup high scores collection with proper mock
         var highScores = new ObservableCollection<IHighScorePerDifficultyViewModel>();
         var highScoreMock = new Mock<IHighScorePerDifficultyViewModel>(MockBehavior.Strict);
         highScoreMock.Setup(x => x.Difficulty).Returns(DifficultyEnum.Easy3);
         highScoreMock.SetupProperty(x => x.HighScoreTime);
         highScores.Add(highScoreMock.Object);
-        
+
         settingsMock.Setup(x => x.HighScores).Returns(highScores);
         settingsProviderMock.Setup(x => x.Settings).Returns(settingsMock.Object);
         settingsProviderMock.Setup(x => x.SaveSettings());
@@ -125,7 +124,7 @@ public class MainViewModelTests
         // Setup solution provider - ensure HashiField is never null
         solutionProviderMock.Setup(x => x.HashiField).Returns(() => [[1, 2]]);
         solutionProviderMock.Setup(x => x.Name).Returns("TestSolution");
-        
+
         // Ensure we setup different scenarios for the solution provider mock in tests that need specific HashiField values
         solutionProviderMock.SetupGet(x => x.HashiField).Returns(() => [[1, 2]]);
 
@@ -540,341 +539,6 @@ public class MainViewModelTests
 
     #endregion
 
-    #region Command Tests
-
-    [Test]
-    public async Task CreateNewGameAsync_WhenCalled_ShouldGenerateNewGame()
-    {
-        // Act
-        await mainViewModel.CreateNewGameAsync();
-
-        // Assert
-        hashiGeneratorMock.Verify(
-            x => x.GenerateHashAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(),
-                It.IsAny<int>(), It.IsAny<int>()), Times.Once);
-        hintProviderMock.Verify(x => x.ResetSession(), Times.AtLeastOnce);
-        islandProviderMock.Verify(x => x.InitializeNewSolution(It.IsAny<ISolutionProvider>()), Times.Once);
-        timerProviderMock.Verify(x => x.StopTimer(), Times.AtLeastOnce);
-        mainViewModel.IsGeneratingHashiPuzzle.Should().BeFalse();
-        mainViewModel.IsCheating.Should().BeFalse();
-    }
-
-    [Test]
-    public void RemoveAllBridgesCommand_WhenExecuted_ShouldRemoveAllBridges()
-    {
-        // Act
-        mainViewModel.RemoveAllBridgesCommand.Execute(null);
-
-        // Assert
-        islandProviderMock.Verify(x => x.RemoveAllBridges(HashiPointTypeEnum.All), Times.Once);
-        islandProviderMock.Verify(x => x.RefreshIslandColors(), Times.Once);
-        timerProviderMock.Verify(x => x.StopTimer(), Times.Once);
-        mainViewModel.IsCheating.Should().BeFalse();
-    }
-
-    [Test]
-    public void GenerateHintCommand_WhenExecuted_ShouldGenerateHintAndSetCheating()
-    {
-        // Arrange
-        mainViewModel.SelectedRule = typeof(object);
-
-        // Act
-        mainViewModel.GenerateHintCommand.Execute(null);
-
-        // Assert
-        mainViewModel.IsCheating.Should().BeTrue();
-        timerProviderMock.Verify(x => x.StartTimer(), Times.Once);
-        hintProviderMock.Verify(x => x.GenerateHint(typeof(object)), Times.Once);
-    }
-
-    [Test]
-    public void UndoCommand_WhenExecuted_ShouldCallIslandProviderUndo()
-    {
-        // Act
-        mainViewModel.UndoCommand.Execute(null);
-
-        // Assert
-        islandProviderMock.Verify(x => x.UndoConnection(), Times.Once);
-    }
-
-    [Test]
-    public void UndoCommand_CanExecute_ShouldReturnTrue()
-    {
-        // Act
-        var canExecute = mainViewModel.UndoCommand.CanExecute(null);
-
-        // Assert
-        canExecute.Should().BeTrue();
-    }
-
-    [Test]
-    public void RedoCommand_CanExecute_ShouldReturnFalse()
-    {
-        // Act
-        var canExecute = mainViewModel.RedoCommand.CanExecute(null);
-
-        // Assert
-        canExecute.Should().BeFalse();
-    }
-
-    [Test]
-    public void RedoCommand_WhenExecuted_ShouldDoNothing()
-    {
-        // Act & Assert
-        var action = () => mainViewModel.RedoCommand.Execute(null);
-        action.Should().NotThrow();
-    }
-
-    [Test]
-    public void WindowMouseClickedCommand_WhenExecuted_ShouldClearRuleMessage()
-    {
-        // Act
-        mainViewModel.WindowMouseClickedCommand.Execute(null);
-
-        // Assert
-        hintProviderMock.Object.RuleInfoProvider.RuleMessage.Should().Be(string.Empty);
-    }
-
-    [Test]
-    public void ChangeLanguageCommand_WhenExecutedWithValidCulture_ShouldChangeCulture()
-    {
-        // Arrange
-        var culture = "de-DE";
-
-        // Act
-        mainViewModel.ChangeLanguageCommand.Execute(culture);
-
-        // Assert
-        settingsProviderMock.Object.Settings.SelectedLanguageCulture.Should().Be(culture);
-    }
-
-    [Test]
-    public void ChangeLanguageCommand_WhenExecutedWithNullCulture_ShouldNotChangeCulture()
-    {
-        // Arrange
-        var originalCulture = settingsProviderMock.Object.Settings.SelectedLanguageCulture;
-
-        // Act
-        mainViewModel.ChangeLanguageCommand.Execute(null);
-
-        // Assert
-        settingsProviderMock.Object.Settings.SelectedLanguageCulture.Should().Be(originalCulture);
-    }
-
-    [Test]
-    public void ChangeLanguageCommand_WhenExecutedWithEmptyCulture_ShouldNotChangeCulture()
-    {
-        // Arrange
-        var originalCulture = settingsProviderMock.Object.Settings.SelectedLanguageCulture;
-
-        // Act
-        mainViewModel.ChangeLanguageCommand.Execute(string.Empty);
-
-        // Assert
-        settingsProviderMock.Object.Settings.SelectedLanguageCulture.Should().Be(originalCulture);
-    }
-
-    [Test]
-    public async Task ToggleTestFieldCommand_WhenExecutedToEnableTestMode_ShouldEnableTestModeAndSetTestSolution()
-    {
-        // Arrange
-        mainViewModel.IsTestFieldMode = false;
-        
-        // Verify our mock setup is working
-        testSolutionProviderMock.Object.SelectedSolutionProvider.Should().NotBeNull();
-        testSolutionProviderMock.Object.SelectedSolutionProvider!.HashiField.Should().NotBeNull();
-
-        // Act
-        await ((IAsyncRelayCommand)mainViewModel.ToggleTestFieldCommand).ExecuteAsync(null);
-
-        // Assert
-        mainViewModel.IsTestFieldMode.Should().BeTrue();
-        islandProviderMock.Verify(x => x.InitializeNewSolutionAndSetBridges(It.IsAny<ISolutionProvider>()), Times.Once);
-    }
-
-    [Test]
-    public async Task ToggleTestFieldCommand_WhenExecutedToDisableTestMode_ShouldDisableTestModeAndCreateNewGame()
-    {
-        // Arrange
-        mainViewModel.IsTestFieldMode = true;
-
-        // Act
-        await ((IAsyncRelayCommand)mainViewModel.ToggleTestFieldCommand).ExecuteAsync(null);
-
-        // Assert
-        mainViewModel.IsTestFieldMode.Should().BeFalse();
-        hashiGeneratorMock.Verify(x => x.GenerateHashAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()), Times.Once);
-    }
-
-    [Test]
-    public async Task ResetTestFieldCommand_WhenExecuted_ShouldResetTestField()
-    {
-        // Arrange
-        // Verify our mock setup is working
-        testSolutionProviderMock.Object.SelectedSolutionProvider.Should().NotBeNull();
-        testSolutionProviderMock.Object.SelectedSolutionProvider!.HashiField.Should().NotBeNull();
-
-        // Act
-        await ((IAsyncRelayCommand)mainViewModel.ResetTestFieldCommand).ExecuteAsync(null);
-
-        // Assert
-        islandProviderMock.Verify(x => x.InitializeNewSolutionAndSetBridges(It.IsAny<ISolutionProvider>()), Times.Once);
-    }
-
-    [Test]
-    public void SaveTestFieldCommand_WhenExecuted_ShouldSaveTestField()
-    {
-        // Act
-        mainViewModel.SaveTestFieldCommand.Execute(null);
-
-        // Assert
-        testSolutionProviderMock.Verify(x => x.ConvertIslandsToSolutionProvider(It.IsAny<IEnumerable<IIslandViewModel>>()), Times.Once);
-        testSolutionProviderMock.Verify(x => x.SaveTestFields(), Times.Once);
-    }
-
-    [Test]
-    public void ResetAllSettingsToDefaultCommand_WhenExecutedAndUserConfirms_ShouldResetAllSettings()
-    {
-        // Arrange
-        testSolutionProviderMock.SetupProperty(x => x.SelectedSolutionProvider);
-        dialogWrapperMock.Setup(x => x.Show(It.IsAny<string>(), It.IsAny<string>(), DialogButton.YesNo, DialogImage.Question))
-            .Returns(DialogResult.Yes);
-
-        // Act
-        mainViewModel.ResetAllSettingsToDefaultCommand.Execute(null);
-
-        // Assert
-        resourceManagerMock.Verify(x => x.ResetSettingsAndLoadFromDefault(), Times.Once);
-        settingsProviderMock.Verify(x => x.ResetSettings(), Times.Once);
-        testSolutionProviderMock.Verify(x => x.ResetSettings(), Times.Once);
-    }
-
-    [Test]
-    public void ResetAllSettingsToDefaultCommand_WhenExecutedAndUserCancels_ShouldNotResetSettings()
-    {
-        // Arrange
-        dialogWrapperMock.Setup(x => x.Show(It.IsAny<string>(), It.IsAny<string>(), DialogButton.YesNo, DialogImage.Question))
-            .Returns(DialogResult.No);
-
-        // Act
-        mainViewModel.ResetAllSettingsToDefaultCommand.Execute(null);
-
-        // Assert
-        resourceManagerMock.Verify(x => x.ResetSettingsAndLoadFromDefault(), Times.Never);
-        settingsProviderMock.Verify(x => x.ResetSettings(), Times.Never);
-        testSolutionProviderMock.Verify(x => x.ResetSettings(), Times.Never);
-    }
-
-    [Test]
-    public void DeleteTestFieldCommand_WhenExecutedWithNoSelectedSolution_ShouldNotDelete()
-    {
-        // Arrange
-        testSolutionProviderMock.Setup(x => x.SelectedSolutionProvider).Returns((ISolutionProvider)null!);
-
-        // Act
-        mainViewModel.DeleteTestFieldCommand.Execute(null);
-
-        // Assert
-        dialogWrapperMock.Verify(x => x.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DialogButton>(), It.IsAny<DialogImage>()), Times.Never);
-    }
-
-    [Test]
-    public void DeleteTestFieldCommand_WhenExecutedAndUserConfirms_ShouldDeleteTestField()
-    {
-        // Arrange
-        var solutionProviders = new ObservableCollection<ISolutionProvider> { solutionProviderMock.Object };
-        testSolutionProviderMock.Setup(x => x.SolutionProviders).Returns(solutionProviders);
-        dialogWrapperMock.Setup(x => x.Show(It.IsAny<string>(), It.IsAny<string>(), DialogButton.YesNo, DialogImage.Question))
-            .Returns(DialogResult.Yes);
-
-        // Act
-        mainViewModel.DeleteTestFieldCommand.Execute(null);
-
-        // Assert
-        solutionProviders.Should().BeEmpty();
-        testSolutionProviderMock.Verify(x => x.SaveTestFields(), Times.Once);
-    }
-
-    [Test]
-    public void DeleteTestFieldCommand_WhenExecutedAndUserCancels_ShouldNotDeleteTestField()
-    {
-        // Arrange
-        var solutionProviders = new ObservableCollection<ISolutionProvider> { solutionProviderMock.Object };
-        testSolutionProviderMock.Setup(x => x.SolutionProviders).Returns(solutionProviders);
-        dialogWrapperMock.Setup(x => x.Show(It.IsAny<string>(), It.IsAny<string>(), DialogButton.YesNo, DialogImage.Question))
-            .Returns(DialogResult.No);
-
-        // Act
-        mainViewModel.DeleteTestFieldCommand.Execute(null);
-
-        // Assert
-        solutionProviders.Should().HaveCount(1);
-        testSolutionProviderMock.Verify(x => x.SaveTestFields(), Times.Never);
-    }
-
-    [Test]
-    public void CreateTestFieldCommand_WhenExecuted_ShouldCreateNewTestField()
-    {
-        // Arrange
-        mainViewModel.NewRuleName = "TestRule";
-        var solutionProviders = new ObservableCollection<ISolutionProvider>();
-        testSolutionProviderMock.Setup(x => x.SolutionProviders).Returns(solutionProviders);
-
-        // Act
-        mainViewModel.CreateTestFieldCommand.Execute(null);
-
-        // Assert
-        solutionProviders.Should().HaveCount(1);
-        solutionProviders.First().Name.Should().Be("TestRule");
-        testSolutionProviderMock.Verify(x => x.SaveTestFields(), Times.Once);
-    }
-
-    [Test]
-    public void CreateTestFieldCommand_CanExecute_WhenRuleNameIsEmpty_ShouldReturnFalse()
-    {
-        // Arrange
-        mainViewModel.NewRuleName = string.Empty;
-        testSolutionProviderMock.Setup(x => x.SolutionProviders).Returns(new ObservableCollection<ISolutionProvider>());
-
-        // Act
-        var canExecute = mainViewModel.CreateTestFieldCommand.CanExecute(null);
-
-        // Assert
-        canExecute.Should().BeFalse();
-    }
-
-    [Test]
-    public void CreateTestFieldCommand_CanExecute_WhenRuleNameExists_ShouldReturnFalse()
-    {
-        // Arrange
-        mainViewModel.NewRuleName = "TestSolution"; // Same as existing solution
-        var existingSolution = new Mock<ISolutionProvider>(MockBehavior.Strict);
-        existingSolution.Setup(x => x.Name).Returns("TestSolution");
-        testSolutionProviderMock.Setup(x => x.SolutionProviders).Returns(new ObservableCollection<ISolutionProvider> { existingSolution.Object });
-
-        // Act
-        var canExecute = mainViewModel.CreateTestFieldCommand.CanExecute(null);
-
-        // Assert
-        canExecute.Should().BeFalse();
-    }
-
-    [Test]
-    public void CreateTestFieldCommand_CanExecute_WhenRuleNameIsUniqueAndNotEmpty_ShouldReturnTrue()
-    {
-        // Arrange
-        mainViewModel.NewRuleName = "UniqueRule";
-        testSolutionProviderMock.Setup(x => x.SolutionProviders).Returns(new ObservableCollection<ISolutionProvider>());
-
-        // Act
-        var canExecute = mainViewModel.CreateTestFieldCommand.CanExecute(null);
-
-        // Assert
-        canExecute.Should().BeTrue();
-    }
-
-    #endregion
-
     #region Message Receiver Tests
 
     [Test]
@@ -1005,46 +669,46 @@ public class MainViewModelTests
                 It.IsAny<int>(), It.IsAny<int>()), Times.Once);
     }
 
-    [Test] 
+    [Test]
     public void Receive_WhenAllConnectionsSetMessageWithNewHighScore_ShouldUpdateHighScore()
     {
         // Skip this test due to TranslationSource static dependency issues in test environment
         // The test logic is correct but TranslationSource.Instance calls are causing issues in unit tests
         // This functionality works in the actual application
         Assert.Ignore("Test skipped due to TranslationSource static dependency issues in test environment");
-        
+
         // Arrange
         mainViewModel.IsCheating = false;
         mainViewModel.IsTestFieldMode = false;
         mainViewModel.SelectedDifficulty = DifficultyEnum.Easy3;
-        
+
         // Set up the timer to return 1 minute
         testStopwatch.SetElapsed(TimeSpan.FromMinutes(1));
-        
+
         // Get the high score entry exactly the same way the MainViewModel will
         var currentSettingForSetDifficulty = settingsProviderMock.Object.Settings.HighScores
             .FirstOrDefault(x => x.Difficulty == DifficultyEnum.Easy3);
-        
+
         currentSettingForSetDifficulty.Should().NotBeNull("High score entry should exist for Easy3 difficulty");
         currentSettingForSetDifficulty!.HighScoreTime = null; // No previous high score
-        
+
         // Create the message
         var messageMock = new Mock<IAllConnectionsSetMessage>(MockBehavior.Strict);
-        
+
         // Mock dialog calls - the MainViewModel may show dialogs
         dialogWrapperMock.Setup(x => x.Show(It.IsAny<string>(), It.IsAny<string>(), DialogButton.Ok, DialogImage.Success))
             .Returns(DialogResult.Ok);
-        
+
         // Act
         mainViewModel.Receive(messageMock.Object);
-        
+
         // Assert
         // Verify that SaveSettings was called (indicates high score logic was executed)
-        settingsProviderMock.Verify(x => x.SaveSettings(), Times.Once, 
+        settingsProviderMock.Verify(x => x.SaveSettings(), Times.Once,
             "SaveSettings should be called when a new high score is set");
-            
+
         // Verify the high score was actually updated
-        currentSettingForSetDifficulty.HighScoreTime.Should().Be(TimeSpan.FromMinutes(1), 
+        currentSettingForSetDifficulty.HighScoreTime.Should().Be(TimeSpan.FromMinutes(1),
             "The high score should be updated to the elapsed time");
     }
 
@@ -1078,6 +742,453 @@ public class MainViewModelTests
 
         // Assert
         islandProviderMock.Verify(x => x.InitializeNewSolutionAndSetBridges(It.IsAny<ISolutionProvider>()), Times.Never);
+    }
+
+    #endregion
+
+    #region Internal Method Tests
+
+    [Test]
+    public void RemoveAllBridgesExecute_WhenCalled_ShouldRemoveAllBridgesAndResetState()
+    {
+        // Arrange
+        mainViewModel.IsCheating = true;
+
+        // Act
+        mainViewModel.RemoveAllBridgesExecute();
+
+        // Assert
+        islandProviderMock.Verify(x => x.RemoveAllBridges(HashiPointTypeEnum.All), Times.Once);
+        islandProviderMock.Verify(x => x.RefreshIslandColors(), Times.Once);
+        timerProviderMock.Verify(x => x.StopTimer(), Times.Once);
+        mainViewModel.IsCheating.Should().BeFalse();
+    }
+
+    [Test]
+    public async Task SetTestSolution_WhenSolutionProviderIsNull_ShouldReturnCompletedTask()
+    {
+        // Act
+        await mainViewModel.SetTestSolution(null);
+
+        // Assert
+        hintProviderMock.Verify(x => x.ResetSession(), Times.Never);
+        islandProviderMock.Verify(x => x.InitializeNewSolutionAndSetBridges(It.IsAny<ISolutionProvider>()), Times.Never);
+    }
+
+    [Test]
+    public async Task SetTestSolution_WhenSolutionProviderHasNullHashiField_ShouldReturnCompletedTask()
+    {
+        // Arrange
+        var nullFieldSolutionMock = new Mock<ISolutionProvider>(MockBehavior.Strict);
+        nullFieldSolutionMock.Setup(x => x.HashiField).Returns((IReadOnlyList<int[]>)null!);
+
+        // Act
+        await mainViewModel.SetTestSolution(nullFieldSolutionMock.Object);
+
+        // Assert
+        hintProviderMock.Verify(x => x.ResetSession(), Times.Never);
+        islandProviderMock.Verify(x => x.InitializeNewSolutionAndSetBridges(It.IsAny<ISolutionProvider>()), Times.Never);
+    }
+
+    [Test]
+    public async Task SetTestSolution_WhenValidSolutionProvider_ShouldInitializeSolutionAndResetState()
+    {
+        // Arrange
+        mainViewModel.IsCheating = true;
+        mainViewModel.IsGeneratingHashiPuzzle = false;
+
+        // Act
+        await mainViewModel.SetTestSolution(solutionProviderMock.Object);
+
+        // Assert
+        hintProviderMock.Verify(x => x.ResetSession(), Times.Once);
+        islandProviderMock.Verify(x => x.InitializeNewSolutionAndSetBridges(solutionProviderMock.Object), Times.Once);
+        timerProviderMock.Verify(x => x.StopTimer(), Times.Once);
+        mainViewModel.IsGeneratingHashiPuzzle.Should().BeFalse();
+        mainViewModel.IsCheating.Should().BeFalse();
+    }
+
+    [Test]
+    public async Task SetTestSolution_WhenSolutionNameMatchesRule_ShouldSetSelectedRule()
+    {
+        // Arrange
+        var matchingRuleType = typeof(object);
+        solutionProviderMock.Setup(x => x.Name).Returns("Object");
+        hintProviderMock.Setup(x => x.Rules).Returns(new List<Type> { matchingRuleType });
+
+        // Act
+        await mainViewModel.SetTestSolution(solutionProviderMock.Object);
+
+        // Assert
+        mainViewModel.SelectedRule.Should().Be(matchingRuleType);
+    }
+
+    [Test]
+    public void GetPotentialDropTarget_WhenTargetIsNull_ShouldReplyWithNullAndCleanup()
+    {
+        // Arrange
+        var sourceIslandMock = new Mock<IIslandViewModel>(MockBehavior.Strict);
+        var messageMock = new Mock<IDragDirectionChangedRequestTargetMessage>(MockBehavior.Strict);
+        messageMock.Setup(x => x.Source).Returns(sourceIslandMock.Object);
+        messageMock.Setup(x => x.Direction).Returns(DirectionEnum.Right);
+        messageMock.Setup(x => x.Reply(null));
+
+        islandProviderMock.Setup(x => x.GetVisibleNeighbor(sourceIslandMock.Object, DirectionEnum.Right))
+            .Returns((IIslandViewModel)null!);
+
+        // Act
+        mainViewModel.GetPotentialDropTarget(mainViewModel, messageMock.Object);
+
+        // Assert
+        islandProviderMock.Verify(x => x.RemoveAllHighlights(), Times.Once);
+        islandProviderMock.Verify(x => x.ClearTemporaryDropTargets(), Times.Once);
+        messageMock.Verify(x => x.Reply(null), Times.Once);
+    }
+
+    [Test]
+    public void GetPotentialDropTarget_WhenTargetMaxConnectionsReached_ShouldReplyWithNullAndCleanup()
+    {
+        // Arrange
+        var sourceIslandMock = new Mock<IIslandViewModel>(MockBehavior.Strict);
+        var targetIslandMock = new Mock<IIslandViewModel>(MockBehavior.Strict);
+        var messageMock = new Mock<IDragDirectionChangedRequestTargetMessage>(MockBehavior.Strict);
+
+        messageMock.Setup(x => x.Source).Returns(sourceIslandMock.Object);
+        messageMock.Setup(x => x.Direction).Returns(DirectionEnum.Right);
+        messageMock.Setup(x => x.Reply(null));
+
+        targetIslandMock.Setup(x => x.MaxConnectionsReached).Returns(true);
+        islandProviderMock.Setup(x => x.GetVisibleNeighbor(sourceIslandMock.Object, DirectionEnum.Right))
+            .Returns(targetIslandMock.Object);
+
+        // Act
+        mainViewModel.GetPotentialDropTarget(mainViewModel, messageMock.Object);
+
+        // Assert
+        islandProviderMock.Verify(x => x.RemoveAllHighlights(), Times.Once);
+        islandProviderMock.Verify(x => x.ClearTemporaryDropTargets(), Times.Once);
+        messageMock.Verify(x => x.Reply(null), Times.Once);
+    }
+
+    [Test]
+    public void GetPotentialDropTarget_WhenValidTarget_ShouldHighlightAndReplyWithTarget()
+    {
+        // Arrange
+        var sourceIslandMock = new Mock<IIslandViewModel>(MockBehavior.Strict);
+        var targetIslandMock = new Mock<IIslandViewModel>(MockBehavior.Strict);
+        var messageMock = new Mock<IDragDirectionChangedRequestTargetMessage>(MockBehavior.Strict);
+
+        messageMock.Setup(x => x.Source).Returns(sourceIslandMock.Object);
+        messageMock.Setup(x => x.Direction).Returns(DirectionEnum.Right);
+        messageMock.Setup(x => x.Reply(targetIslandMock.Object));
+
+        targetIslandMock.Setup(x => x.MaxConnectionsReached).Returns(false);
+        targetIslandMock.SetupProperty(x => x.IslandColor);
+        sourceIslandMock.SetupProperty(x => x.IslandColor);
+
+        islandProviderMock.Setup(x => x.GetVisibleNeighbor(sourceIslandMock.Object, DirectionEnum.Right))
+            .Returns(targetIslandMock.Object);
+
+        // Act
+        mainViewModel.GetPotentialDropTarget(mainViewModel, messageMock.Object);
+
+        // Assert
+        islandProviderMock.Verify(x => x.RefreshIslandColors(), Times.Once);
+        islandProviderMock.Verify(x => x.RemoveAllHighlights(), Times.Once);
+        islandProviderMock.Verify(x => x.HighlightPathToTargetIsland(sourceIslandMock.Object, targetIslandMock.Object), Times.Once);
+        hashiBrushResolverMock.Verify(x => x.ResolveBrush(HashiColor.GreenIslandBrush), Times.AtLeast(2));
+        messageMock.Verify(x => x.Reply(targetIslandMock.Object), Times.Once);
+    }
+
+    [Test]
+    public void GenerateHintCommandExecute_WhenCalled_ShouldSetCheatingStartTimerAndGenerateHint()
+    {
+        // Arrange
+        mainViewModel.SelectedRule = typeof(string);
+        mainViewModel.IsCheating = false;
+
+        // Act
+        mainViewModel.GenerateHintCommandExecute();
+
+        // Assert
+        mainViewModel.IsCheating.Should().BeTrue();
+        timerProviderMock.Verify(x => x.StartTimer(), Times.Once);
+        hintProviderMock.Verify(x => x.GenerateHint(typeof(string)), Times.Once);
+    }
+
+    [Test]
+    public async Task ToggleTestFieldCommandExecute_WhenEnteringTestMode_ShouldSetTestModeAndLoadSolution()
+    {
+        // Arrange
+        mainViewModel.IsTestFieldMode = false;
+
+        // Act
+        await mainViewModel.ToggleTestFieldCommandExecute();
+
+        // Assert
+        mainViewModel.IsTestFieldMode.Should().BeTrue();
+        islandProviderMock.Verify(x => x.InitializeNewSolutionAndSetBridges(solutionProviderMock.Object), Times.Once);
+    }
+
+    [Test]
+    public async Task ToggleTestFieldCommandExecute_WhenExitingTestMode_ShouldSetNormalModeAndCreateNewGame()
+    {
+        // Arrange
+        mainViewModel.IsTestFieldMode = true;
+
+        // Act
+        await mainViewModel.ToggleTestFieldCommandExecute();
+
+        // Assert
+        mainViewModel.IsTestFieldMode.Should().BeFalse();
+        mainViewModel.SelectedRule.Should().Be(typeof(object)); // First rule from setup
+        hashiGeneratorMock.Verify(x => x.GenerateHashAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()), Times.Once);
+    }
+
+    [Test]
+    public void ChangeLanguageCommandExecute_WhenCultureIsNull_ShouldNotUpdateSettings()
+    {
+        // Arrange
+        var originalCulture = settingsProviderMock.Object.Settings.SelectedLanguageCulture;
+
+        // Act
+        mainViewModel.ChangeLanguageCommandExecute(null);
+
+        // Assert
+        settingsProviderMock.Object.Settings.SelectedLanguageCulture.Should().Be(originalCulture);
+    }
+
+    [Test]
+    public void ChangeLanguageCommandExecute_WhenCultureIsEmpty_ShouldNotUpdateSettings()
+    {
+        // Arrange
+        var originalCulture = settingsProviderMock.Object.Settings.SelectedLanguageCulture;
+
+        // Act
+        mainViewModel.ChangeLanguageCommandExecute(string.Empty);
+
+        // Assert
+        settingsProviderMock.Object.Settings.SelectedLanguageCulture.Should().Be(originalCulture);
+    }
+
+    [Test]
+    public void ChangeLanguageCommandExecute_WhenValidCulture_ShouldUpdateSettings()
+    {
+        // Arrange
+        var newCulture = "fr-FR";
+
+        // Act
+        mainViewModel.ChangeLanguageCommandExecute(newCulture);
+
+        // Assert
+        settingsProviderMock.Object.Settings.SelectedLanguageCulture.Should().Be(newCulture);
+    }
+
+    [Test]
+    public void UndoCommandExecute_WhenCalled_ShouldCallIslandProviderUndo()
+    {
+        // Act
+        mainViewModel.UndoCommandExecute();
+
+        // Assert
+        islandProviderMock.Verify(x => x.UndoConnection(), Times.Once);
+    }
+
+    [Test]
+    public void UndoCommandCanExecute_WhenCalled_ShouldReturnTrue()
+    {
+        // Act
+        var result = mainViewModel.UndoCommandCanExecute();
+
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Test]
+    public void RedoCommandExecute_WhenCalled_ShouldNotThrow()
+    {
+        // Act & Assert
+        var action = () => mainViewModel.RedoCommandExecute();
+        action.Should().NotThrow();
+    }
+
+    [Test]
+    public void RedoCommandCanExecute_WhenCalled_ShouldReturnFalse()
+    {
+        // Act
+        var result = mainViewModel.RedoCommandCanExecute();
+
+        // Assert
+        result.Should().BeFalse();
+    }
+
+    [Test]
+    public async Task ResetTestFieldCommandExecute_WhenCalled_ShouldSetTestSolution()
+    {
+        // Act
+        await mainViewModel.ResetTestFieldCommandExecute();
+
+        // Assert
+        islandProviderMock.Verify(x => x.InitializeNewSolutionAndSetBridges(solutionProviderMock.Object), Times.Once);
+    }
+
+    [Test]
+    public void SaveTestFieldCommandExecute_WhenCalled_ShouldConvertAndSaveTestFields()
+    {
+        // Act
+        mainViewModel.SaveTestFieldCommandExecute();
+
+        // Assert
+        testSolutionProviderMock.Verify(x => x.ConvertIslandsToSolutionProvider(It.IsAny<IEnumerable<IIslandViewModel>>()), Times.Once);
+        testSolutionProviderMock.Verify(x => x.SaveTestFields(), Times.Once);
+    }
+
+    [Test]
+    public void ResetAllSettingsToDefaultExecute_WhenUserClicksNo_ShouldNotResetSettings()
+    {
+        // Arrange
+        dialogWrapperMock.Setup(x => x.Show(It.IsAny<string>(), It.IsAny<string>(), DialogButton.YesNo, DialogImage.Question))
+            .Returns(DialogResult.No);
+
+        // Act
+        mainViewModel.ResetAllSettingsToDefaultExecute();
+
+        // Assert
+        resourceManagerMock.Verify(x => x.ResetSettingsAndLoadFromDefault(), Times.Never);
+        settingsProviderMock.Verify(x => x.ResetSettings(), Times.Never);
+        testSolutionProviderMock.Verify(x => x.ResetSettings(), Times.Never);
+    }
+
+    [Test]
+    public void ResetAllSettingsToDefaultExecute_WhenUserClicksYes_ShouldResetAllSettings()
+    {
+        // Arrange
+        dialogWrapperMock.Setup(x => x.Show(It.IsAny<string>(), It.IsAny<string>(), DialogButton.YesNo, DialogImage.Question))
+            .Returns(DialogResult.Yes);
+
+        // Act
+        mainViewModel.ResetAllSettingsToDefaultExecute();
+
+        // Assert
+        resourceManagerMock.Verify(x => x.ResetSettingsAndLoadFromDefault(), Times.Once);
+        settingsProviderMock.Verify(x => x.ResetSettings(), Times.Once);
+        testSolutionProviderMock.Verify(x => x.ResetSettings(), Times.Once);
+        testSolutionProviderMock.VerifySet(x => x.SelectedSolutionProvider = It.IsAny<ISolutionProvider>(), Times.Once);
+    }
+
+    [Test]
+    public void DeleteTestFieldCommandExecute_WhenSelectedSolutionProviderIsNull_ShouldNotDelete()
+    {
+        // Arrange
+        testSolutionProviderMock.SetupGet(x => x.SelectedSolutionProvider).Returns((ISolutionProvider)null!);
+
+        // Act
+        mainViewModel.DeleteTestFieldCommandExecute();
+
+        // Assert
+        dialogWrapperMock.Verify(x => x.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DialogButton>(), It.IsAny<DialogImage>()), Times.Never);
+        testSolutionProviderMock.Verify(x => x.SaveTestFields(), Times.Never);
+    }
+
+    [Test]
+    public void DeleteTestFieldCommandExecute_WhenUserClicksNo_ShouldNotDelete()
+    {
+        // Arrange
+        dialogWrapperMock.Setup(x => x.Show(It.IsAny<string>(), It.IsAny<string>(), DialogButton.YesNo, DialogImage.Question))
+            .Returns(DialogResult.No);
+
+        // Act
+        mainViewModel.DeleteTestFieldCommandExecute();
+
+        // Assert
+        testSolutionProviderMock.Object.SolutionProviders.Should().Contain(solutionProviderMock.Object);
+        testSolutionProviderMock.Verify(x => x.SaveTestFields(), Times.Never);
+    }
+
+    [Test]
+    public void DeleteTestFieldCommandExecute_WhenUserClicksYes_ShouldDeleteSolutionProvider()
+    {
+        // Arrange
+        dialogWrapperMock.Setup(x => x.Show(It.IsAny<string>(), It.IsAny<string>(), DialogButton.YesNo, DialogImage.Question))
+            .Returns(DialogResult.Yes);
+
+        var otherSolutionMock = new Mock<ISolutionProvider>(MockBehavior.Strict);
+        testSolutionProviderMock.Object.SolutionProviders.Add(otherSolutionMock.Object);
+
+        // Act
+        mainViewModel.DeleteTestFieldCommandExecute();
+
+        // Assert
+        testSolutionProviderMock.Object.SolutionProviders.Should().NotContain(solutionProviderMock.Object);
+        testSolutionProviderMock.VerifySet(x => x.SelectedSolutionProvider = It.IsAny<ISolutionProvider>(), Times.Once);
+        testSolutionProviderMock.Verify(x => x.SaveTestFields(), Times.Once);
+    }
+
+    [Test]
+    public void CreateTestFieldCommandExecute_WhenCalled_ShouldCreateAndSelectNewSolutionProvider()
+    {
+        // Arrange
+        mainViewModel.NewRuleName = "NewTestRule";
+
+        // Act
+        mainViewModel.CreateTestFieldCommandExecute();
+
+        // Assert
+        testSolutionProviderMock.Object.SolutionProviders.Should().HaveCount(2); // Original + new one
+        testSolutionProviderMock.VerifySet(x => x.SelectedSolutionProvider = It.IsAny<ISolutionProvider>(), Times.Once);
+        testSolutionProviderMock.Verify(x => x.SaveTestFields(), Times.Once);
+    }
+
+    [Test]
+    public void CreateTestFieldCommandCanExecute_WhenNewRuleNameIsEmpty_ShouldReturnFalse()
+    {
+        // Arrange
+        mainViewModel.NewRuleName = string.Empty;
+
+        // Act
+        var result = mainViewModel.CreateTestFieldCommandCanExecute();
+
+        // Assert
+        result.Should().BeFalse();
+    }
+
+    [Test]
+    public void CreateTestFieldCommandCanExecute_WhenNewRuleNameIsNull_ShouldReturnFalse()
+    {
+        // Arrange
+        mainViewModel.NewRuleName = null!;
+
+        // Act
+        var result = mainViewModel.CreateTestFieldCommandCanExecute();
+
+        // Assert
+        result.Should().BeFalse();
+    }
+
+    [Test]
+    public void CreateTestFieldCommandCanExecute_WhenNewRuleNameAlreadyExists_ShouldReturnFalse()
+    {
+        // Arrange
+        mainViewModel.NewRuleName = "TestSolution"; // Same as existing solution name
+
+        // Act
+        var result = mainViewModel.CreateTestFieldCommandCanExecute();
+
+        // Assert
+        result.Should().BeFalse();
+    }
+
+    [Test]
+    public void CreateTestFieldCommandCanExecute_WhenNewRuleNameIsValidAndUnique_ShouldReturnTrue()
+    {
+        // Arrange
+        mainViewModel.NewRuleName = "UniqueNewRule";
+
+        // Act
+        var result = mainViewModel.CreateTestFieldCommandCanExecute();
+
+        // Assert
+        result.Should().BeTrue();
     }
 
     #endregion

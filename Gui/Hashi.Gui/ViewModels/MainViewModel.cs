@@ -391,7 +391,7 @@ public class MainViewModel : AsyncObservableRecipient,
         IsGeneratingHashiPuzzle = false;
     }
 
-    private void RemoveAllBridgesExecute()
+    internal void RemoveAllBridgesExecute()
     {
         IslandProvider.RemoveAllBridges(HashiPointTypeEnum.All);
         IslandProvider.RefreshIslandColors();
@@ -400,7 +400,7 @@ public class MainViewModel : AsyncObservableRecipient,
         IsCheating = false;
     }
 
-    private Task SetTestSolution(ISolutionProvider? solutionProvider)
+    internal Task SetTestSolution(ISolutionProvider? solutionProvider)
     {
         if (solutionProvider is not { HashiField: not null }) return Task.CompletedTask;
 
@@ -421,7 +421,7 @@ public class MainViewModel : AsyncObservableRecipient,
         return Task.CompletedTask;
     }
 
-    private void GetPotentialDropTarget(MainViewModel main, IDragDirectionChangedRequestTargetMessage message)
+    internal void GetPotentialDropTarget(MainViewModel main, IDragDirectionChangedRequestTargetMessage message)
     {
         if (IslandProvider.GetVisibleNeighbor(message.Source, message.Direction) is not { } target ||
             target.MaxConnectionsReached)
@@ -441,14 +441,14 @@ public class MainViewModel : AsyncObservableRecipient,
         message.Reply(target);
     }
 
-    private void GenerateHintCommandExecute()
+    internal void GenerateHintCommandExecute()
     {
         IsCheating = true;
         TimerProvider.StartTimer();
         HintProvider.GenerateHint(SelectedRule!);
     }
 
-    private async Task ToggleTestFieldCommandExecute()
+    internal async Task ToggleTestFieldCommandExecute()
     {
         IsTestFieldMode = !IsTestFieldMode;
 
@@ -463,46 +463,46 @@ public class MainViewModel : AsyncObservableRecipient,
         }
     }
 
-    private void ChangeLanguageCommandExecute(string? culture)
+    internal void ChangeLanguageCommandExecute(string? culture)
     {
         if (string.IsNullOrEmpty(culture)) return;
         TranslationSource.Instance.CurrentCulture = new CultureInfo(culture);
         SettingsProvider.Settings.SelectedLanguageCulture = culture;
     }
 
-    private void UndoCommandExecute()
+    internal void UndoCommandExecute()
     {
         IslandProvider.UndoConnection();
     }
 
-    private bool UndoCommandCanExecute()
+    internal bool UndoCommandCanExecute()
     {
         // ToDo: Implement this correctly
         //return ConnectionManager.History.Any();
         return true;
     }
 
-    private void RedoCommandExecute()
+    internal void RedoCommandExecute()
     {
     }
 
-    private bool RedoCommandCanExecute()
+    internal bool RedoCommandCanExecute()
     {
         return false;
     }
 
-    private async Task ResetTestFieldCommandExecute()
+    internal async Task ResetTestFieldCommandExecute()
     {
         await SetTestSolution(TestSolutionProvider.SelectedSolutionProvider);
     }
 
-    private void SaveTestFieldCommandExecute()
+    internal void SaveTestFieldCommandExecute()
     {
         TestSolutionProvider.ConvertIslandsToSolutionProvider(IslandProvider.IslandsFlat);
         TestSolutionProvider.SaveTestFields();
     }
 
-    private void ResetAllSettingsToDefaultExecute()
+    internal void ResetAllSettingsToDefaultExecute()
     {
         if (dialogWrapper.Show(TranslationSource.Instance["MessageResetAllToDefaultCaption"]!,
                 TranslationSource.Instance["MessageResetAllToDefaultText"]!, DialogButton.YesNo,
@@ -515,7 +515,7 @@ public class MainViewModel : AsyncObservableRecipient,
         }
     }
 
-    private void DeleteTestFieldCommandExecute()
+    internal void DeleteTestFieldCommandExecute()
     {
         if (TestSolutionProvider.SelectedSolutionProvider == null) return;
         if (dialogWrapper.Show(TranslationSource.Instance["MessageDeleteScenarioCaption"]!,
@@ -529,7 +529,7 @@ public class MainViewModel : AsyncObservableRecipient,
         }
     }
 
-    private void CreateTestFieldCommandExecute()
+    internal void CreateTestFieldCommandExecute()
     {
         var solutionProvider = new SolutionProvider(TestSolutionProvider.HashiFieldReference, null, NewRuleName);
         TestSolutionProvider.SolutionProviders.Add(solutionProvider);
@@ -537,7 +537,7 @@ public class MainViewModel : AsyncObservableRecipient,
         TestSolutionProvider.SaveTestFields();
     }
 
-    private bool CreateTestFieldCommandCanExecute()
+    internal bool CreateTestFieldCommandCanExecute()
     {
         return !string.IsNullOrEmpty(NewRuleName) && !TestSolutionProvider.SolutionProviders.Any(x => x.Name == null || x.Name.Equals(NewRuleName));
     }

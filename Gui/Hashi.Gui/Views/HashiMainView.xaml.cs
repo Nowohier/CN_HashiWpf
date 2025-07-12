@@ -26,7 +26,7 @@ public partial class HashiMainView : IWindow
     /// </summary>
     /// <param name="sender">The sender.</param>
     /// <param name="e">The EventArgs.</param>
-    private void Window_Loaded(object sender, RoutedEventArgs e)
+    internal void Window_Loaded(object sender, RoutedEventArgs e)
     {
         var scaledWidth = (int)SystemParameters.PrimaryScreenWidth * 0.9;
         var scaledHeight = (int)SystemParameters.PrimaryScreenHeight * 0.9;
