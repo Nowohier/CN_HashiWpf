@@ -85,7 +85,7 @@ public class IslandViewModel :
         this.bridgeConnectionChangedMessageFactory = bridgeConnectionChangedMessageFactory ?? throw new ArgumentNullException(nameof(bridgeConnectionChangedMessageFactory));
         this.isTestModeRequestMessageFactory = isTestModeRequestMessageFactory ?? throw new ArgumentNullException(nameof(isTestModeRequestMessageFactory));
         this.dragDirectionChangedRequestTargetMessageFactory = dragDirectionChangedRequestTargetMessageFactory ?? throw new ArgumentNullException(nameof(dragDirectionChangedRequestTargetMessageFactory));
-        BrushResolver = brushResolver;
+        BrushResolver = brushResolver ?? throw new ArgumentNullException(nameof(brushResolver));
 
         DragEnterCommand = new RelayCommand<DragEventArgs>(DragEnterCommandExecute);
         DropCommand = new RelayCommand<DragEventArgs>(DropCommandExecute);
@@ -291,7 +291,7 @@ public class IslandViewModel :
     /// </summary>
     /// <param name="e">The <see cref="DragEventArgs" />.</param>
     /// <exception cref="ArgumentNullException">Throws an exception if e is null.</exception>
-    protected virtual void DragEnterCommandExecute(DragEventArgs? e)
+    internal virtual void DragEnterCommandExecute(DragEventArgs? e)
     {
         if (e == null) throw new ArgumentNullException(nameof(e));
         if (!MaxConnectionsReached) IslandColor = BrushResolver.ResolveBrush(HashiColor.GreenIslandBrush);
@@ -302,7 +302,7 @@ public class IslandViewModel :
     /// </summary>
     /// <param name="e">The <see cref="DragEventArgs" />.</param>
     /// <exception cref="ArgumentNullException">Throws an exception if e is null.</exception>
-    protected virtual void DragOverCommandExecute(DragEventArgs? e)
+    internal virtual void DragOverCommandExecute(DragEventArgs? e)
     {
         if (e == null) throw new ArgumentNullException(nameof(e));
     }
@@ -312,7 +312,7 @@ public class IslandViewModel :
     /// </summary>
     /// <param name="e">The <see cref="DragEventArgs" />.</param>
     /// <exception cref="ArgumentNullException">Throws an exception if e is null.</exception>
-    protected virtual void DragLeaveCommandExecute(DragEventArgs? e)
+    internal virtual void DragLeaveCommandExecute(DragEventArgs? e)
     {
         if (e == null) throw new ArgumentNullException(nameof(e));
 
@@ -329,7 +329,7 @@ public class IslandViewModel :
     /// </summary>
     /// <param name="e">The <see cref="DragEventArgs" />.</param>
     /// <exception cref="ArgumentNullException">Throws an exception if e is null.</exception>
-    protected virtual void DropCommandExecute(DragEventArgs? e)
+    internal virtual void DropCommandExecute(DragEventArgs? e)
     {
         if (e == null) throw new ArgumentNullException(nameof(e));
 
@@ -344,7 +344,7 @@ public class IslandViewModel :
     ///     Handles the mouse move event during drag-and-drop operation.
     /// </summary>
     /// <param name="e">The <see cref="MouseEventArgs" />.</param>
-    protected virtual void MouseMoveCommandExecute(MouseEventArgsWithCorrectViewBoxPosition? e)
+    internal virtual void MouseMoveCommandExecute(MouseEventArgsWithCorrectViewBoxPosition? e)
     {
         if (e is not { MouseEventArgs.LeftButton: MouseButtonState.Pressed } || MaxConnectionsReached)
         {
@@ -374,7 +374,7 @@ public class IslandViewModel :
     /// </summary>
     /// <param name="e">The <see cref="MouseButtonEventArgs" />.</param>
     /// <exception cref="ArgumentNullException">Throws an exception if e is null.</exception>
-    protected virtual void MouseLeftButtonDownCommandExecute(MouseButtonEventArgs? e)
+    internal virtual void MouseLeftButtonDownCommandExecute(MouseButtonEventArgs? e)
     {
         isDragging = false;
         OnPropertyChanged(nameof(MaxConnections));
@@ -387,7 +387,7 @@ public class IslandViewModel :
     /// </summary>
     /// <param name="e">The <see cref="MouseButtonEventArgs" />.</param>
     /// <exception cref="ArgumentNullException">Throws an exception if e is null.</exception>
-    protected virtual void MouseLeftButtonUpCommandExecute(MouseButtonEventArgs? e)
+    internal virtual void MouseLeftButtonUpCommandExecute(MouseButtonEventArgs? e)
     {
         if (!isDragging)
         {
@@ -411,7 +411,7 @@ public class IslandViewModel :
     /// </summary>
     /// <param name="e">The <see cref="MouseButtonEventArgs" />.</param>
     /// <exception cref="ArgumentNullException">Throws an exception if e is null.</exception>
-    protected virtual void MouseRightButtonDownCommandExecute(MouseButtonEventArgs? e)
+    internal virtual void MouseRightButtonDownCommandExecute(MouseButtonEventArgs? e)
     {
     }
 
@@ -420,7 +420,7 @@ public class IslandViewModel :
     /// </summary>
     /// <param name="e">The <see cref="MouseButtonEventArgs" />.</param>
     /// <exception cref="ArgumentNullException">Throws an exception if e is null.</exception>
-    protected virtual void MouseRightButtonUpCommandExecute(MouseButtonEventArgs? e)
+    internal virtual void MouseRightButtonUpCommandExecute(MouseButtonEventArgs? e)
     {
         if (!isDragging)
         {
@@ -435,7 +435,7 @@ public class IslandViewModel :
         WeakReferenceMessenger.Default.Send(updateAllIslandColorsMessageFactory.Invoke(null));
     }
 
-    private void QueryContinueDragHandler(object sender, QueryContinueDragEventArgs e)
+    internal void QueryContinueDragHandler(object sender, QueryContinueDragEventArgs e)
     {
         // Calculate the difference in X and Y coordinates
         var currentPosition = CursorHelper.GetCurrentCursorPosition(viewBoxControl);
@@ -467,7 +467,7 @@ public class IslandViewModel :
         WeakReferenceMessenger.Default.Send(updateAllIslandColorsMessageFactory.Invoke(null));
     }
 
-    private DirectionEnum GetDragDirection(double deltaX, double deltaY)
+    internal DirectionEnum GetDragDirection(double deltaX, double deltaY)
     {
         const double threshold = 1.0; // Minimum movement to consider a direction
 
