@@ -1,6 +1,5 @@
 using FluentAssertions;
 using Hashi.Gui.Providers;
-using System.IO;
 
 namespace Hashi.Gui.Test.Providers;
 

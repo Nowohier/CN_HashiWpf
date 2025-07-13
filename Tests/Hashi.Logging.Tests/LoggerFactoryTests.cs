@@ -241,7 +241,7 @@ public class LoggerFactoryTests
         method.Should().NotBeNull();
 
         // Act
-        var logsDirectory = (string)method.Invoke(null, null)!;
+        var logsDirectory = (string)method?.Invoke(null, null)!;
 
         // Assert
         logsDirectory.Should().NotBeNullOrEmpty();
