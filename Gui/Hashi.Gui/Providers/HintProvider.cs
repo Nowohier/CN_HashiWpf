@@ -25,13 +25,14 @@ public class HintProvider : IHintProvider
     /// <param name="dialogWrapper">The dialog wrapper.</param>
     /// <param name="ruleRepository">The rule repository.</param>
     /// <param name="ruleInfoProvider">The rule info provider.</param>
+    /// <exception cref="ArgumentNullException">Throws an <see cref="ArgumentNullException"/> if one of the input params is null.</exception>
     public HintProvider(IIslandProvider islandProvider, IDialogWrapper dialogWrapper, IRuleRepository ruleRepository,
         IRuleInfoProvider ruleInfoProvider)
     {
-        RuleInfoProvider = ruleInfoProvider;
-        this.islandProvider = islandProvider;
-        this.dialogWrapper = dialogWrapper;
-        this.ruleRepository = ruleRepository;
+        RuleInfoProvider = ruleInfoProvider ?? throw new ArgumentNullException(nameof(ruleInfoProvider));
+        this.islandProvider = islandProvider ?? throw new ArgumentNullException(nameof(islandProvider));
+        this.dialogWrapper = dialogWrapper ?? throw new ArgumentNullException(nameof(dialogWrapper));
+        this.ruleRepository = ruleRepository ?? throw new ArgumentNullException(nameof(ruleRepository));
     }
 
     /// <inheritdoc />
@@ -85,7 +86,7 @@ public class HintProvider : IHintProvider
         RuleInfoProvider.AreRulesBeingApplied = false;
     }
 
-    private void OnRhsExpressionEvaluated(object? sender, RhsExpressionEventArgs e)
+    internal void OnRhsExpressionEvaluated(object? sender, RhsExpressionEventArgs e)
     {
         RuleInfoProvider.AreRulesBeingApplied = false;
     }
