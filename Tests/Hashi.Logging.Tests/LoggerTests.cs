@@ -393,7 +393,7 @@ public class LoggerTests
 
         // Assert
         field.Should().NotBeNull();
-        var fieldValue = field.GetValue(logger1);
+        var fieldValue = field?.GetValue(logger1);
         fieldValue.Should().Be(nlogLogger);
     }
 

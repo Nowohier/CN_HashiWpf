@@ -73,14 +73,14 @@ public class HashiBrushTests
     {
         // Arrange & Act & Assert
         var colors = new[] { Colors.Red, Colors.Green, Colors.Blue, Colors.Yellow, Colors.Purple, Colors.Orange };
-        
+
         foreach (var color in colors)
         {
             var brush = new SolidColorBrush(color);
-            var hashiBrush = new HashiBrush(brush);
-            
-            hashiBrush.Brush.Should().Be(brush);
-            ((SolidColorBrush)hashiBrush.Brush).Color.Should().Be(color);
+            var hashiBrush1 = new HashiBrush(brush);
+
+            hashiBrush1.Brush.Should().Be(brush);
+            ((SolidColorBrush)hashiBrush1.Brush).Color.Should().Be(color);
         }
     }
 

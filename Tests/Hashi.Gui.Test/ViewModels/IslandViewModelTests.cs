@@ -713,7 +713,7 @@ public class IslandViewModelTests
         method.Should().NotBeNull();
 
         // Act & Assert
-        var action = () => method.Invoke(islandViewModel, [null!]);
+        var action = () => method?.Invoke(islandViewModel, [null!]);
         action.Should().Throw<TargetInvocationException>()
             .WithInnerException<ArgumentNullException>();
     }
@@ -728,7 +728,7 @@ public class IslandViewModelTests
         var dragEventArgs = CreateMockDragEventArgs();
 
         // Act
-        method.Invoke(islandViewModel, [dragEventArgs]);
+        method?.Invoke(islandViewModel, [dragEventArgs]);
 
         // Assert
         hashiBrushResolverMock.Verify(x => x.ResolveBrush(HashiColor.GreenIslandBrush), Times.Once);
@@ -749,7 +749,7 @@ public class IslandViewModelTests
         var dragEventArgs = CreateMockDragEventArgs();
 
         // Act
-        method.Invoke(islandViewModel, [dragEventArgs]);
+        method?.Invoke(islandViewModel, [dragEventArgs]);
 
         // Assert
         hashiBrushResolverMock.Verify(x => x.ResolveBrush(HashiColor.GreenIslandBrush), Times.Never);
@@ -763,7 +763,7 @@ public class IslandViewModelTests
         method.Should().NotBeNull();
 
         // Act & Assert
-        var action = () => method.Invoke(islandViewModel, [null!]);
+        var action = () => method?.Invoke(islandViewModel, [null!]);
         action.Should().Throw<TargetInvocationException>()
             .WithInnerException<ArgumentNullException>();
     }
@@ -778,7 +778,7 @@ public class IslandViewModelTests
         var dragEventArgs = CreateMockDragEventArgs();
 
         // Act & Assert
-        var action = () => method.Invoke(islandViewModel, [dragEventArgs]);
+        var action = () => method?.Invoke(islandViewModel, [dragEventArgs]);
         action.Should().NotThrow();
     }
 
@@ -790,7 +790,7 @@ public class IslandViewModelTests
         method.Should().NotBeNull();
 
         // Act & Assert
-        var action = () => method.Invoke(islandViewModel, [null!]);
+        var action = () => method?.Invoke(islandViewModel, [null!]);
         action.Should().Throw<TargetInvocationException>()
             .WithInnerException<ArgumentNullException>();
     }
@@ -812,7 +812,7 @@ public class IslandViewModelTests
         hashiBrushResolverMock.Setup(x => x.ResolveBrush(It.IsAny<HashiColor>())).Returns(hashiBrushMock.Object);
 
         // Act
-        method.Invoke(islandViewModel, [dragEventArgs]);
+        method?.Invoke(islandViewModel, [dragEventArgs]);
 
         // Assert - RefreshIslandColor should not be called (it would call ResolveBrush with specific colors)
         // But the basic brush setup during construction doesn't count
@@ -838,7 +838,7 @@ public class IslandViewModelTests
         hashiBrushResolverMock.Setup(x => x.ResolveBrush(It.IsAny<HashiColor>())).Returns(hashiBrushMock.Object);
 
         // Act
-        method.Invoke(islandViewModel, [dragEventArgs]);
+        method?.Invoke(islandViewModel, [dragEventArgs]);
 
         // Assert - RefreshIslandColor should not be called (it would call ResolveBrush with specific colors)
         hashiBrushResolverMock.Verify(x => x.ResolveBrush(HashiColor.BasicIslandBrush), Times.Never);
@@ -863,7 +863,7 @@ public class IslandViewModelTests
         hashiBrushResolverMock.Setup(x => x.ResolveBrush(It.IsAny<HashiColor>())).Returns(hashiBrushMock.Object);
 
         // Act
-        method.Invoke(islandViewModel, [dragEventArgs]);
+        method?.Invoke(islandViewModel, [dragEventArgs]);
 
         // Assert - RefreshIslandColor should not be called (it would call ResolveBrush with specific colors)
         hashiBrushResolverMock.Verify(x => x.ResolveBrush(HashiColor.BasicIslandBrush), Times.Never);
@@ -899,7 +899,7 @@ public class IslandViewModelTests
         hashiBrushResolverMock.Setup(x => x.ResolveBrush(It.IsAny<HashiColor>())).Returns(hashiBrushMock.Object);
 
         // Act
-        method.Invoke(islandViewModel, [dragEventArgs]);
+        method?.Invoke(islandViewModel, [dragEventArgs]);
 
         // Assert - RefreshIslandColor should be called (it calls ResolveBrush with specific colors)
         hashiBrushResolverMock.Verify(x => x.ResolveBrush(It.IsAny<HashiColor>()), Times.AtLeastOnce);
@@ -918,7 +918,7 @@ public class IslandViewModelTests
         var dragEventArgs = CreateMockDragEventArgsWithData(mockDataObject.Object);
 
         // Act
-        method.Invoke(islandViewModel, [dragEventArgs]);
+        method?.Invoke(islandViewModel, [dragEventArgs]);
 
         // Assert - Update message factory should not be called
         updateAllIslandColorsMessageFactoryMock.Verify(x => x.Invoke(It.IsAny<bool?>()), Times.Never);
@@ -938,7 +938,7 @@ public class IslandViewModelTests
         var dragEventArgs = CreateMockDragEventArgsWithData(mockDataObject.Object);
 
         // Act
-        method.Invoke(islandViewModel, [dragEventArgs]);
+        method?.Invoke(islandViewModel, [dragEventArgs]);
 
         // Assert - Update message factory should not be called
         updateAllIslandColorsMessageFactoryMock.Verify(x => x.Invoke(It.IsAny<bool?>()), Times.Never);
@@ -958,7 +958,7 @@ public class IslandViewModelTests
         var dragEventArgs = CreateMockDragEventArgsWithData(mockDataObject.Object);
 
         // Act
-        method.Invoke(islandViewModel, [dragEventArgs]);
+        method?.Invoke(islandViewModel, [dragEventArgs]);
 
         // Assert - Update message factory should not be called
         updateAllIslandColorsMessageFactoryMock.Verify(x => x.Invoke(It.IsAny<bool?>()), Times.Never);
@@ -992,7 +992,7 @@ public class IslandViewModelTests
         var dragEventArgs = CreateMockDragEventArgsWithData(mockDataObject.Object);
 
         // Act
-        method.Invoke(islandViewModel, [dragEventArgs]);
+        method?.Invoke(islandViewModel, [dragEventArgs]);
 
         // Assert
         updateAllIslandColorsMessageFactoryMock.Verify(x => x.Invoke(null), Times.Once);
@@ -1007,7 +1007,7 @@ public class IslandViewModelTests
 
         // Create a null event args which will trigger the reset logic
         // Act & Assert - Should not throw and should reset internal drag state
-        var action = () => method.Invoke(islandViewModel, [null!]);
+        var action = () => method?.Invoke(islandViewModel, [null!]);
         action.Should().NotThrow();
     }
 
@@ -1027,7 +1027,7 @@ public class IslandViewModelTests
         var eventArgsWithPosition = new MouseEventArgsWithCorrectViewBoxPosition(mouseEventArgs, new Point(0, 0));
 
         // Act & Assert - Should not throw and should reset internal drag state
-        var action = () => method.Invoke(islandViewModel, [eventArgsWithPosition]);
+        var action = () => method?.Invoke(islandViewModel, [eventArgsWithPosition]);
         action.Should().NotThrow();
     }
 
@@ -1046,8 +1046,8 @@ public class IslandViewModelTests
         // The actual QueryContinueDragHandler logic is tested through integration tests
         // where drag and drop operations happen naturally in the UI
         method.Should().NotBeNull();
-        method.IsPrivate.Should().BeFalse(); // It's internal, not private
-        method.Name.Should().Be("QueryContinueDragHandler");
+        method?.IsPrivate.Should().BeFalse(); // It's internal, not private
+        method?.Name.Should().Be("QueryContinueDragHandler");
     }
 
     [Test]
@@ -1060,7 +1060,7 @@ public class IslandViewModelTests
         // Ensure dropTargetIsland is null by setting it through reflection
         var dropTargetIslandField = typeof(IslandViewModel).GetField("dropTargetIsland", BindingFlags.NonPublic | BindingFlags.Instance);
         dropTargetIslandField.Should().NotBeNull();
-        dropTargetIslandField.SetValue(islandViewModel, null);
+        dropTargetIslandField?.SetValue(islandViewModel, null);
 
         // Act - Since QueryContinueDragEventArgs is complex to create, we test the logic indirectly
         // by verifying that when dropTargetIsland is null, no Add operations are performed

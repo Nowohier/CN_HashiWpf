@@ -152,8 +152,8 @@ public class AutoFacMainModuleTests
 
         // Act & Assert
         method.Should().NotBeNull();
-        method.IsFamily.Should().BeTrue(); // Protected
-        method.IsVirtual.Should().BeTrue(); // Override
+        method?.IsFamily.Should().BeTrue(); // Protected
+        method?.IsVirtual.Should().BeTrue(); // Override
     }
 
     [Test]

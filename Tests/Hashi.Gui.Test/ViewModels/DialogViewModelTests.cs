@@ -445,7 +445,7 @@ public class DialogViewModelTests
         mockDialogResult.SetupSet(x => x.DialogResult = It.IsAny<DialogResult>());
 
         // Act & Assert
-        var actions = new Action[]
+        var actions = new[]
         {
             () => dialogViewModel.OkCommand.Execute(mockDialogResult.Object),
             () => dialogViewModel.CancelCommand.Execute(mockDialogResult.Object),
@@ -467,7 +467,7 @@ public class DialogViewModelTests
         mockCloseable.Setup(x => x.Close());
 
         // Act & Assert
-        var actions = new Action[]
+        var actions = new[]
         {
             () => dialogViewModel.OkCommand.Execute(mockCloseable.Object),
             () => dialogViewModel.CancelCommand.Execute(mockCloseable.Object),

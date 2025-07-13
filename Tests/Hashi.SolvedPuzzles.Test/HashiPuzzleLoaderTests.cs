@@ -374,7 +374,7 @@ public class HashiPuzzleLoaderTests
         var method = typeof(HashiPuzzleLoader).GetMethod("GetHashiFileName",
             System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
         method.Should().NotBeNull();
-        return (string)method.Invoke(hashiPuzzleLoader, [hashiFileEnum])!;
+        return (string)method?.Invoke(hashiPuzzleLoader, [hashiFileEnum])!;
     }
 
     #endregion
