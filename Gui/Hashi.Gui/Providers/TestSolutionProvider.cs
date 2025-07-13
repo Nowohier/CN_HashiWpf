@@ -5,14 +5,13 @@ using Hashi.Generator.Interfaces.Providers;
 using Hashi.Generator.Models;
 using Hashi.Generator.Providers;
 using Hashi.Gui.Extensions;
-using Hashi.Logging.Interfaces;
 using Hashi.Gui.Interfaces.Messages;
 using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Wrappers;
+using Hashi.Logging.Interfaces;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 
@@ -37,11 +36,11 @@ public class TestSolutionProvider : ObservableObject, ITestSolutionProvider
         ILoggerFactory loggerFactory
     )
     {
-        this.jsonWrapper = jsonWrapper;
-        this.pathProvider = pathProvider;
-        this.solutionProviderFactory = solutionProviderFactory;
-        this.setTestSolutionMessageFactory = setTestSolutionMessageFactory;
-        this.logger = loggerFactory.CreateLogger<TestSolutionProvider>();
+        this.jsonWrapper = jsonWrapper ?? throw new ArgumentNullException(nameof(jsonWrapper));
+        this.pathProvider = pathProvider ?? throw new ArgumentNullException(nameof(pathProvider));
+        this.solutionProviderFactory = solutionProviderFactory ?? throw new ArgumentNullException(nameof(solutionProviderFactory));
+        this.setTestSolutionMessageFactory = setTestSolutionMessageFactory ?? throw new ArgumentNullException(nameof(setTestSolutionMessageFactory));
+        this.logger = loggerFactory?.CreateLogger<TestSolutionProvider>() ?? throw new ArgumentNullException(nameof(loggerFactory));
         SolutionProviders.AddRange(LoadSettings());
         selectedSolutionProvider = SolutionProviders.FirstOrDefault();
         logger.Info("TestSolutionProvider initialized");
@@ -180,7 +179,7 @@ public class TestSolutionProvider : ObservableObject, ITestSolutionProvider
         }
     }
 
-    private List<ISolutionProvider> LoadSettings()
+    internal List<ISolutionProvider> LoadSettings()
     {
         var loadedTestFields = new List<ISolutionProvider>();
 
