@@ -39,6 +39,7 @@ public class IslandViewModelTests
         hashiBrushResolverMock = new Mock<IHashiBrushResolver>(MockBehavior.Strict);
         hashiPointMock = new Mock<IHashiPoint>(MockBehavior.Strict);
         hashiBrushMock = new Mock<IHashiBrush>(MockBehavior.Strict);
+        helperMock = new Mock<IIslandViewModelHelper>(MockBehavior.Strict);
 
         // Create a real FrameworkElement instead of mocking it
         var frameworkElement = new FrameworkElement();
@@ -48,6 +49,38 @@ public class IslandViewModelTests
         hashiPointFactoryMock.Setup(x => x.Invoke(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<HashiPointTypeEnum>()))
             .Returns(hashiPointMock.Object);
         hashiBrushResolverMock.Setup(x => x.ResolveBrush(It.IsAny<HashiColor>())).Returns(hashiBrushMock.Object);
+
+        // Setup helper mock - delegate to actual logic for tests that verify behavior
+        helperMock.Setup(x => x.GetConnectionType(It.IsAny<IIslandViewModel>(), It.IsAny<IIslandViewModel>()))
+            .Returns((IIslandViewModel s, IIslandViewModel t) =>
+            {
+                if (s.Coordinates.X == t.Coordinates.X) return ConnectionTypeEnum.Vertical;
+                return s.Coordinates.Y == t.Coordinates.Y ? ConnectionTypeEnum.Horizontal : ConnectionTypeEnum.Diagonal;
+            });
+        helperMock.Setup(x => x.IsValidDropTarget(It.IsAny<IIslandViewModel>(), It.IsAny<IIslandViewModel?>()))
+            .Returns((IIslandViewModel s, IIslandViewModel? t) =>
+                t != null && t != s && s.MaxConnections > 0 && t.MaxConnections > 0 &&
+                !s.MaxConnectionsReached && !t.MaxConnectionsReached &&
+                (s.Coordinates.X == t.Coordinates.X || s.Coordinates.Y == t.Coordinates.Y));
+        helperMock.Setup(x => x.MaxBridgesReachedToTarget(It.IsAny<IIslandViewModel>(), It.IsAny<IIslandViewModel?>()))
+            .Returns((IIslandViewModel s, IIslandViewModel? t) =>
+            {
+                if (t == null) return null;
+                return s.AllConnections.Count(c => c.X == t.Coordinates.X && c.Y == t.Coordinates.Y) >= 2 ||
+                       t.AllConnections.Count(c => c.X == s.Coordinates.X && c.Y == s.Coordinates.Y) >= 2;
+            });
+        helperMock.Setup(x => x.GetBridgesLeft(It.IsAny<IIslandViewModel>()))
+            .Returns((IIslandViewModel island) =>
+                island.AllConnections.Where(x => x.X < island.Coordinates.X && x.Y == island.Coordinates.Y).ToList());
+        helperMock.Setup(x => x.GetBridgesRight(It.IsAny<IIslandViewModel>()))
+            .Returns((IIslandViewModel island) =>
+                island.AllConnections.Where(x => x.X > island.Coordinates.X && x.Y == island.Coordinates.Y).ToList());
+        helperMock.Setup(x => x.GetBridgesUp(It.IsAny<IIslandViewModel>()))
+            .Returns((IIslandViewModel island) =>
+                island.AllConnections.Where(x => x.X == island.Coordinates.X && x.Y < island.Coordinates.Y).ToList());
+        helperMock.Setup(x => x.GetBridgesDown(It.IsAny<IIslandViewModel>()))
+            .Returns((IIslandViewModel island) =>
+                island.AllConnections.Where(x => x.X == island.Coordinates.X && x.Y > island.Coordinates.Y).ToList());
 
         // Setup hashiPoint properties
         hashiPointMock.Setup(x => x.X).Returns(2);
@@ -66,7 +99,8 @@ public class IslandViewModelTests
             bridgeConnectionChangedMessageFactoryMock.Object,
             isTestModeRequestMessageFactoryMock.Object,
             dragDirectionChangedRequestTargetMessageFactoryMock.Object,
-            hashiBrushResolverMock.Object);
+            hashiBrushResolverMock.Object,
+            helperMock.Object);
     }
 
     private Mock<IViewBoxControl> viewBoxControlMock;
@@ -87,6 +121,7 @@ public class IslandViewModelTests
 
     private Mock<IHashiPoint> hashiPointMock;
     private Mock<IHashiBrush> hashiBrushMock;
+    private Mock<IIslandViewModelHelper> helperMock;
     private IslandViewModel islandViewModel;
 
     #region Constructor Tests
@@ -125,7 +160,8 @@ public class IslandViewModelTests
             bridgeConnectionChangedMessageFactoryMock.Object,
             isTestModeRequestMessageFactoryMock.Object,
             dragDirectionChangedRequestTargetMessageFactoryMock.Object,
-            null!);
+            null!,
+            helperMock.Object);
 
         action.Should().Throw<ArgumentNullException>().WithParameterName("brushResolver");
     }
@@ -143,7 +179,8 @@ public class IslandViewModelTests
             bridgeConnectionChangedMessageFactoryMock.Object,
             isTestModeRequestMessageFactoryMock.Object,
             dragDirectionChangedRequestTargetMessageFactoryMock.Object,
-            hashiBrushResolverMock.Object);
+            hashiBrushResolverMock.Object,
+            helperMock.Object);
 
         action.Should().Throw<ArgumentNullException>().WithParameterName("viewBoxControl");
     }
@@ -162,7 +199,8 @@ public class IslandViewModelTests
             bridgeConnectionChangedMessageFactoryMock.Object,
             isTestModeRequestMessageFactoryMock.Object,
             dragDirectionChangedRequestTargetMessageFactoryMock.Object,
-            hashiBrushResolverMock.Object);
+            hashiBrushResolverMock.Object,
+            helperMock.Object);
 
         action.Should().Throw<ArgumentNullException>().WithParameterName("hashiPointFactory");
     }
@@ -180,7 +218,8 @@ public class IslandViewModelTests
             bridgeConnectionChangedMessageFactoryMock.Object,
             isTestModeRequestMessageFactoryMock.Object,
             dragDirectionChangedRequestTargetMessageFactoryMock.Object,
-            hashiBrushResolverMock.Object);
+            hashiBrushResolverMock.Object,
+            helperMock.Object);
 
         action.Should().Throw<ArgumentNullException>().WithParameterName("updateAllIslandColorsMessageFactory");
     }
@@ -198,7 +237,8 @@ public class IslandViewModelTests
             bridgeConnectionChangedMessageFactoryMock.Object,
             isTestModeRequestMessageFactoryMock.Object,
             dragDirectionChangedRequestTargetMessageFactoryMock.Object,
-            hashiBrushResolverMock.Object);
+            hashiBrushResolverMock.Object,
+            helperMock.Object);
 
         action.Should().Throw<ArgumentNullException>().WithParameterName("connectionInformationContainerFactory");
     }
@@ -216,7 +256,8 @@ public class IslandViewModelTests
             null!,
             isTestModeRequestMessageFactoryMock.Object,
             dragDirectionChangedRequestTargetMessageFactoryMock.Object,
-            hashiBrushResolverMock.Object);
+            hashiBrushResolverMock.Object,
+            helperMock.Object);
 
         action.Should().Throw<ArgumentNullException>().WithParameterName("bridgeConnectionChangedMessageFactory");
     }
@@ -234,7 +275,8 @@ public class IslandViewModelTests
             bridgeConnectionChangedMessageFactoryMock.Object,
             null!,
             dragDirectionChangedRequestTargetMessageFactoryMock.Object,
-            hashiBrushResolverMock.Object);
+            hashiBrushResolverMock.Object,
+            helperMock.Object);
 
         action.Should().Throw<ArgumentNullException>().WithParameterName("isTestModeRequestMessageFactory");
     }
@@ -252,9 +294,29 @@ public class IslandViewModelTests
             bridgeConnectionChangedMessageFactoryMock.Object,
             isTestModeRequestMessageFactoryMock.Object,
             null!,
-            hashiBrushResolverMock.Object);
+            hashiBrushResolverMock.Object,
+            helperMock.Object);
 
         action.Should().Throw<ArgumentNullException>().WithParameterName("dragDirectionChangedRequestTargetMessageFactory");
+    }
+
+    [Test]
+    public void Constructor_WhenHelperIsNull_ShouldThrowArgumentNullException()
+    {
+        // Arrange & Act & Assert
+        var action = () => new IslandViewModel(
+            2, 3, 4,
+            viewBoxControlMock.Object,
+            hashiPointFactoryMock.Object,
+            updateAllIslandColorsMessageFactoryMock.Object,
+            connectionInformationContainerFactoryMock.Object,
+            bridgeConnectionChangedMessageFactoryMock.Object,
+            isTestModeRequestMessageFactoryMock.Object,
+            dragDirectionChangedRequestTargetMessageFactoryMock.Object,
+            hashiBrushResolverMock.Object,
+            null!);
+
+        action.Should().Throw<ArgumentNullException>().WithParameterName("helper");
     }
 
     #endregion
@@ -619,7 +681,8 @@ public class IslandViewModelTests
         // Arrange
         var targetMock = new Mock<IIslandViewModel>(MockBehavior.Strict);
         var targetCoordinatesMock = new Mock<IHashiPoint>(MockBehavior.Strict);
-        targetCoordinatesMock.Setup(x => x.Equals(It.IsAny<IHashiPoint>())).Returns(true);
+        targetCoordinatesMock.Setup(x => x.X).Returns(2);
+        targetCoordinatesMock.Setup(x => x.Y).Returns(3);
         targetMock.Setup(x => x.Coordinates).Returns(targetCoordinatesMock.Object);
 
         var targetAllConnections = new ObservableCollection<IHashiPoint>();
@@ -886,7 +949,8 @@ public class IslandViewModelTests
             bridgeConnectionChangedMessageFactoryMock.Object,
             isTestModeRequestMessageFactoryMock.Object,
             dragDirectionChangedRequestTargetMessageFactoryMock.Object,
-            hashiBrushResolverMock.Object);
+            hashiBrushResolverMock.Object,
+            helperMock.Object);
 
         var mockDataObject = new Mock<IDataObject>(MockBehavior.Strict);
         mockDataObject.Setup(x => x.GetDataPresent(typeof(IslandViewModel))).Returns(true);
@@ -983,7 +1047,8 @@ public class IslandViewModelTests
             bridgeConnectionChangedMessageFactoryMock.Object,
             isTestModeRequestMessageFactoryMock.Object,
             dragDirectionChangedRequestTargetMessageFactoryMock.Object,
-            hashiBrushResolverMock.Object);
+            hashiBrushResolverMock.Object,
+            helperMock.Object);
 
         var mockDataObject = new Mock<IDataObject>(MockBehavior.Strict);
         mockDataObject.Setup(x => x.GetDataPresent(typeof(IslandViewModel))).Returns(true);

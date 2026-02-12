@@ -20,6 +20,7 @@ public class HashiGenerator : IHashiGenerator
     private readonly Func<IIsland, IIsland, int, IBridge> bridgeFactory;
     private readonly Func<int[][], IList<IBridgeCoordinates>, ISolutionProvider> solutionContainerFactory;
     private readonly IHashiSolver hashiSolver;
+    private readonly IRuleSolvabilityValidator ruleSolvabilityValidator;
     private readonly ILogger logger;
     private readonly List<IBridge> bridges = [];
     private readonly List<IIsland> islands = [];
@@ -37,12 +38,14 @@ public class HashiGenerator : IHashiGenerator
         Func<IIsland, IIsland, int, IBridge> bridgeFactory,
         Func<int[][], IList<IBridgeCoordinates>, ISolutionProvider> solutionContainerFactory,
         IHashiSolver hashiSolver,
+        IRuleSolvabilityValidator ruleSolvabilityValidator,
         ILoggerFactory loggerFactory)
     {
         this.islandFactory = islandFactory;
         this.bridgeFactory = bridgeFactory;
         this.solutionContainerFactory = solutionContainerFactory;
         this.hashiSolver = hashiSolver;
+        this.ruleSolvabilityValidator = ruleSolvabilityValidator;
         this.logger = loggerFactory.CreateLogger<HashiGenerator>();
     }
 
@@ -111,9 +114,11 @@ public class HashiGenerator : IHashiGenerator
     {
         int[][] field;
         var attempts = 0;
-        const int maxAttempts = 5; // Maximum number of attempts before changing strategy
+        const int maxAttempts = 50; // Maximum number of attempts before changing strategy
+        const int maxRuleAttempts = 500; // Maximum attempts to find a rule-solvable puzzle
+        var ruleAttempts = 0;
 
-        do
+        while (true)
         {
             // Clear caches with each new attempt
             blockCache.Clear();
@@ -121,25 +126,49 @@ public class HashiGenerator : IHashiGenerator
 
             field = await CreateHashAsync(numberOfIslands, sizeLength, sizeWidth, difficulty, beta, checkDifficulty);
             attempts++;
+            ruleAttempts++;
 
-            // If solver keeps failing, try a different generation strategy instead of reducing field size
-            if (attempts >= maxAttempts)
+            // Check if the puzzle is solvable by the CP-SAT solver
+            if (await hashiSolver.SolveLazy(field) == SolverStatusEnum.Infeasible)
             {
-                // Reset attempt counter but vary the generation parameters slightly
-                attempts = 0;
-                beta = Math.Max(0, beta - 5); // Reduce bridge complexity slightly
-            }
-        } while (await hashiSolver.SolveLazy(field) == SolverStatusEnum.Infeasible);
+                // If solver keeps failing, try a different generation strategy
+                if (attempts >= maxAttempts)
+                {
+                    attempts = 0;
+                    beta = Math.Max(0, beta - 5);
+                }
 
-        // Optimize bridge coordinate creation with direct list allocation
-        var bridgeCoordinates = new List<IBridgeCoordinates>(bridges.Count);
-        foreach (var bridge in bridges)
-        {
-            bridgeCoordinates.Add(new BridgeCoordinates(
-                new Point(bridge.Island1.X, bridge.Island1.Y),
-                new Point(bridge.Island2.X, bridge.Island2.Y),
-                bridge.AmountBridgesSet));
+                continue;
+            }
+
+            // Build bridge coordinates from current solution
+            var candidateBridgeCoordinates = BuildBridgeCoordinates();
+
+            // Validate that the puzzle is fully solvable by hint rules
+            if (await ruleSolvabilityValidator.IsFullySolvableByRules(field, candidateBridgeCoordinates))
+            {
+                logger.Info($"Rule-solvable puzzle found after {ruleAttempts} attempt(s)");
+                break;
+            }
+
+            logger.Debug($"Puzzle rejected by rule validator (attempt {ruleAttempts})");
+
+            // Gradually simplify if too many attempts fail rule validation
+            if (ruleAttempts >= maxRuleAttempts)
+            {
+                logger.Warn(
+                    $"Could not find rule-solvable puzzle after {maxRuleAttempts} attempts. Reducing complexity.");
+                ruleAttempts = 0;
+                numberOfIslands = Math.Max(4, numberOfIslands - 2);
+                sizeLength = Math.Max(5, sizeLength - 1);
+                sizeWidth = Math.Max(5, sizeWidth - 1);
+            }
+
+            // Reset solver attempt counter for the next generation
+            attempts = 0;
         }
+
+        var bridgeCoordinates = BuildBridgeCoordinates();
 
         if (Debugger.IsAttached)
         {
@@ -152,6 +181,24 @@ public class HashiGenerator : IHashiGenerator
         }
 
         return solutionContainerFactory.Invoke(field, bridgeCoordinates);
+    }
+
+    /// <summary>
+    ///     Builds the bridge coordinates from the current bridge list.
+    /// </summary>
+    /// <returns>A list of bridge coordinates.</returns>
+    internal List<IBridgeCoordinates> BuildBridgeCoordinates()
+    {
+        var bridgeCoordinates = new List<IBridgeCoordinates>(bridges.Count);
+        foreach (var bridge in bridges)
+        {
+            bridgeCoordinates.Add(new BridgeCoordinates(
+                new Point(bridge.Island1.X, bridge.Island1.Y),
+                new Point(bridge.Island2.X, bridge.Island2.Y),
+                bridge.AmountBridgesSet));
+        }
+
+        return bridgeCoordinates;
     }
 
     internal async Task<int[][]> CreateHashAsync(int numberOfIslands, int sizeLength, int sizeWidth, int difficulty,

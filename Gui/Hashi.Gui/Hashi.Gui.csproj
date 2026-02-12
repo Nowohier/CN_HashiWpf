@@ -55,6 +55,7 @@
     <ProjectReference Include="..\..\Solver\Hashi.Rules\Hashi.Rules.csproj" />
     <ProjectReference Include="..\..\Logging\Hashi.Logging.Interfaces\Hashi.Logging.Interfaces.csproj" />
     <ProjectReference Include="..\..\Logging\Hashi.Logging\Hashi.Logging.csproj" />
+    <ProjectReference Include="..\Hashi.Gui.Core\Hashi.Gui.Core.csproj" />
   </ItemGroup>
 
 </Project>

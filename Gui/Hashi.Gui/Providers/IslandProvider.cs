@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Enums;
 using Hashi.Generator.Interfaces.Providers;
 using Hashi.Gui.Extensions;
+using Hashi.Gui.Interfaces.Helpers;
 using Hashi.Gui.Interfaces.Messages;
 using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.Providers;
@@ -22,7 +23,9 @@ public class IslandProvider :
 {
     private readonly Func<bool?, IAllConnectionsSetMessage> allConnectionsSetMessageFactory;
     private readonly Func<BridgeOperationTypeEnum, IHashiPoint, IHashiPoint, IHashiBridge> bridgeFactory;
+    private readonly IIslandProviderCore core;
     private readonly IDialogWrapper dialogWrapper;
+    private readonly IIslandViewModelHelper helper;
     private readonly Func<int, int, int, IIslandViewModel> islandFactory;
     private readonly ILogger logger;
 
@@ -33,7 +36,9 @@ public class IslandProvider :
         Func<BridgeOperationTypeEnum, IHashiPoint, IHashiPoint, IHashiBridge> bridgeFactory,
         Func<bool?, IAllConnectionsSetMessage> allConnectionsSetMessageFactory,
         IDialogWrapper dialogWrapper,
-        ILoggerFactory loggerFactory
+        ILoggerFactory loggerFactory,
+        IIslandProviderCore core,
+        IIslandViewModelHelper helper
     )
     {
         this.islandFactory = islandFactory ?? throw new ArgumentNullException(nameof(islandFactory));
@@ -41,6 +46,8 @@ public class IslandProvider :
         this.allConnectionsSetMessageFactory = allConnectionsSetMessageFactory ?? throw new ArgumentNullException(nameof(allConnectionsSetMessageFactory));
         this.dialogWrapper = dialogWrapper ?? throw new ArgumentNullException(nameof(dialogWrapper));
         this.logger = (loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory))).CreateLogger<IslandProvider>();
+        this.core = core ?? throw new ArgumentNullException(nameof(core));
+        this.helper = helper ?? throw new ArgumentNullException(nameof(helper));
 
         WeakReferenceMessenger.Default.Register(this);
         logger.Info("IslandProvider initialized");
@@ -115,28 +122,36 @@ public class IslandProvider :
         ArgumentNullException.ThrowIfNull(sourceIsland, nameof(sourceIsland));
         ArgumentNullException.ThrowIfNull(targetIsland, nameof(targetIsland));
 
-        if (!IsValidConnectionBetweenSourceAndTarget(sourceIsland, targetIsland)) return;
-        if (sourceIsland.MaxBridgesReachedToTarget(targetIsland) is true)
+        if (!core.IsValidConnectionBetweenSourceAndTarget(Islands, sourceIsland, targetIsland)) return;
+        if (helper.MaxBridgesReachedToTarget(sourceIsland, targetIsland) is true)
         {
-            RemoveAllConnections(sourceIsland, targetIsland);
+            if (pointType == HashiPointTypeEnum.Normal)
+            {
+                RemoveAllConnections(sourceIsland, targetIsland);
+            }
+
             return;
         }
 
-        History.Add(bridgeFactory.Invoke(BridgeOperationTypeEnum.Add, sourceIsland.Coordinates,
-            targetIsland.Coordinates));
+        if (pointType == HashiPointTypeEnum.Normal)
+        {
+            History.Add(bridgeFactory.Invoke(BridgeOperationTypeEnum.Add, sourceIsland.Coordinates,
+                targetIsland.Coordinates));
+        }
 
-        ManageConnections(sourceIsland, targetIsland, (island, coordinates) => island.AddConnection(coordinates),
+        core.ManageConnections(Islands, sourceIsland, targetIsland,
+            (island, coordinates) => island.AddConnection(coordinates),
             pointType);
 
         var isolatedGroupCount = CountIsolatedIslandGroups();
 
-        if (AreAllConnectionsSet && isolatedGroupCount == 1)
+        if (AreAllConnectionsSet && isolatedGroupCount == 0)
         {
             WeakReferenceMessenger.Default.Send(allConnectionsSetMessageFactory.Invoke(null));
             return;
         }
 
-        if (isolatedGroupCount > 0 && !pointType.Equals(HashiPointTypeEnum.Test))
+        if (isolatedGroupCount > 0 && pointType == HashiPointTypeEnum.Normal)
         {
             dialogWrapper.Show(TranslationSource.Instance["MessageIsolatedGroupCaption"]!,
                 TranslationSource.Instance["MessageIsolatedGroupText"]!, DialogButton.Ok, DialogImage.Warning);
@@ -152,21 +167,21 @@ public class IslandProvider :
         {
             // Clears all source island connections
             foreach (var target in sourceIsland.AllConnections.Distinct().Select(GetIslandByCoordinates).ToList())
-                ManageConnections(sourceIsland, target,
+                core.ManageConnections(Islands, sourceIsland, target,
                     (island, coordinates) => island.RemoveAllConnectionsMatchingCoordinates(coordinates));
 
             return;
         }
 
-        ManageConnections(sourceIsland, targetIsland,
+        core.ManageConnections(Islands, sourceIsland, targetIsland,
             (island, coordinates) => island.RemoveAllConnectionsMatchingCoordinates(coordinates));
     }
 
     /// <inheritdoc />
     public void HighlightPathToTargetIsland(IIslandViewModel source, IIslandViewModel target)
     {
-        var islands = GetAllIslandsInvolvedInConnection(source, target);
-        var connectionType = source.GetConnectionType(target);
+        var islands = core.GetAllIslandsInvolvedInConnection(Islands, source, target);
+        var connectionType = helper.GetConnectionType(source, target);
         foreach (var island in islands)
         {
             if (island.MaxConnections == 0)
@@ -256,7 +271,7 @@ public class IslandProvider :
         var island1 = GetIslandByCoordinates(lastEntry.Point1);
         var island2 = GetIslandByCoordinates(lastEntry.Point2);
 
-        var islands = GetAllIslandsInvolvedInConnection(island1, island2);
+        var islands = core.GetAllIslandsInvolvedInConnection(Islands, island1, island2);
 
         foreach (var island in islands.Where(x => x.MaxConnections == 0))
             RemoveConnectionFromIsland(island, lastEntry.Point1, lastEntry.Point2);
@@ -272,156 +287,26 @@ public class IslandProvider :
     /// <inheritdoc />
     public IIslandViewModel? GetVisibleNeighbor(IIslandViewModel source, DirectionEnum direction)
     {
-        return direction switch
-        {
-            DirectionEnum.Up => CheckDirection(source, 0, -1, ConnectionTypeEnum.Vertical),
-            DirectionEnum.Down => CheckDirection(source, 0, 1, ConnectionTypeEnum.Vertical),
-            DirectionEnum.Left => CheckDirection(source, -1, 0, ConnectionTypeEnum.Horizontal),
-            DirectionEnum.Right => CheckDirection(source, 1, 0, ConnectionTypeEnum.Horizontal),
-            _ => null
-        };
+        return core.GetVisibleNeighbor(Islands, source, direction);
     }
 
     /// <inheritdoc />
     public List<IIslandViewModel> GetAllVisibleNeighbors(IIslandViewModel source)
     {
-        var neighbors = new List<IIslandViewModel>();
-
-        if (CheckDirection(source, 0, -1, ConnectionTypeEnum.Vertical) is { } above)
-            neighbors.Add(above);
-
-        if (CheckDirection(source, 0, 1, ConnectionTypeEnum.Vertical) is { } below)
-            neighbors.Add(below);
-
-        if (CheckDirection(source, -1, 0, ConnectionTypeEnum.Horizontal) is { } left)
-            neighbors.Add(left);
-
-        if (CheckDirection(source, 1, 0, ConnectionTypeEnum.Horizontal) is { } right)
-            neighbors.Add(right);
-
-        return neighbors;
+        return core.GetAllVisibleNeighbors(Islands, source);
     }
 
     /// <inheritdoc />
     public int CountIsolatedIslandGroups()
     {
-        // Set to track visited islands
-        var visited = new HashSet<IIslandViewModel>();
-        var groupCount = 0;
-
-        // Filter islands with connections and MaxConnections > 0
-        var validIslands = IslandsFlat.Where(island => island.AllConnections.Any() && island.MaxConnections > 0)
-            .ToList();
-
-        // Iterate through all valid islands
-        foreach (var island in validIslands)
-        {
-            // Skip already visited islands
-            if (visited.Contains(island))
-                continue;
-
-            // Recursively find all connected islands in the group
-            var group = new List<IIslandViewModel>();
-            FindConnectedIslands(island, group, visited);
-
-            //Debug.WriteLine($"GroupCount: {group.Count} | Islands: {string.Join("|", group.Select(x => x.Coordinates))}");
-
-            // Count the group as isolated if all islands in the group have MaxConnectionsReached
-            if (group.All(i => i.MaxConnectionsReached) && group.Count > 1)
-                groupCount++;
-        }
-
-        return groupCount;
+        return core.CountIsolatedIslandGroups(Islands, IslandsFlat,
+            island => core.GetAllVisibleNeighbors(Islands, island));
     }
 
     /// <inheritdoc cref="IIslandProvider.Receive(IUpdateAllIslandColorsMessage)" />
     public void Receive(IUpdateAllIslandColorsMessage message)
     {
         RefreshIslandColors();
-    }
-
-    private void FindConnectedIslands(IIslandViewModel island, List<IIslandViewModel> group,
-        HashSet<IIslandViewModel> visited)
-    {
-        // Add the current island to the group and mark it as visited
-        group.Add(island);
-        visited.Add(island);
-
-        // Recursively check all connected neighbors
-        foreach (var neighbor in GetConnectedNeighbors(island))
-            if (!visited.Contains(neighbor))
-                FindConnectedIslands(neighbor, group, visited);
-    }
-
-    private IEnumerable<IIslandViewModel> GetConnectedNeighbors(IIslandViewModel island)
-    {
-        var result = GetAllVisibleNeighbors(island)
-            .Where(neighbor => neighbor.AllConnections.Any(connection =>
-                island.Coordinates.X == connection.X && island.Coordinates.Y == connection.Y));
-        return result;
-    }
-
-    private IEnumerable<IIslandViewModel> GetAllIslandsInvolvedInConnection(IIslandViewModel source,
-        IIslandViewModel target)
-    {
-        var islandsBetween = new List<IIslandViewModel>();
-        var connectionType = source.GetConnectionType(target);
-
-        switch (connectionType)
-        {
-            case ConnectionTypeEnum.Vertical:
-                {
-                    var minY = Math.Min(source.Coordinates.Y, target.Coordinates.Y);
-                    var maxY = Math.Max(source.Coordinates.Y, target.Coordinates.Y);
-                    for (var y = minY; y <= maxY; y++)
-                    {
-                        var island = Islands[y][source.Coordinates.X];
-                        islandsBetween.Add(island);
-                    }
-
-                    break;
-                }
-            case ConnectionTypeEnum.Horizontal:
-                {
-                    var minX = Math.Min(source.Coordinates.X, target.Coordinates.X);
-                    var maxX = Math.Max(source.Coordinates.X, target.Coordinates.X);
-                    for (var x = minX; x <= maxX; x++)
-                    {
-                        var island = Islands[source.Coordinates.Y][x];
-                        islandsBetween.Add(island);
-                    }
-
-                    break;
-                }
-            case ConnectionTypeEnum.Diagonal:
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
-
-        return islandsBetween;
-    }
-
-    private bool IsValidConnectionBetweenSourceAndTarget(IIslandViewModel? source, IIslandViewModel? target)
-    {
-        // Check if the source and/or target islands are null -> invalid
-        if (source == null || target == null) return false;
-
-        // Check if the source and target coordinates are the same -> invalid
-        if (source == target) return false;
-
-        // Check if the source and target coordinates are not on the same axis -> invalid
-        if (source.GetConnectionType(target) == ConnectionTypeEnum.Diagonal) return false;
-
-        // Check if an island is in between the source and target coordinates -> invalid
-        if (IsIslandInBetweenSourceAndTarget(source, target)) return false;
-
-        // Check if the source or target island has reached its maximum connections -> invalid
-        if (source.MaxConnectionsReached || target.MaxConnectionsReached) return false;
-
-        // Check if potential connection would collide with existing connections
-        if (WouldConnectionCollide(source, target)) return false;
-
-        return true;
     }
 
     private IIslandViewModel GetIslandByCoordinates(IHashiPoint coordinates)
@@ -433,114 +318,6 @@ public class IslandProvider :
             throw new ArgumentOutOfRangeException(nameof(coordinates), "X coordinate is out of range.");
 
         return Islands[coordinates.Y][coordinates.X];
-    }
-
-    private bool IsIslandInBetweenSourceAndTarget(IIslandViewModel source, IIslandViewModel target)
-    {
-        var connectionType = source.GetConnectionType(target);
-
-        switch (connectionType)
-        {
-            case ConnectionTypeEnum.Vertical:
-                {
-                    var minY = Math.Min(source.Coordinates.Y, target.Coordinates.Y);
-                    var maxY = Math.Max(source.Coordinates.Y, target.Coordinates.Y);
-                    for (var y = minY + 1; y < maxY; y++)
-                        if (Islands[y][source.Coordinates.X].MaxConnections > 0)
-                            return true;
-
-                    break;
-                }
-            case ConnectionTypeEnum.Horizontal:
-                {
-                    var minX = Math.Min(source.Coordinates.X, target.Coordinates.X);
-                    var maxX = Math.Max(source.Coordinates.X, target.Coordinates.X);
-                    for (var x = minX + 1; x < maxX; x++)
-                        if (Islands[source.Coordinates.Y][x].MaxConnections > 0)
-                            return true;
-
-                    break;
-                }
-            case ConnectionTypeEnum.Diagonal:
-            default:
-                throw new InvalidOperationException(
-                    "Invalid connection type. Diagonal connections are not allowed here.");
-        }
-
-        return false;
-    }
-
-    private bool WouldConnectionCollide(IIslandViewModel source, IIslandViewModel target)
-    {
-        var connectionType = source.GetConnectionType(target);
-        var islands = GetAllIslandsInvolvedInConnection(source, target).Where(x => x.MaxConnections == 0);
-        return islands.Any(island => IsCollidingConnection(island, connectionType));
-    }
-
-    private IIslandViewModel? CheckDirection(IIslandViewModel source, int dx, int dy, ConnectionTypeEnum connectionType)
-    {
-        if (connectionType == ConnectionTypeEnum.Diagonal) return null;
-
-        var currentX = source.Coordinates.X + dx;
-        var currentY = source.Coordinates.Y + dy;
-
-        while (currentY >= 0 && currentY < Islands.Count && currentX >= 0 && currentX < Islands[currentY].Count)
-        {
-            var neighbor = Islands[currentY][currentX];
-            if (IsCollidingConnection(neighbor, connectionType)) break;
-
-            if (neighbor.MaxConnections > 0) return neighbor;
-
-            currentX += dx;
-            currentY += dy;
-        }
-
-        return null;
-    }
-
-    private bool IsCollidingConnection(IIslandViewModel target, ConnectionTypeEnum connectionType)
-    {
-        if (target.MaxConnections > 0) return false;
-
-        return connectionType switch
-        {
-            ConnectionTypeEnum.Vertical => target.BridgesLeft.Count > 0 || target.BridgesRight.Count > 0,
-            ConnectionTypeEnum.Horizontal => target.BridgesUp.Count > 0 || target.BridgesDown.Count > 0,
-            _ => throw new ArgumentOutOfRangeException(nameof(connectionType), connectionType,
-                @"Invalid connection type.")
-        };
-    }
-
-    private void ManageConnections(IIslandViewModel? source, IIslandViewModel? target,
-        Action<IIslandViewModel, IHashiPoint> connectionAction,
-        HashiPointTypeEnum pointType = HashiPointTypeEnum.Normal)
-    {
-        if (source == null) throw new ArgumentNullException(nameof(source), @"Source island cannot be null.");
-
-        if (target == null) throw new ArgumentNullException(nameof(target), @"Target island cannot be null.");
-
-        if (source.GetConnectionType(target) == ConnectionTypeEnum.Diagonal)
-            throw new InvalidOperationException("Diagonal connections are not allowed.");
-
-        var sourceCoordinates = (IHashiPoint)source.Coordinates.Clone();
-        sourceCoordinates.PointType = pointType;
-        var targetCoordinates = (IHashiPoint)target.Coordinates.Clone();
-        targetCoordinates.PointType = pointType;
-
-        var islandsToConnect = GetAllIslandsInvolvedInConnection(source, target).ToList();
-
-        foreach (var island in islandsToConnect)
-        {
-            if (island.MaxConnections == 0)
-            {
-                connectionAction(island, sourceCoordinates);
-                connectionAction(island, targetCoordinates);
-            }
-
-            if (island == source) connectionAction(island, targetCoordinates);
-
-            if (island == target) connectionAction(island, sourceCoordinates);
-        }
     }
 
     private void RemoveConnectionFromIsland(IIslandViewModel island, IHashiPoint point1, IHashiPoint point2)

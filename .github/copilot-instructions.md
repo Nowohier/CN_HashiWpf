@@ -1,12 +1,6 @@
-
 ## Code Standards
 - SOLID principles
 - Clean coding
-
-### Required Before Each Commit
-
-### Development Flow
-
 
 ## Repository Structure
 - Generator folder: Contains the hashi generator project as well as the interface definitions project
@@ -22,10 +16,7 @@
 - Use MockBehavior.Strict for all Mocks.
 - UnitTest class name: [NameOfClassToTest]Tests.cs
 - Unit Test naming: [MethodName]_When[TestConditions]_Should[ExpectedResult]
-- Use pattern "Arrange, Act, Assert" for structuring tests.
-   - Arrange: Set up the context and inputs
-   - Act: Execute the code under test
-   - Assert: Verify the outcome
+- Use pattern "Arrange, Act, Assert" for structuring tests
 
 ## Key Guidelines
 1. Follow C# best practices and idiomatic patterns

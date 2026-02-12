@@ -31,6 +31,7 @@ public class IslandViewModel :
     private readonly Func<IIslandViewModel, DirectionEnum, IDragDirectionChangedRequestTargetMessage>
         dragDirectionChangedRequestTargetMessageFactory;
 
+    private readonly IIslandViewModelHelper helper;
     private readonly Func<IIsTestModeRequestMessage> isTestModeRequestMessageFactory;
     private readonly IHashiPoint mouseDownPosition;
     private readonly Func<bool?, IUpdateAllIslandColorsMessage> updateAllIslandColorsMessageFactory;
@@ -59,6 +60,7 @@ public class IslandViewModel :
     /// <param name="isTestModeRequestMessageFactory">The is isTestModeRequestMessageFactory.</param>
     /// <param name="dragDirectionChangedRequestTargetMessageFactory">The drag direction changed request target message factory.</param>
     /// <param name="brushResolver">The hashi brush resolver.</param>
+    /// <param name="helper">The island view model helper.</param>
     public IslandViewModel
     (
         int x,
@@ -74,7 +76,8 @@ public class IslandViewModel :
         Func<IIsTestModeRequestMessage> isTestModeRequestMessageFactory,
         Func<IIslandViewModel, DirectionEnum, IDragDirectionChangedRequestTargetMessage>
             dragDirectionChangedRequestTargetMessageFactory,
-        IHashiBrushResolver brushResolver
+        IHashiBrushResolver brushResolver,
+        IIslandViewModelHelper helper
     )
     {
         MaxConnections = maxConnections;
@@ -86,6 +89,7 @@ public class IslandViewModel :
         this.isTestModeRequestMessageFactory = isTestModeRequestMessageFactory ?? throw new ArgumentNullException(nameof(isTestModeRequestMessageFactory));
         this.dragDirectionChangedRequestTargetMessageFactory = dragDirectionChangedRequestTargetMessageFactory ?? throw new ArgumentNullException(nameof(dragDirectionChangedRequestTargetMessageFactory));
         BrushResolver = brushResolver ?? throw new ArgumentNullException(nameof(brushResolver));
+        this.helper = helper ?? throw new ArgumentNullException(nameof(helper));
 
         DragEnterCommand = new RelayCommand<DragEventArgs>(DragEnterCommandExecute);
         DropCommand = new RelayCommand<DragEventArgs>(DropCommandExecute);
@@ -156,20 +160,16 @@ public class IslandViewModel :
     public bool MaxConnectionsReached => AllConnections.Count >= MaxConnections;
 
     /// <inheritdoc />
-    public List<IHashiPoint> BridgesLeft =>
-        AllConnections.Where(x => x.X < Coordinates.X && x.Y == Coordinates.Y).ToList();
+    public List<IHashiPoint> BridgesLeft => helper.GetBridgesLeft(this);
 
     /// <inheritdoc />
-    public List<IHashiPoint> BridgesRight =>
-        AllConnections.Where(x => x.X > Coordinates.X && x.Y == Coordinates.Y).ToList();
+    public List<IHashiPoint> BridgesRight => helper.GetBridgesRight(this);
 
     /// <inheritdoc />
-    public List<IHashiPoint> BridgesUp =>
-        AllConnections.Where(x => x.X == Coordinates.X && x.Y < Coordinates.Y).ToList();
+    public List<IHashiPoint> BridgesUp => helper.GetBridgesUp(this);
 
     /// <inheritdoc />
-    public List<IHashiPoint> BridgesDown =>
-        AllConnections.Where(x => x.X == Coordinates.X && x.Y > Coordinates.Y).ToList();
+    public List<IHashiPoint> BridgesDown => helper.GetBridgesDown(this);
 
     /// <inheritdoc />
     public IHashiBrush IslandColor
@@ -218,10 +218,7 @@ public class IslandViewModel :
     /// <inheritdoc />
     public ConnectionTypeEnum GetConnectionType(IIslandViewModel targetIsland)
     {
-        if (Coordinates.X == targetIsland.Coordinates.X) return ConnectionTypeEnum.Vertical;
-        return Coordinates.Y == targetIsland.Coordinates.Y
-            ? ConnectionTypeEnum.Horizontal
-            : ConnectionTypeEnum.Diagonal;
+        return helper.GetConnectionType(this, targetIsland);
     }
 
     /// <inheritdoc />
@@ -251,18 +248,13 @@ public class IslandViewModel :
     /// <inheritdoc />
     public bool IsValidDropTarget(IIslandViewModel? target)
     {
-        return target != null && target != this && MaxConnections > 0 && target.MaxConnections > 0 &&
-               !MaxConnectionsReached && !target.MaxConnectionsReached &&
-               GetConnectionType(target) != ConnectionTypeEnum.Diagonal;
+        return helper.IsValidDropTarget(this, target);
     }
 
     /// <inheritdoc />
     public bool? MaxBridgesReachedToTarget(IIslandViewModel? target)
     {
-        return target == null
-            ? null
-            : AllConnections.Count(c => c.Equals(target.Coordinates)) >= 2 ||
-              target.AllConnections.Count(c => c.Equals(Coordinates)) >= 2;
+        return helper.MaxBridgesReachedToTarget(this, target);
     }
 
     /// <inheritdoc />

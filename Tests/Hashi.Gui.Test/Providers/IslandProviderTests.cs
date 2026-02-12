@@ -2,8 +2,10 @@ using FluentAssertions;
 using Hashi.Enums;
 using Hashi.Generator.Interfaces.Models;
 using Hashi.Generator.Interfaces.Providers;
+using Hashi.Gui.Interfaces.Helpers;
 using Hashi.Gui.Interfaces.Messages;
 using Hashi.Gui.Interfaces.Models;
+using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Wrappers;
 using Hashi.Gui.Providers;
@@ -31,6 +33,8 @@ public class IslandProviderTests
         islandViewModelMock = new Mock<IIslandViewModel>(MockBehavior.Strict);
         hashiPointMock = new Mock<IHashiPoint>(MockBehavior.Strict);
         hashiBridgeMock = new Mock<IHashiBridge>(MockBehavior.Strict);
+        coreMock = new Mock<IIslandProviderCore>(MockBehavior.Strict);
+        helperMock = new Mock<IIslandViewModelHelper>(MockBehavior.Strict);
 
         // Setup logger
         loggerFactoryMock.Setup(x => x.CreateLogger<IslandProvider>()).Returns(loggerMock.Object);
@@ -59,6 +63,12 @@ public class IslandProviderTests
         islandViewModelMock.Setup(x => x.MaxBridgesReachedToTarget(It.IsAny<IIslandViewModel>())).Returns(false);
         islandViewModelMock.Setup(x => x.NotifyBridgeConnections());
 
+        // Setup helper
+        helperMock.Setup(x => x.MaxBridgesReachedToTarget(It.IsAny<IIslandViewModel>(), It.IsAny<IIslandViewModel>()))
+            .Returns(false);
+        helperMock.Setup(x => x.GetConnectionType(It.IsAny<IIslandViewModel>(), It.IsAny<IIslandViewModel>()))
+            .Returns(ConnectionTypeEnum.Horizontal);
+
         // Setup hashiPoint
         hashiPointMock.Setup(x => x.X).Returns(1);
         hashiPointMock.Setup(x => x.Y).Returns(1);
@@ -74,7 +84,9 @@ public class IslandProviderTests
             bridgeFactoryMock.Object,
             allConnectionsSetMessageFactoryMock.Object,
             dialogWrapperMock.Object,
-            loggerFactoryMock.Object);
+            loggerFactoryMock.Object,
+            coreMock.Object,
+            helperMock.Object);
     }
 
     private Mock<Func<int, int, int, IIslandViewModel>> islandFactoryMock;
@@ -87,6 +99,8 @@ public class IslandProviderTests
     private Mock<IIslandViewModel> islandViewModelMock;
     private Mock<IHashiPoint> hashiPointMock;
     private Mock<IHashiBridge> hashiBridgeMock;
+    private Mock<IIslandProviderCore> coreMock;
+    private Mock<IIslandViewModelHelper> helperMock;
     private IslandProvider islandProvider;
 
     [Test]
@@ -108,7 +122,9 @@ public class IslandProviderTests
             bridgeFactoryMock.Object,
             allConnectionsSetMessageFactoryMock.Object,
             dialogWrapperMock.Object,
-            loggerFactoryMock.Object);
+            loggerFactoryMock.Object,
+            coreMock.Object,
+            helperMock.Object);
 
         action.Should().Throw<ArgumentNullException>().WithParameterName("islandFactory");
     }
@@ -122,7 +138,9 @@ public class IslandProviderTests
             null!,
             allConnectionsSetMessageFactoryMock.Object,
             dialogWrapperMock.Object,
-            loggerFactoryMock.Object);
+            loggerFactoryMock.Object,
+            coreMock.Object,
+            helperMock.Object);
 
         action.Should().Throw<ArgumentNullException>().WithParameterName("bridgeFactory");
     }
@@ -136,7 +154,9 @@ public class IslandProviderTests
             bridgeFactoryMock.Object,
             null!,
             dialogWrapperMock.Object,
-            loggerFactoryMock.Object);
+            loggerFactoryMock.Object,
+            coreMock.Object,
+            helperMock.Object);
 
         action.Should().Throw<ArgumentNullException>().WithParameterName("allConnectionsSetMessageFactory");
     }
@@ -150,7 +170,9 @@ public class IslandProviderTests
             bridgeFactoryMock.Object,
             allConnectionsSetMessageFactoryMock.Object,
             null!,
-            loggerFactoryMock.Object);
+            loggerFactoryMock.Object,
+            coreMock.Object,
+            helperMock.Object);
 
         action.Should().Throw<ArgumentNullException>().WithParameterName("dialogWrapper");
     }
@@ -164,9 +186,43 @@ public class IslandProviderTests
             bridgeFactoryMock.Object,
             allConnectionsSetMessageFactoryMock.Object,
             dialogWrapperMock.Object,
-            null!);
+            null!,
+            coreMock.Object,
+            helperMock.Object);
 
         action.Should().Throw<ArgumentNullException>().WithParameterName("loggerFactory");
+    }
+
+    [Test]
+    public void Constructor_WhenCoreIsNull_ShouldThrowArgumentNullException()
+    {
+        // Arrange & Act & Assert
+        var action = () => new IslandProvider(
+            islandFactoryMock.Object,
+            bridgeFactoryMock.Object,
+            allConnectionsSetMessageFactoryMock.Object,
+            dialogWrapperMock.Object,
+            loggerFactoryMock.Object,
+            null!,
+            helperMock.Object);
+
+        action.Should().Throw<ArgumentNullException>().WithParameterName("core");
+    }
+
+    [Test]
+    public void Constructor_WhenHelperIsNull_ShouldThrowArgumentNullException()
+    {
+        // Arrange & Act & Assert
+        var action = () => new IslandProvider(
+            islandFactoryMock.Object,
+            bridgeFactoryMock.Object,
+            allConnectionsSetMessageFactoryMock.Object,
+            dialogWrapperMock.Object,
+            loggerFactoryMock.Object,
+            coreMock.Object,
+            null!);
+
+        action.Should().Throw<ArgumentNullException>().WithParameterName("helper");
     }
 
     [Test]
@@ -232,6 +288,22 @@ public class IslandProviderTests
         solutionProviderMock.Setup(x => x.BridgeCoordinates)
             .Returns(new List<IBridgeCoordinates> { bridgeCoordinatesMock.Object });
 
+        // Setup core mock for AddConnection path
+        coreMock.Setup(x => x.IsValidConnectionBetweenSourceAndTarget(
+            It.IsAny<ObservableCollection<ObservableCollection<IIslandViewModel>>>(),
+            It.IsAny<IIslandViewModel>(), It.IsAny<IIslandViewModel>()))
+            .Returns(true);
+        coreMock.Setup(x => x.ManageConnections(
+            It.IsAny<ObservableCollection<ObservableCollection<IIslandViewModel>>>(),
+            It.IsAny<IIslandViewModel>(), It.IsAny<IIslandViewModel>(),
+            It.IsAny<Action<IIslandViewModel, IHashiPoint>>(),
+            It.IsAny<HashiPointTypeEnum>()));
+        coreMock.Setup(x => x.CountIsolatedIslandGroups(
+            It.IsAny<ObservableCollection<ObservableCollection<IIslandViewModel>>>(),
+            It.IsAny<IEnumerable<IIslandViewModel>>(),
+            It.IsAny<Func<IIslandViewModel, List<IIslandViewModel>>>()))
+            .Returns(0);
+
         // Act
         islandProvider.InitializeNewSolutionAndSetBridges(solutionProviderMock.Object);
 
@@ -276,8 +348,6 @@ public class IslandProviderTests
         targetIslandMock.Setup(x => x.MaxConnections).Returns(4);
         sourceIslandMock.Setup(x => x.MaxConnectionsReached).Returns(false);
         targetIslandMock.Setup(x => x.MaxConnectionsReached).Returns(false);
-        sourceIslandMock.Setup(x => x.MaxBridgesReachedToTarget(It.IsAny<IIslandViewModel>())).Returns(false);
-        targetIslandMock.Setup(x => x.MaxBridgesReachedToTarget(It.IsAny<IIslandViewModel>())).Returns(false);
         sourceIslandMock.Setup(x => x.AddConnection(It.IsAny<IHashiPoint>()));
         targetIslandMock.Setup(x => x.AddConnection(It.IsAny<IHashiPoint>()));
 
@@ -287,13 +357,25 @@ public class IslandProviderTests
 
         sourceCoordinatesMock.Setup(x => x.X).Returns(0);
         sourceCoordinatesMock.Setup(x => x.Y).Returns(0);
-        sourceCoordinatesMock.Setup(x => x.Clone()).Returns(sourceCoordinatesMock.Object);
-        sourceCoordinatesMock.SetupProperty(x => x.PointType);
 
         targetCoordinatesMock.Setup(x => x.X).Returns(1);
         targetCoordinatesMock.Setup(x => x.Y).Returns(0);
-        targetCoordinatesMock.Setup(x => x.Clone()).Returns(targetCoordinatesMock.Object);
-        targetCoordinatesMock.SetupProperty(x => x.PointType);
+
+        // Setup core mock
+        coreMock.Setup(x => x.IsValidConnectionBetweenSourceAndTarget(
+            It.IsAny<ObservableCollection<ObservableCollection<IIslandViewModel>>>(),
+            sourceIslandMock.Object, targetIslandMock.Object))
+            .Returns(true);
+        coreMock.Setup(x => x.ManageConnections(
+            It.IsAny<ObservableCollection<ObservableCollection<IIslandViewModel>>>(),
+            sourceIslandMock.Object, targetIslandMock.Object,
+            It.IsAny<Action<IIslandViewModel, IHashiPoint>>(),
+            It.IsAny<HashiPointTypeEnum>()));
+        coreMock.Setup(x => x.CountIsolatedIslandGroups(
+            It.IsAny<ObservableCollection<ObservableCollection<IIslandViewModel>>>(),
+            It.IsAny<IEnumerable<IIslandViewModel>>(),
+            It.IsAny<Func<IIslandViewModel, List<IIslandViewModel>>>()))
+            .Returns(0);
 
         // Initialize the islands collection
         islandProvider.InitializeNewSolution(solutionProviderMock.Object);
@@ -308,8 +390,68 @@ public class IslandProviderTests
         bridgeFactoryMock.Verify(
             x => x.Invoke(BridgeOperationTypeEnum.Add, sourceCoordinatesMock.Object, targetCoordinatesMock.Object),
             Times.Once);
-        sourceIslandMock.Verify(x => x.AddConnection(It.IsAny<IHashiPoint>()), Times.Once);
-        targetIslandMock.Verify(x => x.AddConnection(It.IsAny<IHashiPoint>()), Times.Once);
+        coreMock.Verify(x => x.ManageConnections(
+            It.IsAny<ObservableCollection<ObservableCollection<IIslandViewModel>>>(),
+            sourceIslandMock.Object, targetIslandMock.Object,
+            It.IsAny<Action<IIslandViewModel, IHashiPoint>>(),
+            It.IsAny<HashiPointTypeEnum>()), Times.Once);
+    }
+
+    [Test]
+    public void AddConnection_WhenAllConnectionsSetAndNoIsolatedGroups_ShouldSendCompletionMessage()
+    {
+        // Arrange
+        var sourceIslandMock = new Mock<IIslandViewModel>(MockBehavior.Strict);
+        var targetIslandMock = new Mock<IIslandViewModel>(MockBehavior.Strict);
+        var sourceCoordinatesMock = new Mock<IHashiPoint>(MockBehavior.Strict);
+        var targetCoordinatesMock = new Mock<IHashiPoint>(MockBehavior.Strict);
+        var allConnectionsSetMessageMock = new Mock<IAllConnectionsSetMessage>(MockBehavior.Strict);
+
+        sourceIslandMock.Setup(x => x.Coordinates).Returns(sourceCoordinatesMock.Object);
+        targetIslandMock.Setup(x => x.Coordinates).Returns(targetCoordinatesMock.Object);
+        sourceIslandMock.Setup(x => x.MaxConnections).Returns(2);
+        targetIslandMock.Setup(x => x.MaxConnections).Returns(2);
+        sourceIslandMock.Setup(x => x.MaxConnectionsReached).Returns(true);
+        targetIslandMock.Setup(x => x.MaxConnectionsReached).Returns(true);
+
+        sourceCoordinatesMock.Setup(x => x.X).Returns(0);
+        sourceCoordinatesMock.Setup(x => x.Y).Returns(0);
+        targetCoordinatesMock.Setup(x => x.X).Returns(1);
+        targetCoordinatesMock.Setup(x => x.Y).Returns(0);
+
+        // Setup core mock
+        coreMock.Setup(x => x.IsValidConnectionBetweenSourceAndTarget(
+            It.IsAny<ObservableCollection<ObservableCollection<IIslandViewModel>>>(),
+            sourceIslandMock.Object, targetIslandMock.Object))
+            .Returns(true);
+        coreMock.Setup(x => x.ManageConnections(
+            It.IsAny<ObservableCollection<ObservableCollection<IIslandViewModel>>>(),
+            sourceIslandMock.Object, targetIslandMock.Object,
+            It.IsAny<Action<IIslandViewModel, IHashiPoint>>(),
+            It.IsAny<HashiPointTypeEnum>()));
+        coreMock.Setup(x => x.CountIsolatedIslandGroups(
+            It.IsAny<ObservableCollection<ObservableCollection<IIslandViewModel>>>(),
+            It.IsAny<IEnumerable<IIslandViewModel>>(),
+            It.IsAny<Func<IIslandViewModel, List<IIslandViewModel>>>()))
+            .Returns(0);
+
+        helperMock.Setup(x => x.MaxBridgesReachedToTarget(sourceIslandMock.Object, targetIslandMock.Object))
+            .Returns(false);
+
+        allConnectionsSetMessageFactoryMock.Setup(x => x.Invoke(null))
+            .Returns(allConnectionsSetMessageMock.Object);
+
+        // Initialize the islands collection with only the two islands
+        islandProvider.InitializeNewSolution(solutionProviderMock.Object);
+        islandProvider.Islands.Clear();
+        var row = new ObservableCollection<IIslandViewModel> { sourceIslandMock.Object, targetIslandMock.Object };
+        islandProvider.Islands.Add(row);
+
+        // Act
+        islandProvider.AddConnection(sourceIslandMock.Object, targetIslandMock.Object);
+
+        // Assert
+        allConnectionsSetMessageFactoryMock.Verify(x => x.Invoke(null), Times.Once);
     }
 
     [Test]
@@ -332,29 +474,27 @@ public class IslandProviderTests
         var connections = new ObservableCollection<IHashiPoint> { connectionMock.Object };
 
         sourceIslandMock.Setup(x => x.AllConnections).Returns(connections);
-        sourceIslandMock.Setup(x => x.RemoveAllConnectionsMatchingCoordinates(It.IsAny<IHashiPoint>()));
-        sourceIslandMock.Setup(x => x.GetConnectionType(It.IsAny<IIslandViewModel>())).Returns(ConnectionTypeEnum.Horizontal);
         sourceIslandMock.Setup(x => x.Coordinates).Returns(sourceCoordinatesMock.Object);
-        sourceIslandMock.Setup(x => x.MaxConnections).Returns(4); // Add missing MaxConnections setup
+        sourceIslandMock.Setup(x => x.MaxConnections).Returns(4);
 
-        targetIslandForConnectionMock.Setup(x => x.RemoveAllConnectionsMatchingCoordinates(It.IsAny<IHashiPoint>()));
-        targetIslandForConnectionMock.Setup(x => x.GetConnectionType(It.IsAny<IIslandViewModel>())).Returns(ConnectionTypeEnum.Horizontal);
         targetIslandForConnectionMock.Setup(x => x.MaxConnections).Returns(4);
         targetIslandForConnectionMock.Setup(x => x.Coordinates).Returns(targetCoordinatesMock.Object);
 
-        connectionMock.Setup(x => x.X).Returns(0); // Valid coordinate within bounds
-        connectionMock.Setup(x => x.Y).Returns(0); // Valid coordinate within bounds
+        connectionMock.Setup(x => x.X).Returns(0);
+        connectionMock.Setup(x => x.Y).Returns(0);
 
-        // Setup coordinates for source and target islands
         sourceCoordinatesMock.Setup(x => x.X).Returns(1);
         sourceCoordinatesMock.Setup(x => x.Y).Returns(0);
-        sourceCoordinatesMock.Setup(x => x.Clone()).Returns(sourceCoordinatesMock.Object);
-        sourceCoordinatesMock.SetupProperty(x => x.PointType);
 
         targetCoordinatesMock.Setup(x => x.X).Returns(0);
         targetCoordinatesMock.Setup(x => x.Y).Returns(0);
-        targetCoordinatesMock.Setup(x => x.Clone()).Returns(targetCoordinatesMock.Object);
-        targetCoordinatesMock.SetupProperty(x => x.PointType);
+
+        // Setup core mock
+        coreMock.Setup(x => x.ManageConnections(
+            It.IsAny<ObservableCollection<ObservableCollection<IIslandViewModel>>>(),
+            sourceIslandMock.Object, targetIslandForConnectionMock.Object,
+            It.IsAny<Action<IIslandViewModel, IHashiPoint>>(),
+            It.IsAny<HashiPointTypeEnum>()));
 
         // Initialize the islands collection
         islandProvider.InitializeNewSolution(solutionProviderMock.Object);
@@ -366,8 +506,11 @@ public class IslandProviderTests
         islandProvider.RemoveAllConnections(sourceIslandMock.Object, null);
 
         // Assert
-        sourceIslandMock.Verify(x => x.RemoveAllConnectionsMatchingCoordinates(It.IsAny<IHashiPoint>()), Times.Once);
-        targetIslandForConnectionMock.Verify(x => x.RemoveAllConnectionsMatchingCoordinates(It.IsAny<IHashiPoint>()), Times.Once);
+        coreMock.Verify(x => x.ManageConnections(
+            It.IsAny<ObservableCollection<ObservableCollection<IIslandViewModel>>>(),
+            sourceIslandMock.Object, targetIslandForConnectionMock.Object,
+            It.IsAny<Action<IIslandViewModel, IHashiPoint>>(),
+            It.IsAny<HashiPointTypeEnum>()), Times.Once);
     }
 
     [Test]
@@ -381,8 +524,6 @@ public class IslandProviderTests
 
         sourceIslandMock.Setup(x => x.Coordinates).Returns(sourceCoordinatesMock.Object);
         targetIslandMock.Setup(x => x.Coordinates).Returns(targetCoordinatesMock.Object);
-        sourceIslandMock.Setup(x => x.GetConnectionType(It.IsAny<IIslandViewModel>()))
-            .Returns(ConnectionTypeEnum.Horizontal);
         sourceIslandMock.Setup(x => x.MaxConnections).Returns(4);
         targetIslandMock.Setup(x => x.MaxConnections).Returns(4);
         sourceIslandMock.SetupProperty(x => x.IsHighlightHorizontalLeft);
@@ -412,11 +553,16 @@ public class IslandProviderTests
             { sourceIslandMock.Object, islandViewModelMock.Object, targetIslandMock.Object };
         islandProvider.Islands.Add(row);
 
+        // Setup core mock
+        coreMock.Setup(x => x.GetAllIslandsInvolvedInConnection(
+            It.IsAny<ObservableCollection<ObservableCollection<IIslandViewModel>>>(),
+            sourceIslandMock.Object, targetIslandMock.Object))
+            .Returns(new List<IIslandViewModel> { sourceIslandMock.Object, islandViewModelMock.Object, targetIslandMock.Object });
+
         // Act
         islandProvider.HighlightPathToTargetIsland(sourceIslandMock.Object, targetIslandMock.Object);
 
         // Assert
-        // The method should highlight the path between source and target islands
         Assert.Pass("HighlightPathToTargetIsland completed without throwing");
     }
 
@@ -484,6 +630,11 @@ public class IslandProviderTests
     public void CountIsolatedIslandGroups_WhenNoIsolatedGroups_ShouldReturnZero()
     {
         // Arrange
+        coreMock.Setup(x => x.CountIsolatedIslandGroups(
+            It.IsAny<ObservableCollection<ObservableCollection<IIslandViewModel>>>(),
+            It.IsAny<IEnumerable<IIslandViewModel>>(),
+            It.IsAny<Func<IIslandViewModel, List<IIslandViewModel>>>()))
+            .Returns(0);
         islandProvider.InitializeNewSolution(solutionProviderMock.Object);
 
         // Act
@@ -505,13 +656,17 @@ public class IslandProviderTests
 
         islandProvider.InitializeNewSolution(solutionProviderMock.Object);
 
+        coreMock.Setup(x => x.GetVisibleNeighbor(
+            It.IsAny<ObservableCollection<ObservableCollection<IIslandViewModel>>>(),
+            sourceIslandMock.Object,
+            DirectionEnum.Up))
+            .Returns(islandViewModelMock.Object);
+
         // Act
         var result = islandProvider.GetVisibleNeighbor(sourceIslandMock.Object, DirectionEnum.Up);
 
         // Assert
-        // Since we have islands in the solution above (0,0) should exist, but our setup returns a mock island
-        // which has MaxConnections > 0, so it should return that island
-        result.Should().NotBeNull(); // Changed from BeNull() to NotBeNull() since there is an island above
+        result.Should().NotBeNull();
     }
 
     [Test]
@@ -519,6 +674,12 @@ public class IslandProviderTests
     {
         // Arrange
         var sourceIslandMock = new Mock<IIslandViewModel>(MockBehavior.Strict);
+
+        coreMock.Setup(x => x.GetVisibleNeighbor(
+            It.IsAny<ObservableCollection<ObservableCollection<IIslandViewModel>>>(),
+            sourceIslandMock.Object,
+            DirectionEnum.None))
+            .Returns((IIslandViewModel?)null);
 
         // Act
         var result = islandProvider.GetVisibleNeighbor(sourceIslandMock.Object, DirectionEnum.None);
@@ -536,6 +697,11 @@ public class IslandProviderTests
         sourceIslandMock.Setup(x => x.Coordinates).Returns(sourceCoordinatesMock.Object);
         sourceCoordinatesMock.Setup(x => x.X).Returns(1);
         sourceCoordinatesMock.Setup(x => x.Y).Returns(1);
+
+        coreMock.Setup(x => x.GetAllVisibleNeighbors(
+            It.IsAny<ObservableCollection<ObservableCollection<IIslandViewModel>>>(),
+            sourceIslandMock.Object))
+            .Returns(new List<IIslandViewModel>());
 
         islandProvider.InitializeNewSolution(solutionProviderMock.Object);
 

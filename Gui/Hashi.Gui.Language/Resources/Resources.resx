@@ -294,4 +294,22 @@
   <data name="MessageDeleteScenarioText" xml:space="preserve">
     <value>You are about to delete the scenario {0}. Continue?</value>
   </data>
+  <data name="_6ConnectionsRule3" xml:space="preserve">
+    <value>If an island with a maximum of six bridges has four neighbors and one neighbor has a maximum of one bridge, the remaining neighbors must each receive at least one connection.</value>
+  </data>
+  <data name="_7ConnectionsRule2" xml:space="preserve">
+    <value>If an island with a maximum of seven bridges has four neighbors and one maxed-out neighbor accounts for only one connection, each remaining neighbor must receive two connections.</value>
+  </data>
+  <data name="_9GeneralRule3" xml:space="preserve">
+    <value>If an island's remaining connections equal twice the connectable neighbor count minus one, every connectable neighbor must receive at least one connection (pigeonhole principle).</value>
+  </data>
+  <data name="_9GeneralRule4" xml:space="preserve">
+    <value>If an island's remaining connections exactly equal twice the connectable neighbor count, every connectable neighbor must receive exactly two connections (maximum saturation).</value>
+  </data>
+  <data name="_9GeneralRule5" xml:space="preserve">
+    <value>If an island's remaining connections exactly equal the total capacity of all connectable neighbors (accounting for neighbors limited to one connection), every connectable neighbor must receive at least one connection (capacity-aware saturation).</value>
+  </data>
+  <data name="_9GeneralRule6" xml:space="preserve">
+    <value>If an island's remaining connections equal the total neighbor capacity minus one, every neighbor with at least two remaining connections must receive at least one connection (capacity-aware pigeonhole).</value>
+  </data>
 </root>
