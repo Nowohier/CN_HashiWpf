@@ -294,4 +294,22 @@
   <data name="MessageDeleteScenarioText" xml:space="preserve">
     <value>Das Szenario {0} wird gelöscht. Fortfahren?</value>
   </data>
+  <data name="_6ConnectionsRule3" xml:space="preserve">
+    <value>Wenn eine 6er Insel vier Nachbarn hat und ein Nachbar maximal eine Brücke zulässt, müssen die verbleibenden Nachbarn jeweils mindestens eine Verbindung erhalten.</value>
+  </data>
+  <data name="_7ConnectionsRule2" xml:space="preserve">
+    <value>Wenn eine 7er Insel vier Nachbarn hat und ein ausgelasteter Nachbar nur eine Verbindung hat, müssen die verbleibenden drei Nachbarn jeweils zwei Verbindungen erhalten.</value>
+  </data>
+  <data name="_9GeneralRule3" xml:space="preserve">
+    <value>Wenn die verbleibenden Verbindungen einer Insel gleich dem Doppelten der verbindbaren Nachbarn minus eins sind, muss jeder verbindbare Nachbar mindestens eine Verbindung erhalten (Schubfachprinzip).</value>
+  </data>
+  <data name="_9GeneralRule4" xml:space="preserve">
+    <value>Wenn die verbleibenden Verbindungen einer Insel genau dem Doppelten der verbindbaren Nachbarn entsprechen, muss jeder verbindbare Nachbar genau zwei Verbindungen erhalten (maximale Sättigung).</value>
+  </data>
+  <data name="_9GeneralRule5" xml:space="preserve">
+    <value>Wenn die verbleibenden Verbindungen einer Insel genau der Gesamtkapazität aller verbindbaren Nachbarn entsprechen (unter Berücksichtigung von Nachbarn mit nur einer verbleibenden Verbindung), muss jeder verbindbare Nachbar mindestens eine Verbindung erhalten (kapazitätsbewusste Sättigung).</value>
+  </data>
+  <data name="_9GeneralRule6" xml:space="preserve">
+    <value>Wenn die verbleibenden Verbindungen einer Insel der Gesamtkapazität aller Nachbarn minus eins entsprechen, muss jeder Nachbar mit mindestens zwei verbleibenden Verbindungen mindestens eine Verbindung erhalten (kapazitätsbewusstes Schubfachprinzip).</value>
+  </data>
 </root>

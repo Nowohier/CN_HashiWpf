@@ -1,6 +1,9 @@
 ﻿using Autofac;
 using Hashi.Generator.Interfaces.Models;
 using Hashi.Generator.Interfaces.Providers;
+using Hashi.Gui.Core.Helpers;
+using Hashi.Gui.Core.Providers;
+using Hashi.Gui.Interfaces.Helpers;
 using Hashi.Gui.Interfaces.Providers;
 
 namespace Hashi.Gui.Providers;
@@ -13,6 +16,8 @@ public class AutoFacProvidersModule : Module
     {
         builder.RegisterType<SettingsProvider>().As<ISettingsProvider>().SingleInstance();
         builder.RegisterType<TimerProvider>().As<ITimerProvider>().SingleInstance();
+        builder.RegisterType<IslandViewModelHelper>().As<IIslandViewModelHelper>().SingleInstance();
+        builder.RegisterType<IslandProviderCore>().As<IIslandProviderCore>().SingleInstance();
         builder.RegisterType<IslandProvider>().As<IIslandProvider>().SingleInstance();
         builder.RegisterType<HintProvider>().As<IHintProvider>().SingleInstance();
         builder.RegisterType<RuleInfoProvider>().As<IRuleInfoProvider>().SingleInstance();

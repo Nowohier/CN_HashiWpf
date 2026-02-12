@@ -164,7 +164,7 @@ public abstract class BaseRule : Rule
     /// <returns>a boolean value indicating if all islands are connected to the source island.</returns>
     internal bool AreAllNeighborsConnected(IIslandViewModel source, IEnumerable<IIslandViewModel> allNeighbors)
     {
-        return allNeighbors.All(x => x.AllConnections.Contains(source.Coordinates));
+        return allNeighbors.All(x => x.AllConnections.Any(connection => DoCoordinatesMatch(source.Coordinates, connection)));
     }
 
     /// <summary>

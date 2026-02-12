@@ -15,13 +15,18 @@
   <ItemGroup>
     <PackageReference Include="Autofac" Version="8.2.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="NRules" Version="1.0.2" />
+    <PackageReference Include="NRules.Fluent" Version="1.0.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Hashi.Generator.Interfaces\Hashi.Generator.Interfaces.csproj" />
     <ProjectReference Include="..\..\Solver\Hashi.LinearSolver\Hashi.LinearSolver.csproj" />
+    <ProjectReference Include="..\..\Solver\Hashi.Rules\Hashi.Rules.csproj" />
+    <ProjectReference Include="..\..\Gui\Hashi.Gui.Interfaces\Hashi.Gui.Interfaces.csproj" />
     <ProjectReference Include="..\..\Logging\Hashi.Logging.Interfaces\Hashi.Logging.Interfaces.csproj" />
     <ProjectReference Include="..\..\Logging\Hashi.Logging\Hashi.Logging.csproj" />
+    <ProjectReference Include="..\..\Gui\Hashi.Gui.Core\Hashi.Gui.Core.csproj" />
   </ItemGroup>
 
 </Project>

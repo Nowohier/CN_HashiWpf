@@ -17,6 +17,7 @@ public class AutoFacGeneratorModule : Module
     protected override void Load(ContainerBuilder builder)
     {
         builder.RegisterType<HashiGenerator>().As<IHashiGenerator>().SingleInstance();
+        builder.RegisterType<RuleSolvabilityValidator>().As<IRuleSolvabilityValidator>().SingleInstance();
         builder.RegisterType<Island>().As<IIsland>().InstancePerDependency();
         builder.RegisterType<Bridge>().As<IBridge>().InstancePerDependency();
         builder.RegisterType<BridgeCoordinates>().As<IBridgeCoordinates>().InstancePerDependency();
