@@ -4,6 +4,7 @@ using Hashi.Enums;
 using Hashi.Generator.Interfaces;
 using Hashi.Generator.Interfaces.Models;
 using Hashi.Generator.Interfaces.Providers;
+using Hashi.Generator.Services;
 using Hashi.LinearSolver.Interfaces;
 using Hashi.Logging.Interfaces;
 using Moq;
@@ -24,6 +25,10 @@ namespace Hashi.Generator.Test
         private Mock<Func<int, int, int, IIsland>> islandFactoryMock;
         private Mock<Func<IIsland, IIsland, int, IBridge>> bridgeFactoryMock;
         private Mock<Func<int[][], IList<IBridgeCoordinates>, ISolutionProvider>> solutionContainerFactoryMock;
+        private DifficultySettingsProvider difficultySettingsProvider;
+        private BlockDetectionService blockDetectionService;
+        private IslandLayoutService islandLayoutService;
+        private BridgeManagementService bridgeManagementService;
 
         [SetUp]
         public void Setup()
@@ -61,6 +66,11 @@ namespace Hashi.Generator.Test
             solutionContainerFactoryMock.Setup(f => f(It.IsAny<int[][]>(), It.IsAny<IList<IBridgeCoordinates>>()))
                                        .Returns(mockSolution.Object);
 
+            difficultySettingsProvider = new DifficultySettingsProvider();
+            blockDetectionService = new BlockDetectionService();
+            islandLayoutService = new IslandLayoutService(islandFactoryMock.Object, bridgeFactoryMock.Object, blockDetectionService);
+            bridgeManagementService = new BridgeManagementService(bridgeFactoryMock.Object, blockDetectionService);
+
             var builder = new ContainerBuilder();
             builder.RegisterInstance(hashiSolverMock.Object).As<IHashiSolver>();
             builder.RegisterInstance(loggerFactoryMock.Object).As<ILoggerFactory>();
@@ -97,7 +107,7 @@ namespace Hashi.Generator.Test
             int expectedMaxWidth, int expectedDivisor, int expectedAlpha, int expectedBeta)
         {
             // Act
-            var result = HashiGenerator.GetDifficultySettings(difficulty);
+            var result = difficultySettingsProvider.GetDifficultySettings(difficulty);
 
             // Assert
             result.minLength.Should().Be(expectedMinLength);
@@ -116,7 +126,7 @@ namespace Hashi.Generator.Test
         public void GetDifficultySettings_WhenInvalidDifficulty_ShouldThrowArgumentException(int difficulty)
         {
             // Act & Assert
-            Action act = () => HashiGenerator.GetDifficultySettings(difficulty);
+            Action act = () => difficultySettingsProvider.GetDifficultySettings(difficulty);
             act.Should().Throw<ArgumentException>().WithMessage("Invalid difficulty level.");
         }
 
@@ -132,7 +142,7 @@ namespace Hashi.Generator.Test
             var width = 7;
 
             // Act
-            var result = HashiGenerator.InitializeField(length, width);
+            var result = islandLayoutService.InitializeField(length, width);
 
             // Assert
             result.Should().HaveCount(length);
@@ -146,7 +156,7 @@ namespace Hashi.Generator.Test
         public void InitializeField_WhenZeroDimensions_ShouldCreateEmptyField(int length, int width)
         {
             // Act
-            var result = HashiGenerator.InitializeField(length, width);
+            var result = islandLayoutService.InitializeField(length, width);
 
             // Assert
             result.Should().HaveCount(length);
@@ -162,7 +172,7 @@ namespace Hashi.Generator.Test
         public void InitializeField_WhenNegativeDimensions_ShouldThrowException(int length, int width)
         {
             // Act & Assert
-            Action act = () => HashiGenerator.InitializeField(length, width);
+            Action act = () => islandLayoutService.InitializeField(length, width);
             act.Should().Throw<Exception>();
         }
 
@@ -184,7 +194,7 @@ namespace Hashi.Generator.Test
         public void GetAlphaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectAlpha(int difficulty, int expectedAlpha)
         {
             // Act
-            var result = HashiGenerator.GetAlphaForDifficulty(difficulty);
+            var result = difficultySettingsProvider.GetAlphaForDifficulty(difficulty);
 
             // Assert
             result.Should().Be(expectedAlpha);
@@ -196,7 +206,7 @@ namespace Hashi.Generator.Test
         public void GetAlphaForDifficulty_WhenInvalidDifficulty_ShouldReturnZero(int difficulty)
         {
             // Act
-            var result = HashiGenerator.GetAlphaForDifficulty(difficulty);
+            var result = difficultySettingsProvider.GetAlphaForDifficulty(difficulty);
 
             // Assert
             result.Should().Be(0);
@@ -220,7 +230,7 @@ namespace Hashi.Generator.Test
         public void GetBetaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectBeta(int difficulty, int expectedBeta)
         {
             // Act
-            var result = HashiGenerator.GetBetaForDifficulty(difficulty);
+            var result = difficultySettingsProvider.GetBetaForDifficulty(difficulty);
 
             // Assert
             result.Should().Be(expectedBeta);
@@ -232,7 +242,7 @@ namespace Hashi.Generator.Test
         public void GetBetaForDifficulty_WhenOutOfRange_ShouldReturnExpectedValue(int difficulty, int expectedBeta)
         {
             // Act
-            var result = HashiGenerator.GetBetaForDifficulty(difficulty);
+            var result = difficultySettingsProvider.GetBetaForDifficulty(difficulty);
 
             // Assert
             result.Should().Be(expectedBeta);
@@ -246,12 +256,11 @@ namespace Hashi.Generator.Test
         public void ShuffleArray_WhenCalledWithArray_ShouldModifyArray()
         {
             // Arrange
-            var generator = (HashiGenerator)hashiGenerator;
             var originalArray = new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
             var testArray = originalArray.ToArray(); // Create a copy
 
             // Act
-            generator.ShuffleArray(testArray);
+            BridgeManagementService.ShuffleArray(testArray);
 
             // Assert - The array should be modified (high probability it's different)
             // We can't guarantee it's different due to randomness, but we can check it has same elements
@@ -263,11 +272,10 @@ namespace Hashi.Generator.Test
         public void ShuffleArray_WhenCalledWithSingleElementArray_ShouldNotThrow()
         {
             // Arrange
-            var generator = (HashiGenerator)hashiGenerator;
             var array = new[] { 42 };
 
             // Act & Assert
-            var act = () => generator.ShuffleArray(array);
+            var act = () => BridgeManagementService.ShuffleArray(array);
             act.Should().NotThrow();
             array[0].Should().Be(42);
         }
@@ -276,11 +284,10 @@ namespace Hashi.Generator.Test
         public void ShuffleArray_WhenCalledWithEmptyArray_ShouldNotThrow()
         {
             // Arrange
-            var generator = (HashiGenerator)hashiGenerator;
             var array = Array.Empty<int>();
 
             // Act & Assert
-            var act = () => generator.ShuffleArray(array);
+            var act = () => BridgeManagementService.ShuffleArray(array);
             act.Should().NotThrow();
         }
 
@@ -292,12 +299,11 @@ namespace Hashi.Generator.Test
         public void ShuffleList_WhenCalledWithList_ShouldModifyList()
         {
             // Arrange
-            var generator = (HashiGenerator)hashiGenerator;
             var originalList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
             var testList = new List<int>(originalList); // Create a copy
 
             // Act
-            generator.ShuffleList(testList);
+            BridgeManagementService.ShuffleList(testList);
 
             // Assert - The list should be modified (same elements but potentially different order)
             testList.Should().BeEquivalentTo(originalList);
@@ -308,11 +314,10 @@ namespace Hashi.Generator.Test
         public void ShuffleList_WhenCalledWithSingleElementList_ShouldNotThrow()
         {
             // Arrange
-            var generator = (HashiGenerator)hashiGenerator;
             var list = new List<int> { 42 };
 
             // Act & Assert
-            var act = () => generator.ShuffleList(list);
+            var act = () => BridgeManagementService.ShuffleList(list);
             act.Should().NotThrow();
             list[0].Should().Be(42);
         }
@@ -321,11 +326,10 @@ namespace Hashi.Generator.Test
         public void ShuffleList_WhenCalledWithEmptyList_ShouldNotThrow()
         {
             // Arrange
-            var generator = (HashiGenerator)hashiGenerator;
             var list = new List<int>();
 
             // Act & Assert
-            var act = () => generator.ShuffleList(list);
+            var act = () => BridgeManagementService.ShuffleList(list);
             act.Should().NotThrow();
         }
 
@@ -337,7 +341,6 @@ namespace Hashi.Generator.Test
         public void HasAdjacentIsland_WhenAdjacentCellHasIsland_ShouldReturnTrue()
         {
             // Arrange
-            var generator = (HashiGenerator)hashiGenerator;
             var field = new int[][]
             {
                 [0, 0, 0],
@@ -346,7 +349,7 @@ namespace Hashi.Generator.Test
             };
 
             // Act
-            var result = generator.HasAdjacentIsland(1, 1, field);
+            var result = islandLayoutService.HasAdjacentIsland(1, 1, field);
 
             // Assert
             result.Should().BeTrue();
@@ -356,7 +359,6 @@ namespace Hashi.Generator.Test
         public void HasAdjacentIsland_WhenNoAdjacentIsland_ShouldReturnFalse()
         {
             // Arrange
-            var generator = (HashiGenerator)hashiGenerator;
             var field = new int[][]
             {
                 [0, 0, 0],
@@ -365,7 +367,7 @@ namespace Hashi.Generator.Test
             };
 
             // Act
-            var result = generator.HasAdjacentIsland(1, 1, field);
+            var result = islandLayoutService.HasAdjacentIsland(1, 1, field);
 
             // Assert
             result.Should().BeFalse();
@@ -375,7 +377,6 @@ namespace Hashi.Generator.Test
         public void HasAdjacentIsland_WhenAtEdgeOfField_ShouldCheckOnlyValidPositions()
         {
             // Arrange
-            var generator = (HashiGenerator)hashiGenerator;
             var field = new int[][]
             {
                 [1, 2], // (0,0) is at top-left corner
@@ -383,7 +384,7 @@ namespace Hashi.Generator.Test
             };
 
             // Act
-            var result = generator.HasAdjacentIsland(0, 0, field);
+            var result = islandLayoutService.HasAdjacentIsland(0, 0, field);
 
             // Assert
             result.Should().BeTrue(); // Adjacent at (0,1)
@@ -397,11 +398,10 @@ namespace Hashi.Generator.Test
         public void SetBeta_WhenBetaIsZero_ShouldNotModifyBridges()
         {
             // Arrange
-            var generator = (HashiGenerator)hashiGenerator;
-            var field = HashiGenerator.InitializeField(5, 5);
+            var field = islandLayoutService.InitializeField(5, 5);
 
             // Act
-            generator.SetBeta(field, 0);
+            bridgeManagementService.SetBeta(field, 0, new List<IBridge>());
 
             // Assert - Field should remain all zeros since no bridges exist to modify
             field.SelectMany(row => row).All(cell => cell == 0).Should().BeTrue();
@@ -411,11 +411,10 @@ namespace Hashi.Generator.Test
         public void SetBeta_WhenBetaIsNegative_ShouldNotModifyBridges()
         {
             // Arrange
-            var generator = (HashiGenerator)hashiGenerator;
-            var field = HashiGenerator.InitializeField(5, 5);
+            var field = islandLayoutService.InitializeField(5, 5);
 
             // Act
-            generator.SetBeta(field, -10);
+            bridgeManagementService.SetBeta(field, -10, new List<IBridge>());
 
             // Assert - Field should remain all zeros since no bridges exist to modify
             field.SelectMany(row => row).All(cell => cell == 0).Should().BeTrue();
@@ -528,12 +527,11 @@ namespace Hashi.Generator.Test
         public void AddAdditionalBridges_WhenAlphaIsZero_ShouldNotAddBridges()
         {
             // Arrange
-            var generator = (HashiGenerator)hashiGenerator;
             var field = new int[][] { [0, 0, 0], [0, 0, 0] };
             var fieldSnapshot = field.Select(row => row.ToArray()).ToArray();
 
             // Act
-            generator.AddAdditionalBridges(field, 0);
+            bridgeManagementService.AddAdditionalBridges(field, 0, new List<IIsland>(), new List<IBridge>());
 
             // Assert - Field should remain unchanged when alpha is 0
             for (var i = 0; i < field.Length; i++)
@@ -546,12 +544,11 @@ namespace Hashi.Generator.Test
         public void AddAdditionalBridges_WhenTargetBridgesReached_ShouldStopAddingBridges()
         {
             // Arrange
-            var generator = (HashiGenerator)hashiGenerator;
             var field = new int[][] { [1, 0, 1], [0, 0, 0] };
             var fieldSnapshot = field.Select(row => row.ToArray()).ToArray();
 
             // Act - Use low alpha to test early break condition
-            generator.AddAdditionalBridges(field, 1);
+            bridgeManagementService.AddAdditionalBridges(field, 1, new List<IIsland>(), new List<IBridge>());
 
             // Assert - With no internal islands/bridges, the field should remain unchanged
             for (var i = 0; i < field.Length; i++)
@@ -562,45 +559,42 @@ namespace Hashi.Generator.Test
 
         #endregion
 
-        #region GetDownBlockedd and GetRightBlockedd Edge Cases Tests
+        #region GetDownBlockedBetween and GetRightBlockedBetween Edge Cases Tests
 
         [Test]
-        public void GetDownBlockedd_WhenIslandDownIsNull_ShouldReturnNegativeOne()
+        public void GetDownBlockedBetween_WhenIslandDownIsNull_ShouldReturnNegativeOne()
         {
             // Arrange
-            var generator = (HashiGenerator)hashiGenerator;
             var mockIsland = new Mock<IIsland>(MockBehavior.Strict);
             mockIsland.Setup(i => i.IslandDown).Returns((IIsland?)null);
             var field = new int[][] { [0, 0, 0] };
 
             // Act
-            var result = generator.GetDownBlockedd(mockIsland.Object, field);
+            var result = blockDetectionService.GetDownBlockedBetween(mockIsland.Object, field, new List<IBridge>());
 
             // Assert
             result.Should().Be(-1);
         }
 
         [Test]
-        public void GetRightBlockedd_WhenIslandRightIsNull_ShouldReturnNegativeOne()
+        public void GetRightBlockedBetween_WhenIslandRightIsNull_ShouldReturnNegativeOne()
         {
             // Arrange
-            var generator = (HashiGenerator)hashiGenerator;
             var mockIsland = new Mock<IIsland>(MockBehavior.Strict);
             mockIsland.Setup(i => i.IslandRight).Returns((IIsland?)null);
             var field = new int[][] { [0, 0, 0] };
 
             // Act
-            var result = generator.GetRightBlockedd(mockIsland.Object, field);
+            var result = blockDetectionService.GetRightBlockedBetween(mockIsland.Object, field, new List<IBridge>());
 
             // Assert
             result.Should().Be(-1);
         }
 
         [Test]
-        public void GetDownBlockedd_WhenCacheHit_ShouldReturnCachedValue()
+        public void GetDownBlockedBetween_WhenCacheHit_ShouldReturnCachedValue()
         {
             // Arrange
-            var generator = (HashiGenerator)hashiGenerator;
             var mockIslandDown = new Mock<IIsland>(MockBehavior.Strict);
             mockIslandDown.Setup(i => i.Y).Returns(3);
 
@@ -615,20 +609,20 @@ namespace Hashi.Generator.Test
                 [0, 0, 0],
                 [0, 0, 0]
             };
+            var bridges = new List<IBridge>();
 
             // Act - Call twice to test cache
-            var result1 = generator.GetDownBlockedd(mockIsland.Object, field);
-            var result2 = generator.GetDownBlockedd(mockIsland.Object, field);
+            var result1 = blockDetectionService.GetDownBlockedBetween(mockIsland.Object, field, bridges);
+            var result2 = blockDetectionService.GetDownBlockedBetween(mockIsland.Object, field, bridges);
 
             // Assert - Both calls should return the same result
             result1.Should().Be(result2);
         }
 
         [Test]
-        public void GetRightBlockedd_WhenCacheHit_ShouldReturnCachedValue()
+        public void GetRightBlockedBetween_WhenCacheHit_ShouldReturnCachedValue()
         {
             // Arrange
-            var generator = (HashiGenerator)hashiGenerator;
             var mockIslandRight = new Mock<IIsland>(MockBehavior.Strict);
             mockIslandRight.Setup(i => i.X).Returns(3);
 
@@ -642,10 +636,11 @@ namespace Hashi.Generator.Test
                 [0, 0, 0, 0],
                 [0, 0, 0, 0]
             };
+            var bridges = new List<IBridge>();
 
             // Act - Call twice to test cache
-            var result1 = generator.GetRightBlockedd(mockIsland.Object, field);
-            var result2 = generator.GetRightBlockedd(mockIsland.Object, field);
+            var result1 = blockDetectionService.GetRightBlockedBetween(mockIsland.Object, field, bridges);
+            var result2 = blockDetectionService.GetRightBlockedBetween(mockIsland.Object, field, bridges);
 
             // Assert - Both calls should return the same result
             result1.Should().Be(result2);
@@ -659,11 +654,10 @@ namespace Hashi.Generator.Test
         public void SetBeta_WhenNoBridgesExist_ShouldHandleGracefully()
         {
             // Arrange
-            var generator = (HashiGenerator)hashiGenerator;
             var field = new int[][] { [0, 0, 0] };
 
             // Act & Assert - Should not throw even with no bridges
-            var act = () => generator.SetBeta(field, 50);
+            var act = () => bridgeManagementService.SetBeta(field, 50, new List<IBridge>());
             act.Should().NotThrow();
             field[0].Should().BeEquivalentTo(new[] { 0, 0, 0 });
         }
@@ -672,11 +666,10 @@ namespace Hashi.Generator.Test
         public void SetBeta_WhenBridgesToAddIsZero_ShouldReturn()
         {
             // Arrange
-            var generator = (HashiGenerator)hashiGenerator;
             var field = new int[][] { [0, 0, 0] };
 
             // Act - Use very low beta that would result in 0 bridges to add
-            var act = () => generator.SetBeta(field, 1);
+            var act = () => bridgeManagementService.SetBeta(field, 1, new List<IBridge>());
             act.Should().NotThrow();
             field[0].Should().BeEquivalentTo(new[] { 0, 0, 0 });
         }
@@ -735,7 +728,7 @@ namespace Hashi.Generator.Test
         public void InitializeField_WhenCalled_ShouldCreateCorrectDimensions()
         {
             // Act
-            var result = HashiGenerator.InitializeField(5, 7);
+            var result = islandLayoutService.InitializeField(5, 7);
 
             // Assert
             result.Should().NotBeNull();
@@ -748,19 +741,19 @@ namespace Hashi.Generator.Test
         public void GetAlphaForDifficulty_WhenDifferentDifficulties_ShouldReturnCorrectValues()
         {
             // Act & Assert
-            HashiGenerator.GetAlphaForDifficulty(0).Should().Be(25);
-            HashiGenerator.GetAlphaForDifficulty(3).Should().Be(25);
-            HashiGenerator.GetAlphaForDifficulty(1).Should().Be(50);
-            HashiGenerator.GetAlphaForDifficulty(9).Should().Be(100);
+            difficultySettingsProvider.GetAlphaForDifficulty(0).Should().Be(25);
+            difficultySettingsProvider.GetAlphaForDifficulty(3).Should().Be(25);
+            difficultySettingsProvider.GetAlphaForDifficulty(1).Should().Be(50);
+            difficultySettingsProvider.GetAlphaForDifficulty(9).Should().Be(100);
         }
 
         [Test]
         public void GetBetaForDifficulty_WhenDifferentDifficulties_ShouldReturnCorrectValues()
         {
             // Act & Assert
-            HashiGenerator.GetBetaForDifficulty(0).Should().Be(20);
-            HashiGenerator.GetBetaForDifficulty(5).Should().Be(15);
-            HashiGenerator.GetBetaForDifficulty(9).Should().Be(0);
+            difficultySettingsProvider.GetBetaForDifficulty(0).Should().Be(20);
+            difficultySettingsProvider.GetBetaForDifficulty(5).Should().Be(15);
+            difficultySettingsProvider.GetBetaForDifficulty(9).Should().Be(0);
         }
 
         #endregion

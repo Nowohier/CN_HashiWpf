@@ -10,7 +10,7 @@ namespace Hashi.Rules;
 public class _6ConnectionsRule1(IRuleInfoProvider ruleInfoProvider, IIslandProvider islandProvider)
     : BaseRule(ruleInfoProvider, islandProvider)
 {
-    protected override string RuleMessage => TranslationSource.Instance[nameof(_6ConnectionsRule1)]!;
+    protected override string RuleMessage => TranslationSource.Instance.GetRequired(nameof(_6ConnectionsRule1));
 
     public override void Define()
     {
@@ -20,9 +20,9 @@ public class _6ConnectionsRule1(IRuleInfoProvider ruleInfoProvider, IIslandProvi
 
         When()
             .Match(() => island, x => x.MaxConnections == 6 && !x.MaxConnectionsReached)
-            .Let(() => allNeighbors, () => GetAllVisibleNeighbors(island))
+            .Let(() => allNeighbors, () => Analyzer.GetAllVisibleNeighbors(island))
             .Having(() => allNeighbors.Count == 3)
-            .Let(() => validNeighbors, () => GetConnectableNeighbors(allNeighbors))
+            .Let(() => validNeighbors, () => Analyzer.GetConnectableNeighbors(allNeighbors))
             .Having(() => validNeighbors.Count > 0);
 
         Then()

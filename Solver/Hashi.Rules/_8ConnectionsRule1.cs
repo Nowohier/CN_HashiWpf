@@ -10,7 +10,7 @@ namespace Hashi.Rules;
 public class _8ConnectionsRule1(IRuleInfoProvider ruleInfoProvider, IIslandProvider islandProvider)
     : BaseRule(ruleInfoProvider, islandProvider)
 {
-    protected override string RuleMessage => TranslationSource.Instance[nameof(_8ConnectionsRule1)]!;
+    protected override string RuleMessage => TranslationSource.Instance.GetRequired(nameof(_8ConnectionsRule1));
 
     public override void Define()
     {
@@ -19,7 +19,7 @@ public class _8ConnectionsRule1(IRuleInfoProvider ruleInfoProvider, IIslandProvi
 
         When()
             .Match(() => island, x => x.MaxConnections == 8 && !x.MaxConnectionsReached)
-            .Let(() => allNeighbors, () => GetAllVisibleNeighbors(island))
+            .Let(() => allNeighbors, () => Analyzer.GetAllVisibleNeighbors(island))
             .Having(() => allNeighbors.Count == 4);
 
         Then()

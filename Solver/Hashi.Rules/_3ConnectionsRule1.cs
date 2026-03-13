@@ -11,7 +11,7 @@ namespace Hashi.Rules;
 public class _3ConnectionsRule1(IRuleInfoProvider ruleInfoProvider, IIslandProvider islandProvider)
     : BaseRule(ruleInfoProvider, islandProvider)
 {
-    protected override string RuleMessage => TranslationSource.Instance[nameof(_3ConnectionsRule1)]!;
+    protected override string RuleMessage => TranslationSource.Instance.GetRequired(nameof(_3ConnectionsRule1));
 
     /// <inheritdoc />
     public override void Define()
@@ -22,8 +22,8 @@ public class _3ConnectionsRule1(IRuleInfoProvider ruleInfoProvider, IIslandProvi
 
         When()
             .Match(() => island, x => x.MaxConnections == 3 && x.AllConnections.Count < 2)
-            .Let(() => allNeighbors, () => GetAllVisibleNeighbors(island))
-            .Let(() => validNeighbors, () => GetConnectableNeighborsWithoutConnection(island, allNeighbors))
+            .Let(() => allNeighbors, () => Analyzer.GetAllVisibleNeighbors(island))
+            .Let(() => validNeighbors, () => Analyzer.GetConnectableNeighborsWithoutConnection(island, allNeighbors))
             .Having(() => allNeighbors.Count == 2 && validNeighbors.Count > 0);
 
         Then()

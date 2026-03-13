@@ -580,11 +580,11 @@ public class TestableBaseRule : BaseRule
     public new void AddConnection(IIslandViewModel source, IIslandViewModel target) => base.AddConnection(source, target);
     public new bool ExecuteAddConnection(IIslandViewModel? source, IIslandViewModel? target) => base.ExecuteAddConnection(source, target);
     public new void FinalizeConnection(IIslandViewModel? source, IIslandViewModel? target) => base.FinalizeConnection(source, target);
-    public new bool DoCoordinatesMatch(IHashiPoint source, IHashiPoint target) => base.DoCoordinatesMatch(source, target);
-    public new bool AreAllNeighborsConnected(IIslandViewModel source, IEnumerable<IIslandViewModel> allNeighbors) => base.AreAllNeighborsConnected(source, allNeighbors);
-    public new int CountConnectionsToNeighbors(IIslandViewModel source, IEnumerable<IIslandViewModel> neighbors) => base.CountConnectionsToNeighbors(source, neighbors);
-    public new List<IIslandViewModel> GetConnectedNeighbors(IIslandViewModel source, IEnumerable<IIslandViewModel> allNeighbors, int? amountConnections) => base.GetConnectedNeighbors(source, allNeighbors, amountConnections);
-    public new List<IIslandViewModel> GetMaxedOutConnectedNeighbors(IIslandViewModel source, IEnumerable<IIslandViewModel> allNeighbors, int? amountConnections) => base.GetMaxedOutConnectedNeighbors(source, allNeighbors, amountConnections);
+    public bool DoCoordinatesMatch(IHashiPoint source, IHashiPoint target) => Analyzer.DoCoordinatesMatch(source, target);
+    public bool AreAllNeighborsConnected(IIslandViewModel source, IEnumerable<IIslandViewModel> allNeighbors) => Analyzer.AreAllNeighborsConnected(source, allNeighbors);
+    public int CountConnectionsToNeighbors(IIslandViewModel source, IEnumerable<IIslandViewModel> neighbors) => Analyzer.CountConnectionsToNeighbors(source, neighbors);
+    public List<IIslandViewModel> GetConnectedNeighbors(IIslandViewModel source, IEnumerable<IIslandViewModel> allNeighbors, int? amountConnections) => Analyzer.GetConnectedNeighbors(source, allNeighbors, amountConnections);
+    public List<IIslandViewModel> GetMaxedOutConnectedNeighbors(IIslandViewModel source, IEnumerable<IIslandViewModel> allNeighbors, int? amountConnections) => Analyzer.GetMaxedOutConnectedNeighbors(source, allNeighbors, amountConnections);
     public new IIslandViewModel? SetTestConnectionAndIfGroupIsIsolatedReturnValidNeighbor(IIslandViewModel source, List<IIslandViewModel> connectableNeighbors, List<IIslandViewModel> allNeighbors) => base.SetTestConnectionAndIfGroupIsIsolatedReturnValidNeighbor(source, connectableNeighbors, allNeighbors);
-    public new List<IIslandViewModel> GetConnectableNeighborsWithoutConnection(IIslandViewModel source, IEnumerable<IIslandViewModel> allNeighbors) => base.GetConnectableNeighborsWithoutConnection(source, allNeighbors);
+    public List<IIslandViewModel> GetConnectableNeighborsWithoutConnection(IIslandViewModel source, IEnumerable<IIslandViewModel> allNeighbors) => Analyzer.GetConnectableNeighborsWithoutConnection(source, allNeighbors);
 }

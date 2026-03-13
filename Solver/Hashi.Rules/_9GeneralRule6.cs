@@ -14,7 +14,7 @@ namespace Hashi.Rules;
 public class _9GeneralRule6(IRuleInfoProvider ruleInfoProvider, IIslandProvider islandProvider)
     : BaseRule(ruleInfoProvider, islandProvider)
 {
-    protected override string RuleMessage => TranslationSource.Instance[nameof(_9GeneralRule6)]!;
+    protected override string RuleMessage => TranslationSource.Instance.GetRequired(nameof(_9GeneralRule6));
 
     /// <inheritdoc />
     public override void Define()
@@ -26,14 +26,14 @@ public class _9GeneralRule6(IRuleInfoProvider ruleInfoProvider, IIslandProvider 
 
         When()
             .Match(() => island, x => !x.MaxConnectionsReached && x.MaxConnections > 0)
-            .Let(() => allNeighbors, () => GetAllVisibleNeighbors(island))
-            .Let(() => connectableNeighbors, () => GetConnectableNeighbors(allNeighbors))
+            .Let(() => allNeighbors, () => Analyzer.GetAllVisibleNeighbors(island))
+            .Let(() => connectableNeighbors, () => Analyzer.GetConnectableNeighbors(allNeighbors))
             .Having(() => connectableNeighbors.Count >= 2 &&
                           connectableNeighbors.Any(x => x.RemainingConnections == 1) &&
                           island.RemainingConnections ==
                           connectableNeighbors.Sum(x => Math.Min(2, x.RemainingConnections)) - 1)
             .Let(() => validNeighbors,
-                () => GetConnectableNeighborsWithoutConnection(island, allNeighbors)
+                () => Analyzer.GetConnectableNeighborsWithoutConnection(island, allNeighbors)
                     .Where(x => x.RemainingConnections >= 2).ToList())
             .Having(() => validNeighbors.Count > 0);
 

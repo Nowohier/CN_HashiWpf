@@ -161,11 +161,25 @@ namespace Hashi.LinearSolver
             var n = islands.Count;
             logger.Info($"Starting solving with {n} islands and {intersections.Count} intersections");
 
-            // Build edge maps
+            var (edgeMap, revEdgeMap) = BuildEdgeMaps(islands);
+            var m = edgeMap.Count;
+
+            var model = new CpModel();
+            var x = CreateBridgeVariables(model, m);
+
+            AddBridgeCountConstraints(model, x, islands, revEdgeMap);
+            AddIntersectionConstraints(model, x, intersections, revEdgeMap);
+
+            return await SolveWithLazyCuts(model, x, islands, edgeMap, revEdgeMap, m, prettyPrint);
+        }
+
+        private static (Dictionary<int, (int, int)> edgeMap, Dictionary<(int, int), int> revEdgeMap) BuildEdgeMaps(
+            List<IIsland> islands)
+        {
             var edgeMap = new Dictionary<int, (int, int)>();
             var revEdgeMap = new Dictionary<(int, int), int>();
             var e = 0;
-            for (var i = 0; i < n; i++)
+            for (var i = 0; i < islands.Count; i++)
             {
                 foreach (var j in islands[i].Neighbors)
                 {
@@ -177,19 +191,27 @@ namespace Hashi.LinearSolver
                     }
                 }
             }
-            var m = edgeMap.Count;
 
-            var model = new CpModel();
-            var x = new IntVar[m + 1, 3]; // 1-based, l=1,2
-            for (var edgeId = 1; edgeId <= m; edgeId++)
+            return (edgeMap, revEdgeMap);
+        }
+
+        private static IntVar[,] CreateBridgeVariables(CpModel model, int edgeCount)
+        {
+            var x = new IntVar[edgeCount + 1, 3];
+            for (var edgeId = 1; edgeId <= edgeCount; edgeId++)
             {
                 x[edgeId, 1] = model.NewBoolVar($"x_{edgeId}_1");
                 x[edgeId, 2] = model.NewBoolVar($"x_{edgeId}_2");
                 model.Add(x[edgeId, 2] <= x[edgeId, 1]);
             }
 
-            // 1) Correct bridge count
-            for (var i = 0; i < n; i++)
+            return x;
+        }
+
+        private static void AddBridgeCountConstraints(CpModel model, IntVar[,] x, List<IIsland> islands,
+            Dictionary<(int, int), int> revEdgeMap)
+        {
+            for (var i = 0; i < islands.Count; i++)
             {
                 var sum = new List<LinearExpr>();
                 foreach (var j in islands[i].Neighbors)
@@ -198,21 +220,27 @@ namespace Hashi.LinearSolver
                     sum.Add(x[edgeId, 1]);
                     sum.Add(x[edgeId, 2]);
                 }
+
                 model.Add(LinearExpr.Sum(sum) == islands[i].BridgesRequired);
             }
+        }
 
-            // 2) No intersections
+        private static void AddIntersectionConstraints(CpModel model, IntVar[,] x,
+            List<(int, int, int, int)> intersections, Dictionary<(int, int), int> revEdgeMap)
+        {
             foreach (var (a, b, c, d) in intersections)
             {
                 var e1 = a < b ? revEdgeMap[(a, b)] : revEdgeMap[(b, a)];
                 var e2 = c < d ? revEdgeMap[(c, d)] : revEdgeMap[(d, c)];
                 model.Add(x[e1, 1] + x[e2, 1] <= 1);
             }
+        }
 
+        private async Task<SolverStatusEnum> SolveWithLazyCuts(CpModel model, IntVar[,] x, List<IIsland> islands,
+            Dictionary<int, (int, int)> edgeMap, Dictionary<(int, int), int> revEdgeMap, int m, bool prettyPrint)
+        {
             var solver = new CpSolver();
             var watch = Stopwatch.StartNew();
-
-            // Track added cuts to avoid duplicates
             var addedCuts = new HashSet<string>();
 
             while (true)
@@ -220,12 +248,10 @@ namespace Hashi.LinearSolver
                 var status = solver.Solve(model);
                 if (status != CpSolverStatus.Optimal && status != CpSolverStatus.Feasible)
                 {
-                    //Debug.WriteLine($"Problem is unsatisfiable ({Math.Round(watch.Elapsed.TotalSeconds, 3)}).");
                     watch.Stop();
                     return SolverStatusEnum.Infeasible;
                 }
 
-                // Extract solution
                 var xSol = new int[m + 1, 3];
                 for (var edgeId = 1; edgeId <= m; edgeId++)
                 {
@@ -233,28 +259,29 @@ namespace Hashi.LinearSolver
                     xSol[edgeId, 2] = (int)solver.Value(x[edgeId, 2]);
                 }
 
-                // Check connectivity and get cuts
                 var cuts = await FindComponentCuts(islands, xSol, edgeMap, revEdgeMap);
 
-                // If only one component, solution is connected
                 if (cuts is [{ Count: 0 }])
                 {
                     logger.Info($"Solution found ({Math.Round(watch.Elapsed.TotalSeconds, 3)} seconds)");
                     watch.Stop();
                     if (prettyPrint)
                     {
-                        await PrettyPrint(islands, x, solver, edgeMap.Select(kvp => new KeyValuePair<int, IEdge>(kvp.Key, edgeFactory.Invoke(kvp.Key, kvp.Value.Item1, kvp.Value.Item2))).ToDictionary());
+                        await PrettyPrint(islands, x, solver,
+                            edgeMap.Select(kvp =>
+                                    new KeyValuePair<int, IEdge>(kvp.Key,
+                                        edgeFactory.Invoke(kvp.Key, kvp.Value.Item1, kvp.Value.Item2)))
+                                .ToDictionary());
                     }
+
                     return SolverStatusEnum.Optimal;
                 }
 
-                // Add a cut for each disconnected component, but only if not already added
                 var newCutAdded = false;
                 foreach (var cut in cuts)
                 {
                     if (cut.Count > 0)
                     {
-                        // Use a sorted string as a unique key for the cut
                         var cutKey = string.Join(",", cut.OrderBy(xInt => xInt));
                         if (addedCuts.Add(cutKey))
                         {
@@ -265,10 +292,10 @@ namespace Hashi.LinearSolver
                     }
                 }
 
-                // If no new cuts were added, but still disconnected, declare infeasible (should not happen)
                 if (!newCutAdded)
                 {
-                    logger.Warn("No new cuts could be added, but solution is still disconnected. Declaring infeasible.");
+                    logger.Warn(
+                        "No new cuts could be added, but solution is still disconnected. Declaring infeasible.");
                     watch.Stop();
                     return SolverStatusEnum.Infeasible;
                 }

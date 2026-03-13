@@ -360,8 +360,8 @@ public class MainViewModel : AsyncObservableRecipient,
         var actualScore = TimerProvider.Timer.Elapsed;
         TimerProvider.StopTimer();
 
-        var caption = TranslationSource.Instance["MessageGameOverCaption"]!;
-        var dialogMessage = string.Format(TranslationSource.Instance["MessageGameOverText"]!, actualScore.ToString(@"hh\:mm\:ss"));
+        var caption = TranslationSource.Instance.GetRequired("MessageGameOverCaption");
+        var dialogMessage = string.Format(TranslationSource.Instance.GetRequired("MessageGameOverText"), actualScore.ToString(@"hh\:mm\:ss"));
 
         if (IsCheating || IsTestFieldMode)
         {
@@ -380,9 +380,9 @@ public class MainViewModel : AsyncObservableRecipient,
         var currentHighScore = currentSettingForSetDifficulty?.HighScoreTime;
         if (currentSettingForSetDifficulty != null && (currentHighScore == null || actualScore < currentHighScore))
         {
-            caption = TranslationSource.Instance["MessageNewHighscoreCaption"]!;
+            caption = TranslationSource.Instance.GetRequired("MessageNewHighscoreCaption");
             dialogMessage += string.Format(
-                TranslationSource.Instance["MessageNewHighscoreText"]!.Replace(@"\n", Environment.NewLine),
+                TranslationSource.Instance.GetRequired("MessageNewHighscoreText").Replace(@"\n", Environment.NewLine),
                 SelectedDifficulty.ToString(), actualScore.ToString(@"hh\:mm\:ss"),
                 currentHighScore == null ? "-" : ((TimeSpan)currentHighScore).ToString(@"hh\:mm\:ss"));
             currentSettingForSetDifficulty.HighScoreTime = actualScore;
@@ -562,8 +562,8 @@ public class MainViewModel : AsyncObservableRecipient,
 
     internal void ResetAllSettingsToDefaultExecute()
     {
-        if (dialogWrapper.Show(TranslationSource.Instance["MessageResetAllToDefaultCaption"]!,
-                TranslationSource.Instance["MessageResetAllToDefaultText"]!, DialogButton.YesNo,
+        if (dialogWrapper.Show(TranslationSource.Instance.GetRequired("MessageResetAllToDefaultCaption"),
+                TranslationSource.Instance.GetRequired("MessageResetAllToDefaultText"), DialogButton.YesNo,
                 DialogImage.Question) == DialogResult.Yes)
         {
             resourceManager.ResetSettingsAndLoadFromDefault();
@@ -580,8 +580,8 @@ public class MainViewModel : AsyncObservableRecipient,
             return;
         }
 
-        if (dialogWrapper.Show(TranslationSource.Instance["MessageDeleteScenarioCaption"]!,
-                string.Format(TranslationSource.Instance["MessageDeleteScenarioText"]!,
+        if (dialogWrapper.Show(TranslationSource.Instance.GetRequired("MessageDeleteScenarioCaption"),
+                string.Format(TranslationSource.Instance.GetRequired("MessageDeleteScenarioText"),
                     TestSolutionProvider.SelectedSolutionProvider.Name),
                 DialogButton.YesNo, DialogImage.Question) == DialogResult.Yes)
         {

@@ -45,9 +45,15 @@ public class HashiPuzzleLoader : IHashiPuzzleLoader
     private string GetHashiFileName(HashiFileEnum hashiFileEnum)
     {
         var hashiId = hashiFileEnum.ToString();
-        var folderName = hashiId.Substring(6, 3);
+        var parts = hashiId.Split('_');
+        if (parts.Length < 3)
+        {
+            throw new ArgumentException($"Invalid HashiFileEnum format: {hashiId}. Expected format: Hs_NN_FFF_...");
+        }
+
+        var folderName = parts[2];
         var hashiName = $"{hashiId}.has";
 
-        return Path.Combine(Path.Combine(PuzzleBasePath, folderName), hashiName);
+        return Path.Combine(PuzzleBasePath, folderName, hashiName);
     }
 }

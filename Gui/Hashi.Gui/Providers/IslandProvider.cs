@@ -168,8 +168,8 @@ public class IslandProvider :
 
         if (isolatedGroupCount > 0 && pointType == HashiPointTypeEnum.Normal)
         {
-            dialogWrapper.Show(TranslationSource.Instance["MessageIsolatedGroupCaption"]!,
-                TranslationSource.Instance["MessageIsolatedGroupText"]!, DialogButton.Ok, DialogImage.Warning);
+            dialogWrapper.Show(TranslationSource.Instance.GetRequired("MessageIsolatedGroupCaption"),
+                TranslationSource.Instance.GetRequired("MessageIsolatedGroupText"), DialogButton.Ok, DialogImage.Warning);
         }
     }
 

@@ -1,7 +1,8 @@
-﻿using Hashi.Enums;
+using Hashi.Enums;
 using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Interfaces.ViewModels;
+using Hashi.Rules.Helpers;
 using NRules.Fluent.Dsl;
 
 namespace Hashi.Rules;
@@ -24,8 +25,13 @@ public abstract class BaseRule : Rule
 
         this.ruleInfoProvider = ruleInfoProvider;
         this.islandProvider = islandProvider;
+        Analyzer = new RuleNeighborAnalyzer(islandProvider);
     }
 
+    /// <summary>
+    ///     Provides query and analysis methods for neighbor inspection.
+    /// </summary>
+    protected RuleNeighborAnalyzer Analyzer { get; }
 
     /// <summary>
     ///     The message to be displayed when the rule is applied.
@@ -140,8 +146,8 @@ public abstract class BaseRule : Rule
         if (source == null || target == null || source == target ||
             source.MaxConnectionsReached ||
             target.MaxConnectionsReached ||
-            target.AllConnections.Count(x => DoCoordinatesMatch(source.Coordinates, x)) == 2 ||
-            source.AllConnections.Count(x => DoCoordinatesMatch(target.Coordinates, x)) == 2)
+            target.AllConnections.Count(x => Analyzer.DoCoordinatesMatch(source.Coordinates, x)) == 2 ||
+            source.AllConnections.Count(x => Analyzer.DoCoordinatesMatch(target.Coordinates, x)) == 2)
         {
             return false;
         }
@@ -151,98 +157,9 @@ public abstract class BaseRule : Rule
     }
 
     /// <summary>
-    ///     Gets the connectable neighbors of the source island that do not have a connection set to the source island.
-    /// </summary>
-    /// <param name="allNeighbors">The visible neighbor islands.</param>
-    /// <returns>connectable neighbors of the source island that do not have a connection set to the source island.</returns>
-    internal List<IIslandViewModel> GetConnectableNeighbors(IEnumerable<IIslandViewModel> allNeighbors)
-    {
-        return allNeighbors.Where(x => !x.MaxConnectionsReached).ToList();
-    }
-
-    /// <summary>
-    ///     Gets all visible neighbors of the source island.
-    /// </summary>
-    /// <param name="source">The source island.</param>
-    /// <returns>a list of visible neighbors.</returns>
-    internal List<IIslandViewModel> GetAllVisibleNeighbors(IIslandViewModel source)
-    {
-        return islandProvider.GetAllVisibleNeighbors(source);
-    }
-
-    /// <summary>
-    ///     Gets the connectable neighbors of the source island that do not have a connection set to the source island.
-    /// </summary>
-    /// <param name="source">The source island.</param>
-    /// <param name="allNeighbors">The visible neighbor islands.</param>
-    /// <returns>connectable neighbors of the source island that do not have a connection set to the source island.</returns>
-    internal List<IIslandViewModel> GetConnectableNeighborsWithoutConnection(IIslandViewModel source,
-        IEnumerable<IIslandViewModel> allNeighbors)
-    {
-        ArgumentNullException.ThrowIfNull(source);
-        ArgumentNullException.ThrowIfNull(allNeighbors);
-
-        return GetConnectableNeighbors(allNeighbors).Where(x =>
-            !x.AllConnections.Any(connection => DoCoordinatesMatch(source.Coordinates, connection))).ToList();
-    }
-
-    /// <summary>
-    ///     Checks if all islands are connected to the source island.
-    /// </summary>
-    /// <param name="source">The source island.</param>
-    /// <param name="allNeighbors">The visible neighbor islands.</param>
-    /// <returns>a boolean value indicating if all islands are connected to the source island.</returns>
-    internal bool AreAllNeighborsConnected(IIslandViewModel source, IEnumerable<IIslandViewModel> allNeighbors)
-    {
-        return allNeighbors.All(x => x.AllConnections.Any(connection => DoCoordinatesMatch(source.Coordinates, connection)));
-    }
-
-    /// <summary>
-    ///     Gets the islands connected to the source island.
-    /// </summary>
-    /// <param name="source">The source island.</param>
-    /// <param name="allNeighbors">The visible neighbor islands.</param>
-    /// <param name="amountConnections">(optional) The amount of connections per neighbor to the source island.</param>
-    /// <returns>the islands connected by one connection to the source island.</returns>
-    internal List<IIslandViewModel> GetConnectedNeighbors(IIslandViewModel source,
-        IEnumerable<IIslandViewModel> allNeighbors, int? amountConnections)
-    {
-        if (amountConnections == null)
-        {
-            var result = allNeighbors.Where(x => x.AllConnections.Any(y => DoCoordinatesMatch(source.Coordinates, y)))
-                .ToList();
-            return result;
-        }
-        else
-        {
-            var result = allNeighbors
-                .Where(x => x.AllConnections.Count(y => DoCoordinatesMatch(source.Coordinates, y)) ==
-                            (int)amountConnections)
-                .ToList();
-            return result;
-        }
-    }
-
-    /// <summary>
-    ///     Gets the amount of connections to the source island from the neighbors.
-    /// </summary>
-    /// <param name="source">The source island.</param>
-    /// <param name="neighbors">The visible neighbor islands.</param>
-    /// <returns></returns>
-    internal int CountConnectionsToNeighbors(IIslandViewModel source, IEnumerable<IIslandViewModel> neighbors)
-    {
-        var result = neighbors.Sum(x => x.AllConnections.Count(y => DoCoordinatesMatch(source.Coordinates, y)));
-        return result;
-    }
-
-    /// <summary>
     ///     Sets a test connection between the source island and its connectable neighbors. If the source island and its
     ///     connected neighbors are maxed out, it checks if there are isolated groups. If so, it returns a free neighbor.
     /// </summary>
-    /// <param name="source">The source island.</param>
-    /// <param name="connectableNeighbors">The connectable neighbors.</param>
-    /// <param name="allNeighbors">All neighbors.</param>
-    /// <returns>a free neighbor if found.</returns>
     internal IIslandViewModel? SetTestConnectionAndIfGroupIsIsolatedReturnValidNeighbor(
         IIslandViewModel source,
         List<IIslandViewModel> connectableNeighbors,
@@ -254,14 +171,14 @@ public abstract class BaseRule : Rule
             islandProvider.AddConnection(source, neighbor, HashiPointTypeEnum.Test);
 
             // Check if the source and its connected neighbors are maxed out
-            var connectedNeighbors = GetConnectedNeighbors(source, allNeighbors, null);
+            var connectedNeighbors = Analyzer.GetConnectedNeighbors(source, allNeighbors, null);
             if (source.MaxConnectionsReached && connectedNeighbors.All(x => x.MaxConnectionsReached))
                 // Check if there are isolated groups
             {
                 if (islandProvider.CountIsolatedIslandGroups() > 0)
                 {
                     // Find a free neighbor
-                    var freeNeighbor = GetConnectableNeighbors(allNeighbors).FirstOrDefault();
+                    var freeNeighbor = Analyzer.GetConnectableNeighbors(allNeighbors).FirstOrDefault();
                     islandProvider.RemoveAllBridges(HashiPointTypeEnum.Test);
                     return freeNeighbor;
                 }
@@ -272,44 +189,5 @@ public abstract class BaseRule : Rule
         }
 
         return null;
-    }
-
-    /// <summary>
-    ///     Checks if the remaining connections of the island are within the range of the two values.
-    /// </summary>
-    /// <param name="source">The source island.</param>
-    /// <param name="minValue">The first value.</param>
-    /// <param name="maxValue">The second value.</param>
-    /// <returns></returns>
-    internal bool AreRemainingConnectionsWithinRange(IIslandViewModel source, int minValue, int maxValue)
-    {
-        var result = source.RemainingConnections >= minValue && source.RemainingConnections <= maxValue;
-        return result;
-    }
-
-    /// <summary>
-    ///     Gets the islands connected to the source island which have reached the maximum connections.
-    /// </summary>
-    /// <param name="source">The source island.</param>
-    /// <param name="allNeighbors">The visible neighbor islands.</param>
-    /// <param name="amountConnections">The amount of connections per neighbor to the source island.</param>
-    /// <returns>the islands connected to the source island which have reached the maximum connections.</returns>
-    internal List<IIslandViewModel> GetMaxedOutConnectedNeighbors(IIslandViewModel source,
-        IEnumerable<IIslandViewModel> allNeighbors, int? amountConnections)
-    {
-        var result = GetConnectedNeighbors(source, allNeighbors, amountConnections).Where(x => x.MaxConnectionsReached)
-            .ToList();
-        return result;
-    }
-
-    /// <summary>
-    /// Compares two HashiPoint coordinates.
-    /// </summary>
-    /// <param name="source">The source coordinate.</param>
-    /// <param name="target">The target coordinate.</param>
-    /// <returns>a boolean value indicating if the coordinates match.</returns>
-    internal bool DoCoordinatesMatch(IHashiPoint source, IHashiPoint target)
-    {
-        return source.X == target.X && source.Y == target.Y;
     }
 }

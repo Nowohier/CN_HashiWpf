@@ -11,7 +11,7 @@ namespace Hashi.Rules;
 public class _9GeneralRule2(IRuleInfoProvider ruleInfoProvider, IIslandProvider islandProvider)
     : BaseRule(ruleInfoProvider, islandProvider)
 {
-    protected override string RuleMessage => TranslationSource.Instance[nameof(_9GeneralRule2)]!;
+    protected override string RuleMessage => TranslationSource.Instance.GetRequired(nameof(_9GeneralRule2));
 
     /// <inheritdoc />
     public override void Define()
@@ -25,13 +25,13 @@ public class _9GeneralRule2(IRuleInfoProvider ruleInfoProvider, IIslandProvider 
             .Match(() => island,
                 x => !x.MaxConnectionsReached &&
                      x.MaxConnections > 0) // Only consider islands that are not maxed out and visible
-            .Let(() => allNeighbors, () => GetAllVisibleNeighbors(island)) // Get all visible neighbors
-            .Let(() => connectableNeighbors, () => GetConnectableNeighbors(allNeighbors)) // Get connectable neighbors
+            .Let(() => allNeighbors, () => Analyzer.GetAllVisibleNeighbors(island)) // Get all visible neighbors
+            .Let(() => connectableNeighbors, () => Analyzer.GetConnectableNeighbors(allNeighbors)) // Get connectable neighbors
             .Having(() =>
                 connectableNeighbors.Count == 2 && // Exactly two connectable neighbors
                 connectableNeighbors.Any(x =>
                     x.RemainingConnections == 1) && // At least one neighbor has one remaining connection
-                GetMaxedOutConnectedNeighbors(island, allNeighbors, null).Count ==
+                Analyzer.GetMaxedOutConnectedNeighbors(island, allNeighbors, null).Count ==
                 1) // Exactly one maxed-out connected neighbor
             .Let(() => validNeighbor,
                 () => SetTestConnectionAndIfGroupIsIsolatedReturnValidNeighbor(island, connectableNeighbors,

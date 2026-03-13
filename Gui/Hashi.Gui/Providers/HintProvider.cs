@@ -88,8 +88,8 @@ public class HintProvider : IHintProvider
 
         if (rulesFired == 0)
         {
-            dialogWrapper.Show(TranslationSource.Instance["MessageNoHintsCaption"]!,
-                TranslationSource.Instance["MessageNoHintsText"]!, DialogButton.Ok, DialogImage.Information);
+            dialogWrapper.Show(TranslationSource.Instance.GetRequired("MessageNoHintsCaption"),
+                TranslationSource.Instance.GetRequired("MessageNoHintsText"), DialogButton.Ok, DialogImage.Information);
         }
 
         RuleInfoProvider.AreRulesBeingApplied = false;

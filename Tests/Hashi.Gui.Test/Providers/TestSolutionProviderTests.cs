@@ -20,6 +20,8 @@ public class TestSolutionProviderTests
 {
     private Mock<IJsonWrapper> jsonWrapperMock;
     private Mock<IPathProvider> pathProviderMock;
+    private Mock<IFileWrapper> fileWrapperMock;
+    private Mock<IDirectoryWrapper> directoryWrapperMock;
     private Mock<Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider>> solutionProviderFactoryMock;
     private Mock<Func<ISolutionProvider, ISetTestSolutionMessage>> setTestSolutionMessageFactoryMock;
     private Mock<ILoggerFactory> loggerFactoryMock;
@@ -34,6 +36,8 @@ public class TestSolutionProviderTests
     {
         jsonWrapperMock = new Mock<IJsonWrapper>(MockBehavior.Strict);
         pathProviderMock = new Mock<IPathProvider>(MockBehavior.Strict);
+        fileWrapperMock = new Mock<IFileWrapper>(MockBehavior.Strict);
+        directoryWrapperMock = new Mock<IDirectoryWrapper>(MockBehavior.Strict);
         solutionProviderFactoryMock = new Mock<Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider>>(MockBehavior.Strict);
         setTestSolutionMessageFactoryMock = new Mock<Func<ISolutionProvider, ISetTestSolutionMessage>>(MockBehavior.Strict);
         loggerFactoryMock = new Mock<ILoggerFactory>(MockBehavior.Strict);
@@ -52,6 +56,9 @@ public class TestSolutionProviderTests
         // Setup path provider
         pathProviderMock.Setup(x => x.HashiTestFieldsFilePath).Returns("test-fields.json");
         pathProviderMock.Setup(x => x.SettingsDirectoryPath).Returns("test-settings");
+
+        // Setup file wrapper - by default file does not exist so LoadSettings returns empty list
+        fileWrapperMock.Setup(x => x.Exists(It.IsAny<string>())).Returns(false);
 
         // Setup JSON wrapper for LoadSettings (empty collection by default)
         jsonWrapperMock.Setup(x => x.DeserializeObject(It.IsAny<string>(), typeof(List<ISolutionProvider>)))
@@ -81,6 +88,8 @@ public class TestSolutionProviderTests
         var action = () => new TestSolutionProvider(
             null!,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object);
@@ -95,6 +104,8 @@ public class TestSolutionProviderTests
         var action = () => new TestSolutionProvider(
             jsonWrapperMock.Object,
             null!,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object);
@@ -109,6 +120,8 @@ public class TestSolutionProviderTests
         var action = () => new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             null!,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object);
@@ -123,6 +136,8 @@ public class TestSolutionProviderTests
         var action = () => new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             null!,
             loggerFactoryMock.Object);
@@ -137,11 +152,45 @@ public class TestSolutionProviderTests
         var action = () => new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             null!);
 
         action.Should().Throw<ArgumentNullException>().WithParameterName("loggerFactory");
+    }
+
+    [Test]
+    public void Constructor_WhenFileWrapperIsNull_ShouldThrowArgumentNullException()
+    {
+        // Arrange & Act & Assert
+        var action = () => new TestSolutionProvider(
+            jsonWrapperMock.Object,
+            pathProviderMock.Object,
+            null!,
+            directoryWrapperMock.Object,
+            solutionProviderFactoryMock.Object,
+            setTestSolutionMessageFactoryMock.Object,
+            loggerFactoryMock.Object);
+
+        action.Should().Throw<ArgumentNullException>().WithParameterName("fileWrapper");
+    }
+
+    [Test]
+    public void Constructor_WhenDirectoryWrapperIsNull_ShouldThrowArgumentNullException()
+    {
+        // Arrange & Act & Assert
+        var action = () => new TestSolutionProvider(
+            jsonWrapperMock.Object,
+            pathProviderMock.Object,
+            fileWrapperMock.Object,
+            null!,
+            solutionProviderFactoryMock.Object,
+            setTestSolutionMessageFactoryMock.Object,
+            loggerFactoryMock.Object);
+
+        action.Should().Throw<ArgumentNullException>().WithParameterName("directoryWrapper");
     }
 
     [Test]
@@ -151,6 +200,8 @@ public class TestSolutionProviderTests
         testSolutionProvider = new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object);
@@ -169,6 +220,8 @@ public class TestSolutionProviderTests
         testSolutionProvider = new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object);
@@ -183,6 +236,9 @@ public class TestSolutionProviderTests
     public void Constructor_WhenLoadedSolutionProvidersExist_ShouldAddThemToCollection()
     {
         // Arrange
+        fileWrapperMock.Setup(x => x.Exists("test-fields.json")).Returns(true);
+        fileWrapperMock.Setup(x => x.ReadAllText("test-fields.json")).Returns("[{\"name\":\"Test\"}]");
+
         var loadedSolutions = new List<ISolutionProvider> { solutionProviderMock.Object };
         jsonWrapperMock.Setup(x => x.DeserializeObject(It.IsAny<string>(), typeof(List<ISolutionProvider>)))
             .Returns(loadedSolutions);
@@ -191,6 +247,8 @@ public class TestSolutionProviderTests
         testSolutionProvider = new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object);
@@ -212,6 +270,8 @@ public class TestSolutionProviderTests
         testSolutionProvider = new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object);
@@ -231,6 +291,8 @@ public class TestSolutionProviderTests
         testSolutionProvider = new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object);
@@ -254,6 +316,8 @@ public class TestSolutionProviderTests
         testSolutionProvider = new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object);
@@ -272,6 +336,8 @@ public class TestSolutionProviderTests
         testSolutionProvider = new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object);
@@ -290,6 +356,8 @@ public class TestSolutionProviderTests
         testSolutionProvider = new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object);
@@ -312,6 +380,8 @@ public class TestSolutionProviderTests
         testSolutionProvider = new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object);
@@ -334,6 +404,9 @@ public class TestSolutionProviderTests
     public void ResetSettings_WhenCalled_ShouldClearAndReloadSolutionProviders()
     {
         // Arrange
+        fileWrapperMock.Setup(x => x.Exists("test-fields.json")).Returns(true);
+        fileWrapperMock.Setup(x => x.ReadAllText("test-fields.json")).Returns("[{\"name\":\"Test\"}]");
+
         var initialSolutions = new List<ISolutionProvider> { solutionProviderMock.Object };
         jsonWrapperMock.Setup(x => x.DeserializeObject(It.IsAny<string>(), typeof(List<ISolutionProvider>)))
             .Returns(initialSolutions);
@@ -341,6 +414,8 @@ public class TestSolutionProviderTests
         testSolutionProvider = new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object);
@@ -365,9 +440,14 @@ public class TestSolutionProviderTests
     public void ResetSettings_WhenCalled_ShouldCallLoadSettingsAgain()
     {
         // Arrange
+        fileWrapperMock.Setup(x => x.Exists("test-fields.json")).Returns(true);
+        fileWrapperMock.Setup(x => x.ReadAllText("test-fields.json")).Returns("[{\"name\":\"Test\"}]");
+
         testSolutionProvider = new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object);
@@ -391,6 +471,8 @@ public class TestSolutionProviderTests
         testSolutionProvider = new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object);
@@ -407,6 +489,8 @@ public class TestSolutionProviderTests
         testSolutionProvider = new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object);
@@ -437,6 +521,8 @@ public class TestSolutionProviderTests
         testSolutionProvider = new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object);
@@ -479,6 +565,8 @@ public class TestSolutionProviderTests
         testSolutionProvider = new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object);
@@ -517,6 +605,8 @@ public class TestSolutionProviderTests
         testSolutionProvider = new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object);
@@ -554,6 +644,8 @@ public class TestSolutionProviderTests
         testSolutionProvider = new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object);
@@ -579,6 +671,8 @@ public class TestSolutionProviderTests
         testSolutionProvider = new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object);
@@ -589,6 +683,8 @@ public class TestSolutionProviderTests
         testSolutionProvider.SolutionProviders.Clear();
 
         jsonWrapperMock.Setup(x => x.SerializeWithCustomIndenting(It.IsAny<object>())).Returns("[]");
+        directoryWrapperMock.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
+        fileWrapperMock.Setup(x => x.WriteAllText(It.IsAny<string>(), It.IsAny<string>()));
 
         // Act
         testSolutionProvider.SaveTestFields();
@@ -608,14 +704,15 @@ public class TestSolutionProviderTests
         pathProviderMock.Setup(x => x.HashiTestFieldsFilePath).Returns(testFilePath);
 
         jsonWrapperMock.Setup(x => x.SerializeWithCustomIndenting(It.IsAny<object>())).Returns("[]");
-
-        // Note: The actual SaveTestFields method checks Directory.Exists() which we can't mock easily
-        // Since we can't mock static Directory methods, this test verifies the logging behavior
-        // when the directory creation path is taken in the actual implementation
+        directoryWrapperMock.Setup(x => x.Exists(testDir)).Returns(false);
+        directoryWrapperMock.Setup(x => x.CreateDirectory(testDir));
+        fileWrapperMock.Setup(x => x.WriteAllText(testFilePath, It.IsAny<string>()));
 
         testSolutionProvider = new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object);
@@ -624,8 +721,7 @@ public class TestSolutionProviderTests
         testSolutionProvider.SaveTestFields();
 
         // Assert
-        // Since Directory.Exists() is a static method we can't mock, 
-        // we verify that the save operation completes successfully
+        directoryWrapperMock.Verify(x => x.CreateDirectory(testDir), Times.Once);
         loggerMock.Verify(x => x.Debug($"Saving test fields to {testFilePath}"), Times.Once);
         loggerMock.Verify(x => x.Info("Successfully saved 0 test fields"), Times.Once);
     }
@@ -637,13 +733,20 @@ public class TestSolutionProviderTests
         solutionProviderMock.Setup(x => x.Name).Returns("TestSolution");
         var solutions = new List<ISolutionProvider> { solutionProviderMock.Object };
 
+        fileWrapperMock.Setup(x => x.Exists("test-fields.json")).Returns(true);
+        fileWrapperMock.Setup(x => x.ReadAllText("test-fields.json")).Returns("[{\"name\":\"Test\"}]");
+
         jsonWrapperMock.Setup(x => x.DeserializeObject(It.IsAny<string>(), typeof(List<ISolutionProvider>)))
             .Returns(solutions);
         jsonWrapperMock.Setup(x => x.SerializeWithCustomIndenting(It.IsAny<object>())).Returns("[]");
+        directoryWrapperMock.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
+        fileWrapperMock.Setup(x => x.WriteAllText(It.IsAny<string>(), It.IsAny<string>()));
 
         testSolutionProvider = new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object);
@@ -662,17 +765,16 @@ public class TestSolutionProviderTests
         testSolutionProvider = new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object);
 
-        // Setup serialization to succeed first, then File.WriteAllText will fail
         jsonWrapperMock.Setup(x => x.SerializeWithCustomIndenting(It.IsAny<object>())).Returns("[]");
-        
-        // Use an invalid file path on Windows that will definitely cause File.WriteAllText to throw
-        var invalidPath = "Z:\\NonExistentDrive\\invalid\\path\\test-fields.json";
-        pathProviderMock.Setup(x => x.HashiTestFieldsFilePath).Returns(invalidPath);
-        pathProviderMock.Setup(x => x.SettingsDirectoryPath).Returns("Z:\\NonExistentDrive\\invalid");
+        directoryWrapperMock.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
+        fileWrapperMock.Setup(x => x.WriteAllText(It.IsAny<string>(), It.IsAny<string>()))
+            .Throws(new IOException("Failed to write file"));
 
         // Act
         testSolutionProvider.SaveTestFields();
@@ -688,6 +790,8 @@ public class TestSolutionProviderTests
         testSolutionProvider = new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object);
@@ -718,14 +822,21 @@ public class TestSolutionProviderTests
 
         var solutions = new List<ISolutionProvider> { solutionWithNameMock.Object, solutionWithNullNameMock.Object };
 
+        fileWrapperMock.Setup(x => x.Exists("test-fields.json")).Returns(true);
+        fileWrapperMock.Setup(x => x.ReadAllText("test-fields.json")).Returns("[{\"name\":\"Test\"}]");
+
         jsonWrapperMock.Setup(x => x.DeserializeObject(It.IsAny<string>(), typeof(List<ISolutionProvider>)))
             .Returns(solutions);
         jsonWrapperMock.Setup(x => x.SerializeWithCustomIndenting(It.Is<IEnumerable<ISolutionProvider>>(y => y.Count() == 1)))
             .Returns("[]");
+        directoryWrapperMock.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
+        fileWrapperMock.Setup(x => x.WriteAllText(It.IsAny<string>(), It.IsAny<string>()));
 
         testSolutionProvider = new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object);
@@ -752,6 +863,8 @@ public class TestSolutionProviderTests
         testSolutionProvider = new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object);
@@ -769,10 +882,8 @@ public class TestSolutionProviderTests
     public void LoadSettings_WhenFileExists_ShouldLoadSolutions()
     {
         // Arrange
-        var testFilePath = Path.GetTempFileName();
-        File.WriteAllText(testFilePath, "[{\"name\":\"Test\"}]");
-
-        pathProviderMock.Setup(x => x.HashiTestFieldsFilePath).Returns(testFilePath);
+        fileWrapperMock.Setup(x => x.Exists("test-fields.json")).Returns(true);
+        fileWrapperMock.Setup(x => x.ReadAllText("test-fields.json")).Returns("[{\"name\":\"Test\"}]");
 
         var loadedSolutions = new List<ISolutionProvider> { solutionProviderMock.Object };
         jsonWrapperMock.Setup(x => x.DeserializeObject(It.IsAny<string>(), typeof(List<ISolutionProvider>)))
@@ -781,70 +892,53 @@ public class TestSolutionProviderTests
         testSolutionProvider = new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object);
 
-        try
-        {
-            // Act
-            var result = testSolutionProvider.LoadSettings();
+        // Act
+        var result = testSolutionProvider.LoadSettings();
 
-            // Assert
-            result.Should().HaveCount(1);
-            result.Should().Contain(solutionProviderMock.Object);
-            // Expect this to be called multiple times: once in constructor, once in explicit call
-            loggerMock.Verify(x => x.Info("Successfully loaded 1 test fields"), Times.AtLeast(1));
-        }
-        finally
-        {
-            // Cleanup
-            File.Delete(testFilePath);
-        }
+        // Assert
+        result.Should().HaveCount(1);
+        result.Should().Contain(solutionProviderMock.Object);
+        // Expect this to be called multiple times: once in constructor, once in explicit call
+        loggerMock.Verify(x => x.Info("Successfully loaded 1 test fields"), Times.AtLeast(1));
     }
 
     [Test]
     public void LoadSettings_WhenFileContentIsEmpty_ShouldReturnEmptyList()
     {
         // Arrange
-        var testFilePath = Path.GetTempFileName();
-        File.WriteAllText(testFilePath, "");
-
-        pathProviderMock.Setup(x => x.HashiTestFieldsFilePath).Returns(testFilePath);
+        fileWrapperMock.Setup(x => x.Exists("test-fields.json")).Returns(true);
+        fileWrapperMock.Setup(x => x.ReadAllText("test-fields.json")).Returns("");
 
         testSolutionProvider = new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object);
 
-        try
-        {
-            // Act
-            var result = testSolutionProvider.LoadSettings();
+        // Act
+        var result = testSolutionProvider.LoadSettings();
 
-            // Assert
-            result.Should().BeEmpty();
-            // When file content is empty, LoadSettings doesn't log "No existing test fields found", 
-            // instead it successfully loads 0 fields
-            loggerMock.Verify(x => x.Info("Successfully loaded 0 test fields"), Times.AtLeast(1));
-        }
-        finally
-        {
-            // Cleanup
-            File.Delete(testFilePath);
-        }
+        // Assert
+        result.Should().BeEmpty();
+        // When file content is empty string, it still gets deserialized but returns empty list
+        loggerMock.Verify(x => x.Info("Successfully loaded 0 test fields"), Times.AtLeast(1));
     }
 
     [Test]
     public void LoadSettings_WhenDeserializationFails_ShouldReturnEmptyListAndLogError()
     {
         // Arrange
-        var testFilePath = Path.GetTempFileName();
-        File.WriteAllText(testFilePath, "[{\"name\":\"Test\"}]");
-
-        pathProviderMock.Setup(x => x.HashiTestFieldsFilePath).Returns(testFilePath);
+        fileWrapperMock.Setup(x => x.Exists("test-fields.json")).Returns(true);
+        fileWrapperMock.Setup(x => x.ReadAllText("test-fields.json")).Returns("[{\"name\":\"Test\"}]");
 
         // Setup to succeed first (for constructor), then fail on explicit call
         jsonWrapperMock.SetupSequence(x => x.DeserializeObject(It.IsAny<string>(), typeof(List<ISolutionProvider>)))
@@ -854,34 +948,26 @@ public class TestSolutionProviderTests
         testSolutionProvider = new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object);
 
-        try
-        {
-            // Act
-            var result = testSolutionProvider.LoadSettings();
+        // Act
+        var result = testSolutionProvider.LoadSettings();
 
-            // Assert
-            result.Should().BeEmpty();
-            loggerMock.Verify(x => x.Error("Failed to load settings", It.IsAny<Exception>()), Times.Once);
-        }
-        finally
-        {
-            // Cleanup
-            File.Delete(testFilePath);
-        }
+        // Assert
+        result.Should().BeEmpty();
+        loggerMock.Verify(x => x.Error("Failed to load settings", It.IsAny<Exception>()), Times.Once);
     }
 
     [Test]
     public void LoadSettings_WhenDeserializationReturnsNull_ShouldReturnEmptyList()
     {
         // Arrange
-        var testFilePath = Path.GetTempFileName();
-        File.WriteAllText(testFilePath, "[{\"name\":\"Test\"}]");
-
-        pathProviderMock.Setup(x => x.HashiTestFieldsFilePath).Returns(testFilePath);
+        fileWrapperMock.Setup(x => x.Exists("test-fields.json")).Returns(true);
+        fileWrapperMock.Setup(x => x.ReadAllText("test-fields.json")).Returns("[{\"name\":\"Test\"}]");
 
         jsonWrapperMock.Setup(x => x.DeserializeObject(It.IsAny<string>(), typeof(List<ISolutionProvider>)))
             .Returns(null!);
@@ -889,25 +975,19 @@ public class TestSolutionProviderTests
         testSolutionProvider = new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object);
 
-        try
-        {
-            // Act
-            var result = testSolutionProvider.LoadSettings();
+        // Act
+        var result = testSolutionProvider.LoadSettings();
 
-            // Assert
-            result.Should().BeEmpty();
-            // When deserialization returns null, it logs "No existing test fields found"
-            loggerMock.Verify(x => x.Info("No existing test fields found, starting with empty list"), Times.AtLeast(1));
-        }
-        finally
-        {
-            // Cleanup
-            File.Delete(testFilePath);
-        }
+        // Assert
+        result.Should().BeEmpty();
+        // When deserialization returns null, it logs "No existing test fields found"
+        loggerMock.Verify(x => x.Info("No existing test fields found, starting with empty list"), Times.AtLeast(1));
     }
 
     #endregion
@@ -921,6 +1001,8 @@ public class TestSolutionProviderTests
         var provider1 = new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object);
@@ -928,6 +1010,8 @@ public class TestSolutionProviderTests
         var provider2 = new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object);
@@ -945,6 +1029,8 @@ public class TestSolutionProviderTests
         testSolutionProvider = new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object);
@@ -968,6 +1054,8 @@ public class TestSolutionProviderTests
         testSolutionProvider = new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object)
@@ -989,14 +1077,21 @@ public class TestSolutionProviderTests
 
         var solutions = new List<ISolutionProvider> { solutionWithNullNameMock.Object };
 
+        fileWrapperMock.Setup(x => x.Exists("test-fields.json")).Returns(true);
+        fileWrapperMock.Setup(x => x.ReadAllText("test-fields.json")).Returns("[{\"name\":\"Test\"}]");
+
         jsonWrapperMock.Setup(x => x.DeserializeObject(It.IsAny<string>(), typeof(List<ISolutionProvider>)))
             .Returns(solutions);
         jsonWrapperMock.Setup(x => x.SerializeWithCustomIndenting(It.Is<IEnumerable<ISolutionProvider>>(y => !y.Any())))
             .Returns("[]");
+        directoryWrapperMock.Setup(x => x.Exists(It.IsAny<string>())).Returns(true);
+        fileWrapperMock.Setup(x => x.WriteAllText(It.IsAny<string>(), It.IsAny<string>()));
 
         testSolutionProvider = new TestSolutionProvider(
             jsonWrapperMock.Object,
             pathProviderMock.Object,
+            fileWrapperMock.Object,
+            directoryWrapperMock.Object,
             solutionProviderFactoryMock.Object,
             setTestSolutionMessageFactoryMock.Object,
             loggerFactoryMock.Object);

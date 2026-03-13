@@ -27,6 +27,15 @@ public class TranslationSource : INotifyPropertyChanged
     public string? this[string key] => resManager.GetString(key, currentCulture);
 
     /// <summary>
+    ///     Gets the localized string for the specified key, throwing if the key is missing.
+    /// </summary>
+    /// <param name="key">The resource key.</param>
+    /// <returns>the localized string.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when the key is not found.</exception>
+    public string GetRequired(string key) =>
+        this[key] ?? throw new InvalidOperationException($"Missing translation: {key}");
+
+    /// <summary>
     ///     Gets or sets the current culture for localization.
     /// </summary>
     public CultureInfo? CurrentCulture
