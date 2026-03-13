@@ -11,7 +11,7 @@ namespace Hashi.Rules;
 public class _5ConnectionsRule2(IRuleInfoProvider ruleInfoProvider, IIslandProvider islandProvider)
     : BaseRule(ruleInfoProvider, islandProvider)
 {
-    protected override string RuleMessage => TranslationSource.Instance[nameof(_5ConnectionsRule2)]!;
+    protected override string RuleMessage => TranslationSource.Instance.GetRequired(nameof(_5ConnectionsRule2));
 
     public override void Define()
     {
@@ -21,8 +21,8 @@ public class _5ConnectionsRule2(IRuleInfoProvider ruleInfoProvider, IIslandProvi
 
         When()
             .Match(() => island, x => x.MaxConnections == 5 && !x.MaxConnectionsReached)
-            .Let(() => neighbors, () => GetAllVisibleNeighbors(island))
-            .Let(() => restrictedNeighbors, () => GetMaxedOutConnectedNeighbors(island, neighbors, 1))
+            .Let(() => neighbors, () => Analyzer.GetAllVisibleNeighbors(island))
+            .Let(() => restrictedNeighbors, () => Analyzer.GetMaxedOutConnectedNeighbors(island, neighbors, 1))
             .Having(() => restrictedNeighbors.Count == 1 && neighbors.Count - restrictedNeighbors.Count == 2);
 
         Then()

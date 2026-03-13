@@ -1,4 +1,4 @@
-﻿using Hashi.Generator.Interfaces.Models;
+using Hashi.Generator.Interfaces.Models;
 
 namespace Hashi.Generator.Models;
 
@@ -42,30 +42,7 @@ public class Bridge : IBridge
     public IBridge AddOtherSide()
     {
         var otherSideBridge = new Bridge(Island2, Island1, AmountBridgesSet);
-        if (Island1.X == Island2.X && Island1.Y > Island2.Y)
-        {
-            Island1.AmountBridgesUp += AmountBridgesSet;
-            Island2.AmountBridgesDown += AmountBridgesSet;
-        }
-
-        if (Island1.X == Island2.X && Island1.Y < Island2.Y)
-        {
-            Island1.AmountBridgesDown += AmountBridgesSet;
-            Island2.AmountBridgesUp += AmountBridgesSet;
-        }
-
-        if (Island1.X > Island2.X && Island1.Y == Island2.Y)
-        {
-            Island1.AmountBridgesLeft += AmountBridgesSet;
-            Island2.AmountBridgesRight += AmountBridgesSet;
-        }
-
-        if (Island1.X < Island2.X && Island1.Y == Island2.Y)
-        {
-            Island1.AmountBridgesRight += AmountBridgesSet;
-            Island2.AmountBridgesLeft += AmountBridgesSet;
-        }
-
+        ApplyDirectionBridgeCounts(Island1, Island2, AmountBridgesSet);
         return otherSideBridge;
     }
 
@@ -76,33 +53,73 @@ public class Bridge : IBridge
     public void AddBridge(int[][] mainField)
     {
         AmountBridgesSet++;
-        if (Island1.IslandUp == Island2)
-        {
-            Island1.AmountBridgesUp = AmountBridgesSet;
-            Island2.AmountBridgesDown = AmountBridgesSet;
-        }
-
-        if (Island1.IslandDown == Island2)
-        {
-            Island1.AmountBridgesDown = AmountBridgesSet;
-            Island2.AmountBridgesUp = AmountBridgesSet;
-        }
-
-        if (Island1.IslandLeft == Island2)
-        {
-            Island1.AmountBridgesLeft = AmountBridgesSet;
-            Island2.AmountBridgesRight = AmountBridgesSet;
-        }
-
-        if (Island1.IslandRight == Island2)
-        {
-            Island1.AmountBridgesRight = AmountBridgesSet;
-            Island2.AmountBridgesLeft = AmountBridgesSet;
-        }
+        ApplyDirectionBridgeCountsByNeighbor(Island1, Island2, AmountBridgesSet);
 
         Island1.AmountBridgesConnectable += 1;
         Island2.AmountBridgesConnectable += 1;
         mainField[Island1.Y][Island1.X]++;
         mainField[Island2.Y][Island2.X]++;
+    }
+
+    /// <summary>
+    ///     Determines the direction between two islands by coordinate comparison and sets bridge counts.
+    ///     Used by <see cref="AddOtherSide"/> where neighbor references are not yet established.
+    /// </summary>
+    private static void ApplyDirectionBridgeCounts(IIsland source, IIsland target, int bridgeCount)
+    {
+        if (source.X == target.X)
+        {
+            if (source.Y > target.Y)
+            {
+                source.AmountBridgesUp += bridgeCount;
+                target.AmountBridgesDown += bridgeCount;
+            }
+            else if (source.Y < target.Y)
+            {
+                source.AmountBridgesDown += bridgeCount;
+                target.AmountBridgesUp += bridgeCount;
+            }
+        }
+        else if (source.Y == target.Y)
+        {
+            if (source.X > target.X)
+            {
+                source.AmountBridgesLeft += bridgeCount;
+                target.AmountBridgesRight += bridgeCount;
+            }
+            else
+            {
+                source.AmountBridgesRight += bridgeCount;
+                target.AmountBridgesLeft += bridgeCount;
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Determines the direction between two islands by neighbor reference and sets bridge counts.
+    ///     Used by <see cref="AddBridge"/> where neighbor references are already established.
+    /// </summary>
+    private static void ApplyDirectionBridgeCountsByNeighbor(IIsland source, IIsland target, int bridgeCount)
+    {
+        if (source.IslandUp == target)
+        {
+            source.AmountBridgesUp = bridgeCount;
+            target.AmountBridgesDown = bridgeCount;
+        }
+        else if (source.IslandDown == target)
+        {
+            source.AmountBridgesDown = bridgeCount;
+            target.AmountBridgesUp = bridgeCount;
+        }
+        else if (source.IslandLeft == target)
+        {
+            source.AmountBridgesLeft = bridgeCount;
+            target.AmountBridgesRight = bridgeCount;
+        }
+        else if (source.IslandRight == target)
+        {
+            source.AmountBridgesRight = bridgeCount;
+            target.AmountBridgesLeft = bridgeCount;
+        }
     }
 }

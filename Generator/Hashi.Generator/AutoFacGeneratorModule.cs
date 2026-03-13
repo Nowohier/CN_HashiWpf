@@ -5,6 +5,7 @@ using Hashi.Generator.Interfaces.Models;
 using Hashi.Generator.Interfaces.Providers;
 using Hashi.Generator.Models;
 using Hashi.Generator.Providers;
+using Hashi.Generator.Services;
 using Hashi.Logging;
 using Hashi.Logging.Interfaces;
 
@@ -17,6 +18,10 @@ public class AutoFacGeneratorModule : Module
     protected override void Load(ContainerBuilder builder)
     {
         builder.RegisterType<HashiGenerator>().As<IHashiGenerator>().SingleInstance();
+        builder.RegisterType<DifficultySettingsProvider>().As<IDifficultySettingsProvider>().SingleInstance();
+        builder.RegisterType<BlockDetectionService>().As<IBlockDetectionService>().SingleInstance();
+        builder.RegisterType<IslandLayoutService>().As<IIslandLayoutService>().SingleInstance();
+        builder.RegisterType<BridgeManagementService>().As<IBridgeManagementService>().SingleInstance();
         builder.RegisterType<RuleSolvabilityValidator>().As<IRuleSolvabilityValidator>().SingleInstance();
         builder.RegisterType<Island>().As<IIsland>().InstancePerDependency();
         builder.RegisterType<Bridge>().As<IBridge>().InstancePerDependency();

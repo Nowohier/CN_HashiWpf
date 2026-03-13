@@ -11,7 +11,7 @@ namespace Hashi.Rules;
 public class _2ConnectionsRule1(IRuleInfoProvider ruleInfoProvider, IIslandProvider islandProvider)
     : BaseRule(ruleInfoProvider, islandProvider)
 {
-    protected override string RuleMessage => TranslationSource.Instance[nameof(_2ConnectionsRule1)]!;
+    protected override string RuleMessage => TranslationSource.Instance.GetRequired(nameof(_2ConnectionsRule1));
 
     /// <inheritdoc />
     public override void Define()
@@ -23,7 +23,7 @@ public class _2ConnectionsRule1(IRuleInfoProvider ruleInfoProvider, IIslandProvi
 
         When()
             .Match(() => island, x => x.AllConnections.Count == 0 && x.MaxConnections == 2)
-            .Let(() => allNeighbors, () => GetAllVisibleNeighbors(island))
+            .Let(() => allNeighbors, () => Analyzer.GetAllVisibleNeighbors(island))
             .Let(() => invalidNeighbors,
                 () => allNeighbors.Where(x => !x.MaxConnectionsReached && x.MaxConnections != 2).ToList())
             .Let(() => validNeighbors,

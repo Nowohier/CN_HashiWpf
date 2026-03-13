@@ -13,6 +13,11 @@ public class Island : IIsland
     /// <param name="x">The x coordinate.</param>
     public Island(int amountBridgesConnectable, int y, int x)
     {
+        ArgumentOutOfRangeException.ThrowIfNegative(x);
+        ArgumentOutOfRangeException.ThrowIfNegative(y);
+        ArgumentOutOfRangeException.ThrowIfNegative(amountBridgesConnectable);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(amountBridgesConnectable, 8);
+
         Y = y;
         X = x;
         AmountBridgesConnectable = amountBridgesConnectable;
@@ -58,6 +63,14 @@ public class Island : IIsland
     /// <inheritdoc />
     public void SetAllNeighbors(int[][] field, List<IIsland> islands)
     {
+        // Build O(1) lookup by coordinates
+        var islandLookup = new Dictionary<(int Y, int X), IIsland>(islands.Count);
+        foreach (var island in islands)
+        {
+            islandLookup.TryAdd((island.Y, island.X), island);
+        }
+
+        // Look up
         for (var u = Y - 1; u >= 0; u--)
         {
             if (field[u][X] == 0)
@@ -65,13 +78,14 @@ public class Island : IIsland
                 continue;
             }
 
-            foreach (var island in islands.Where(island => island.Y == u && island.X == X && IslandUp == null))
+            if (IslandUp == null && islandLookup.TryGetValue((u, X), out var upIsland))
             {
-                IslandUp = island;
-                break;
+                IslandUp = upIsland;
             }
+            break;
         }
 
+        // Look down
         for (var d = Y + 1; d < field.Length; d++)
         {
             if (field[d][X] == 0)
@@ -79,13 +93,14 @@ public class Island : IIsland
                 continue;
             }
 
-            foreach (var island in islands.Where(island => island.Y == d && island.X == X && IslandDown == null))
+            if (IslandDown == null && islandLookup.TryGetValue((d, X), out var downIsland))
             {
-                IslandDown = island;
-                break;
+                IslandDown = downIsland;
             }
+            break;
         }
 
+        // Look left
         for (var l = X - 1; l >= 0; l--)
         {
             if (field[Y][l] == 0)
@@ -93,13 +108,14 @@ public class Island : IIsland
                 continue;
             }
 
-            foreach (var island in islands.Where(island => island.Y == Y && island.X == l && IslandLeft == null))
+            if (IslandLeft == null && islandLookup.TryGetValue((Y, l), out var leftIsland))
             {
-                IslandLeft = island;
-                break;
+                IslandLeft = leftIsland;
             }
+            break;
         }
 
+        // Look right
         for (var r = X + 1; r < field[Y].Length; r++)
         {
             if (field[Y][r] == 0)
@@ -107,11 +123,11 @@ public class Island : IIsland
                 continue;
             }
 
-            foreach (var island in islands.Where(island => island.Y == Y && island.X == r && IslandRight == null))
+            if (IslandRight == null && islandLookup.TryGetValue((Y, r), out var rightIsland))
             {
-                IslandRight = island;
-                break;
+                IslandRight = rightIsland;
             }
+            break;
         }
     }
 }

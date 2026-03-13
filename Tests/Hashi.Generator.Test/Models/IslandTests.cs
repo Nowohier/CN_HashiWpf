@@ -236,5 +236,47 @@ namespace Hashi.Generator.Test.Models
             island.AmountBridgesLeft.Should().Be(1);
             island.AmountBridgesRight.Should().Be(2);
         }
+
+        [Test]
+        public void Constructor_WhenNegativeX_ShouldThrowArgumentOutOfRangeException()
+        {
+            // Act & Assert
+            Action act = () => new Island(2, 1, -1);
+            act.Should().Throw<ArgumentOutOfRangeException>();
+        }
+
+        [Test]
+        public void Constructor_WhenNegativeY_ShouldThrowArgumentOutOfRangeException()
+        {
+            // Act & Assert
+            Action act = () => new Island(2, -1, 1);
+            act.Should().Throw<ArgumentOutOfRangeException>();
+        }
+
+        [Test]
+        public void Constructor_WhenNegativeBridges_ShouldThrowArgumentOutOfRangeException()
+        {
+            // Act & Assert
+            Action act = () => new Island(-1, 1, 1);
+            act.Should().Throw<ArgumentOutOfRangeException>();
+        }
+
+        [Test]
+        public void Constructor_WhenBridgesExceedMax_ShouldThrowArgumentOutOfRangeException()
+        {
+            // Act & Assert
+            Action act = () => new Island(9, 1, 1);
+            act.Should().Throw<ArgumentOutOfRangeException>();
+        }
+
+        [Test]
+        [TestCase(0)]
+        [TestCase(8)]
+        public void Constructor_WhenBridgesAtBoundary_ShouldNotThrow(int bridges)
+        {
+            // Act & Assert
+            var action = () => new Island(bridges, 0, 0);
+            action.Should().NotThrow();
+        }
     }
 }

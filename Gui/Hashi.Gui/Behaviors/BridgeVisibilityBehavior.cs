@@ -142,22 +142,16 @@ public class BridgeVisibilityBehavior : Behavior<Line>, IRecipient<IRuleMessageC
             return;
         }
 
-        line.Visibility = BridgeType switch
+        var descriptor = GetDescriptor(BridgeType);
+        if (descriptor == null)
         {
-            BridgeTypeEnum.Horizontal => DetermineVisibility(1, island.BridgesLeft, island.BridgesRight),
-            BridgeTypeEnum.HorizontalDouble => DetermineVisibility(2, island.BridgesLeft, island.BridgesRight),
-            BridgeTypeEnum.Vertical => DetermineVisibility(1, island.BridgesUp, island.BridgesDown),
-            BridgeTypeEnum.VerticalDouble => DetermineVisibility(2, island.BridgesUp, island.BridgesDown),
-            BridgeTypeEnum.HorizontalLeft => DetermineVisibility(1, island.BridgesLeft),
-            BridgeTypeEnum.HorizontalDoubleLeft => DetermineVisibility(2, island.BridgesLeft),
-            BridgeTypeEnum.HorizontalRight => DetermineVisibility(1, island.BridgesRight),
-            BridgeTypeEnum.HorizontalDoubleRight => DetermineVisibility(2, island.BridgesRight),
-            BridgeTypeEnum.VerticalUp => DetermineVisibility(1, island.BridgesUp),
-            BridgeTypeEnum.VerticalDoubleUp => DetermineVisibility(2, island.BridgesUp),
-            BridgeTypeEnum.VerticalDown => DetermineVisibility(1, island.BridgesDown),
-            BridgeTypeEnum.VerticalDoubleDown => DetermineVisibility(2, island.BridgesDown),
-            _ => Visibility.Hidden
-        };
+            line.Visibility = Visibility.Hidden;
+            return;
+        }
+
+        var primary = descriptor.GetPrimary(island);
+        var secondary = descriptor.GetSecondary?.Invoke(island);
+        line.Visibility = DetermineVisibility(descriptor.ExpectedCount, primary, secondary);
     }
 
     private Visibility DetermineVisibility(int expected, List<IHashiPoint> values1, List<IHashiPoint>? values2 = null)
@@ -215,43 +209,9 @@ public class BridgeVisibilityBehavior : Behavior<Line>, IRecipient<IRuleMessageC
                 $"{nameof(BridgeVisibilityBehavior)}: DataContext must be of type IIslandViewModel.");
         }
 
-        var runFadeInAnimation = BridgeType switch
-        {
-            BridgeTypeEnum.Horizontal => island.BridgesLeft.Count == 1 && island.BridgesRight.Count == 1 &&
-                                         (island.BridgesLeft.First().PointType.Equals(HashiPointTypeEnum.Hint) ||
-                                          island.BridgesRight.First().PointType.Equals(HashiPointTypeEnum.Hint)),
-            BridgeTypeEnum.HorizontalDouble => island.BridgesLeft.Count == 2 && island.BridgesRight.Count == 2 &&
-                                               (island.BridgesLeft.Any(x =>
-                                                    x.PointType.Equals(HashiPointTypeEnum.Hint)) ||
-                                                island.BridgesRight.Any(
-                                                    x => x.PointType.Equals(HashiPointTypeEnum.Hint))),
-            BridgeTypeEnum.Vertical => island.BridgesUp.Count == 1 && island.BridgesDown.Count == 1 &&
-                                       (island.BridgesUp.First().PointType.Equals(HashiPointTypeEnum.Hint) ||
-                                        island.BridgesDown.First().PointType.Equals(HashiPointTypeEnum.Hint)),
-            BridgeTypeEnum.VerticalDouble => island.BridgesUp.Count == 2 && island.BridgesDown.Count == 2 &&
-                                             (island.BridgesUp.Any(x => x.PointType.Equals(HashiPointTypeEnum.Hint)) ||
-                                              island.BridgesDown.Any(x => x.PointType.Equals(HashiPointTypeEnum.Hint))),
-            BridgeTypeEnum.HorizontalLeft => island.BridgesLeft.Count == 1 &&
-                                             island.BridgesLeft.First().PointType.Equals(HashiPointTypeEnum.Hint),
-            BridgeTypeEnum.HorizontalDoubleLeft => island.BridgesLeft.Count == 2 &&
-                                                   island.BridgesLeft.Any(x =>
-                                                       x.PointType.Equals(HashiPointTypeEnum.Hint)),
-            BridgeTypeEnum.HorizontalRight => island.BridgesRight.Count == 1 &&
-                                              island.BridgesRight.First().PointType.Equals(HashiPointTypeEnum.Hint),
-            BridgeTypeEnum.HorizontalDoubleRight => island.BridgesRight.Count == 2 &&
-                                                    island.BridgesRight.Any(x =>
-                                                        x.PointType.Equals(HashiPointTypeEnum.Hint)),
-            BridgeTypeEnum.VerticalUp => island.BridgesUp.Count == 1 &&
-                                         island.BridgesUp.First().PointType.Equals(HashiPointTypeEnum.Hint),
-            BridgeTypeEnum.VerticalDoubleUp => island.BridgesUp.Count == 2 &&
-                                               island.BridgesUp.Any(x => x.PointType.Equals(HashiPointTypeEnum.Hint)),
-            BridgeTypeEnum.VerticalDown => island.BridgesDown.Count == 1 &&
-                                           island.BridgesDown.First().PointType.Equals(HashiPointTypeEnum.Hint),
-            BridgeTypeEnum.VerticalDoubleDown => island.BridgesDown.Count == 2 &&
-                                                 island.BridgesDown.Any(
-                                                     x => x.PointType.Equals(HashiPointTypeEnum.Hint)),
-            _ => false
-        };
+        var descriptor = GetDescriptor(BridgeType);
+        var runFadeInAnimation = descriptor != null &&
+                                 HasHintConnections(descriptor, island);
 
         if (!runFadeInAnimation)
         {
@@ -314,4 +274,45 @@ public class BridgeVisibilityBehavior : Behavior<Line>, IRecipient<IRuleMessageC
             throw new InvalidOperationException("DependencyObject is not a BridgeVisibilityBehavior.");
         }
     }
+
+    private static BridgeTypeDescriptor? GetDescriptor(BridgeTypeEnum bridgeType)
+    {
+        return bridgeType switch
+        {
+            BridgeTypeEnum.Horizontal => new(1, i => i.BridgesLeft, i => i.BridgesRight),
+            BridgeTypeEnum.HorizontalDouble => new(2, i => i.BridgesLeft, i => i.BridgesRight),
+            BridgeTypeEnum.Vertical => new(1, i => i.BridgesUp, i => i.BridgesDown),
+            BridgeTypeEnum.VerticalDouble => new(2, i => i.BridgesUp, i => i.BridgesDown),
+            BridgeTypeEnum.HorizontalLeft => new(1, i => i.BridgesLeft, null),
+            BridgeTypeEnum.HorizontalDoubleLeft => new(2, i => i.BridgesLeft, null),
+            BridgeTypeEnum.HorizontalRight => new(1, i => i.BridgesRight, null),
+            BridgeTypeEnum.HorizontalDoubleRight => new(2, i => i.BridgesRight, null),
+            BridgeTypeEnum.VerticalUp => new(1, i => i.BridgesUp, null),
+            BridgeTypeEnum.VerticalDoubleUp => new(2, i => i.BridgesUp, null),
+            BridgeTypeEnum.VerticalDown => new(1, i => i.BridgesDown, null),
+            BridgeTypeEnum.VerticalDoubleDown => new(2, i => i.BridgesDown, null),
+            _ => null
+        };
+    }
+
+    private static bool HasHintConnections(BridgeTypeDescriptor descriptor, IIslandViewModel island)
+    {
+        var primary = descriptor.GetPrimary(island);
+        var secondary = descriptor.GetSecondary?.Invoke(island);
+
+        if (secondary != null)
+        {
+            return primary.Count == descriptor.ExpectedCount && secondary.Count == descriptor.ExpectedCount &&
+                   (primary.Any(x => x.PointType == HashiPointTypeEnum.Hint) ||
+                    secondary.Any(x => x.PointType == HashiPointTypeEnum.Hint));
+        }
+
+        return primary.Count == descriptor.ExpectedCount &&
+               primary.Any(x => x.PointType == HashiPointTypeEnum.Hint);
+    }
+
+    private sealed record BridgeTypeDescriptor(
+        int ExpectedCount,
+        Func<IIslandViewModel, List<IHashiPoint>> GetPrimary,
+        Func<IIslandViewModel, List<IHashiPoint>>? GetSecondary);
 }

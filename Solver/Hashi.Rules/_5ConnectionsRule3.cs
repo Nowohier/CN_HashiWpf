@@ -12,7 +12,7 @@ namespace Hashi.Rules;
 public class _5ConnectionsRule3(IRuleInfoProvider ruleInfoProvider, IIslandProvider islandProvider)
     : BaseRule(ruleInfoProvider, islandProvider)
 {
-    protected override string RuleMessage => TranslationSource.Instance[nameof(_5ConnectionsRule3)]!;
+    protected override string RuleMessage => TranslationSource.Instance.GetRequired(nameof(_5ConnectionsRule3));
 
     public override void Define()
     {
@@ -23,12 +23,12 @@ public class _5ConnectionsRule3(IRuleInfoProvider ruleInfoProvider, IIslandProvi
 
         When()
             .Match(() => island, x => x.MaxConnections == 5 && !x.MaxConnectionsReached)
-            .Let(() => allNeighbors, () => GetAllVisibleNeighbors(island))
+            .Let(() => allNeighbors, () => Analyzer.GetAllVisibleNeighbors(island))
             .Having(() => allNeighbors.Count == 4)
-            .Let(() => restrictedNeighbors, () => GetMaxedOutConnectedNeighbors(island, allNeighbors, null))
+            .Let(() => restrictedNeighbors, () => Analyzer.GetMaxedOutConnectedNeighbors(island, allNeighbors, null))
             .Having(() =>
-                restrictedNeighbors.Count == 2 && CountConnectionsToNeighbors(island, restrictedNeighbors) <= 2)
-            .Let(() => validNeighbors, () => GetConnectableNeighborsWithoutConnection(island, allNeighbors))
+                restrictedNeighbors.Count == 2 && Analyzer.CountConnectionsToNeighbors(island, restrictedNeighbors) <= 2)
+            .Let(() => validNeighbors, () => Analyzer.GetConnectableNeighborsWithoutConnection(island, allNeighbors))
             .Having(() => validNeighbors.Count > 0);
 
         Then()

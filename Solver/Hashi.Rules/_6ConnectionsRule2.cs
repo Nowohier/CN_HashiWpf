@@ -11,7 +11,7 @@ namespace Hashi.Rules;
 public class _6ConnectionsRule2(IRuleInfoProvider ruleInfoProvider, IIslandProvider islandProvider)
     : BaseRule(ruleInfoProvider, islandProvider)
 {
-    protected override string RuleMessage => TranslationSource.Instance[nameof(_6ConnectionsRule2)]!;
+    protected override string RuleMessage => TranslationSource.Instance.GetRequired(nameof(_6ConnectionsRule2));
 
     public override void Define()
     {
@@ -22,12 +22,12 @@ public class _6ConnectionsRule2(IRuleInfoProvider ruleInfoProvider, IIslandProvi
 
         When()
             .Match(() => island, x => x.MaxConnections == 6 && !x.MaxConnectionsReached)
-            .Let(() => allNeighbors, () => GetAllVisibleNeighbors(island))
+            .Let(() => allNeighbors, () => Analyzer.GetAllVisibleNeighbors(island))
             .Having(() => allNeighbors.Count == 4)
-            .Let(() => restrictedNeighbors, () => GetMaxedOutConnectedNeighbors(island, allNeighbors, 1))
+            .Let(() => restrictedNeighbors, () => Analyzer.GetMaxedOutConnectedNeighbors(island, allNeighbors, 1))
             .Having(() => restrictedNeighbors.Count == 1)
             .Let(() => validNeighbors,
-                () => GetConnectableNeighborsWithoutConnection(island, allNeighbors).Except(restrictedNeighbors)
+                () => Analyzer.GetConnectableNeighborsWithoutConnection(island, allNeighbors).Except(restrictedNeighbors)
                     .ToList())
             .Having(() => validNeighbors.Count > 0);
 

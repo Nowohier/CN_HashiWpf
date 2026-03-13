@@ -10,7 +10,7 @@ namespace Hashi.Rules;
 public class _9GeneralRule1(IRuleInfoProvider ruleInfoProvider, IIslandProvider islandProvider)
     : BaseRule(ruleInfoProvider, islandProvider)
 {
-    protected override string RuleMessage => TranslationSource.Instance[nameof(_9GeneralRule1)]!;
+    protected override string RuleMessage => TranslationSource.Instance.GetRequired(nameof(_9GeneralRule1));
 
     /// <inheritdoc />
     public override void Define()
@@ -21,7 +21,7 @@ public class _9GeneralRule1(IRuleInfoProvider ruleInfoProvider, IIslandProvider 
         When()
             .Match(() => island, x => x.MaxConnectionsReached == false)
             .Let(() => validNeighbors,
-                () => GetAllVisibleNeighbors(island).Where(x => x.MaxConnectionsReached == false).ToList())
+                () => Analyzer.GetAllVisibleNeighbors(island).Where(x => x.MaxConnectionsReached == false).ToList())
             .Having(() => validNeighbors.Count == 1);
 
         Then()
