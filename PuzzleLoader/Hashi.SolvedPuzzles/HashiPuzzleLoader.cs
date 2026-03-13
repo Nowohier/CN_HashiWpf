@@ -24,14 +24,20 @@ public class HashiPuzzleLoader : IHashiPuzzleLoader
     {
         var fileName = GetHashiFileName(hashiFileEnum);
 
-        if (!File.Exists(fileName)) throw new FileNotFoundException($"File {fileName} not found.");
+        if (!File.Exists(fileName))
+        {
+            throw new FileNotFoundException($"File {fileName} not found.");
+        }
 
         var fileContent = File.ReadAllText(fileName).Replace("{", "[").Replace("}", "]");
 
         // Deserialize the JSON string to an int[][]
         var puzzle = JsonSerializer.Deserialize<int[][]>(fileContent);
 
-        if (puzzle == null) throw new Exception($"Failed to deserialize the puzzle from file {fileName}.");
+        if (puzzle == null)
+        {
+            throw new Exception($"Failed to deserialize the puzzle from file {fileName}.");
+        }
 
         return puzzle;
     }

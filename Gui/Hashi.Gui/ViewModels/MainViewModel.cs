@@ -133,11 +133,18 @@ public class MainViewModel : AsyncObservableRecipient,
         get => selectedRule;
         set
         {
-            if (!SetProperty(ref selectedRule, value) || selectedRule == null) return;
+            if (!SetProperty(ref selectedRule, value) || selectedRule == null)
+            {
+                return;
+            }
+
             HintProvider.RuleInfoProvider.RuleMessage = TranslationSource.Instance[selectedRule.Name] ?? string.Empty;
             HintProvider.RuleInfoProvider.AreRulesBeingApplied = false;
             HintProvider.ResetSession();
-            if (IsTestFieldMode) SetTestSolution(TestSolutionProvider.SelectedSolutionProvider);
+            if (IsTestFieldMode)
+            {
+                SetTestSolution(TestSolutionProvider.SelectedSolutionProvider);
+            }
         }
     }
 
@@ -168,7 +175,11 @@ public class MainViewModel : AsyncObservableRecipient,
         get => isTestFieldMode;
         set
         {
-            if (!SetProperty(ref isTestFieldMode, value)) return;
+            if (!SetProperty(ref isTestFieldMode, value))
+            {
+                return;
+            }
+
             WindowColorBrush = isTestFieldMode
                 ? brushResolver.ResolveBrush(HashiColor.TestModeBrush)
                 : brushResolver.ResolveBrush(HashiColor.BasicBrush);
@@ -194,7 +205,10 @@ public class MainViewModel : AsyncObservableRecipient,
         get => selectedDifficulty;
         set
         {
-            if (SetProperty(ref selectedDifficulty, value)) OnPropertyChanged(nameof(HighscoreForSelectedDifficulty));
+            if (SetProperty(ref selectedDifficulty, value))
+            {
+                OnPropertyChanged(nameof(HighscoreForSelectedDifficulty));
+            }
         }
     }
 
@@ -310,7 +324,9 @@ public class MainViewModel : AsyncObservableRecipient,
 
         if (bridgeOperationType == BridgeOperationTypeEnum.Add &&
             !sourceIsland.IsValidDropTarget(targetIsland))
+        {
             return;
+        }
 
         Action bridgeAction = bridgeOperationType switch
         {
@@ -326,9 +342,15 @@ public class MainViewModel : AsyncObservableRecipient,
 
         bridgeAction();
 
+        if (bridgeOperationType == BridgeOperationTypeEnum.Add)
+        {
+            IslandProvider.RedoHistory.Clear();
+        }
+
         IslandProvider.RefreshIslandColors();
         IslandProvider.RemoveAllHighlights();
         IslandProvider.ClearTemporaryDropTargets();
+        NotifyUndoRedoCanExecuteChanged();
         logger.Debug($"Isolated Groups: {IslandProvider.CountIsolatedIslandGroups()}");
     }
 
@@ -344,7 +366,11 @@ public class MainViewModel : AsyncObservableRecipient,
         if (IsCheating || IsTestFieldMode)
         {
             dialogWrapper.Show(caption, dialogMessage, DialogButton.Ok, DialogImage.Success);
-            if (!IsTestFieldMode) CreateNewGameCommand.Execute(null);
+            if (!IsTestFieldMode)
+            {
+                CreateNewGameCommand.Execute(null);
+            }
+
             return;
         }
 
@@ -382,13 +408,28 @@ public class MainViewModel : AsyncObservableRecipient,
     {
         IsGeneratingHashiPuzzle = true;
         IsCheating = false;
-        var solutionContainer = await hashiGenerator.GenerateHashAsync((int)SelectedDifficulty);
 
-        HintProvider.ResetSession();
-        IslandProvider.InitializeNewSolution(solutionContainer);
-        TimerProvider.StopTimer();
+        try
+        {
+            var solutionContainer = await hashiGenerator.GenerateHashAsync((int)SelectedDifficulty);
 
-        IsGeneratingHashiPuzzle = false;
+            HintProvider.ResetSession();
+            IslandProvider.InitializeNewSolution(solutionContainer);
+            TimerProvider.StopTimer();
+            NotifyUndoRedoCanExecuteChanged();
+        }
+        catch (Exception ex)
+        {
+            logger.Error($"Puzzle generation failed: {ex.Message}");
+            dialogWrapper.Show(
+                TranslationSource.Instance["MessageGameOverCaption"] ?? "Error",
+                "Puzzle generation failed. Please try again.",
+                DialogButton.Ok, DialogImage.Warning);
+        }
+        finally
+        {
+            IsGeneratingHashiPuzzle = false;
+        }
     }
 
     internal void RemoveAllBridgesExecute()
@@ -396,13 +437,17 @@ public class MainViewModel : AsyncObservableRecipient,
         IslandProvider.RemoveAllBridges(HashiPointTypeEnum.All);
         IslandProvider.RefreshIslandColors();
         TimerProvider.StopTimer();
+        NotifyUndoRedoCanExecuteChanged();
 
         IsCheating = false;
     }
 
     internal Task SetTestSolution(ISolutionProvider? solutionProvider)
     {
-        if (solutionProvider is not { HashiField: not null }) return Task.CompletedTask;
+        if (solutionProvider is not { HashiField: not null })
+        {
+            return Task.CompletedTask;
+        }
 
         IsGeneratingHashiPuzzle = true;
         IsCheating = false;
@@ -465,7 +510,11 @@ public class MainViewModel : AsyncObservableRecipient,
 
     internal void ChangeLanguageCommandExecute(string? culture)
     {
-        if (string.IsNullOrEmpty(culture)) return;
+        if (string.IsNullOrEmpty(culture))
+        {
+            return;
+        }
+
         TranslationSource.Instance.CurrentCulture = new CultureInfo(culture);
         SettingsProvider.Settings.SelectedLanguageCulture = culture;
     }
@@ -473,22 +522,31 @@ public class MainViewModel : AsyncObservableRecipient,
     internal void UndoCommandExecute()
     {
         IslandProvider.UndoConnection();
+        IslandProvider.RefreshIslandColors();
+        NotifyUndoRedoCanExecuteChanged();
     }
 
     internal bool UndoCommandCanExecute()
     {
-        // ToDo: Implement this correctly
-        //return ConnectionManager.History.Any();
-        return true;
+        return IslandProvider.History.Any();
     }
 
     internal void RedoCommandExecute()
     {
+        IslandProvider.RedoConnection();
+        IslandProvider.RefreshIslandColors();
+        NotifyUndoRedoCanExecuteChanged();
     }
 
     internal bool RedoCommandCanExecute()
     {
-        return false;
+        return IslandProvider.RedoHistory.Any();
+    }
+
+    private void NotifyUndoRedoCanExecuteChanged()
+    {
+        ((RelayCommand)UndoCommand).NotifyCanExecuteChanged();
+        ((RelayCommand)RedoCommand).NotifyCanExecuteChanged();
     }
 
     internal async Task ResetTestFieldCommandExecute()
@@ -517,7 +575,11 @@ public class MainViewModel : AsyncObservableRecipient,
 
     internal void DeleteTestFieldCommandExecute()
     {
-        if (TestSolutionProvider.SelectedSolutionProvider == null) return;
+        if (TestSolutionProvider.SelectedSolutionProvider == null)
+        {
+            return;
+        }
+
         if (dialogWrapper.Show(TranslationSource.Instance["MessageDeleteScenarioCaption"]!,
                 string.Format(TranslationSource.Instance["MessageDeleteScenarioText"]!,
                     TestSolutionProvider.SelectedSolutionProvider.Name),

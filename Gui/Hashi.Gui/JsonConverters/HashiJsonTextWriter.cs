@@ -13,8 +13,12 @@ public class HashiJsonTextWriter(TextWriter writer) : JsonTextWriter(writer)
     protected override void WriteIndent()
     {
         if (WriteState != WriteState.Array)
+        {
             base.WriteIndent();
+        }
         else
+        {
             WriteIndentSpace();
+        }
     }
 }

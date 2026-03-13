@@ -80,9 +80,9 @@ namespace Hashi.Generator.Test
         {
             // Arrange
             var islandFactory = container.Resolve<Func<int, int, int, IIsland>>();
-            int amountBridges = 3;
-            int row = 5;
-            int column = 7;
+            var amountBridges = 3;
+            var row = 5;
+            var column = 7;
 
             // Act
             var island = islandFactory(amountBridges, row, column);
@@ -111,7 +111,7 @@ namespace Hashi.Generator.Test
             var bridgeCoordinatesFactory = container.Resolve<Func<Point, Point, int, IBridgeCoordinates>>();
             var location1 = new Point(1, 2);
             var location2 = new Point(3, 4);
-            int amountBridges = 2;
+            var amountBridges = 2;
 
             // Act
             var bridgeCoordinates = bridgeCoordinatesFactory(location1, location2, amountBridges);
@@ -174,7 +174,7 @@ namespace Hashi.Generator.Test
 
             var island1 = islandFactory(2, 1, 1);
             var island2 = islandFactory(2, 1, 3);
-            int amountBridgesSet = 1;
+            var amountBridgesSet = 1;
 
             // Act
             var bridge = bridgeFactory(island1, island2, amountBridgesSet);

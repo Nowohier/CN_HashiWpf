@@ -12,7 +12,11 @@ public class EmptyStringToVisibilityConverter : IValueConverter
     /// <inheritdoc />
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value is not string stringValue) return Visibility.Hidden;
+        if (value is not string stringValue)
+        {
+            return Visibility.Hidden;
+        }
+
         return string.IsNullOrEmpty(stringValue) ? Visibility.Hidden : Visibility.Visible;
     }
 

@@ -60,7 +60,11 @@ public class Island : IIsland
     {
         for (var u = Y - 1; u >= 0; u--)
         {
-            if (field[u][X] == 0) continue;
+            if (field[u][X] == 0)
+            {
+                continue;
+            }
+
             foreach (var island in islands.Where(island => island.Y == u && island.X == X && IslandUp == null))
             {
                 IslandUp = island;
@@ -70,7 +74,11 @@ public class Island : IIsland
 
         for (var d = Y + 1; d < field.Length; d++)
         {
-            if (field[d][X] == 0) continue;
+            if (field[d][X] == 0)
+            {
+                continue;
+            }
+
             foreach (var island in islands.Where(island => island.Y == d && island.X == X && IslandDown == null))
             {
                 IslandDown = island;
@@ -80,7 +88,11 @@ public class Island : IIsland
 
         for (var l = X - 1; l >= 0; l--)
         {
-            if (field[Y][l] == 0) continue;
+            if (field[Y][l] == 0)
+            {
+                continue;
+            }
+
             foreach (var island in islands.Where(island => island.Y == Y && island.X == l && IslandLeft == null))
             {
                 IslandLeft = island;
@@ -90,7 +102,11 @@ public class Island : IIsland
 
         for (var r = X + 1; r < field[Y].Length; r++)
         {
-            if (field[Y][r] == 0) continue;
+            if (field[Y][r] == 0)
+            {
+                continue;
+            }
+
             foreach (var island in islands.Where(island => island.Y == Y && island.X == r && IslandRight == null))
             {
                 IslandRight = island;

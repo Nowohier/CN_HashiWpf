@@ -32,20 +32,31 @@ namespace Hashi.Gui.Managers
 
         private void RemoveSettingsDirectory(string directoryPath)
         {
-            if (!directoryWrapper.Exists(directoryPath)) return;
+            if (!directoryWrapper.Exists(directoryPath))
+            {
+                return;
+            }
+
             directoryWrapper.Delete(directoryPath, true);
         }
 
         private void EnsureDirectoryExists(string directoryPath)
         {
-            if (directoryWrapper.Exists(directoryPath)) return;
+            if (directoryWrapper.Exists(directoryPath))
+            {
+                return;
+            }
+
             directoryWrapper.CreateDirectory(directoryPath);
         }
 
         private void EnsureFileExists(string filePath, string embeddedFileName)
         {
             if (fileWrapper.Exists(filePath) ||
-                !TryGetEmbeddedResourceName(embeddedFileName, out var resourceName)) return;
+                !TryGetEmbeddedResourceName(embeddedFileName, out var resourceName))
+            {
+                return;
+            }
 
             var content = GetEmbeddedResource(resourceName);
             fileWrapper.WriteAllText(filePath, content);

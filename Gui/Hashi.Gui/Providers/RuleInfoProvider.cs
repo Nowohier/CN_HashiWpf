@@ -23,7 +23,11 @@ public class RuleInfoProvider(
         get => ruleMessage;
         set
         {
-            if (!SetProperty(ref ruleMessage, value) || ruleMessage != string.Empty) return;
+            if (!SetProperty(ref ruleMessage, value) || ruleMessage != string.Empty)
+            {
+                return;
+            }
+
             WeakReferenceMessenger.Default.Send(ruleMessageClearedMessageFactory.Invoke(null));
             WeakReferenceMessenger.Default.Send(updateIslandColorsMessageFactory.Invoke(null));
         }

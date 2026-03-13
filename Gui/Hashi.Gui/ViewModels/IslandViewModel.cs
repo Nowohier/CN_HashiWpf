@@ -285,8 +285,15 @@ public class IslandViewModel :
     /// <exception cref="ArgumentNullException">Throws an exception if e is null.</exception>
     internal virtual void DragEnterCommandExecute(DragEventArgs? e)
     {
-        if (e == null) throw new ArgumentNullException(nameof(e));
-        if (!MaxConnectionsReached) IslandColor = BrushResolver.ResolveBrush(HashiColor.GreenIslandBrush);
+        if (e == null)
+        {
+            throw new ArgumentNullException(nameof(e));
+        }
+
+        if (!MaxConnectionsReached)
+        {
+            IslandColor = BrushResolver.ResolveBrush(HashiColor.GreenIslandBrush);
+        }
     }
 
     /// <summary>
@@ -296,7 +303,10 @@ public class IslandViewModel :
     /// <exception cref="ArgumentNullException">Throws an exception if e is null.</exception>
     internal virtual void DragOverCommandExecute(DragEventArgs? e)
     {
-        if (e == null) throw new ArgumentNullException(nameof(e));
+        if (e == null)
+        {
+            throw new ArgumentNullException(nameof(e));
+        }
     }
 
     /// <summary>
@@ -306,12 +316,17 @@ public class IslandViewModel :
     /// <exception cref="ArgumentNullException">Throws an exception if e is null.</exception>
     internal virtual void DragLeaveCommandExecute(DragEventArgs? e)
     {
-        if (e == null) throw new ArgumentNullException(nameof(e));
+        if (e == null)
+        {
+            throw new ArgumentNullException(nameof(e));
+        }
 
         if (!e.Data.GetDataPresent(typeof(IslandViewModel)) ||
             e.Data.GetData(typeof(IslandViewModel)) is not IslandViewModel islandToConnectWith ||
             islandToConnectWith == this)
+        {
             return;
+        }
 
         RefreshIslandColor();
     }
@@ -323,11 +338,17 @@ public class IslandViewModel :
     /// <exception cref="ArgumentNullException">Throws an exception if e is null.</exception>
     internal virtual void DropCommandExecute(DragEventArgs? e)
     {
-        if (e == null) throw new ArgumentNullException(nameof(e));
+        if (e == null)
+        {
+            throw new ArgumentNullException(nameof(e));
+        }
 
         if (!e.Data.GetDataPresent(typeof(IslandViewModel)) ||
             e.Data.GetData(typeof(IslandViewModel)) is not IslandViewModel islandToConnectWith ||
-            islandToConnectWith == this) return;
+            islandToConnectWith == this)
+        {
+            return;
+        }
 
         WeakReferenceMessenger.Default.Send(updateAllIslandColorsMessageFactory.Invoke(null));
     }
@@ -349,9 +370,15 @@ public class IslandViewModel :
         var currentPosition = e.MouseEventArgs.GetPosition(null);
         if (!(Math.Abs(currentPosition.X - mouseDownPosition.X) > SystemParameters.MinimumHorizontalDragDistance) &&
             !(Math.Abs(currentPosition.Y - mouseDownPosition.Y) >
-              SystemParameters.MinimumVerticalDragDistance)) return;
+              SystemParameters.MinimumVerticalDragDistance))
+        {
+            return;
+        }
 
-        if (e.MouseEventArgs.OriginalSource is not DependencyObject depObject) return;
+        if (e.MouseEventArgs.OriginalSource is not DependencyObject depObject)
+        {
+            return;
+        }
 
         isDragging = true;
         startDragPosition = CursorHelper.GetCurrentCursorPosition(viewBoxControl);
@@ -370,7 +397,11 @@ public class IslandViewModel :
     {
         isDragging = false;
         OnPropertyChanged(nameof(MaxConnections));
-        if (MaxConnectionsReached) return;
+        if (MaxConnectionsReached)
+        {
+            return;
+        }
+
         IslandColor = BrushResolver.ResolveBrush(HashiColor.GreenIslandBrush);
     }
 
@@ -444,11 +475,17 @@ public class IslandViewModel :
             dropTargetIsland = WeakReferenceMessenger.Default.Send(dragDirectionMessage).Response;
         }
 
-        if (e.KeyStates != DragDropKeyStates.None) return;
+        if (e.KeyStates != DragDropKeyStates.None)
+        {
+            return;
+        }
 
         isDragging = false;
 
-        if (dropTargetIsland == null) return;
+        if (dropTargetIsland == null)
+        {
+            return;
+        }
 
         var islandInfos =
             connectionInformationContainerFactory.Invoke(BridgeOperationTypeEnum.Add, this, dropTargetIsland);
@@ -465,14 +502,18 @@ public class IslandViewModel :
 
         // Ignore small movements
         if (Math.Abs(deltaX) < threshold && Math.Abs(deltaY) < threshold)
+        {
             return DirectionEnum.None;
+        }
 
         // Calculate angle in degrees
         var angle = Math.Atan2(deltaY, deltaX) * (180 / Math.PI);
 
         // Normalize angle to range [0, 360)
         if (angle < 0)
+        {
             angle += 360;
+        }
 
         // Determine direction based on angle
         return angle switch

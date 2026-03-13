@@ -190,7 +190,9 @@ public class HighScorePerDifficultyViewModelTests
         viewModel.PropertyChanged += (_, e) =>
         {
             if (e.PropertyName == nameof(HighScorePerDifficultyViewModel.HighScoreTime))
+            {
                 propertyChangedRaised = true;
+            }
         };
 
         // Act
@@ -226,7 +228,9 @@ public class HighScorePerDifficultyViewModelTests
         viewModel.PropertyChanged += (_, e) =>
         {
             if (e.PropertyName == nameof(HighScorePerDifficultyViewModel.HighScoreTime))
+            {
                 propertyChangedRaised = true;
+            }
         };
 
         // Act
@@ -245,7 +249,9 @@ public class HighScorePerDifficultyViewModelTests
         viewModel.PropertyChanged += (_, e) =>
         {
             if (e.PropertyName == nameof(HighScorePerDifficultyViewModel.HighScoreTime))
+            {
                 propertyChangedRaised = true;
+            }
         };
 
         // Act

@@ -19,7 +19,9 @@ public static class HashiRuleRepositoryExtensions
     {
         var compiler = new RuleCompiler();
         if (repository.GetRules().FirstOrDefault(x => x.Name.Equals(ruleName)) is not { } ruleDefinition)
+        {
             throw new ArgumentException($"Rule {ruleName} not found in the repository.");
+        }
 
         var factory = compiler.Compile([ruleDefinition], CancellationToken.None);
         return factory;

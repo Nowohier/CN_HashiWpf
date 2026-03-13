@@ -83,8 +83,10 @@ public partial class App
     {
         // Log the exception, show a message to the user, etc.
         if (e.ExceptionObject is Exception ex)
+        {
             dialogWrapper?.Show("Error", $"An unhandled exception occurred: {ex.Message}", DialogButton.Ok,
                 DialogImage.Error);
+        }
     }
 
     /// <summary>

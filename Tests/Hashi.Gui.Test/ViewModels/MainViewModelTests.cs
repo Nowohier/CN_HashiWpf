@@ -96,6 +96,9 @@ public class MainViewModelTests
         islandProviderMock.Setup(x => x.RemoveAllBridges(It.IsAny<HashiPointTypeEnum>()));
         islandProviderMock.Setup(x => x.CountIsolatedIslandGroups()).Returns(0);
         islandProviderMock.Setup(x => x.UndoConnection());
+        islandProviderMock.Setup(x => x.RedoConnection());
+        islandProviderMock.Setup(x => x.History).Returns(new List<IHashiBridge>());
+        islandProviderMock.Setup(x => x.RedoHistory).Returns(new List<IHashiBridge>());
         islandProviderMock.Setup(x => x.GetVisibleNeighbor(It.IsAny<IIslandViewModel>(), It.IsAny<DirectionEnum>()))
             .Returns((IIslandViewModel)null!);
         islandProviderMock.Setup(x =>
@@ -995,8 +998,22 @@ public class MainViewModelTests
     }
 
     [Test]
-    public void UndoCommandCanExecute_WhenCalled_ShouldReturnTrue()
+    public void UndoCommandCanExecute_WhenHistoryEmpty_ShouldReturnFalse()
     {
+        // Act
+        var result = mainViewModel.UndoCommandCanExecute();
+
+        // Assert
+        result.Should().BeFalse();
+    }
+
+    [Test]
+    public void UndoCommandCanExecute_WhenHistoryHasEntries_ShouldReturnTrue()
+    {
+        // Arrange
+        var historyList = new List<IHashiBridge> { new Mock<IHashiBridge>(MockBehavior.Strict).Object };
+        islandProviderMock.Setup(x => x.History).Returns(historyList);
+
         // Act
         var result = mainViewModel.UndoCommandCanExecute();
 
@@ -1005,21 +1022,37 @@ public class MainViewModelTests
     }
 
     [Test]
-    public void RedoCommandExecute_WhenCalled_ShouldNotThrow()
+    public void RedoCommandExecute_WhenCalled_ShouldCallIslandProviderRedo()
     {
-        // Act & Assert
-        var action = () => mainViewModel.RedoCommandExecute();
-        action.Should().NotThrow();
+        // Act
+        mainViewModel.RedoCommandExecute();
+
+        // Assert
+        islandProviderMock.Verify(x => x.RedoConnection(), Times.Once);
     }
 
     [Test]
-    public void RedoCommandCanExecute_WhenCalled_ShouldReturnFalse()
+    public void RedoCommandCanExecute_WhenRedoHistoryEmpty_ShouldReturnFalse()
     {
         // Act
         var result = mainViewModel.RedoCommandCanExecute();
 
         // Assert
         result.Should().BeFalse();
+    }
+
+    [Test]
+    public void RedoCommandCanExecute_WhenRedoHistoryHasEntries_ShouldReturnTrue()
+    {
+        // Arrange
+        var redoList = new List<IHashiBridge> { new Mock<IHashiBridge>(MockBehavior.Strict).Object };
+        islandProviderMock.Setup(x => x.RedoHistory).Returns(redoList);
+
+        // Act
+        var result = mainViewModel.RedoCommandCanExecute();
+
+        // Assert
+        result.Should().BeTrue();
     }
 
     [Test]

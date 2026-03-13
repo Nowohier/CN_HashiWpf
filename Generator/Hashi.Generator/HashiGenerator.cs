@@ -27,7 +27,7 @@ public class HashiGenerator : IHashiGenerator
     private readonly Random random = new();
 
     // Cache structures to reduce redundant calculations
-    private readonly Dictionary<(int, int), int> blockCache = new(64);
+    private readonly Dictionary<(int X, int Y, Direction dir), int> blockCache = new(64);
     private readonly Dictionary<(IIsland, Direction), bool> bridgeDirectionCache = new(64);
 
     /// <summary>
@@ -66,7 +66,9 @@ public class HashiGenerator : IHashiGenerator
     internal async Task<ISolutionProvider> GenerateWithDifficultyAsync(int difficulty)
     {
         if (difficulty < 0 || difficulty > 9)
+        {
             throw new ArgumentException("Invalid difficulty level.");
+        }
 
         // Preconfigured settings - using array lookup for better performance than switch
         var settings = GetDifficultySettings(difficulty);
@@ -235,11 +237,15 @@ public class HashiGenerator : IHashiGenerator
                     }
 
                     if (islands.Count >= numberOfIslands)
+                    {
                         break;
+                    }
                 }
 
                 if ((!islandsAdded && edgeCount == bridges.Count) || islands.Count >= numberOfIslands)
+                {
                     break;
+                }
 
                 edgeCount = bridges.Count;
             }
@@ -284,7 +290,10 @@ public class HashiGenerator : IHashiGenerator
     {
         var field = new int[sizeLength][];
         for (var i = 0; i < sizeLength; i++)
+        {
             field[i] = new int[sizeWidth]; // Default values are already 0
+        }
+
         return field;
     }
 
@@ -306,9 +315,21 @@ public class HashiGenerator : IHashiGenerator
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static int GetBetaForDifficulty(int difficulty)
     {
-        if (difficulty <= 2) return 20;
-        if (difficulty <= 5) return 15;
-        if (difficulty <= 8) return 10;
+        if (difficulty <= 2)
+        {
+            return 20;
+        }
+
+        if (difficulty <= 5)
+        {
+            return 15;
+        }
+
+        if (difficulty <= 8)
+        {
+            return 10;
+        }
+
         return 0;
     }
 
@@ -321,14 +342,19 @@ public class HashiGenerator : IHashiGenerator
         // Create an index array for random access without shuffling the original island list
         var islandIndices = new int[islands.Count];
         for (var i = 0; i < islandIndices.Length; i++)
+        {
             islandIndices[i] = i;
+        }
 
         // Fisher-Yates shuffle for better randomization
         ShuffleArray(islandIndices);
 
         foreach (var idx in islandIndices)
         {
-            if (bridgesAdded >= targetBridges) break;
+            if (bridgesAdded >= targetBridges)
+            {
+                break;
+            }
 
             var island = islands[idx];
 
@@ -336,7 +362,10 @@ public class HashiGenerator : IHashiGenerator
             if (TryAddBridgeDown(island, mainField))
             {
                 bridgesAdded++;
-                if (bridgesAdded >= targetBridges) break;
+                if (bridgesAdded >= targetBridges)
+                {
+                    break;
+                }
             }
 
             if (TryAddBridgeRight(island, mainField))
@@ -413,7 +442,10 @@ public class HashiGenerator : IHashiGenerator
     internal bool CreateIsland(int[][] mainField, IIsland island)
     {
         var possiblePositions = GetPossiblePositions(island, mainField);
-        if (possiblePositions.Count == 0) return false;
+        if (possiblePositions.Count == 0)
+        {
+            return false;
+        }
 
         // Eliminate positions with adjacent islands for better game patterns
         // Iterating backwards for efficient removal
@@ -426,7 +458,10 @@ public class HashiGenerator : IHashiGenerator
             }
         }
 
-        if (possiblePositions.Count == 0) return false;
+        if (possiblePositions.Count == 0)
+        {
+            return false;
+        }
 
         // Choose a random position and create a new island
         var randomPosition = random.Next(possiblePositions.Count);
@@ -502,7 +537,11 @@ public class HashiGenerator : IHashiGenerator
 
             for (var y = island.Y - 1; y >= minY; y--)
             {
-                if (mainField[y][island.X] != 0) break;
+                if (mainField[y][island.X] != 0)
+                {
+                    break;
+                }
+
                 if (block == -1 || y > block)
                 {
                     result.Add(new Point(island.X, y));
@@ -518,7 +557,11 @@ public class HashiGenerator : IHashiGenerator
 
             for (var x = island.X - 1; x >= minX; x--)
             {
-                if (mainField[island.Y][x] != 0) break;
+                if (mainField[island.Y][x] != 0)
+                {
+                    break;
+                }
+
                 if (block == -1 || x > block)
                 {
                     result.Add(new Point(x, island.Y));
@@ -534,7 +577,11 @@ public class HashiGenerator : IHashiGenerator
 
             for (var y = island.Y + 1; y <= maxY; y++)
             {
-                if (mainField[y][island.X] != 0) break;
+                if (mainField[y][island.X] != 0)
+                {
+                    break;
+                }
+
                 if (block == -1 || y < block)
                 {
                     result.Add(new Point(island.X, y));
@@ -550,7 +597,11 @@ public class HashiGenerator : IHashiGenerator
 
             for (var x = island.X + 1; x <= maxX; x++)
             {
-                if (mainField[island.Y][x] != 0) break;
+                if (mainField[island.Y][x] != 0)
+                {
+                    break;
+                }
+
                 if (block == -1 || x < block)
                 {
                     result.Add(new Point(x, island.Y));
@@ -573,7 +624,9 @@ public class HashiGenerator : IHashiGenerator
     internal bool HasBridgeInDirection(IIsland island, Direction direction)
     {
         if (bridgeDirectionCache.TryGetValue((island, direction), out var cached))
+        {
             return cached;
+        }
 
         // Only perform LINQ if not in cache
         var result = direction switch
@@ -610,78 +663,70 @@ public class HashiGenerator : IHashiGenerator
         var numCols = mainField[0].Length;
 
         // Check in all four directions with boundary checks
-        if (row > 0 && mainField[row - 1][col] != 0) return true;
-        if (row < numRows - 1 && mainField[row + 1][col] != 0) return true;
-        if (col > 0 && mainField[row][col - 1] != 0) return true;
-        if (col < numCols - 1 && mainField[row][col + 1] != 0) return true;
+        if (row > 0 && mainField[row - 1][col] != 0)
+        {
+            return true;
+        }
+
+        if (row < numRows - 1 && mainField[row + 1][col] != 0)
+        {
+            return true;
+        }
+
+        if (col > 0 && mainField[row][col - 1] != 0)
+        {
+            return true;
+        }
+
+        if (col < numCols - 1 && mainField[row][col + 1] != 0)
+        {
+            return true;
+        }
 
         return false;
     }
 
-    // Use cache for blocked direction checks
-    internal int GetUpBlocked(IIsland mainIsland, int[][] mainField)
+    // Unified cache lookup for blocked direction checks
+    internal int GetBlocked(IIsland mainIsland, int[][] mainField, Direction direction)
     {
-        var key = (mainIsland.X, -mainIsland.Y); // Negative Y for up direction
+        var key = (mainIsland.X, mainIsland.Y, direction);
         if (blockCache.TryGetValue(key, out var value))
-            return value;
-
-        var result = CalculateUpBlocked(mainIsland, mainField);
-        blockCache[key] = result;
-        return result;
-    }
-
-    internal int CalculateUpBlocked(IIsland mainIsland, int[][] mainField)
-    {
-        // Early exit if no bridges
-        if (bridges.Count == 0) return -1;
-
-        // Use array bounds to optimize loop
-        var minRow = Math.Max(1, mainIsland.Y - 10); // Limit search depth for performance
-
-        for (var row = mainIsland.Y - 1; row >= minRow; row--)
         {
-            for (var x = mainIsland.X - 1; x >= 0; x--)
-            {
-                if (mainField[row][x] == 0) continue;
-
-                // Fast path: check if any horizontal bridge crosses our path
-                foreach (var bridge in bridges)
-                {
-                    if (bridge.Island1.Y == row &&
-                        bridge.Island1.X == x &&
-                        bridge.Island2.X > mainIsland.X)
-                    {
-                        return row;
-                    }
-                }
-            }
+            return value;
         }
 
-        return -1;
-    }
-
-    internal int GetDownBlocked(IIsland mainIsland, int[][] mainField)
-    {
-        var key = (mainIsland.X, mainIsland.Y);
-        if (blockCache.TryGetValue(key, out var value))
-            return value;
-
-        var result = CalculateDownBlocked(mainIsland, mainField);
+        var result = CalculateBlocked(mainIsland, mainField, direction);
         blockCache[key] = result;
         return result;
     }
 
-    internal int CalculateDownBlocked(IIsland mainIsland, int[][] mainField)
+    internal int CalculateBlocked(IIsland mainIsland, int[][] mainField, Direction direction)
     {
-        if (bridges.Count == 0) return -1;
+        if (bridges.Count == 0)
+        {
+            return -1;
+        }
 
-        var maxRow = Math.Min(mainField.Length - 1, mainIsland.Y + 10);
+        return direction switch
+        {
+            Direction.Up => CalculateVerticalBlocked(mainIsland, mainField, mainIsland.Y - 1, Math.Max(1, mainIsland.Y - 10), -1),
+            Direction.Down => CalculateVerticalBlocked(mainIsland, mainField, mainIsland.Y + 1, Math.Min(mainField.Length - 1, mainIsland.Y + 10), 1),
+            Direction.Left => CalculateHorizontalBlocked(mainIsland, mainField, mainIsland.X - 1, Math.Max(1, mainIsland.X - 10), -1),
+            Direction.Right => CalculateHorizontalBlocked(mainIsland, mainField, mainIsland.X + 1, Math.Min(mainField[mainIsland.Y].Length - 1, mainIsland.X + 10), 1),
+            _ => -1
+        };
+    }
 
-        for (var row = mainIsland.Y + 1; row <= maxRow; row++)
+    private int CalculateVerticalBlocked(IIsland mainIsland, int[][] mainField, int start, int limit, int step)
+    {
+        for (var row = start; step > 0 ? row <= limit : row >= limit; row += step)
         {
             for (var x = mainIsland.X - 1; x >= 0; x--)
             {
-                if (mainField[row][x] == 0) continue;
+                if (mainField[row][x] == 0)
+                {
+                    continue;
+                }
 
                 foreach (var bridge in bridges)
                 {
@@ -698,28 +743,16 @@ public class HashiGenerator : IHashiGenerator
         return -1;
     }
 
-    internal int GetRightBlocked(IIsland mainIsland, int[][] mainField)
+    private int CalculateHorizontalBlocked(IIsland mainIsland, int[][] mainField, int start, int limit, int step)
     {
-        var key = (mainIsland.X, mainIsland.Y + 1000); // Offset for unique key
-        if (blockCache.TryGetValue(key, out var value))
-            return value;
-
-        var result = CalculateRightBlocked(mainIsland, mainField);
-        blockCache[key] = result;
-        return result;
-    }
-
-    internal int CalculateRightBlocked(IIsland mainIsland, int[][] mainField)
-    {
-        if (bridges.Count == 0) return -1;
-
-        var maxCol = Math.Min(mainField[mainIsland.Y].Length - 1, mainIsland.X + 10);
-
-        for (var col = mainIsland.X + 1; col <= maxCol; col++)
+        for (var col = start; step > 0 ? col <= limit : col >= limit; col += step)
         {
             for (var y = mainIsland.Y - 1; y >= 0; y--)
             {
-                if (mainField[y][col] == 0) continue;
+                if (mainField[y][col] == 0)
+                {
+                    continue;
+                }
 
                 foreach (var bridge in bridges)
                 {
@@ -736,129 +769,120 @@ public class HashiGenerator : IHashiGenerator
         return -1;
     }
 
-    internal int GetLeftBlocked(IIsland mainIsland, int[][] mainField)
-    {
-        var key = (-mainIsland.X, mainIsland.Y + 1000); // Negative X for left direction
-        if (blockCache.TryGetValue(key, out var value))
-            return value;
-
-        var result = CalculateLeftBlocked(mainIsland, mainField);
-        blockCache[key] = result;
-        return result;
-    }
-
-    internal int CalculateLeftBlocked(IIsland mainIsland, int[][] mainField)
-    {
-        if (bridges.Count == 0) return -1;
-
-        var minCol = Math.Max(1, mainIsland.X - 10);
-
-        for (var col = mainIsland.X - 1; col >= minCol; col--)
-        {
-            for (var y = mainIsland.Y - 1; y >= 0; y--)
-            {
-                if (mainField[y][col] == 0) continue;
-
-                foreach (var bridge in bridges)
-                {
-                    if (bridge.Island1.Y == y &&
-                        bridge.Island1.X == col &&
-                        bridge.Island2.Y > mainIsland.Y)
-                    {
-                        return col;
-                    }
-                }
-            }
-        }
-
-        return -1;
-    }
+    // Convenience wrappers for callers
+    internal int GetUpBlocked(IIsland mainIsland, int[][] mainField) => GetBlocked(mainIsland, mainField, Direction.Up);
+    internal int GetDownBlocked(IIsland mainIsland, int[][] mainField) => GetBlocked(mainIsland, mainField, Direction.Down);
+    internal int GetLeftBlocked(IIsland mainIsland, int[][] mainField) => GetBlocked(mainIsland, mainField, Direction.Left);
+    internal int GetRightBlocked(IIsland mainIsland, int[][] mainField) => GetBlocked(mainIsland, mainField, Direction.Right);
 
     internal int GetDownBlockedd(IIsland mainIsland, int[][] mainField)
     {
-        if (mainIsland.IslandDown == null) return -1;
-
-        var key = (mainIsland.X, mainIsland.Y + 2000); // Unique key with offset
-        if (blockCache.TryGetValue(key, out var value))
-            return value;
-
-        var result = -1;
-
-        // Search only in the range between the islands for better performance
-        for (var row = mainIsland.Y + 1; row < mainIsland.IslandDown.Y; row++)
+        if (mainIsland.IslandDown == null)
         {
-            var foundBlocking = false;
-            for (var x = mainIsland.X - 1; x >= 0; x--)
-            {
-                if (mainField[row][x] == 0) continue;
-
-                if (bridges.Any(bridge =>
-                    bridge.Island1.Y == row &&
-                    bridge.Island1.X == x &&
-                    bridge.Island2.X > mainIsland.X))
-                {
-                    result = row;
-                    foundBlocking = true;
-                    break;
-                }
-            }
-
-            if (foundBlocking) break;
+            return -1;
         }
 
-        blockCache[key] = result;
-        return result;
+        return GetBlockedBetween(mainIsland, mainField, Direction.Down);
     }
 
     internal int GetRightBlockedd(IIsland mainIsland, int[][] mainField)
     {
-        if (mainIsland.IslandRight == null) return -1;
-
-        var key = (mainIsland.X, mainIsland.Y + 3000); // Unique key with offset
-        if (blockCache.TryGetValue(key, out var value))
-            return value;
-
-        var result = -1;
-
-        // Search only in the range between the islands
-        for (var col = mainIsland.X + 1; col < mainIsland.IslandRight.X; col++)
+        if (mainIsland.IslandRight == null)
         {
-            var foundBlocking = false;
-            for (var y = mainIsland.Y - 1; y >= 0; y--)
-            {
-                if (mainField[y][col] == 0) continue;
-
-                if (bridges.Any(bridge =>
-                    bridge.Island1.Y == y &&
-                    bridge.Island1.X == col &&
-                    bridge.Island2.Y > mainIsland.Y))
-                {
-                    result = col;
-                    foundBlocking = true;
-                    break;
-                }
-            }
-
-            if (foundBlocking) break;
+            return -1;
         }
+
+        return GetBlockedBetween(mainIsland, mainField, Direction.Right);
+    }
+
+    // Unified between-islands blocking check
+    private int GetBlockedBetween(IIsland mainIsland, int[][] mainField, Direction direction)
+    {
+        // Use distinct cache keys for between-island checks by adding offset to direction enum
+        var cacheDir = direction == Direction.Down ? (Direction)10 : (Direction)11;
+        var key = (mainIsland.X, mainIsland.Y, cacheDir);
+        if (blockCache.TryGetValue(key, out var value))
+        {
+            return value;
+        }
+
+        var result = direction == Direction.Down
+            ? CalculateVerticalBlockedBetween(mainIsland, mainField)
+            : CalculateHorizontalBlockedBetween(mainIsland, mainField);
 
         blockCache[key] = result;
         return result;
+    }
+
+    private int CalculateVerticalBlockedBetween(IIsland mainIsland, int[][] mainField)
+    {
+        for (var row = mainIsland.Y + 1; row < mainIsland.IslandDown!.Y; row++)
+        {
+            for (var x = mainIsland.X - 1; x >= 0; x--)
+            {
+                if (mainField[row][x] == 0)
+                {
+                    continue;
+                }
+
+                if (bridges.Any(bridge =>
+                        bridge.Island1.Y == row &&
+                        bridge.Island1.X == x &&
+                        bridge.Island2.X > mainIsland.X))
+                {
+                    return row;
+                }
+            }
+        }
+
+        return -1;
+    }
+
+    private int CalculateHorizontalBlockedBetween(IIsland mainIsland, int[][] mainField)
+    {
+        for (var col = mainIsland.X + 1; col < mainIsland.IslandRight!.X; col++)
+        {
+            for (var y = mainIsland.Y - 1; y >= 0; y--)
+            {
+                if (mainField[y][col] == 0)
+                {
+                    continue;
+                }
+
+                if (bridges.Any(bridge =>
+                        bridge.Island1.Y == y &&
+                        bridge.Island1.X == col &&
+                        bridge.Island2.Y > mainIsland.Y))
+                {
+                    return col;
+                }
+            }
+        }
+
+        return -1;
     }
 
     internal void SetBeta(int[][] mainField, int beta)
     {
         // Skip if beta is zero or too low
-        if (beta <= 0) return;
+        if (beta <= 0)
+        {
+            return;
+        }
 
         // Calculate exact number of bridges to add for better efficiency
         var bridgesToAdd = (int)Math.Ceiling(bridges.Count * 0.5 * (beta / 100.0));
-        if (bridgesToAdd <= 0) return;
+        if (bridgesToAdd <= 0)
+        {
+            return;
+        }
 
         // Get candidate bridges (every other one to avoid duplicates)
         var candidates = new List<int>(bridges.Count / 2);
         for (var i = bridges.Count - 1; i > 0; i -= 2)
+        {
             candidates.Add(i);
+        }
 
         // Shuffle candidates for better distribution
         ShuffleList(candidates);

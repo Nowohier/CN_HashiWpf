@@ -128,8 +128,8 @@ namespace Hashi.Generator.Test
         public void InitializeField_WhenValidDimensions_ShouldCreateCorrectSizedField()
         {
             // Arrange
-            int length = 5;
-            int width = 7;
+            var length = 5;
+            var width = 7;
 
             // Act
             var result = HashiGenerator.InitializeField(length, width);
@@ -267,7 +267,7 @@ namespace Hashi.Generator.Test
             var array = new[] { 42 };
 
             // Act & Assert
-            Action act = () => generator.ShuffleArray(array);
+            var act = () => generator.ShuffleArray(array);
             act.Should().NotThrow();
             array[0].Should().Be(42);
         }
@@ -280,7 +280,7 @@ namespace Hashi.Generator.Test
             var array = Array.Empty<int>();
 
             // Act & Assert
-            Action act = () => generator.ShuffleArray(array);
+            var act = () => generator.ShuffleArray(array);
             act.Should().NotThrow();
         }
 
@@ -312,7 +312,7 @@ namespace Hashi.Generator.Test
             var list = new List<int> { 42 };
 
             // Act & Assert
-            Action act = () => generator.ShuffleList(list);
+            var act = () => generator.ShuffleList(list);
             act.Should().NotThrow();
             list[0].Should().Be(42);
         }
@@ -325,7 +325,7 @@ namespace Hashi.Generator.Test
             var list = new List<int>();
 
             // Act & Assert
-            Action act = () => generator.ShuffleList(list);
+            var act = () => generator.ShuffleList(list);
             act.Should().NotThrow();
         }
 
@@ -403,9 +403,8 @@ namespace Hashi.Generator.Test
             // Act
             generator.SetBeta(field, 0);
 
-            // Assert - Should complete without throwing
-            // Since we can't access the internal bridges list directly, we verify it doesn't throw
-            Assert.Pass("SetBeta completed without throwing for beta = 0");
+            // Assert - Field should remain all zeros since no bridges exist to modify
+            field.SelectMany(row => row).All(cell => cell == 0).Should().BeTrue();
         }
 
         [Test]
@@ -418,8 +417,8 @@ namespace Hashi.Generator.Test
             // Act
             generator.SetBeta(field, -10);
 
-            // Assert - Should complete without throwing
-            Assert.Pass("SetBeta completed without throwing for negative beta");
+            // Assert - Field should remain all zeros since no bridges exist to modify
+            field.SelectMany(row => row).All(cell => cell == 0).Should().BeTrue();
         }
 
         #endregion
@@ -531,13 +530,16 @@ namespace Hashi.Generator.Test
             // Arrange
             var generator = (HashiGenerator)hashiGenerator;
             var field = new int[][] { [0, 0, 0], [0, 0, 0] };
+            var fieldSnapshot = field.Select(row => row.ToArray()).ToArray();
 
             // Act
             generator.AddAdditionalBridges(field, 0);
 
-            // Assert
-            // Method should complete without error - testing the edge case where alpha = 0
-            Assert.Pass("AddAdditionalBridges completed for alpha = 0");
+            // Assert - Field should remain unchanged when alpha is 0
+            for (var i = 0; i < field.Length; i++)
+            {
+                field[i].Should().BeEquivalentTo(fieldSnapshot[i]);
+            }
         }
 
         [Test]
@@ -546,12 +548,16 @@ namespace Hashi.Generator.Test
             // Arrange
             var generator = (HashiGenerator)hashiGenerator;
             var field = new int[][] { [1, 0, 1], [0, 0, 0] };
+            var fieldSnapshot = field.Select(row => row.ToArray()).ToArray();
 
             // Act - Use low alpha to test early break condition
             generator.AddAdditionalBridges(field, 1);
 
-            // Assert
-            Assert.Pass("AddAdditionalBridges completed with early break condition");
+            // Assert - With no internal islands/bridges, the field should remain unchanged
+            for (var i = 0; i < field.Length; i++)
+            {
+                field[i].Should().BeEquivalentTo(fieldSnapshot[i]);
+            }
         }
 
         #endregion
@@ -657,8 +663,9 @@ namespace Hashi.Generator.Test
             var field = new int[][] { [0, 0, 0] };
 
             // Act & Assert - Should not throw even with no bridges
-            generator.SetBeta(field, 50);
-            Assert.Pass("SetBeta completed gracefully with no bridges");
+            var act = () => generator.SetBeta(field, 50);
+            act.Should().NotThrow();
+            field[0].Should().BeEquivalentTo(new[] { 0, 0, 0 });
         }
 
         [Test]
@@ -669,10 +676,9 @@ namespace Hashi.Generator.Test
             var field = new int[][] { [0, 0, 0] };
 
             // Act - Use very low beta that would result in 0 bridges to add
-            generator.SetBeta(field, 1);
-
-            // Assert
-            Assert.Pass("SetBeta completed when bridges to add is zero");
+            var act = () => generator.SetBeta(field, 1);
+            act.Should().NotThrow();
+            field[0].Should().BeEquivalentTo(new[] { 0, 0, 0 });
         }
 
         #endregion
@@ -686,9 +692,7 @@ namespace Hashi.Generator.Test
             var generator = (HashiGenerator)hashiGenerator;
 
             // Act - Use parameters that would result in parallel processing (> 20 islands)
-            var createMethod = typeof(HashiGenerator).GetMethod("CreateHashAsync", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            var task = (Task<int[][]>)createMethod.Invoke(generator, [25, 20, 20, 5, 10, true]);
-            var result = await task;
+            var result = await generator.CreateHashAsync(25, 20, 20, 5, 10, true);
 
             // Assert
             result.Should().NotBeNull();
@@ -702,9 +706,7 @@ namespace Hashi.Generator.Test
             var generator = (HashiGenerator)hashiGenerator;
 
             // Act - Use parameters that would result in sequential processing (< 20 islands)
-            var createMethod = typeof(HashiGenerator).GetMethod("CreateHashAsync", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            var task = (Task<int[][]>)createMethod.Invoke(generator, [5, 10, 10, 3, 5, true]);
-            var result = await task;
+            var result = await generator.CreateHashAsync(5, 10, 10, 3, 5, true);
 
             // Assert
             result.Should().NotBeNull();
@@ -718,9 +720,7 @@ namespace Hashi.Generator.Test
             var generator = (HashiGenerator)hashiGenerator;
 
             // Act - Use parameters that might cause early termination
-            var createMethod = typeof(HashiGenerator).GetMethod("CreateHashAsync", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            var task = (Task<int[][]>)createMethod.Invoke(generator, [3, 5, 5, 1, 1, false]);
-            var result = await task;
+            var result = await generator.CreateHashAsync(3, 5, 5, 1, 1, false);
 
             // Assert
             result.Should().NotBeNull();
@@ -729,14 +729,13 @@ namespace Hashi.Generator.Test
 
         #endregion
 
-        #region InitializeField and Utility Method Tests
+        #region InitializeField and Utility Method Tests (direct internal calls)
 
         [Test]
         public void InitializeField_WhenCalled_ShouldCreateCorrectDimensions()
         {
-            // Arrange & Act
-            var initMethod = typeof(HashiGenerator).GetMethod("InitializeField", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
-            var result = (int[][])initMethod.Invoke(null, [5, 7]);
+            // Act
+            var result = HashiGenerator.InitializeField(5, 7);
 
             // Assert
             result.Should().NotBeNull();
@@ -748,35 +747,20 @@ namespace Hashi.Generator.Test
         [Test]
         public void GetAlphaForDifficulty_WhenDifferentDifficulties_ShouldReturnCorrectValues()
         {
-            // Arrange & Act
-            var alphaMethod = typeof(HashiGenerator).GetMethod("GetAlphaForDifficulty", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
-
-            var alpha0 = (int)alphaMethod.Invoke(null, [0]);
-            var alpha3 = (int)alphaMethod.Invoke(null, [3]);
-            var alpha1 = (int)alphaMethod.Invoke(null, [1]);
-            var alpha9 = (int)alphaMethod.Invoke(null, [9]);
-
-            // Assert
-            alpha0.Should().Be(25); // difficulty 0, 3, 6 should return 25
-            alpha3.Should().Be(25);
-            alpha1.Should().Be(50); // difficulty 1, 4, 7 should return 50
-            alpha9.Should().Be(100); // difficulty 9 should return 100
+            // Act & Assert
+            HashiGenerator.GetAlphaForDifficulty(0).Should().Be(25);
+            HashiGenerator.GetAlphaForDifficulty(3).Should().Be(25);
+            HashiGenerator.GetAlphaForDifficulty(1).Should().Be(50);
+            HashiGenerator.GetAlphaForDifficulty(9).Should().Be(100);
         }
 
         [Test]
         public void GetBetaForDifficulty_WhenDifferentDifficulties_ShouldReturnCorrectValues()
         {
-            // Arrange & Act
-            var betaMethod = typeof(HashiGenerator).GetMethod("GetBetaForDifficulty", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
-
-            var beta0 = (int)betaMethod.Invoke(null, [0]);
-            var beta5 = (int)betaMethod.Invoke(null, [5]);
-            var beta9 = (int)betaMethod.Invoke(null, [9]);
-
-            // Assert
-            beta0.Should().Be(20); // difficulty <= 2 should return 20
-            beta5.Should().Be(15); // difficulty <= 5 should return 15  
-            beta9.Should().Be(0);  // difficulty > 8 should return 0
+            // Act & Assert
+            HashiGenerator.GetBetaForDifficulty(0).Should().Be(20);
+            HashiGenerator.GetBetaForDifficulty(5).Should().Be(15);
+            HashiGenerator.GetBetaForDifficulty(9).Should().Be(0);
         }
 
         #endregion

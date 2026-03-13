@@ -59,10 +59,11 @@ public class IslandProvider :
     /// <inheritdoc />
     public ObservableCollection<ObservableCollection<IIslandViewModel>> Islands { get; } = [];
 
-    /// <summary>
-    ///      The history of all connections made in the game. This is used for undo functionality.
-    /// </summary>
+    /// <inheritdoc />
     public IList<IHashiBridge> History { get; } = new List<IHashiBridge>();
+
+    /// <inheritdoc />
+    public IList<IHashiBridge> RedoHistory { get; } = new List<IHashiBridge>();
 
     /// <summary>
     ///     The solution provider that contains the current solution.
@@ -81,13 +82,17 @@ public class IslandProvider :
         var hashiField = solutionProvider.HashiField;
         Islands.Clear();
         History.Clear();
+        RedoHistory.Clear();
 
         Solution = solutionProvider;
         for (var row = 0; row < hashiField.Count; row++)
         {
             var rowCollection = new ObservableCollection<IIslandViewModel>();
             for (var column = 0; column < hashiField[0].Length; column++)
+            {
                 rowCollection.Add(islandFactory.Invoke(column, row, hashiField[row][column]));
+            }
+
             Islands.Add(rowCollection);
         }
     }
@@ -100,7 +105,10 @@ public class IslandProvider :
 
         InitializeNewSolution(solutionProvider);
 
-        if (solutionProvider.BridgeCoordinates == null) return;
+        if (solutionProvider.BridgeCoordinates == null)
+        {
+            return;
+        }
 
         foreach (var bridge in solutionProvider.BridgeCoordinates)
             for (var i = 0; i < bridge.AmountBridges; i++)
@@ -108,7 +116,10 @@ public class IslandProvider :
                 var sourceIsland = GetIslandByCoordinates(bridge.Location1.ToHashiPoint());
                 var targetIsland = GetIslandByCoordinates(bridge.Location2.ToHashiPoint());
                 if (sourceIsland.MaxConnections == 0 && targetIsland.MaxConnections == 0)
+                {
                     continue;
+                }
+
                 AddConnection(sourceIsland, targetIsland);
                 sourceIsland.RefreshIslandColor();
                 targetIsland.RefreshIslandColor();
@@ -122,7 +133,11 @@ public class IslandProvider :
         ArgumentNullException.ThrowIfNull(sourceIsland, nameof(sourceIsland));
         ArgumentNullException.ThrowIfNull(targetIsland, nameof(targetIsland));
 
-        if (!core.IsValidConnectionBetweenSourceAndTarget(Islands, sourceIsland, targetIsland)) return;
+        if (!core.IsValidConnectionBetweenSourceAndTarget(Islands, sourceIsland, targetIsland))
+        {
+            return;
+        }
+
         if (helper.MaxBridgesReachedToTarget(sourceIsland, targetIsland) is true)
         {
             if (pointType == HashiPointTypeEnum.Normal)
@@ -245,6 +260,9 @@ public class IslandProvider :
     /// <inheritdoc />
     public void RemoveAllBridges(HashiPointTypeEnum pointType)
     {
+        History.Clear();
+        RedoHistory.Clear();
+
         foreach (var island in IslandsFlat)
         {
             var connectionsToRemove = pointType switch
@@ -265,7 +283,10 @@ public class IslandProvider :
     /// <inheritdoc />
     public void UndoConnection()
     {
-        if (!History.Any()) return;
+        if (!History.Any())
+        {
+            return;
+        }
 
         var lastEntry = History.Last();
         var island1 = GetIslandByCoordinates(lastEntry.Point1);
@@ -282,6 +303,22 @@ public class IslandProvider :
         island1.RefreshIslandColor();
         island2.RefreshIslandColor();
         History.Remove(lastEntry);
+        RedoHistory.Add(lastEntry);
+    }
+
+    /// <inheritdoc />
+    public void RedoConnection()
+    {
+        if (!RedoHistory.Any())
+        {
+            return;
+        }
+
+        var lastEntry = RedoHistory.Last();
+        var island1 = GetIslandByCoordinates(lastEntry.Point1);
+        var island2 = GetIslandByCoordinates(lastEntry.Point2);
+        AddConnection(island1, island2);
+        RedoHistory.Remove(lastEntry);
     }
 
     /// <inheritdoc />
@@ -312,10 +349,14 @@ public class IslandProvider :
     private IIslandViewModel GetIslandByCoordinates(IHashiPoint coordinates)
     {
         if (coordinates.Y < 0 || coordinates.Y >= Islands.Count)
+        {
             throw new ArgumentOutOfRangeException(nameof(coordinates), "Y coordinate is out of range.");
+        }
 
         if (coordinates.X < 0 || coordinates.X >= Islands[coordinates.Y].Count)
+        {
             throw new ArgumentOutOfRangeException(nameof(coordinates), "X coordinate is out of range.");
+        }
 
         return Islands[coordinates.Y][coordinates.X];
     }
@@ -325,7 +366,14 @@ public class IslandProvider :
         var firstConnection = island.AllConnections.FirstOrDefault(x => x.X == point1.X && x.Y == point1.Y);
         var secondConnection = island.AllConnections.FirstOrDefault(x => x.X == point2.X && x.Y == point2.Y);
 
-        if (firstConnection != null) island.AllConnections.Remove(firstConnection);
-        if (secondConnection != null) island.AllConnections.Remove(secondConnection);
+        if (firstConnection != null)
+        {
+            island.AllConnections.Remove(firstConnection);
+        }
+
+        if (secondConnection != null)
+        {
+            island.AllConnections.Remove(secondConnection);
+        }
     }
 }

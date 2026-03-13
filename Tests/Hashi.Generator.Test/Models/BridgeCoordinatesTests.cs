@@ -13,7 +13,7 @@ namespace Hashi.Generator.Test.Models
             // Arrange
             var location1 = new Point(1, 2);
             var location2 = new Point(3, 4);
-            int amountBridges = 2;
+            var amountBridges = 2;
 
             // Act
             var bridgeCoordinates = new BridgeCoordinates(location1, location2, amountBridges);
@@ -30,7 +30,7 @@ namespace Hashi.Generator.Test.Models
             // Arrange
             var location1 = new Point(0, 0);
             var location2 = new Point(5, 5);
-            int amountBridges = 0;
+            var amountBridges = 0;
 
             // Act
             var bridgeCoordinates = new BridgeCoordinates(location1, location2, amountBridges);
@@ -47,7 +47,7 @@ namespace Hashi.Generator.Test.Models
             // Arrange
             var location1 = new Point(2, 3);
             var location2 = new Point(2, 3);
-            int amountBridges = 1;
+            var amountBridges = 1;
 
             // Act
             var bridgeCoordinates = new BridgeCoordinates(location1, location2, amountBridges);
@@ -64,7 +64,7 @@ namespace Hashi.Generator.Test.Models
             // Arrange
             var location1 = new Point(-1, -2);
             var location2 = new Point(1, 2);
-            int amountBridges = 1;
+            var amountBridges = 1;
 
             // Act
             var bridgeCoordinates = new BridgeCoordinates(location1, location2, amountBridges);
@@ -81,7 +81,7 @@ namespace Hashi.Generator.Test.Models
             // Arrange
             var location1 = new Point(1, 2);
             var location2 = new Point(3, 4);
-            int amountBridges = 2;
+            var amountBridges = 2;
             var bridgeCoordinates = new BridgeCoordinates(location1, location2, amountBridges);
 
             // Act & Assert - Verify properties have only getters (compile-time check)

@@ -52,14 +52,19 @@ public class SettingsProvider : ISettingsProvider
     /// <inheritdoc />
     public void SaveSettings()
     {
-        if (Settings == null) throw new InvalidOperationException("Settings cannot be null.");
+        if (Settings == null)
+        {
+            throw new InvalidOperationException("Settings cannot be null.");
+        }
 
         var jsonArray = jsonWrapper.SerializeObject(Settings);
         var path = pathProvider.HashiSettingsFilePath;
         try
         {
             if (!directoryWrapper.Exists(pathProvider.SettingsDirectoryPath))
+            {
                 directoryWrapper.CreateDirectory(pathProvider.SettingsDirectoryPath);
+            }
 
             fileWrapper.WriteAllText(path, jsonArray);
         }

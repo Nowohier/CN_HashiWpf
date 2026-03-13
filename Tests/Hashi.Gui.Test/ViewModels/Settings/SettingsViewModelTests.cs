@@ -271,7 +271,9 @@ public class SettingsViewModelTests
         settingsViewModel.PropertyChanged += (_, e) =>
         {
             if (e.PropertyName == nameof(SettingsViewModel.AreGridLinesEnabled))
+            {
                 propertyChangedRaised = true;
+            }
         };
 
         // Act
@@ -289,7 +291,9 @@ public class SettingsViewModelTests
         settingsViewModel.PropertyChanged += (_, e) =>
         {
             if (e.PropertyName == nameof(SettingsViewModel.SelectedLanguageCulture))
+            {
                 propertyChangedRaised = true;
+            }
         };
 
         // Act

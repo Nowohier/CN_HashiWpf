@@ -2,6 +2,7 @@ using Hashi.Enums;
 using Hashi.Generator.Interfaces.Providers;
 using Hashi.Gui.Interfaces.Helpers;
 using Hashi.Gui.Interfaces.Messages;
+using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Interfaces.ViewModels;
 using System.Collections.ObjectModel;
@@ -106,7 +107,19 @@ internal class SimulationIslandProvider : IIslandProvider
     }
 
     /// <inheritdoc />
+    public IList<IHashiBridge> History { get; } = new List<IHashiBridge>();
+
+    /// <inheritdoc />
+    public IList<IHashiBridge> RedoHistory { get; } = new List<IHashiBridge>();
+
+    /// <inheritdoc />
     public void UndoConnection()
+    {
+        // Not used in simulation
+    }
+
+    /// <inheritdoc />
+    public void RedoConnection()
     {
         // Not used in simulation
     }

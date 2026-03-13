@@ -30,7 +30,9 @@ public abstract class TestBase<T> : RulesTestFixture
         RuleInfoProviderMock.SetupProperty(mock => mock.RuleMessage, string.Empty);
 
         if (Activator.CreateInstance(typeof(T), RuleInfoProviderMock.Object, IslandProviderMock.Object) is not T rule)
+        {
             throw new ArgumentNullException();
+        }
 
         Setup.Rule(rule);
     }
@@ -69,9 +71,13 @@ public abstract class TestBase<T> : RulesTestFixture
 
         // act, assert
         if (throwsException)
+        {
             action.Should().Throw<TargetInvocationException>().WithInnerException<ArgumentNullException>();
+        }
         else
+        {
             action.Should().NotThrow();
+        }
     }
 
 

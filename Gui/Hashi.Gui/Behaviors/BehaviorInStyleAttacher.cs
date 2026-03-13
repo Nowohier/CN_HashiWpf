@@ -49,13 +49,18 @@ public static class BehaviorInStyleAttacher
     private static void OnBehaviorsChanged(DependencyObject depObj, DependencyPropertyChangedEventArgs e)
     {
         if (e.NewValue is IEnumerable == false)
+        {
             return;
+        }
 
         var newBehaviorCollection = e.NewValue as IEnumerable;
 
         var behaviorCollection = Interaction.GetBehaviors(depObj);
         behaviorCollection.Clear();
-        if (newBehaviorCollection == null) return;
+        if (newBehaviorCollection == null)
+        {
+            return;
+        }
 
         foreach (Behavior behavior in newBehaviorCollection)
         {

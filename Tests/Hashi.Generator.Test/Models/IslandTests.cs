@@ -11,9 +11,9 @@ namespace Hashi.Generator.Test.Models
         public void Constructor_WhenValidParameters_ShouldInitializeProperties()
         {
             // Arrange
-            int amountBridgesConnectable = 3;
-            int y = 5;
-            int x = 7;
+            var amountBridgesConnectable = 3;
+            var y = 5;
+            var x = 7;
 
             // Act
             var island = new Island(amountBridgesConnectable, y, x);

@@ -85,13 +85,21 @@ public class BridgeVisibilityBehavior : Behavior<Line>, IRecipient<IRuleMessageC
     /// <param name="messageClearedMessage">The message.</param>
     public void Receive(IRuleMessageClearedMessage messageClearedMessage)
     {
-        if (AssociatedObject is not { Stroke: SolidColorBrush solidColorBrush } line) return;
+        if (AssociatedObject is not { Stroke: SolidColorBrush solidColorBrush } line)
+        {
+            return;
+        }
 
         if (AssociatedObject.DataContext is not IIslandViewModel island)
+        {
             throw new InvalidOperationException(
                 $"{nameof(BridgeVisibilityBehavior)}: DataContext must be of type IIslandViewModel.");
+        }
 
-        if (line.Effect == null) return;
+        if (line.Effect == null)
+        {
+            return;
+        }
 
         foreach (var connection in island.AllConnections) connection.PointType = HashiPointTypeEnum.Normal;
 
@@ -129,7 +137,11 @@ public class BridgeVisibilityBehavior : Behavior<Line>, IRecipient<IRuleMessageC
     /// </summary>
     private void UpdateVisibility()
     {
-        if (AssociatedObject is not { } line || AssociatedObject.DataContext is not IIslandViewModel island) return;
+        if (AssociatedObject is not { } line || AssociatedObject.DataContext is not IIslandViewModel island)
+        {
+            return;
+        }
+
         line.Visibility = BridgeType switch
         {
             BridgeTypeEnum.Horizontal => DetermineVisibility(1, island.BridgesLeft, island.BridgesRight),
@@ -157,16 +169,24 @@ public class BridgeVisibilityBehavior : Behavior<Line>, IRecipient<IRuleMessageC
         if (values2 != null)
         {
             if ((values1.Count == 1 && values2.Count == 1) || AnyPointIsTest(values1) || AnyPointIsTest(values2))
+            {
                 if (AllPointsAreTest(values1) || AllPointsAreTest(values2))
+                {
                     return Visibility.Hidden;
+                }
+            }
 
             return values1.Count == expected && values2.Count == expected ? Visibility.Visible : Visibility.Hidden;
         }
 
         // Handle the case with a single value list
         if (values1.Count == 1 || AnyPointIsTest(values1))
+        {
             if (AllPointsAreTest(values1))
+            {
                 return Visibility.Hidden;
+            }
+        }
 
         return values1.Count == expected ? Visibility.Visible : Visibility.Hidden;
 
@@ -184,10 +204,16 @@ public class BridgeVisibilityBehavior : Behavior<Line>, IRecipient<IRuleMessageC
 
     private void AssociatedObject_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
-        if (AssociatedObject is not { Visibility: Visibility.Visible } line) return;
+        if (AssociatedObject is not { Visibility: Visibility.Visible } line)
+        {
+            return;
+        }
+
         if (AssociatedObject.DataContext is not IIslandViewModel island)
+        {
             throw new InvalidOperationException(
                 $"{nameof(BridgeVisibilityBehavior)}: DataContext must be of type IIslandViewModel.");
+        }
 
         var runFadeInAnimation = BridgeType switch
         {
@@ -227,7 +253,10 @@ public class BridgeVisibilityBehavior : Behavior<Line>, IRecipient<IRuleMessageC
             _ => false
         };
 
-        if (!runFadeInAnimation) return;
+        if (!runFadeInAnimation)
+        {
+            return;
+        }
 
         line.Stroke = (SolidColorBrush)new BrushConverter().ConvertFrom(((SolidColorBrush)BrushResolver.ResolveBrush(HashiColor.IntenseGreenBrush).Brush).Color.ToString())!;
         line.Effect = new BlurEffect { Radius = 10 };
@@ -241,12 +270,20 @@ public class BridgeVisibilityBehavior : Behavior<Line>, IRecipient<IRuleMessageC
     /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs" />.</param>
     private static void OnAllConnectionsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-        if (d is not BridgeVisibilityBehavior behavior) return;
+        if (d is not BridgeVisibilityBehavior behavior)
+        {
+            return;
+        }
+
         if (e.OldValue is ObservableCollection<IHashiPoint> oldCollection)
+        {
             oldCollection.CollectionChanged -= behavior.OnCollectionChanged!;
+        }
 
         if (e.NewValue is ObservableCollection<IHashiPoint> newCollection)
+        {
             newCollection.CollectionChanged += behavior.OnCollectionChanged!;
+        }
 
         behavior.UpdateVisibility();
     }
@@ -269,8 +306,12 @@ public class BridgeVisibilityBehavior : Behavior<Line>, IRecipient<IRuleMessageC
     private static void OnPropertiesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         if (d is BridgeVisibilityBehavior behavior)
+        {
             behavior.UpdateVisibility();
+        }
         else
+        {
             throw new InvalidOperationException("DependencyObject is not a BridgeVisibilityBehavior.");
+        }
     }
 }
