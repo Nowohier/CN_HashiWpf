@@ -34,7 +34,11 @@ public class TranslationSource : INotifyPropertyChanged
         get => currentCulture;
         set
         {
-            if (Equals(currentCulture, value)) return;
+            if (Equals(currentCulture, value))
+            {
+                return;
+            }
+
             currentCulture = value;
             var @event = PropertyChanged;
             @event?.Invoke(this, new PropertyChangedEventArgs(string.Empty));

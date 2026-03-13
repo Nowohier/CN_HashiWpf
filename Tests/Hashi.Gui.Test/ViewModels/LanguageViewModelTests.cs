@@ -177,7 +177,9 @@ public class LanguageViewModelTests
         languageViewModel.PropertyChanged += (_, e) =>
         {
             if (e.PropertyName == nameof(LanguageViewModel.LanguageNameEnglish))
+            {
                 propertyChangedRaised = true;
+            }
         };
 
         // Act
@@ -195,7 +197,9 @@ public class LanguageViewModelTests
         languageViewModel.PropertyChanged += (_, e) =>
         {
             if (e.PropertyName == nameof(LanguageViewModel.LanguageNameNative))
+            {
                 propertyChangedRaised = true;
+            }
         };
 
         // Act
@@ -213,7 +217,9 @@ public class LanguageViewModelTests
         languageViewModel.PropertyChanged += (_, e) =>
         {
             if (e.PropertyName == nameof(LanguageViewModel.Culture))
+            {
                 propertyChangedRaised = true;
+            }
         };
 
         // Act

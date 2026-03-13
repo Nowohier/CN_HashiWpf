@@ -1,6 +1,7 @@
 ﻿using Hashi.Enums;
 using Hashi.Generator.Interfaces.Providers;
 using Hashi.Gui.Interfaces.Messages;
+using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.ViewModels;
 using System.Collections.ObjectModel;
 
@@ -59,9 +60,24 @@ public interface IIslandProvider
     int CountIsolatedIslandGroups();
 
     /// <summary>
+    ///     The history of all connections made in the game.
+    /// </summary>
+    IList<IHashiBridge> History { get; }
+
+    /// <summary>
+    ///     The redo history of undone connections.
+    /// </summary>
+    IList<IHashiBridge> RedoHistory { get; }
+
+    /// <summary>
     ///     Undo the last connection made in the game.
     /// </summary>
     void UndoConnection();
+
+    /// <summary>
+    ///     Redo the last undone connection.
+    /// </summary>
+    void RedoConnection();
 
     /// <summary>
     ///     Removes all bridges from the islands.

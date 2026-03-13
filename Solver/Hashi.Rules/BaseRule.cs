@@ -34,7 +34,11 @@ public abstract class BaseRule : Rule
 
     internal virtual bool EnsureRulesAreBeingApplied()
     {
-        if (ruleInfoProvider.AreRulesBeingApplied == false) return false;
+        if (ruleInfoProvider.AreRulesBeingApplied == false)
+        {
+            return false;
+        }
+
         ruleInfoProvider.RuleMessage = RuleMessage;
         return true;
     }
@@ -47,7 +51,9 @@ public abstract class BaseRule : Rule
     internal virtual void AddConnection(IIslandViewModel source, IIslandViewModel target)
     {
         if (EnsureRulesAreBeingApplied() && ExecuteAddConnection(source, target))
+        {
             FinalizeConnection(source, target);
+        }
     }
 
     /// <summary>
@@ -57,11 +63,16 @@ public abstract class BaseRule : Rule
     /// <param name="targets">The target islands.</param>
     internal virtual void AddConnections(IIslandViewModel source, List<IIslandViewModel> targets)
     {
-        if (!EnsureRulesAreBeingApplied()) return;
+        if (!EnsureRulesAreBeingApplied())
+        {
+            return;
+        }
 
         foreach (var target in targets)
             if (ExecuteAddConnection(source, target))
+            {
                 FinalizeConnection(source, target);
+            }
     }
 
     /// <summary>
@@ -71,13 +82,21 @@ public abstract class BaseRule : Rule
     /// <param name="targets">The target islands.</param>
     internal virtual void AddMultipleConnections(IIslandViewModel source, List<IIslandViewModel> targets)
     {
-        if (!EnsureRulesAreBeingApplied()) return;
+        if (!EnsureRulesAreBeingApplied())
+        {
+            return;
+        }
 
         foreach (var target in targets)
         {
             for (var i = 0; i < 2; i++)
+            {
                 if (!ExecuteAddConnection(source, target))
+                {
                     break;
+                }
+            }
+
             FinalizeConnection(source, target);
         }
     }
@@ -91,11 +110,19 @@ public abstract class BaseRule : Rule
     internal virtual void AddMissingConnectionsToOneTarget(IIslandViewModel? source, IIslandViewModel? target,
         int missingConnectionsCount)
     {
-        if (!EnsureRulesAreBeingApplied()) return;
+        if (!EnsureRulesAreBeingApplied())
+        {
+            return;
+        }
 
         for (var i = 0; i < missingConnectionsCount; i++)
+        {
             if (!ExecuteAddConnection(source, target))
+            {
                 break;
+            }
+        }
+
         FinalizeConnection(source, target);
     }
 
@@ -114,7 +141,10 @@ public abstract class BaseRule : Rule
             source.MaxConnectionsReached ||
             target.MaxConnectionsReached ||
             target.AllConnections.Count(x => DoCoordinatesMatch(source.Coordinates, x)) == 2 ||
-            source.AllConnections.Count(x => DoCoordinatesMatch(target.Coordinates, x)) == 2) return false;
+            source.AllConnections.Count(x => DoCoordinatesMatch(target.Coordinates, x)) == 2)
+        {
+            return false;
+        }
 
         islandProvider.AddConnection(source, target, HashiPointTypeEnum.Hint);
         return true;
@@ -227,6 +257,7 @@ public abstract class BaseRule : Rule
             var connectedNeighbors = GetConnectedNeighbors(source, allNeighbors, null);
             if (source.MaxConnectionsReached && connectedNeighbors.All(x => x.MaxConnectionsReached))
                 // Check if there are isolated groups
+            {
                 if (islandProvider.CountIsolatedIslandGroups() > 0)
                 {
                     // Find a free neighbor
@@ -234,6 +265,7 @@ public abstract class BaseRule : Rule
                     islandProvider.RemoveAllBridges(HashiPointTypeEnum.Test);
                     return freeNeighbor;
                 }
+            }
 
             // Remove the test connection
             islandProvider.RemoveAllBridges(HashiPointTypeEnum.Test);

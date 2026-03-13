@@ -25,7 +25,7 @@ namespace Hashi.Generator.Test.Providers
                 new BridgeCoordinates(new Point(0, 1), new Point(1, 0), 1),
                 new BridgeCoordinates(new Point(1, 2), new Point(2, 1), 2)
             };
-            string name = "Test Puzzle";
+            var name = "Test Puzzle";
 
             // Act
             var solutionProvider = new SolutionProvider(hashiField, bridgeCoordinates, name);
@@ -42,7 +42,7 @@ namespace Hashi.Generator.Test.Providers
             // Arrange
             IReadOnlyList<int[]>? hashiField = null;
             var bridgeCoordinates = new List<IBridgeCoordinates>();
-            string name = "Test Puzzle";
+            var name = "Test Puzzle";
 
             // Act
             var solutionProvider = new SolutionProvider(hashiField, bridgeCoordinates, name);
@@ -62,7 +62,7 @@ namespace Hashi.Generator.Test.Providers
                 new[] { 1, 2, 1 }
             };
             List<IBridgeCoordinates>? bridgeCoordinates = null;
-            string name = "Test Puzzle";
+            var name = "Test Puzzle";
 
             // Act
             var solutionProvider = new SolutionProvider(hashiField, bridgeCoordinates, name);
@@ -118,7 +118,7 @@ namespace Hashi.Generator.Test.Providers
             // Arrange
             var hashiField = new List<int[]>();
             var bridgeCoordinates = new List<IBridgeCoordinates>();
-            string name = "Empty Puzzle";
+            var name = "Empty Puzzle";
 
             // Act
             var solutionProvider = new SolutionProvider(hashiField, bridgeCoordinates, name);
@@ -194,18 +194,18 @@ namespace Hashi.Generator.Test.Providers
         {
             // Arrange
             var hashiField = new List<int[]>();
-            for (int i = 0; i < 100; i++)
+            for (var i = 0; i < 100; i++)
             {
                 hashiField.Add(new int[100]);
             }
 
             var bridgeCoordinates = new List<IBridgeCoordinates>();
-            for (int i = 0; i < 1000; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 bridgeCoordinates.Add(new BridgeCoordinates(new Point(i, i), new Point(i + 1, i + 1), 1));
             }
 
-            string name = "Large Puzzle";
+            var name = "Large Puzzle";
 
             // Act
             var solutionProvider = new SolutionProvider(hashiField, bridgeCoordinates, name);

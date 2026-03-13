@@ -22,7 +22,7 @@ namespace Hashi.Generator.Test.Models
         public void Constructor_WhenValidParameters_ShouldInitializeProperties()
         {
             // Arrange
-            int amountBridgesSet = 2;
+            var amountBridgesSet = 2;
 
             // Act
             var bridge = new Bridge(island1, island2, amountBridgesSet);

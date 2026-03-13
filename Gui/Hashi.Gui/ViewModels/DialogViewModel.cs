@@ -204,26 +204,54 @@ public class DialogViewModel : ObservableObject
 
     private void OkExecute(object? obj)
     {
-        if (obj is IDialogResult dia1) dia1.DialogResult = DialogResult.Ok;
-        if (obj is ICloseable dia2) dia2.Close();
+        if (obj is IDialogResult dia1)
+        {
+            dia1.DialogResult = DialogResult.Ok;
+        }
+
+        if (obj is ICloseable dia2)
+        {
+            dia2.Close();
+        }
     }
 
     private void CancelExecute(object? obj)
     {
-        if (obj is IDialogResult dia1) dia1.DialogResult = DialogResult.Cancel;
-        if (obj is ICloseable dia2) dia2.Close();
+        if (obj is IDialogResult dia1)
+        {
+            dia1.DialogResult = DialogResult.Cancel;
+        }
+
+        if (obj is ICloseable dia2)
+        {
+            dia2.Close();
+        }
     }
 
     private void YesExecute(object? obj)
     {
-        if (obj is IDialogResult dia1) dia1.DialogResult = DialogResult.Yes;
-        if (obj is ICloseable dia2) dia2.Close();
+        if (obj is IDialogResult dia1)
+        {
+            dia1.DialogResult = DialogResult.Yes;
+        }
+
+        if (obj is ICloseable dia2)
+        {
+            dia2.Close();
+        }
     }
 
     private void NoExecute(object? obj)
     {
-        if (obj is IDialogResult dia1) dia1.DialogResult = DialogResult.No;
-        if (obj is ICloseable dia2) dia2.Close();
+        if (obj is IDialogResult dia1)
+        {
+            dia1.DialogResult = DialogResult.No;
+        }
+
+        if (obj is ICloseable dia2)
+        {
+            dia2.Close();
+        }
     }
 
     private void SetButtons(DialogButton button)

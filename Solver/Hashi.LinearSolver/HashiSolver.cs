@@ -96,9 +96,13 @@ namespace Hashi.LinearSolver
                     var b = islands[edge.IslandB];
                     string bridgeChar;
                     if (a.Row == b.Row)
+                    {
                         bridgeChar = numBridges == 2 ? "=" : "-";
+                    }
                     else
+                    {
                         bridgeChar = numBridges == 2 ? "‖" : "|";
+                    }
 
                     if (a.Row == b.Row)
                     {
@@ -340,7 +344,9 @@ namespace Hashi.LinearSolver
                             }
                         }
                         if (neighIds.Count == 4)
+                        {
                             intersections.Add((neighIds[0], neighIds[1], neighIds[2], neighIds[3]));
+                        }
                     }
                 }
             }

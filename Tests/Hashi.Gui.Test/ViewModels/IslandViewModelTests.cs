@@ -54,7 +54,11 @@ public class IslandViewModelTests
         helperMock.Setup(x => x.GetConnectionType(It.IsAny<IIslandViewModel>(), It.IsAny<IIslandViewModel>()))
             .Returns((IIslandViewModel s, IIslandViewModel t) =>
             {
-                if (s.Coordinates.X == t.Coordinates.X) return ConnectionTypeEnum.Vertical;
+                if (s.Coordinates.X == t.Coordinates.X)
+                {
+                    return ConnectionTypeEnum.Vertical;
+                }
+
                 return s.Coordinates.Y == t.Coordinates.Y ? ConnectionTypeEnum.Horizontal : ConnectionTypeEnum.Diagonal;
             });
         helperMock.Setup(x => x.IsValidDropTarget(It.IsAny<IIslandViewModel>(), It.IsAny<IIslandViewModel?>()))
@@ -65,7 +69,11 @@ public class IslandViewModelTests
         helperMock.Setup(x => x.MaxBridgesReachedToTarget(It.IsAny<IIslandViewModel>(), It.IsAny<IIslandViewModel?>()))
             .Returns((IIslandViewModel s, IIslandViewModel? t) =>
             {
-                if (t == null) return null;
+                if (t == null)
+                {
+                    return null;
+                }
+
                 return s.AllConnections.Count(c => c.X == t.Coordinates.X && c.Y == t.Coordinates.Y) >= 2 ||
                        t.AllConnections.Count(c => c.X == s.Coordinates.X && c.Y == s.Coordinates.Y) >= 2;
             });

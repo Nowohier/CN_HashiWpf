@@ -50,7 +50,9 @@ public class LoggerFactory : ILoggerFactory
         lock (lockObject)
         {
             if (isConfigured)
+            {
                 return;
+            }
 
             var config = new LoggingConfiguration();
 

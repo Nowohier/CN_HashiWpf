@@ -14,9 +14,14 @@ public static class ObservableCollectionExtensions
     public static void AddRange<T>(this ObservableCollection<T> collection, IEnumerable<T> items)
     {
         if (collection == null)
+        {
             throw new ArgumentNullException(nameof(collection));
+        }
+
         if (items == null)
+        {
             throw new ArgumentNullException(nameof(items));
+        }
 
         foreach (var item in items) collection.Add(item);
     }
@@ -30,8 +35,15 @@ public static class ObservableCollectionExtensions
     /// <exception cref="ArgumentNullException">Throws an exception if collection or items are null.</exception>
     public static void RemoveAll<T>(this ObservableCollection<T> collection, Func<T, bool> predicate)
     {
-        if (collection == null) throw new ArgumentNullException(nameof(collection));
-        if (predicate == null) throw new ArgumentNullException(nameof(predicate));
+        if (collection == null)
+        {
+            throw new ArgumentNullException(nameof(collection));
+        }
+
+        if (predicate == null)
+        {
+            throw new ArgumentNullException(nameof(predicate));
+        }
 
         var itemsToRemove = collection.Where(predicate).ToList();
         foreach (var item in itemsToRemove) collection.Remove(item);

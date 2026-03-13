@@ -45,7 +45,11 @@ public class HintProvider : IHintProvider
     /// <inheritdoc />
     public void ResetSession()
     {
-        if (session == null) return;
+        if (session == null)
+        {
+            return;
+        }
+
         RuleInfoProvider.AreRulesBeingApplied = false;
         session.Events.RhsExpressionEvaluatedEvent -= OnRhsExpressionEvaluated;
         session = null;
@@ -56,7 +60,10 @@ public class HintProvider : IHintProvider
     {
         ArgumentNullException.ThrowIfNull(selectedRule);
 
-        if (RuleInfoProvider.AreRulesBeingApplied) return;
+        if (RuleInfoProvider.AreRulesBeingApplied)
+        {
+            return;
+        }
 
         RuleInfoProvider.AreRulesBeingApplied = true;
 
@@ -80,8 +87,10 @@ public class HintProvider : IHintProvider
         var rulesFired = session.Fire();
 
         if (rulesFired == 0)
+        {
             dialogWrapper.Show(TranslationSource.Instance["MessageNoHintsCaption"]!,
                 TranslationSource.Instance["MessageNoHintsText"]!, DialogButton.Ok, DialogImage.Information);
+        }
 
         RuleInfoProvider.AreRulesBeingApplied = false;
     }

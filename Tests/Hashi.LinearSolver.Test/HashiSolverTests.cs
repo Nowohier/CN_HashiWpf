@@ -209,7 +209,9 @@ namespace Hashi.LinearSolver.Test
             finally
             {
                 if (File.Exists(tempFile))
+                {
                     File.Delete(tempFile);
+                }
             }
         }
 
@@ -263,7 +265,9 @@ namespace Hashi.LinearSolver.Test
             finally
             {
                 if (File.Exists(tempFile))
+                {
                     File.Delete(tempFile);
+                }
             }
         }
 

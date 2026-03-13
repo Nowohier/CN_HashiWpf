@@ -32,7 +32,10 @@ public class TimerProvider : ObservableObject, ITimerProvider
     /// <inheritdoc />
     public void StartTimer()
     {
-        if (Timer.IsRunning) return;
+        if (Timer.IsRunning)
+        {
+            return;
+        }
 
         dispatcherTimer.Start();
         Timer.Start();

@@ -66,7 +66,11 @@ public class TestSolutionProvider : ObservableObject, ITestSolutionProvider
         get => selectedSolutionProvider;
         set
         {
-            if (!SetProperty(ref selectedSolutionProvider, value) || selectedSolutionProvider == null) return;
+            if (!SetProperty(ref selectedSolutionProvider, value) || selectedSolutionProvider == null)
+            {
+                return;
+            }
+
             var message = setTestSolutionMessageFactory.Invoke(selectedSolutionProvider);
             WeakReferenceMessenger.Default.Send(message);
         }
@@ -157,7 +161,10 @@ public class TestSolutionProvider : ObservableObject, ITestSolutionProvider
     /// <inheritdoc />
     public void SaveTestFields()
     {
-        if (SolutionProviders == null) throw new InvalidOperationException("Settings cannot be null.");
+        if (SolutionProviders == null)
+        {
+            throw new InvalidOperationException("Settings cannot be null.");
+        }
 
         logger.Debug($"Saving test fields to {pathProvider.HashiTestFieldsFilePath}");
         var jsonArray = jsonWrapper.SerializeWithCustomIndenting(SolutionProviders.Where(x => x.Name != null));
