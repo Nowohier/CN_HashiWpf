@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Hashi.Gui.JsonConverters;
 
@@ -8,23 +9,21 @@ namespace Hashi.Gui.JsonConverters;
 /// <typeparam name="TReal">The real type.</typeparam>
 /// <typeparam name="TAbstract">The abstract type.</typeparam>
 public class AbstractConverter<TReal, TAbstract>
-    : JsonConverter where TReal : TAbstract
+    : JsonConverter<TAbstract> where TReal : TAbstract
 {
     /// <inheritdoc />
-    public override bool CanConvert(Type objectType)
+    public override TAbstract? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        return objectType == typeof(TAbstract);
+        return JsonSerializer.Deserialize<TReal>(ref reader, options);
     }
 
     /// <inheritdoc />
-    public override object? ReadJson(JsonReader reader, Type type, object? value, JsonSerializer jser)
+    public override void Write(Utf8JsonWriter writer, TAbstract value, JsonSerializerOptions options)
     {
-        return jser.Deserialize<TReal>(reader);
-    }
+        // Create a copy of options without this converter to avoid infinite recursion
+        var optionsCopy = new JsonSerializerOptions(options);
+        optionsCopy.Converters.Remove(this);
 
-    /// <inheritdoc />
-    public override void WriteJson(JsonWriter writer, object? value, JsonSerializer jser)
-    {
-        jser.Serialize(writer, value);
+        JsonSerializer.Serialize(writer, value, typeof(TReal), optionsCopy);
     }
 }

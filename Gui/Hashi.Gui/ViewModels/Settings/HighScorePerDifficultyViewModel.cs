@@ -1,14 +1,13 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Hashi.Enums;
 using Hashi.Gui.Interfaces.ViewModels;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Hashi.Gui.ViewModels.Settings;
 
 /// <summary>
 ///     Represents a view model for displaying high scores per difficulty level.
 /// </summary>
-[JsonObject(MemberSerialization.OptIn)]
 public class HighScorePerDifficultyViewModel : ObservableObject, IHighScorePerDifficultyViewModel
 {
     private TimeSpan? highScoreTime;
@@ -17,13 +16,14 @@ public class HighScorePerDifficultyViewModel : ObservableObject, IHighScorePerDi
     ///     Initializes a new instance of the <see cref="HighScorePerDifficultyViewModel" /> class.
     /// </summary>
     /// <param name="difficulty">The difficulty setting.</param>
+    [JsonConstructor]
     public HighScorePerDifficultyViewModel(DifficultyEnum difficulty)
     {
         Difficulty = difficulty;
     }
 
     /// <inheritdoc />
-    [JsonProperty(nameof(HighScoreTime))]
+    [JsonPropertyName("HighScoreTime")]
     public TimeSpan? HighScoreTime
     {
         get => highScoreTime;
@@ -31,7 +31,7 @@ public class HighScorePerDifficultyViewModel : ObservableObject, IHighScorePerDi
     }
 
     /// <inheritdoc />
-    [JsonProperty(nameof(Difficulty))]
+    [JsonPropertyName("Difficulty")]
     public DifficultyEnum Difficulty { get; }
 
     /// <inheritdoc />

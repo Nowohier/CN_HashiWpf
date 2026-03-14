@@ -1,15 +1,14 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Hashi.Enums;
 using Hashi.Gui.Extensions;
 using Hashi.Gui.Interfaces.ViewModels;
-using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace Hashi.Gui.ViewModels.Settings;
 
 /// <inheritdoc cref="ISettingsViewModel" />
-[JsonObject(MemberSerialization.OptIn)]
 [SuppressMessage("ReSharper", "StringLiteralTypo")]
 public class SettingsViewModel : ObservableObject, ISettingsViewModel
 {
@@ -22,7 +21,7 @@ public class SettingsViewModel : ObservableObject, ISettingsViewModel
     }
 
     /// <inheritdoc />
-    [JsonProperty(nameof(AreGridLinesEnabled))]
+    [JsonPropertyName("AreGridLinesEnabled")]
     public bool AreGridLinesEnabled
     {
         get => areGridLinesEnabled;
@@ -30,7 +29,7 @@ public class SettingsViewModel : ObservableObject, ISettingsViewModel
     }
 
     /// <inheritdoc />
-    [JsonProperty(nameof(SelectedLanguageCulture))]
+    [JsonPropertyName("SelectedLanguageCulture")]
     public string? SelectedLanguageCulture
     {
         get => selectedLanguage ?? (Languages.Count > 0 ? Languages.First().Culture : null);
@@ -38,10 +37,11 @@ public class SettingsViewModel : ObservableObject, ISettingsViewModel
     }
 
     /// <inheritdoc />
-    [JsonProperty(nameof(HighScores))]
+    [JsonPropertyName("HighScores")]
     public ObservableCollection<IHighScorePerDifficultyViewModel> HighScores { get; } = [];
 
     /// <inheritdoc />
+    [JsonIgnore]
     public ObservableCollection<ILanguageViewModel> Languages { get; } = [];
 
     /// <inheritdoc />

@@ -1,11 +1,13 @@
-using Autofac;
 using FluentAssertions;
 using Hashi.Enums;
+using Hashi.Generator.Extensions;
 using Hashi.Generator.Interfaces;
 using Hashi.Generator.Interfaces.Models;
 using Hashi.Generator.Interfaces.Providers;
+using Hashi.Gui.Core.Extensions;
 using Hashi.LinearSolver.Interfaces;
 using Hashi.Logging.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 
 namespace Hashi.Generator.Test;
@@ -13,7 +15,7 @@ namespace Hashi.Generator.Test;
 [TestFixture]
 public class HashiGeneratorTests
 {
-    private IContainer container = null!;
+    private ServiceProvider serviceProvider = null!;
     private IHashiGenerator hashiGenerator = null!;
     private Mock<IPuzzleSolver> hashiSolverMock = null!;
     private Mock<ILogger> loggerMock = null!;
@@ -64,24 +66,24 @@ public class HashiGeneratorTests
         solutionContainerFactoryMock.Setup(f => f(It.IsAny<int[][]>(), It.IsAny<IReadOnlyList<IBridgeCoordinates>>()))
                                    .Returns(mockSolution.Object);
 
-        var builder = new ContainerBuilder();
-        builder.RegisterInstance(hashiSolverMock.Object).As<IPuzzleSolver>();
-        builder.RegisterInstance(loggerFactoryMock.Object).As<ILoggerFactory>();
-        builder.RegisterInstance(islandFactoryMock.Object).As<Func<int, int, int, IIsland>>();
-        builder.RegisterInstance(bridgeFactoryMock.Object).As<Func<IIsland, IIsland, int, IBridge>>();
-        builder.RegisterInstance(solutionContainerFactoryMock.Object).As<Func<int[][], IReadOnlyList<IBridgeCoordinates>, ISolutionProvider>>();
-        builder.RegisterModule<Hashi.Gui.Core.AutoFacGuiCoreModule>();
-        builder.RegisterModule<AutoFacGeneratorModule>();
-        builder.RegisterInstance(ruleSolvabilityValidatorMock.Object).As<IRuleSolvabilityValidator>();
+        var services = new ServiceCollection();
+        services.AddSingleton(hashiSolverMock.Object);
+        services.AddSingleton(loggerFactoryMock.Object);
+        services.AddSingleton(islandFactoryMock.Object);
+        services.AddSingleton(bridgeFactoryMock.Object);
+        services.AddSingleton(solutionContainerFactoryMock.Object);
+        services.AddGuiCoreServices();
+        services.AddGeneratorServices();
+        services.AddSingleton(ruleSolvabilityValidatorMock.Object);
 
-        container = builder.Build();
-        hashiGenerator = container.Resolve<IHashiGenerator>();
+        serviceProvider = services.BuildServiceProvider();
+        hashiGenerator = serviceProvider.GetRequiredService<IHashiGenerator>();
     }
 
     [TearDown]
     public void Teardown()
     {
-        container.Dispose();
+        serviceProvider.Dispose();
     }
 
     #region GenerateWithDifficultyAsync Tests

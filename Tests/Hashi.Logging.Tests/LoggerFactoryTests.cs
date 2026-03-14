@@ -1,5 +1,6 @@
-using Autofac;
 using FluentAssertions;
+using Hashi.Logging.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using ILogger = Hashi.Logging.Interfaces.ILogger;
 using ILoggerFactory = Hashi.Logging.Interfaces.ILoggerFactory;
@@ -10,22 +11,22 @@ namespace Hashi.Logging.Tests;
 public class LoggerFactoryTests
 {
     private LoggerFactory loggerFactory;
-    private IContainer container;
+    private ServiceProvider serviceProvider;
 
     [SetUp]
     public void Setup()
     {
         loggerFactory = new LoggerFactory();
 
-        var builder = new ContainerBuilder();
-        builder.RegisterModule<AutoFacLoggingModule>();
-        container = builder.Build();
+        var services = new ServiceCollection();
+        services.AddLoggingServices();
+        serviceProvider = services.BuildServiceProvider();
     }
 
     [TearDown]
     public void Teardown()
     {
-        container.Dispose();
+        serviceProvider.Dispose();
     }
 
     #region Constructor Tests
@@ -283,10 +284,10 @@ public class LoggerFactoryTests
     #region Integration Tests
 
     [Test]
-    public void CreateLogger_WhenUsedWithAutofac_ShouldWork()
+    public void CreateLogger_WhenUsedWithDI_ShouldWork()
     {
         // Arrange
-        var factory = container.Resolve<ILoggerFactory>();
+        var factory = serviceProvider.GetRequiredService<ILoggerFactory>();
 
         // Act
         var logger = factory.CreateLogger<LoggerFactoryTests>();

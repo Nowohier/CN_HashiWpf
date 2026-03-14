@@ -1,12 +1,10 @@
-using Autofac;
 using FluentAssertions;
 using Hashi.Generator.Interfaces.Models;
 using Hashi.Generator.Interfaces.Providers;
-using Hashi.Gui.AutoFac;
+using Hashi.Gui.Extensions;
 using Hashi.Logging.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using System.Reflection;
-using Module = Autofac.Module;
 
 namespace Hashi.Gui.Test.AutoFac;
 
@@ -16,47 +14,43 @@ public class AutoFacMainModuleTests
     [SetUp]
     public void SetUp()
     {
-        var builder = new ContainerBuilder();
+        var services = new ServiceCollection();
 
         // Register mock dependencies that might be needed by the modules
-        // This is a simplified approach - in reality you'd need to provide all required dependencies
         var loggerFactoryMock = new Mock<ILoggerFactory>(MockBehavior.Strict);
         var loggerMock = new Mock<ILogger>(MockBehavior.Strict);
         loggerFactoryMock.Setup(f => f.CreateLogger<It.IsAnyType>()).Returns(loggerMock.Object);
-        builder.RegisterInstance(loggerFactoryMock.Object).As<ILoggerFactory>();
+        services.AddSingleton(loggerFactoryMock.Object);
 
-        // Register the main module
-        builder.RegisterModule<AutoFacMainModule>();
+        services.AddHashiServices();
 
         try
         {
-            container = builder.Build();
+            serviceProvider = services.BuildServiceProvider();
         }
         catch
         {
             // Some dependencies might not be available in test context
-            // Container remains null; tests that need it will be skipped via Assume.That
-            container = null;
+            serviceProvider = null;
         }
     }
 
     [TearDown]
     public void TearDown()
     {
-        container?.Dispose();
+        serviceProvider?.Dispose();
     }
 
-    private IContainer? container;
+    private ServiceProvider? serviceProvider;
 
     [Test]
-    public void Load_WhenCalled_ShouldNotThrow()
+    public void AddHashiServices_WhenCalled_ShouldNotThrow()
     {
         // Arrange & Act
         var action = () =>
         {
-            var builder = new ContainerBuilder();
-            var module = new AutoFacMainModule();
-            builder.RegisterModule(module);
+            var services = new ServiceCollection();
+            services.AddHashiServices();
         };
 
         // Assert
@@ -64,32 +58,14 @@ public class AutoFacMainModuleTests
     }
 
     [Test]
-    public void Constructor_WhenCreated_ShouldNotThrow()
-    {
-        // Arrange & Act & Assert
-        var action = () => new AutoFacMainModule();
-        action.Should().NotThrow();
-    }
-
-    [Test]
-    public void Module_ShouldInheritFromModule()
-    {
-        // Arrange
-        var module = new AutoFacMainModule();
-
-        // Act & Assert
-        module.Should().BeAssignableTo<Module>();
-    }
-
-    [Test]
-    public void Load_WhenCalled_ShouldRegisterSolutionProviderFactory()
+    public void AddHashiServices_WhenCalled_ShouldRegisterSolutionProviderFactory()
     {
         // Skip if container could not be built due to missing dependencies
-        Assume.That(container, Is.Not.Null, "Container not available for testing");
+        Assume.That(serviceProvider, Is.Not.Null, "ServiceProvider not available for testing");
 
         // Act
-        var act = () => container!
-            .Resolve<Func<IReadOnlyList<int[]>?, IReadOnlyList<IBridgeCoordinates>?, string?, ISolutionProvider>>();
+        var act = () => serviceProvider!
+            .GetRequiredService<Func<IReadOnlyList<int[]>?, IReadOnlyList<IBridgeCoordinates>?, string?, ISolutionProvider>>();
 
         // Assert
         act.Should().NotThrow()
@@ -97,15 +73,14 @@ public class AutoFacMainModuleTests
     }
 
     [Test]
-    public void Load_WhenCalledMultipleTimes_ShouldNotThrow()
+    public void AddHashiServices_WhenCalledMultipleTimes_ShouldNotThrow()
     {
         // Arrange & Act
         var action = () =>
         {
-            var builder = new ContainerBuilder();
-            var module = new AutoFacMainModule();
-            builder.RegisterModule(module);
-            builder.RegisterModule(module); // Register twice
+            var services = new ServiceCollection();
+            services.AddHashiServices();
+            services.AddHashiServices(); // Register twice
         };
 
         // Assert
@@ -113,55 +88,15 @@ public class AutoFacMainModuleTests
     }
 
     [Test]
-    public void AutoFacMainModule_ShouldBePublicClass()
+    public void MainServiceExtensions_ShouldBePublicStaticClass()
     {
         // Arrange
-        var type = typeof(AutoFacMainModule);
+        var type = typeof(MainServiceExtensions);
 
         // Act & Assert
         type.IsPublic.Should().BeTrue();
         type.IsClass.Should().BeTrue();
-        type.IsAbstract.Should().BeFalse();
-        type.IsSealed.Should().BeFalse();
-    }
-
-    [Test]
-    public void Load_Method_ShouldBeProtectedOverride()
-    {
-        // Arrange
-        var type = typeof(AutoFacMainModule);
-        var method = type.GetMethod("Load", BindingFlags.NonPublic | BindingFlags.Instance);
-
-        // Act & Assert
-        method.Should().NotBeNull();
-        method?.IsFamily.Should().BeTrue(); // Protected
-        method?.IsVirtual.Should().BeTrue(); // Override
-    }
-
-    [Test]
-    public void Module_ShouldRegisterMultipleModules()
-    {
-        // Arrange
-        var builder = new ContainerBuilder();
-        var module = new AutoFacMainModule();
-
-        // Act
-        var action = () => module.TestableLoad(builder);
-
-        // Assert
-        action.Should().NotThrow();
-
-        // In a more complete test, you would verify that specific modules are registered
-        // by checking the builder's registrations, but this requires more complex setup
-    }
-}
-
-// Extension method to make the protected Load method testable
-public static class AutoFacMainModuleExtensions
-{
-    public static void TestableLoad(this AutoFacMainModule module, ContainerBuilder builder)
-    {
-        var loadMethod = typeof(AutoFacMainModule).GetMethod("Load", BindingFlags.NonPublic | BindingFlags.Instance);
-        loadMethod?.Invoke(module, [builder]);
+        type.IsAbstract.Should().BeTrue();
+        type.IsSealed.Should().BeTrue();
     }
 }

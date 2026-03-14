@@ -1,5 +1,6 @@
-using Autofac;
 using FluentAssertions;
+using Hashi.Logging.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 using ILogger = Hashi.Logging.Interfaces.ILogger;
 using ILoggerFactory = Hashi.Logging.Interfaces.ILoggerFactory;
 
@@ -8,29 +9,29 @@ namespace Hashi.Logging.Tests;
 [TestFixture]
 public class AutoFacLoggingModuleTests
 {
-    private IContainer container;
+    private ServiceProvider serviceProvider;
 
     [SetUp]
     public void Setup()
     {
-        var builder = new ContainerBuilder();
-        builder.RegisterModule<AutoFacLoggingModule>();
-        container = builder.Build();
+        var services = new ServiceCollection();
+        services.AddLoggingServices();
+        serviceProvider = services.BuildServiceProvider();
     }
 
     [TearDown]
     public void Teardown()
     {
-        container.Dispose();
+        serviceProvider.Dispose();
     }
 
-    #region Module Registration Tests
+    #region Service Registration Tests
 
     [Test]
-    public void Load_WhenCalled_ShouldRegisterLoggerFactory()
+    public void AddLoggingServices_WhenCalled_ShouldRegisterLoggerFactory()
     {
         // Act
-        var loggerFactory = container.Resolve<ILoggerFactory>();
+        var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
 
         // Assert
         loggerFactory.Should().NotBeNull();
@@ -38,29 +39,29 @@ public class AutoFacLoggingModuleTests
     }
 
     [Test]
-    public void Load_WhenResolvedMultipleTimes_ShouldReturnSameInstance()
+    public void AddLoggingServices_WhenResolvedMultipleTimes_ShouldReturnSameInstance()
     {
         // Act
-        var loggerFactory1 = container.Resolve<ILoggerFactory>();
-        var loggerFactory2 = container.Resolve<ILoggerFactory>();
+        var loggerFactory1 = serviceProvider.GetRequiredService<ILoggerFactory>();
+        var loggerFactory2 = serviceProvider.GetRequiredService<ILoggerFactory>();
 
         // Assert
         loggerFactory1.Should().BeSameAs(loggerFactory2);
     }
 
     [Test]
-    public void Load_WhenResolvedInDifferentScopes_ShouldReturnSameInstance()
+    public void AddLoggingServices_WhenResolvedInDifferentScopes_ShouldReturnSameInstance()
     {
         // Arrange
         ILoggerFactory factoryFromRoot;
         ILoggerFactory factoryFromScope;
 
         // Act
-        factoryFromRoot = container.Resolve<ILoggerFactory>();
+        factoryFromRoot = serviceProvider.GetRequiredService<ILoggerFactory>();
 
-        using (var scope = container.BeginLifetimeScope())
+        using (var scope = serviceProvider.CreateScope())
         {
-            factoryFromScope = scope.Resolve<ILoggerFactory>();
+            factoryFromScope = scope.ServiceProvider.GetRequiredService<ILoggerFactory>();
         }
 
         // Assert
@@ -69,24 +70,30 @@ public class AutoFacLoggingModuleTests
 
     #endregion
 
-    #region Module Tests
+    #region Extension Method Tests
 
     [Test]
-    public void AutoFacLoggingModule_ShouldInheritFromModule()
+    public void LoggingServiceExtensions_ShouldBePublicStaticClass()
     {
-        // Arrange & Act
-        var module = new AutoFacLoggingModule();
+        // Arrange
+        var type = typeof(LoggingServiceExtensions);
 
-        // Assert
-        module.Should().BeAssignableTo<Module>();
+        // Act & Assert
+        type.IsPublic.Should().BeTrue();
+        type.IsClass.Should().BeTrue();
+        type.IsAbstract.Should().BeTrue();
+        type.IsSealed.Should().BeTrue();
     }
 
     [Test]
-    public void AutoFacLoggingModule_WhenInstantiated_ShouldNotThrow()
+    public void AddLoggingServices_WhenCalled_ShouldNotThrow()
     {
         // Act
-        // ReSharper disable once ObjectCreationAsStatement
-        var act = () => new AutoFacLoggingModule();
+        var act = () =>
+        {
+            var services = new ServiceCollection();
+            services.AddLoggingServices();
+        };
 
         // Assert
         act.Should().NotThrow();
@@ -100,7 +107,7 @@ public class AutoFacLoggingModuleTests
     public void ResolvedLoggerFactory_WhenUsed_ShouldCreateValidLoggers()
     {
         // Arrange
-        var loggerFactory = container.Resolve<ILoggerFactory>();
+        var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
 
         // Act
         var logger1 = loggerFactory.CreateLogger<AutoFacLoggingModuleTests>();
@@ -117,7 +124,7 @@ public class AutoFacLoggingModuleTests
     public void ResolvedLoggers_WhenUsed_ShouldLogWithoutErrors()
     {
         // Arrange
-        var loggerFactory = container.Resolve<ILoggerFactory>();
+        var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
         var logger = loggerFactory.CreateLogger<AutoFacLoggingModuleTests>();
 
         // Act

@@ -1,7 +1,8 @@
-using Autofac;
 using FluentAssertions;
 using Hashi.Gui.Interfaces.Wrappers;
+using Hashi.SolvedPuzzles.Extensions;
 using Hashi.SolvedPuzzles.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 
 namespace Hashi.SolvedPuzzles.Test;
@@ -9,7 +10,7 @@ namespace Hashi.SolvedPuzzles.Test;
 [TestFixture]
 public class AutoFacHashiSolvedPuzzlesModuleTests
 {
-    private IContainer container;
+    private ServiceProvider serviceProvider;
     private Mock<IFileWrapper> _fileWrapperMock;
 
     [SetUp]
@@ -17,26 +18,26 @@ public class AutoFacHashiSolvedPuzzlesModuleTests
     {
         _fileWrapperMock = new Mock<IFileWrapper>(MockBehavior.Strict);
 
-        var builder = new ContainerBuilder();
-        builder.RegisterModule<AutoFacHashiSolvedPuzzlesModule>();
-        builder.RegisterInstance(_fileWrapperMock.Object).As<IFileWrapper>();
-        container = builder.Build();
+        var services = new ServiceCollection();
+        services.AddSolvedPuzzlesServices();
+        services.AddSingleton(_fileWrapperMock.Object);
+        serviceProvider = services.BuildServiceProvider();
     }
 
     [TearDown]
     public void Teardown()
     {
-        container.Dispose();
+        serviceProvider.Dispose();
         _fileWrapperMock.VerifyAll();
     }
 
-    #region Module Registration Tests
+    #region Service Registration Tests
 
     [Test]
-    public void Load_WhenCalled_ShouldRegisterHashiPuzzleLoader()
+    public void AddSolvedPuzzlesServices_WhenCalled_ShouldRegisterHashiPuzzleLoader()
     {
         // Act
-        var puzzleLoader = container.Resolve<IHashiPuzzleLoader>();
+        var puzzleLoader = serviceProvider.GetRequiredService<IHashiPuzzleLoader>();
 
         // Assert
         puzzleLoader.Should().NotBeNull();
@@ -44,29 +45,29 @@ public class AutoFacHashiSolvedPuzzlesModuleTests
     }
 
     [Test]
-    public void Load_WhenResolvedMultipleTimes_ShouldReturnSameInstance()
+    public void AddSolvedPuzzlesServices_WhenResolvedMultipleTimes_ShouldReturnSameInstance()
     {
         // Act
-        var puzzleLoader1 = container.Resolve<IHashiPuzzleLoader>();
-        var puzzleLoader2 = container.Resolve<IHashiPuzzleLoader>();
+        var puzzleLoader1 = serviceProvider.GetRequiredService<IHashiPuzzleLoader>();
+        var puzzleLoader2 = serviceProvider.GetRequiredService<IHashiPuzzleLoader>();
 
         // Assert
         puzzleLoader1.Should().BeSameAs(puzzleLoader2);
     }
 
     [Test]
-    public void Load_WhenResolvedInDifferentScopes_ShouldReturnSameInstance()
+    public void AddSolvedPuzzlesServices_WhenResolvedInDifferentScopes_ShouldReturnSameInstance()
     {
         // Arrange
         IHashiPuzzleLoader loaderFromRoot;
         IHashiPuzzleLoader loaderFromScope;
 
         // Act
-        loaderFromRoot = container.Resolve<IHashiPuzzleLoader>();
+        loaderFromRoot = serviceProvider.GetRequiredService<IHashiPuzzleLoader>();
 
-        using (var scope = container.BeginLifetimeScope())
+        using (var scope = serviceProvider.CreateScope())
         {
-            loaderFromScope = scope.Resolve<IHashiPuzzleLoader>();
+            loaderFromScope = scope.ServiceProvider.GetRequiredService<IHashiPuzzleLoader>();
         }
 
         // Assert
@@ -75,24 +76,30 @@ public class AutoFacHashiSolvedPuzzlesModuleTests
 
     #endregion
 
-    #region Module Tests
+    #region Extension Method Tests
 
     [Test]
-    public void AutoFacHashiSolvedPuzzlesModule_ShouldInheritFromModule()
+    public void SolvedPuzzlesServiceExtensions_ShouldBePublicStaticClass()
     {
         // Arrange & Act
-        var module = new AutoFacHashiSolvedPuzzlesModule();
+        var type = typeof(SolvedPuzzlesServiceExtensions);
 
         // Assert
-        module.Should().BeAssignableTo<Module>();
+        type.IsPublic.Should().BeTrue();
+        type.IsClass.Should().BeTrue();
+        type.IsAbstract.Should().BeTrue();
+        type.IsSealed.Should().BeTrue();
     }
 
     [Test]
-    public void AutoFacHashiSolvedPuzzlesModule_WhenInstantiated_ShouldNotThrow()
+    public void AddSolvedPuzzlesServices_WhenCalled_ShouldNotThrow()
     {
         // Act
-        // ReSharper disable once ObjectCreationAsStatement
-        var act = () => new AutoFacHashiSolvedPuzzlesModule();
+        var act = () =>
+        {
+            var services = new ServiceCollection();
+            services.AddSolvedPuzzlesServices();
+        };
 
         // Assert
         act.Should().NotThrow();
@@ -106,7 +113,7 @@ public class AutoFacHashiSolvedPuzzlesModuleTests
     public void ResolvedHashiPuzzleLoader_WhenUsed_ShouldImplementInterface()
     {
         // Arrange
-        var puzzleLoader = container.Resolve<IHashiPuzzleLoader>();
+        var puzzleLoader = serviceProvider.GetRequiredService<IHashiPuzzleLoader>();
 
         // Assert
         puzzleLoader.Should().BeAssignableTo<IHashiPuzzleLoader>();
@@ -116,7 +123,7 @@ public class AutoFacHashiSolvedPuzzlesModuleTests
     public void ResolvedHashiPuzzleLoader_WhenUsedWithValidFile_ShouldWork()
     {
         // Arrange
-        var puzzleLoader = container.Resolve<IHashiPuzzleLoader>();
+        var puzzleLoader = serviceProvider.GetRequiredService<IHashiPuzzleLoader>();
         var testPuzzleEnum = HashiFileEnum.Hs_16_100_25_00_001;
         var testPuzzleData = new int[][]
         {

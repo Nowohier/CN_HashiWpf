@@ -12,9 +12,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="8.2.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+    <PackageReference Include="NRules" Version="1.0.2" />
     <PackageReference Include="NRules.Fluent" Version="1.0.2" />
-    <PackageReference Include="NRules.Integration.Autofac" Version="1.0.2" />
   </ItemGroup>
 
   <ItemGroup>

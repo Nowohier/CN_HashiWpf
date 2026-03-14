@@ -1,7 +1,8 @@
-using Autofac;
 using FluentAssertions;
 using Hashi.Enums;
+using Hashi.LinearSolver.Extensions;
 using Hashi.LinearSolver.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
 
 namespace Hashi.LinearSolver.Test;
@@ -9,20 +10,20 @@ namespace Hashi.LinearSolver.Test;
 [TestFixture]
 public class HashiSolverIntegrationTest
 {
-    private IContainer container;
+    private ServiceProvider serviceProvider;
 
     [SetUp]
     public void Setup()
     {
-        var builder = new ContainerBuilder();
-        builder.RegisterModule<AutoFacLinearSolverModule>();
-        container = builder.Build();
+        var services = new ServiceCollection();
+        services.AddLinearSolverServices();
+        serviceProvider = services.BuildServiceProvider();
     }
 
     [TearDown]
     public void Teardown()
     {
-        container.Dispose();
+        serviceProvider.Dispose();
     }
 
     [Test]
@@ -38,7 +39,7 @@ public class HashiSolverIntegrationTest
 
         puzzleFiles.Count.Should().BeGreaterThan(0, "else no puzzle files found in dataset directory.");
 
-        var hashiSolver = container.Resolve<IHashiSolver>();
+        var hashiSolver = serviceProvider.GetRequiredService<IHashiSolver>();
 
         // act, assert
         var count = 1;

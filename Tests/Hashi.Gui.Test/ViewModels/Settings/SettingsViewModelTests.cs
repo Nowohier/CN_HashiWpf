@@ -3,6 +3,7 @@ using Hashi.Enums;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.ViewModels;
 using Hashi.Gui.ViewModels.Settings;
+using System.Text.Json.Serialization;
 
 namespace Hashi.Gui.Test.ViewModels.Settings;
 
@@ -358,7 +359,7 @@ public class SettingsViewModelTests
     public void Languages_WhenItemsAddedManually_ShouldAcceptNewItems()
     {
         // Arrange
-        var newLanguage = new LanguageViewModel("French", "Français", "fr-FR");
+        var newLanguage = new LanguageViewModel("French", "Fran\u00e7ais", "fr-FR");
 
         // Act
         settingsViewModel.Languages.Add(newLanguage);
@@ -400,9 +401,9 @@ public class SettingsViewModelTests
         highScoresProperty.Should().NotBeNull();
 
         // Verify JSON attributes exist
-        var areGridLinesEnabledHasJsonProperty = areGridLinesEnabledProperty!.GetCustomAttributes(typeof(Newtonsoft.Json.JsonPropertyAttribute), false).Any();
-        var selectedLanguageCultureHasJsonProperty = selectedLanguageCultureProperty!.GetCustomAttributes(typeof(Newtonsoft.Json.JsonPropertyAttribute), false).Any();
-        var highScoresHasJsonProperty = highScoresProperty!.GetCustomAttributes(typeof(Newtonsoft.Json.JsonPropertyAttribute), false).Any();
+        var areGridLinesEnabledHasJsonProperty = areGridLinesEnabledProperty!.GetCustomAttributes(typeof(JsonPropertyNameAttribute), false).Any();
+        var selectedLanguageCultureHasJsonProperty = selectedLanguageCultureProperty!.GetCustomAttributes(typeof(JsonPropertyNameAttribute), false).Any();
+        var highScoresHasJsonProperty = highScoresProperty!.GetCustomAttributes(typeof(JsonPropertyNameAttribute), false).Any();
 
         areGridLinesEnabledHasJsonProperty.Should().BeTrue();
         selectedLanguageCultureHasJsonProperty.Should().BeTrue();
@@ -410,13 +411,15 @@ public class SettingsViewModelTests
     }
 
     [Test]
-    public void Class_ShouldHaveJsonObjectAttribute()
+    public void Languages_ShouldHaveJsonIgnoreAttribute()
     {
         // Arrange & Act
-        var jsonObjectAttribute = typeof(SettingsViewModel).GetCustomAttributes(typeof(Newtonsoft.Json.JsonObjectAttribute), false);
+        var languagesProperty = typeof(SettingsViewModel).GetProperty(nameof(SettingsViewModel.Languages));
 
         // Assert
-        jsonObjectAttribute.Should().NotBeEmpty();
+        languagesProperty.Should().NotBeNull();
+        var hasJsonIgnore = languagesProperty!.GetCustomAttributes(typeof(JsonIgnoreAttribute), false).Any();
+        hasJsonIgnore.Should().BeTrue();
     }
 
     #endregion

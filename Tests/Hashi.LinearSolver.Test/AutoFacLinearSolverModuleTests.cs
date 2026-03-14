@@ -1,8 +1,9 @@
-using Autofac;
 using FluentAssertions;
+using Hashi.LinearSolver.Extensions;
 using Hashi.LinearSolver.Interfaces;
 using Hashi.LinearSolver.Interfaces.Models;
 using Hashi.Logging.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 
 namespace Hashi.LinearSolver.Test;
@@ -10,34 +11,34 @@ namespace Hashi.LinearSolver.Test;
 [TestFixture]
 public class AutoFacLinearSolverModuleTests
 {
-    private IContainer container;
+    private ServiceProvider serviceProvider;
 
     [SetUp]
     public void Setup()
     {
-        var builder = new ContainerBuilder();
+        var services = new ServiceCollection();
 
         // Register the logging dependencies as mocks since they're required
         var loggerMock = new Mock<ILogger>(MockBehavior.Strict);
         var loggerFactoryMock = new Mock<ILoggerFactory>(MockBehavior.Strict);
         loggerFactoryMock.Setup(f => f.CreateLogger<It.IsAnyType>()).Returns(loggerMock.Object);
-        builder.RegisterInstance(loggerFactoryMock.Object).As<ILoggerFactory>();
+        services.AddSingleton(loggerFactoryMock.Object);
 
-        builder.RegisterModule<AutoFacLinearSolverModule>();
-        container = builder.Build();
+        services.AddLinearSolverServices();
+        serviceProvider = services.BuildServiceProvider();
     }
 
     [TearDown]
     public void Teardown()
     {
-        container.Dispose();
+        serviceProvider.Dispose();
     }
 
     [Test]
     public void Load_WhenCalled_ShouldRegisterHashiSolver()
     {
         // arrange & act
-        var hashiSolver = container.Resolve<IHashiSolver>();
+        var hashiSolver = serviceProvider.GetRequiredService<IHashiSolver>();
 
         // assert
         hashiSolver.Should().NotBeNull();
@@ -48,8 +49,8 @@ public class AutoFacLinearSolverModuleTests
     public void Load_WhenCalled_ShouldRegisterHashiSolverAsSingleton()
     {
         // arrange & act
-        var hashiSolver1 = container.Resolve<IHashiSolver>();
-        var hashiSolver2 = container.Resolve<IHashiSolver>();
+        var hashiSolver1 = serviceProvider.GetRequiredService<IHashiSolver>();
+        var hashiSolver2 = serviceProvider.GetRequiredService<IHashiSolver>();
 
         // assert
         hashiSolver1.Should().BeSameAs(hashiSolver2);
@@ -59,7 +60,7 @@ public class AutoFacLinearSolverModuleTests
     public void Load_WhenCalled_ShouldRegisterIslandFactory()
     {
         // arrange & act
-        var islandFactory = container.Resolve<Func<int, int, int, int, IIsland>>();
+        var islandFactory = serviceProvider.GetRequiredService<Func<int, int, int, int, IIsland>>();
 
         // assert
         islandFactory.Should().NotBeNull();
@@ -69,7 +70,7 @@ public class AutoFacLinearSolverModuleTests
     public void Load_WhenCalled_ShouldRegisterEdgeFactory()
     {
         // arrange & act
-        var edgeFactory = container.Resolve<Func<int, int, int, IEdge>>();
+        var edgeFactory = serviceProvider.GetRequiredService<Func<int, int, int, IEdge>>();
 
         // assert
         edgeFactory.Should().NotBeNull();
@@ -79,7 +80,7 @@ public class AutoFacLinearSolverModuleTests
     public void IslandFactory_WhenInvoked_ShouldCreateIslandWithCorrectProperties()
     {
         // arrange
-        var islandFactory = container.Resolve<Func<int, int, int, int, IIsland>>();
+        var islandFactory = serviceProvider.GetRequiredService<Func<int, int, int, int, IIsland>>();
         const int id = 1;
         const int row = 2;
         const int col = 3;
@@ -101,7 +102,7 @@ public class AutoFacLinearSolverModuleTests
     public void EdgeFactory_WhenInvoked_ShouldCreateEdgeWithCorrectProperties()
     {
         // arrange
-        var edgeFactory = container.Resolve<Func<int, int, int, IEdge>>();
+        var edgeFactory = serviceProvider.GetRequiredService<Func<int, int, int, IEdge>>();
         const int id = 1;
         const int islandA = 2;
         const int islandB = 3;
@@ -120,7 +121,7 @@ public class AutoFacLinearSolverModuleTests
     public void IslandFactory_WhenInvokedMultipleTimes_ShouldCreateDifferentInstances()
     {
         // arrange
-        var islandFactory = container.Resolve<Func<int, int, int, int, IIsland>>();
+        var islandFactory = serviceProvider.GetRequiredService<Func<int, int, int, int, IIsland>>();
 
         // act
         var island1 = islandFactory(1, 1, 1, 1);
@@ -134,7 +135,7 @@ public class AutoFacLinearSolverModuleTests
     public void EdgeFactory_WhenInvokedMultipleTimes_ShouldCreateDifferentInstances()
     {
         // arrange
-        var edgeFactory = container.Resolve<Func<int, int, int, IEdge>>();
+        var edgeFactory = serviceProvider.GetRequiredService<Func<int, int, int, IEdge>>();
 
         // act
         var edge1 = edgeFactory(1, 1, 2);
