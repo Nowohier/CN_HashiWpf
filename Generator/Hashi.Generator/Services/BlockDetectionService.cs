@@ -214,49 +214,13 @@ public class BlockDetectionService : IBlockDetectionService
 
     private static int CalculateVerticalBlockedBetween(IIsland mainIsland, int[][] mainField, IList<IBridge> bridges)
     {
-        for (var row = mainIsland.Y + 1; row < mainIsland.IslandDown!.Y; row++)
-        {
-            for (var x = mainIsland.X - 1; x >= 0; x--)
-            {
-                if (mainField[row][x] == 0)
-                {
-                    continue;
-                }
-
-                if (bridges.Any(bridge =>
-                        bridge.Island1.Y == row &&
-                        bridge.Island1.X == x &&
-                        bridge.Island2.X > mainIsland.X))
-                {
-                    return row;
-                }
-            }
-        }
-
-        return -1;
+        return CalculateVerticalBlocked(mainIsland, mainField, mainIsland.Y + 1, mainIsland.IslandDown!.Y - 1, 1,
+            bridges);
     }
 
     private static int CalculateHorizontalBlockedBetween(IIsland mainIsland, int[][] mainField, IList<IBridge> bridges)
     {
-        for (var col = mainIsland.X + 1; col < mainIsland.IslandRight!.X; col++)
-        {
-            for (var y = mainIsland.Y - 1; y >= 0; y--)
-            {
-                if (mainField[y][col] == 0)
-                {
-                    continue;
-                }
-
-                if (bridges.Any(bridge =>
-                        bridge.Island1.Y == y &&
-                        bridge.Island1.X == col &&
-                        bridge.Island2.Y > mainIsland.Y))
-                {
-                    return col;
-                }
-            }
-        }
-
-        return -1;
+        return CalculateHorizontalBlocked(mainIsland, mainField, mainIsland.X + 1, mainIsland.IslandRight!.X - 1, 1,
+            bridges);
     }
 }
