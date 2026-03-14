@@ -16,7 +16,7 @@ public interface ISolutionProvider
     ///     A list of bridge coordinates, each containing the coordinates of two islands and the number of bridges between
     ///     them.
     /// </summary>
-    List<IBridgeCoordinates>? BridgeCoordinates { get; }
+    IReadOnlyList<IBridgeCoordinates>? BridgeCoordinates { get; }
 
     /// <summary>
     ///     The solution provider name.

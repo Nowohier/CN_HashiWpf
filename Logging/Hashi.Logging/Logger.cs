@@ -22,51 +22,31 @@ public class Logger : ILogger
     /// Logs a trace message.
     /// </summary>
     /// <param name="message">The message to log.</param>
-    public void Trace(string message)
-    {
-        logger.Trace(message);
-        System.Diagnostics.Debug.WriteLine($"TRACE|{logger.Name}|{message}");
-    }
+    public void Trace(string message) => Log(logger.Trace, "TRACE", message);
 
     /// <summary>
     /// Logs a debug message.
     /// </summary>
     /// <param name="message">The message to log.</param>
-    public void Debug(string message)
-    {
-        logger.Debug(message);
-        System.Diagnostics.Debug.WriteLine($"DEBUG|{logger.Name}|{message}");
-    }
+    public void Debug(string message) => Log(logger.Debug, "DEBUG", message);
 
     /// <summary>
     /// Logs an info message.
     /// </summary>
     /// <param name="message">The message to log.</param>
-    public void Info(string message)
-    {
-        logger.Info(message);
-        System.Diagnostics.Debug.WriteLine($"INFO|{logger.Name}|{message}");
-    }
+    public void Info(string message) => Log(logger.Info, "INFO", message);
 
     /// <summary>
     /// Logs a warning message.
     /// </summary>
     /// <param name="message">The message to log.</param>
-    public void Warn(string message)
-    {
-        logger.Warn(message);
-        System.Diagnostics.Debug.WriteLine($"WARN|{logger.Name}|{message}");
-    }
+    public void Warn(string message) => Log(logger.Warn, "WARN", message);
 
     /// <summary>
     /// Logs an error message.
     /// </summary>
     /// <param name="message">The message to log.</param>
-    public void Error(string message)
-    {
-        logger.Error(message);
-        System.Diagnostics.Debug.WriteLine($"ERROR|{logger.Name}|{message}");
-    }
+    public void Error(string message) => Log(logger.Error, "ERROR", message);
 
     /// <summary>
     /// Logs an error message with exception.
@@ -83,11 +63,7 @@ public class Logger : ILogger
     /// Logs a fatal message.
     /// </summary>
     /// <param name="message">The message to log.</param>
-    public void Fatal(string message)
-    {
-        logger.Fatal(message);
-        System.Diagnostics.Debug.WriteLine($"FATAL|{logger.Name}|{message}");
-    }
+    public void Fatal(string message) => Log(logger.Fatal, "FATAL", message);
 
     /// <summary>
     /// Logs a fatal message with exception.
@@ -98,5 +74,17 @@ public class Logger : ILogger
     {
         logger.Fatal(exception, message);
         System.Diagnostics.Debug.WriteLine($"FATAL|{logger.Name}|{message}|{exception}");
+    }
+
+    /// <summary>
+    /// Logs a message using the specified log action and writes to the debug output.
+    /// </summary>
+    /// <param name="logAction">The NLog log action to invoke.</param>
+    /// <param name="prefix">The log level prefix for debug output.</param>
+    /// <param name="message">The message to log.</param>
+    private void Log(Action<string> logAction, string prefix, string message)
+    {
+        logAction(message);
+        System.Diagnostics.Debug.WriteLine($"{prefix}|{logger.Name}|{message}");
     }
 }

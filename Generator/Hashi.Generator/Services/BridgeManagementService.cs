@@ -1,4 +1,5 @@
 using Hashi.Enums;
+using Hashi.Generator.Extensions;
 using Hashi.Generator.Interfaces;
 using Hashi.Generator.Interfaces.Models;
 using Hashi.Generator.Models;
@@ -10,21 +11,21 @@ namespace Hashi.Generator.Services;
 public class BridgeManagementService : IBridgeManagementService
 {
     private readonly Func<IIsland, IIsland, int, IBridge> bridgeFactory;
-    private readonly IBlockDetectionService blockDetectionService;
+    private readonly BlockDetectionService blockDetectionService;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="BridgeManagementService" /> class.
     /// </summary>
     public BridgeManagementService(
         Func<IIsland, IIsland, int, IBridge> bridgeFactory,
-        IBlockDetectionService blockDetectionService)
+        BlockDetectionService blockDetectionService)
     {
         this.bridgeFactory = bridgeFactory;
         this.blockDetectionService = blockDetectionService;
     }
 
     /// <inheritdoc />
-    public void AddAdditionalBridges(int[][] mainField, int alpha, List<IIsland> islands, List<IBridge> bridges)
+    public void AddAdditionalBridges(int[][] mainField, int alpha, IList<IIsland> islands, IList<IBridge> bridges)
     {
         var bridgesAdded = 0;
         var targetBridges = (int)(islands.Count * (alpha / 100.0));
@@ -35,7 +36,7 @@ public class BridgeManagementService : IBridgeManagementService
             islandIndices[i] = i;
         }
 
-        Shuffle(islandIndices);
+        islandIndices.Shuffle();
 
         foreach (var idx in islandIndices)
         {
@@ -63,14 +64,14 @@ public class BridgeManagementService : IBridgeManagementService
     }
 
     /// <inheritdoc />
-    public void SetBeta(int[][] mainField, int beta, List<IBridge> bridges)
+    public void SetBeta(int[][] mainField, int beta, IList<IBridge> bridges)
     {
         if (beta <= 0)
         {
             return;
         }
 
-        var bridgesToAdd = (int)Math.Ceiling(bridges.Count * 0.5 * (beta / 100.0));
+        var bridgesToAdd = (int)Math.Ceiling(bridges.Count * GeneratorConstants.BetaScalingFactor * (beta / 100.0));
         if (bridgesToAdd <= 0)
         {
             return;
@@ -82,16 +83,19 @@ public class BridgeManagementService : IBridgeManagementService
             candidates.Add(i);
         }
 
-        Shuffle(candidates);
+        candidates.Shuffle();
 
         for (var i = 0; i < Math.Min(bridgesToAdd, candidates.Count); i++)
         {
-            bridges[candidates[i]].AddBridge(mainField);
+            var bridge = bridges[candidates[i]];
+            bridge.AddBridge();
+            mainField[bridge.Island1.Y][bridge.Island1.X]++;
+            mainField[bridge.Island2.Y][bridge.Island2.X]++;
         }
     }
 
     /// <inheritdoc />
-    public List<IBridgeCoordinates> BuildBridgeCoordinates(List<IBridge> bridges)
+    public IReadOnlyList<IBridgeCoordinates> BuildBridgeCoordinates(IList<IBridge> bridges)
     {
         var bridgeCoordinates = new List<IBridgeCoordinates>(bridges.Count);
         foreach (var bridge in bridges)
@@ -129,8 +133,8 @@ public class BridgeManagementService : IBridgeManagementService
         bridges.Add(bridge);
         bridges.Add(bridge.CreateReverseBridgeAndApplyDirections());
 
-        island.AmountBridgesConnectable += 1;
-        neighbor.AmountBridgesConnectable += 1;
+        island.IncrementAmountBridgesConnectable(1);
+        neighbor.IncrementAmountBridgesConnectable(1);
         mainField[island.Y][island.X] += 1;
         mainField[neighbor.Y][neighbor.X] += 1;
 
@@ -139,12 +143,4 @@ public class BridgeManagementService : IBridgeManagementService
         return true;
     }
 
-    internal static void Shuffle<T>(IList<T> collection)
-    {
-        for (var i = collection.Count - 1; i > 0; i--)
-        {
-            var j = Random.Shared.Next(i + 1);
-            (collection[i], collection[j]) = (collection[j], collection[i]);
-        }
-    }
 }

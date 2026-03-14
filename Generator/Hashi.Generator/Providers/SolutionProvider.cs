@@ -8,7 +8,7 @@ namespace Hashi.Generator.Providers;
 [JsonObject(MemberSerialization.OptIn)]
 public class SolutionProvider(
     IReadOnlyList<int[]>? hashiField,
-    List<IBridgeCoordinates>? bridgeCoordinates,
+    IReadOnlyList<IBridgeCoordinates>? bridgeCoordinates,
     string? name = null) : ISolutionProvider
 {
     /// <inheritdoc />
@@ -17,7 +17,7 @@ public class SolutionProvider(
 
     /// <inheritdoc />
     [JsonProperty(nameof(BridgeCoordinates))]
-    public List<IBridgeCoordinates>? BridgeCoordinates { get; } = bridgeCoordinates;
+    public IReadOnlyList<IBridgeCoordinates>? BridgeCoordinates { get; } = bridgeCoordinates;
 
     /// <inheritdoc />
     [JsonProperty(nameof(Name))]

@@ -10,7 +10,7 @@ public class IslandLayoutService : IIslandLayoutService
 {
     private readonly Func<int, int, int, IIsland> islandFactory;
     private readonly Func<IIsland, IIsland, int, IBridge> bridgeFactory;
-    private readonly IBlockDetectionService blockDetectionService;
+    private readonly BlockDetectionService blockDetectionService;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="IslandLayoutService" /> class.
@@ -18,7 +18,7 @@ public class IslandLayoutService : IIslandLayoutService
     public IslandLayoutService(
         Func<int, int, int, IIsland> islandFactory,
         Func<IIsland, IIsland, int, IBridge> bridgeFactory,
-        IBlockDetectionService blockDetectionService)
+        BlockDetectionService blockDetectionService)
     {
         this.islandFactory = islandFactory;
         this.bridgeFactory = bridgeFactory;
@@ -26,7 +26,7 @@ public class IslandLayoutService : IIslandLayoutService
     }
 
     /// <inheritdoc />
-    public bool CreateIsland(int[][] mainField, IIsland island, List<IIsland> islands, List<IBridge> bridges)
+    public bool CreateIsland(int[][] mainField, IIsland island, IList<IIsland> islands, IList<IBridge> bridges)
     {
         var possiblePositions = GetPossiblePositions(island, mainField, bridges);
         if (possiblePositions.Count == 0)
@@ -62,8 +62,8 @@ public class IslandLayoutService : IIslandLayoutService
         bridges.Add(newBridge.CreateReverseBridgeAndApplyDirections());
 
         // Update bridge counts
-        island.AmountBridgesConnectable += amountBridges;
-        newIsland.AmountBridgesConnectable += amountBridges;
+        island.IncrementAmountBridgesConnectable(amountBridges);
+        newIsland.IncrementAmountBridgesConnectable(amountBridges);
         mainField[island.Y][island.X] += amountBridges;
         mainField[newIsland.Y][newIsland.X] += amountBridges;
 

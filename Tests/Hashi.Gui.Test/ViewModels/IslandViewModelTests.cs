@@ -40,6 +40,7 @@ public class IslandViewModelTests
         hashiPointMock = new Mock<IHashiPoint>(MockBehavior.Strict);
         hashiBrushMock = new Mock<IHashiBrush>(MockBehavior.Strict);
         helperMock = new Mock<IIslandViewModelHelper>(MockBehavior.Strict);
+        dragDropServiceMock = new Mock<IDragDropService>(MockBehavior.Strict);
 
         // Create a real FrameworkElement instead of mocking it
         var frameworkElement = new FrameworkElement();
@@ -108,7 +109,8 @@ public class IslandViewModelTests
             isTestModeRequestMessageFactoryMock.Object,
             dragDirectionChangedRequestTargetMessageFactoryMock.Object,
             hashiBrushResolverMock.Object,
-            helperMock.Object);
+            helperMock.Object,
+            dragDropServiceMock.Object);
     }
 
     private Mock<IViewBoxControl> viewBoxControlMock;
@@ -130,6 +132,7 @@ public class IslandViewModelTests
     private Mock<IHashiPoint> hashiPointMock;
     private Mock<IHashiBrush> hashiBrushMock;
     private Mock<IIslandViewModelHelper> helperMock;
+    private Mock<IDragDropService> dragDropServiceMock;
     private IslandViewModel islandViewModel;
 
     #region Constructor Tests
@@ -169,7 +172,8 @@ public class IslandViewModelTests
             isTestModeRequestMessageFactoryMock.Object,
             dragDirectionChangedRequestTargetMessageFactoryMock.Object,
             null!,
-            helperMock.Object);
+            helperMock.Object,
+            dragDropServiceMock.Object);
 
         action.Should().Throw<ArgumentNullException>().WithParameterName("brushResolver");
     }
@@ -188,7 +192,8 @@ public class IslandViewModelTests
             isTestModeRequestMessageFactoryMock.Object,
             dragDirectionChangedRequestTargetMessageFactoryMock.Object,
             hashiBrushResolverMock.Object,
-            helperMock.Object);
+            helperMock.Object,
+            dragDropServiceMock.Object);
 
         action.Should().Throw<ArgumentNullException>().WithParameterName("viewBoxControl");
     }
@@ -208,7 +213,8 @@ public class IslandViewModelTests
             isTestModeRequestMessageFactoryMock.Object,
             dragDirectionChangedRequestTargetMessageFactoryMock.Object,
             hashiBrushResolverMock.Object,
-            helperMock.Object);
+            helperMock.Object,
+            dragDropServiceMock.Object);
 
         action.Should().Throw<ArgumentNullException>().WithParameterName("hashiPointFactory");
     }
@@ -227,7 +233,8 @@ public class IslandViewModelTests
             isTestModeRequestMessageFactoryMock.Object,
             dragDirectionChangedRequestTargetMessageFactoryMock.Object,
             hashiBrushResolverMock.Object,
-            helperMock.Object);
+            helperMock.Object,
+            dragDropServiceMock.Object);
 
         action.Should().Throw<ArgumentNullException>().WithParameterName("updateAllIslandColorsMessageFactory");
     }
@@ -246,7 +253,8 @@ public class IslandViewModelTests
             isTestModeRequestMessageFactoryMock.Object,
             dragDirectionChangedRequestTargetMessageFactoryMock.Object,
             hashiBrushResolverMock.Object,
-            helperMock.Object);
+            helperMock.Object,
+            dragDropServiceMock.Object);
 
         action.Should().Throw<ArgumentNullException>().WithParameterName("connectionInformationContainerFactory");
     }
@@ -265,7 +273,8 @@ public class IslandViewModelTests
             isTestModeRequestMessageFactoryMock.Object,
             dragDirectionChangedRequestTargetMessageFactoryMock.Object,
             hashiBrushResolverMock.Object,
-            helperMock.Object);
+            helperMock.Object,
+            dragDropServiceMock.Object);
 
         action.Should().Throw<ArgumentNullException>().WithParameterName("bridgeConnectionChangedMessageFactory");
     }
@@ -284,7 +293,8 @@ public class IslandViewModelTests
             null!,
             dragDirectionChangedRequestTargetMessageFactoryMock.Object,
             hashiBrushResolverMock.Object,
-            helperMock.Object);
+            helperMock.Object,
+            dragDropServiceMock.Object);
 
         action.Should().Throw<ArgumentNullException>().WithParameterName("isTestModeRequestMessageFactory");
     }
@@ -303,7 +313,8 @@ public class IslandViewModelTests
             isTestModeRequestMessageFactoryMock.Object,
             null!,
             hashiBrushResolverMock.Object,
-            helperMock.Object);
+            helperMock.Object,
+            dragDropServiceMock.Object);
 
         action.Should().Throw<ArgumentNullException>().WithParameterName("dragDirectionChangedRequestTargetMessageFactory");
     }
@@ -322,7 +333,8 @@ public class IslandViewModelTests
             isTestModeRequestMessageFactoryMock.Object,
             dragDirectionChangedRequestTargetMessageFactoryMock.Object,
             hashiBrushResolverMock.Object,
-            null!);
+            null!,
+            dragDropServiceMock.Object);
 
         action.Should().Throw<ArgumentNullException>().WithParameterName("helper");
     }
@@ -958,7 +970,8 @@ public class IslandViewModelTests
             isTestModeRequestMessageFactoryMock.Object,
             dragDirectionChangedRequestTargetMessageFactoryMock.Object,
             hashiBrushResolverMock.Object,
-            helperMock.Object);
+            helperMock.Object,
+            dragDropServiceMock.Object);
 
         var mockDataObject = new Mock<IDataObject>(MockBehavior.Strict);
         mockDataObject.Setup(x => x.GetDataPresent(typeof(IslandViewModel))).Returns(true);
@@ -1056,7 +1069,8 @@ public class IslandViewModelTests
             isTestModeRequestMessageFactoryMock.Object,
             dragDirectionChangedRequestTargetMessageFactoryMock.Object,
             hashiBrushResolverMock.Object,
-            helperMock.Object);
+            helperMock.Object,
+            dragDropServiceMock.Object);
 
         var mockDataObject = new Mock<IDataObject>(MockBehavior.Strict);
         mockDataObject.Setup(x => x.GetDataPresent(typeof(IslandViewModel))).Returns(true);

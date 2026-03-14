@@ -38,7 +38,7 @@ public class MainViewModelTests
         loggerMock = new Mock<ILogger>(MockBehavior.Strict);
         hashiBrushMock = new Mock<IHashiBrush>(MockBehavior.Strict);
         solutionProviderMock = new Mock<ISolutionProvider>(MockBehavior.Strict);
-        testStopwatch = new TestableStopwatch();
+        // Timer mock setup is done below
 
         // Setup logger factory
         loggerFactoryMock.Setup(x => x.CreateLogger<MainViewModel>()).Returns(loggerMock.Object);
@@ -78,8 +78,9 @@ public class MainViewModelTests
         settingsProviderMock.Setup(x => x.SaveSettings());
         settingsProviderMock.Setup(x => x.ResetSettings());
 
-        // Setup timer provider - use a testable stopwatch implementation
-        timerProviderMock.Setup(x => x.Timer).Returns(testStopwatch);
+        // Setup timer provider
+        timerProviderMock.Setup(x => x.Elapsed).Returns(TimeSpan.FromMinutes(5));
+        timerProviderMock.Setup(x => x.IsRunning).Returns(false);
         timerProviderMock.Setup(x => x.StartTimer());
         timerProviderMock.Setup(x => x.StopTimer());
         timerProviderMock.Setup(x => x.IsTimerRunning).Returns(false);
@@ -117,8 +118,8 @@ public class MainViewModelTests
         testSolutionProviderMock.Setup(x => x.HashiFieldReference).Returns([[1, 2]]);
 
         // Setup solution provider factory
-        solutionProviderFactoryMock = new Mock<Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider>>(MockBehavior.Strict);
-        solutionProviderFactoryMock.Setup(x => x(It.IsAny<IReadOnlyList<int[]>?>(), It.IsAny<List<IBridgeCoordinates>?>(), It.IsAny<string?>()))
+        solutionProviderFactoryMock = new Mock<Func<IReadOnlyList<int[]>?, IReadOnlyList<IBridgeCoordinates>?, string?, ISolutionProvider>>(MockBehavior.Strict);
+        solutionProviderFactoryMock.Setup(x => x(It.IsAny<IReadOnlyList<int[]>?>(), It.IsAny<IReadOnlyList<IBridgeCoordinates>?>(), It.IsAny<string?>()))
             .Returns(solutionProviderMock.Object);
 
         // Setup resource manager
@@ -164,8 +165,8 @@ public class MainViewModelTests
     private Mock<ILogger> loggerMock;
     private Mock<IHashiBrush> hashiBrushMock;
     private Mock<ISolutionProvider> solutionProviderMock;
-    private Mock<Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider>> solutionProviderFactoryMock;
-    private TestableStopwatch testStopwatch;
+    private Mock<Func<IReadOnlyList<int[]>?, IReadOnlyList<IBridgeCoordinates>?, string?, ISolutionProvider>> solutionProviderFactoryMock;
+    // Timer is now mocked via ITimerProvider.Elapsed
     private MainViewModel mainViewModel;
 
     #region Constructor Tests
@@ -724,7 +725,7 @@ public class MainViewModelTests
         mainViewModel.SelectedDifficulty = DifficultyEnum.Easy3;
 
         // Set up the timer to return 1 minute
-        testStopwatch.SetElapsed(TimeSpan.FromMinutes(1));
+        timerProviderMock.Setup(x => x.Elapsed).Returns(TimeSpan.FromMinutes(1));
 
         // Get the high score entry exactly the same way the MainViewModel will
         var currentSettingForSetDifficulty = settingsProviderMock.Object.Settings.HighScores
@@ -1265,15 +1266,3 @@ public class MainViewModelTests
     #endregion
 }
 
-/// <summary>
-///     Testable implementation of Stopwatch that allows us to control the Elapsed property
-/// </summary>
-public class TestableStopwatch : Stopwatch
-{
-    public new TimeSpan Elapsed { get; private set; } = TimeSpan.FromMinutes(5);
-
-    public void SetElapsed(TimeSpan elapsed)
-    {
-        Elapsed = elapsed;
-    }
-}

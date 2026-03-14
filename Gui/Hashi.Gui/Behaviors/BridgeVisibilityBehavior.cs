@@ -128,6 +128,7 @@ public class BridgeVisibilityBehavior : Behavior<Line>, IRecipient<IRuleMessageC
     protected override void OnDetaching()
     {
         base.OnDetaching();
+        WeakReferenceMessenger.Default.Unregister<IRuleMessageClearedMessage>(this);
         AssociatedObject.IsVisibleChanged -= AssociatedObject_IsVisibleChanged;
         AllConnections.CollectionChanged -= OnCollectionChanged!;
     }

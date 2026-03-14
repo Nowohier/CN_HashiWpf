@@ -1,6 +1,8 @@
 using Autofac;
 using FluentAssertions;
+using Hashi.Gui.Interfaces.Wrappers;
 using Hashi.SolvedPuzzles.Interfaces;
+using Moq;
 
 namespace Hashi.SolvedPuzzles.Test;
 
@@ -8,12 +10,16 @@ namespace Hashi.SolvedPuzzles.Test;
 public class AutoFacHashiSolvedPuzzlesModuleTests
 {
     private IContainer container;
+    private Mock<IFileWrapper> _fileWrapperMock;
 
     [SetUp]
     public void Setup()
     {
+        _fileWrapperMock = new Mock<IFileWrapper>(MockBehavior.Strict);
+
         var builder = new ContainerBuilder();
         builder.RegisterModule<AutoFacHashiSolvedPuzzlesModule>();
+        builder.RegisterInstance(_fileWrapperMock.Object).As<IFileWrapper>();
         container = builder.Build();
     }
 
@@ -21,6 +27,7 @@ public class AutoFacHashiSolvedPuzzlesModuleTests
     public void Teardown()
     {
         container.Dispose();
+        _fileWrapperMock.VerifyAll();
     }
 
     #region Module Registration Tests
@@ -117,38 +124,21 @@ public class AutoFacHashiSolvedPuzzlesModuleTests
             [3, 4]
         };
 
-        // Create test file
         var testFileName = GetTestFileName(testPuzzleEnum);
         var testFileContent = System.Text.Json.JsonSerializer.Serialize(testPuzzleData).Replace("[", "{").Replace("]", "}");
-        var testFileDirectory = Path.GetDirectoryName(testFileName);
 
-        if (!Directory.Exists(testFileDirectory))
+        _fileWrapperMock.Setup(f => f.Exists(testFileName)).Returns(true);
+        _fileWrapperMock.Setup(f => f.ReadAllText(testFileName)).Returns(testFileContent);
+
+        // Act
+        var act = () =>
         {
-            Directory.CreateDirectory(testFileDirectory!);
-        }
+            var result = puzzleLoader.LoadPuzzle(testPuzzleEnum);
+            result.Should().NotBeNull();
+        };
 
-        File.WriteAllText(testFileName, testFileContent);
-
-        try
-        {
-            // Act
-            var act = () =>
-            {
-                var result = puzzleLoader.LoadPuzzle(testPuzzleEnum);
-                result.Should().NotBeNull();
-            };
-
-            // Assert
-            act.Should().NotThrow();
-        }
-        finally
-        {
-            // Cleanup
-            if (File.Exists(testFileName))
-            {
-                File.Delete(testFileName);
-            }
-        }
+        // Assert
+        act.Should().NotThrow();
     }
 
     #endregion

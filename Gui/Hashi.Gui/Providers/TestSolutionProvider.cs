@@ -21,7 +21,7 @@ public class TestSolutionProvider : ObservableObject, ITestSolutionProvider
     private readonly IPathProvider pathProvider;
     private readonly IFileWrapper fileWrapper;
     private readonly IDirectoryWrapper directoryWrapper;
-    private readonly Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider> solutionProviderFactory;
+    private readonly Func<IReadOnlyList<int[]>?, IReadOnlyList<IBridgeCoordinates>?, string?, ISolutionProvider> solutionProviderFactory;
     private readonly Func<ISolutionProvider, ISetTestSolutionMessage> setTestSolutionMessageFactory;
     private readonly ILogger logger;
     private ISolutionProvider? selectedSolutionProvider;
@@ -42,7 +42,7 @@ public class TestSolutionProvider : ObservableObject, ITestSolutionProvider
         IPathProvider pathProvider,
         IFileWrapper fileWrapper,
         IDirectoryWrapper directoryWrapper,
-        Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider> solutionProviderFactory,
+        Func<IReadOnlyList<int[]>?, IReadOnlyList<IBridgeCoordinates>?, string?, ISolutionProvider> solutionProviderFactory,
         Func<ISolutionProvider, ISetTestSolutionMessage> setTestSolutionMessageFactory,
         ILoggerFactory loggerFactory
     )

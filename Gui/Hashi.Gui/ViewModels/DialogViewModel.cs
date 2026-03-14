@@ -111,7 +111,7 @@ public class DialogViewModel : ObservableObject
     }
 
     /// <summary>
-    ///     The IsNone property.
+    ///     The IsInformation property.
     /// </summary>
     public bool IsInformation
     {
@@ -202,55 +202,29 @@ public class DialogViewModel : ObservableObject
     /// </summary>
     public ICommand NoCommand { get; set; }
 
-    private void OkExecute(object? obj)
+    private void OkExecute(object? obj) => ExecuteDialogCommand(obj, DialogResult.Ok);
+
+    private void CancelExecute(object? obj) => ExecuteDialogCommand(obj, DialogResult.Cancel);
+
+    private void YesExecute(object? obj) => ExecuteDialogCommand(obj, DialogResult.Yes);
+
+    private void NoExecute(object? obj) => ExecuteDialogCommand(obj, DialogResult.No);
+
+    /// <summary>
+    ///     Sets the dialog result and closes the dialog window.
+    /// </summary>
+    /// <param name="obj">The command parameter, expected to implement <see cref="IDialogResult" /> and <see cref="ICloseable" />.</param>
+    /// <param name="result">The dialog result to set.</param>
+    private static void ExecuteDialogCommand(object? obj, DialogResult result)
     {
-        if (obj is IDialogResult dia1)
+        if (obj is IDialogResult dialogResult)
         {
-            dia1.DialogResult = DialogResult.Ok;
+            dialogResult.DialogResult = result;
         }
 
-        if (obj is ICloseable dia2)
+        if (obj is ICloseable closeable)
         {
-            dia2.Close();
-        }
-    }
-
-    private void CancelExecute(object? obj)
-    {
-        if (obj is IDialogResult dia1)
-        {
-            dia1.DialogResult = DialogResult.Cancel;
-        }
-
-        if (obj is ICloseable dia2)
-        {
-            dia2.Close();
-        }
-    }
-
-    private void YesExecute(object? obj)
-    {
-        if (obj is IDialogResult dia1)
-        {
-            dia1.DialogResult = DialogResult.Yes;
-        }
-
-        if (obj is ICloseable dia2)
-        {
-            dia2.Close();
-        }
-    }
-
-    private void NoExecute(object? obj)
-    {
-        if (obj is IDialogResult dia1)
-        {
-            dia1.DialogResult = DialogResult.No;
-        }
-
-        if (obj is ICloseable dia2)
-        {
-            dia2.Close();
+            closeable.Close();
         }
     }
 

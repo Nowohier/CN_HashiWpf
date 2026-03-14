@@ -105,7 +105,7 @@
                             <iconPacks:PackIconPhosphorIcons Kind="Timer" VerticalAlignment="Center"
                                                              Height="25" Width="25"
                                                              Style="{StaticResource ElapsedTimeStyleIcon}" />
-                            <TextBlock Text="{Binding TimerProvider.Timer.Elapsed, StringFormat={}{0:hh\\:mm\\:ss}}"
+                            <TextBlock Text="{Binding TimerProvider.Elapsed, StringFormat={}{0:hh\\:mm\\:ss}}"
                                        Margin="10,0,0,0" FontSize="20"
                                        VerticalAlignment="Center" Style="{StaticResource ElapsedTimeStyleTextBlock}" />
                             <iconPacks:PackIconPhosphorIcons Kind="Crown" Margin="20,0,0,0" VerticalAlignment="Center"

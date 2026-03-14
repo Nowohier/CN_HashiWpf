@@ -11,18 +11,4 @@ public interface IDifficultySettingsProvider
     /// <param name="difficulty">The difficulty level (0-9).</param>
     /// <returns>The difficulty settings for the given level.</returns>
     DifficultySettings GetDifficultySettings(int difficulty);
-
-    /// <summary>
-    ///     Gets the alpha value for a given difficulty level.
-    /// </summary>
-    /// <param name="difficulty">The difficulty level (0-9).</param>
-    /// <returns>The alpha value.</returns>
-    int GetAlphaForDifficulty(int difficulty);
-
-    /// <summary>
-    ///     Gets the beta value for a given difficulty level.
-    /// </summary>
-    /// <param name="difficulty">The difficulty level (0-9).</param>
-    /// <returns>The beta value.</returns>
-    int GetBetaForDifficulty(int difficulty);
 }

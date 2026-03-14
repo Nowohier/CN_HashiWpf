@@ -14,6 +14,8 @@ namespace Hashi.Gui;
 /// </summary>
 public partial class App
 {
+    private IContainer? container;
+    private ILifetimeScope? scope;
     private IDialogWrapper? dialogWrapper;
     private IMainViewModel? mainViewModel;
 
@@ -40,9 +42,9 @@ public partial class App
 
         var builder = new ContainerBuilder();
         builder.RegisterModule<AutoFacMainModule>();
-        var container = builder.Build();
+        container = builder.Build();
 
-        using var scope = container.BeginLifetimeScope();
+        scope = container.BeginLifetimeScope();
 
         dialogWrapper = scope.Resolve<IDialogWrapper>();
         mainViewModel = scope.Resolve<IMainViewModel>();
@@ -61,6 +63,9 @@ public partial class App
         base.OnExit(e);
 
         mainViewModel?.SettingsProvider.SaveSettings();
+
+        scope?.Dispose();
+        container?.Dispose();
     }
 
     /// <summary>

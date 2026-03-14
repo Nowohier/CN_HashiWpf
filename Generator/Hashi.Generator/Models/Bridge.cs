@@ -43,19 +43,14 @@ public class Bridge : IBridge
         return otherSideBridge;
     }
 
-    /// <summary>
-    ///     Adds another bridge to this bridge.
-    /// </summary>
-    /// <param name="mainField">The main field array.</param>
-    public void AddBridge(int[][] mainField)
+    /// <inheritdoc />
+    public void AddBridge()
     {
         AmountBridgesSet++;
         ApplyDirectionBridgeCountsByNeighbor(Island1, Island2, AmountBridgesSet);
 
-        Island1.AmountBridgesConnectable += 1;
-        Island2.AmountBridgesConnectable += 1;
-        mainField[Island1.Y][Island1.X]++;
-        mainField[Island2.Y][Island2.X]++;
+        Island1.IncrementAmountBridgesConnectable(1);
+        Island2.IncrementAmountBridgesConnectable(1);
     }
 
     /// <summary>
@@ -68,26 +63,26 @@ public class Bridge : IBridge
         {
             if (source.Y > target.Y)
             {
-                source.AmountBridgesUp += bridgeCount;
-                target.AmountBridgesDown += bridgeCount;
+                source.IncrementAmountBridgesUp(bridgeCount);
+                target.IncrementAmountBridgesDown(bridgeCount);
             }
             else if (source.Y < target.Y)
             {
-                source.AmountBridgesDown += bridgeCount;
-                target.AmountBridgesUp += bridgeCount;
+                source.IncrementAmountBridgesDown(bridgeCount);
+                target.IncrementAmountBridgesUp(bridgeCount);
             }
         }
         else if (source.Y == target.Y)
         {
             if (source.X > target.X)
             {
-                source.AmountBridgesLeft += bridgeCount;
-                target.AmountBridgesRight += bridgeCount;
+                source.IncrementAmountBridgesLeft(bridgeCount);
+                target.IncrementAmountBridgesRight(bridgeCount);
             }
             else
             {
-                source.AmountBridgesRight += bridgeCount;
-                target.AmountBridgesLeft += bridgeCount;
+                source.IncrementAmountBridgesRight(bridgeCount);
+                target.IncrementAmountBridgesLeft(bridgeCount);
             }
         }
     }
@@ -100,23 +95,23 @@ public class Bridge : IBridge
     {
         if (source.IslandUp == target)
         {
-            source.AmountBridgesUp = bridgeCount;
-            target.AmountBridgesDown = bridgeCount;
+            source.SetAmountBridgesUp(bridgeCount);
+            target.SetAmountBridgesDown(bridgeCount);
         }
         else if (source.IslandDown == target)
         {
-            source.AmountBridgesDown = bridgeCount;
-            target.AmountBridgesUp = bridgeCount;
+            source.SetAmountBridgesDown(bridgeCount);
+            target.SetAmountBridgesUp(bridgeCount);
         }
         else if (source.IslandLeft == target)
         {
-            source.AmountBridgesLeft = bridgeCount;
-            target.AmountBridgesRight = bridgeCount;
+            source.SetAmountBridgesLeft(bridgeCount);
+            target.SetAmountBridgesRight(bridgeCount);
         }
         else if (source.IslandRight == target)
         {
-            source.AmountBridgesRight = bridgeCount;
-            target.AmountBridgesLeft = bridgeCount;
+            source.SetAmountBridgesRight(bridgeCount);
+            target.SetAmountBridgesLeft(bridgeCount);
         }
     }
 }

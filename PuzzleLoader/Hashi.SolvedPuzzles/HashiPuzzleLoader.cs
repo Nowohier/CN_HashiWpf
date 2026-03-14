@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Hashi.Gui.Interfaces.Wrappers;
 using Hashi.SolvedPuzzles.Interfaces;
 
 namespace Hashi.SolvedPuzzles;
@@ -13,23 +14,28 @@ public class HashiPuzzleLoader : IHashiPuzzleLoader
     private static readonly string PuzzleBasePath =
         Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PuzzleDirectoryName);
 
+    private readonly IFileWrapper _fileWrapper;
+
     /// <summary>
-    ///     Loads a puzzle from a file depending on the given enum.
+    ///     Initializes a new instance of the <see cref="HashiPuzzleLoader"/> class.
     /// </summary>
-    /// <param name="hashiFileEnum">The hashi file enum.</param>
-    /// <returns></returns>
-    /// <exception cref="FileNotFoundException" />
-    /// <exception cref="Exception" />
+    /// <param name="fileWrapper">The file wrapper used for file system operations.</param>
+    public HashiPuzzleLoader(IFileWrapper fileWrapper)
+    {
+        _fileWrapper = fileWrapper;
+    }
+
+    /// <inheritdoc />
     public int[][] LoadPuzzle(HashiFileEnum hashiFileEnum)
     {
         var fileName = GetHashiFileName(hashiFileEnum);
 
-        if (!File.Exists(fileName))
+        if (!_fileWrapper.Exists(fileName))
         {
             throw new FileNotFoundException($"File {fileName} not found.");
         }
 
-        var fileContent = File.ReadAllText(fileName).Replace("{", "[").Replace("}", "]");
+        var fileContent = _fileWrapper.ReadAllText(fileName).Replace("{", "[").Replace("}", "]");
 
         // Deserialize the JSON string to an int[][]
         var puzzle = JsonSerializer.Deserialize<int[][]>(fileContent);

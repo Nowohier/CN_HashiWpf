@@ -20,7 +20,7 @@ public static class TestFieldConverter
     /// <returns>A new solution provider containing the converted data.</returns>
     public static ISolutionProvider ConvertIslandsToSolutionProvider(
         IEnumerable<IIslandViewModel> allIslandEnumerable, string solutionName,
-        Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider> solutionProviderFactory)
+        Func<IReadOnlyList<int[]>?, IReadOnlyList<IBridgeCoordinates>?, string?, ISolutionProvider> solutionProviderFactory)
     {
         ArgumentNullException.ThrowIfNull(allIslandEnumerable);
         ArgumentNullException.ThrowIfNull(solutionName);

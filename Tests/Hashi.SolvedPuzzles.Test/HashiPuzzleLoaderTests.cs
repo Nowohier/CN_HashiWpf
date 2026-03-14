@@ -1,6 +1,7 @@
-using Autofac;
 using FluentAssertions;
+using Hashi.Gui.Interfaces.Wrappers;
 using Hashi.SolvedPuzzles.Interfaces;
+using Moq;
 using System.Text.Json;
 
 namespace Hashi.SolvedPuzzles.Test;
@@ -8,22 +9,20 @@ namespace Hashi.SolvedPuzzles.Test;
 [TestFixture]
 public class HashiPuzzleLoaderTests
 {
-    private HashiPuzzleLoader hashiPuzzleLoader;
-    private IContainer container;
+    private Mock<IFileWrapper> _fileWrapperMock;
+    private HashiPuzzleLoader _hashiPuzzleLoader;
 
     [SetUp]
     public void Setup()
     {
-        var builder = new ContainerBuilder();
-        builder.RegisterModule<AutoFacHashiSolvedPuzzlesModule>();
-        container = builder.Build();
-        hashiPuzzleLoader = new HashiPuzzleLoader();
+        _fileWrapperMock = new Mock<IFileWrapper>(MockBehavior.Strict);
+        _hashiPuzzleLoader = new HashiPuzzleLoader(_fileWrapperMock.Object);
     }
 
     [TearDown]
     public void Teardown()
     {
-        container.Dispose();
+        _fileWrapperMock.VerifyAll();
     }
 
     #region LoadPuzzle Tests
@@ -39,36 +38,18 @@ public class HashiPuzzleLoaderTests
             [4, 5, 6],
             [7, 8, 9]
         };
-
-        // Create a test puzzle file
         var testFileName = GetTestFileName(testPuzzleEnum);
         var testFileContent = JsonSerializer.Serialize(testPuzzleData).Replace("[", "{").Replace("]", "}");
-        var testFileDirectory = Path.GetDirectoryName(testFileName);
 
-        if (!Directory.Exists(testFileDirectory))
-        {
-            Directory.CreateDirectory(testFileDirectory!);
-        }
+        _fileWrapperMock.Setup(f => f.Exists(testFileName)).Returns(true);
+        _fileWrapperMock.Setup(f => f.ReadAllText(testFileName)).Returns(testFileContent);
 
-        File.WriteAllText(testFileName, testFileContent);
+        // Act
+        var result = _hashiPuzzleLoader.LoadPuzzle(testPuzzleEnum);
 
-        try
-        {
-            // Act
-            var result = hashiPuzzleLoader.LoadPuzzle(testPuzzleEnum);
-
-            // Assert
-            result.Should().NotBeNull();
-            result.Should().BeEquivalentTo(testPuzzleData);
-        }
-        finally
-        {
-            // Cleanup
-            if (File.Exists(testFileName))
-            {
-                File.Delete(testFileName);
-            }
-        }
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeEquivalentTo(testPuzzleData);
     }
 
     [Test]
@@ -78,120 +59,65 @@ public class HashiPuzzleLoaderTests
         var testPuzzleEnum = HashiFileEnum.Hs_16_100_25_00_002;
         var testFileName = GetTestFileName(testPuzzleEnum);
 
-        // Ensure file doesn't exist
-        if (File.Exists(testFileName))
-        {
-            File.Delete(testFileName);
-        }
+        _fileWrapperMock.Setup(f => f.Exists(testFileName)).Returns(false);
 
         // Act
-        var act = () => hashiPuzzleLoader.LoadPuzzle(testPuzzleEnum);
+        var act = () => _hashiPuzzleLoader.LoadPuzzle(testPuzzleEnum);
 
         // Assert
         act.Should().Throw<FileNotFoundException>().WithMessage($"*File {testFileName} not found.*");
     }
 
     [Test]
-    public void LoadPuzzle_WhenInvalidFileFormat_ShouldThrowException()
+    public void LoadPuzzle_WhenInvalidFileFormat_ShouldThrowJsonException()
     {
         // Arrange
         var testPuzzleEnum = HashiFileEnum.Hs_16_100_25_00_003;
         var testFileName = GetTestFileName(testPuzzleEnum);
-        var testFileDirectory = Path.GetDirectoryName(testFileName);
 
-        if (!Directory.Exists(testFileDirectory))
-        {
-            Directory.CreateDirectory(testFileDirectory!);
-        }
+        _fileWrapperMock.Setup(f => f.Exists(testFileName)).Returns(true);
+        _fileWrapperMock.Setup(f => f.ReadAllText(testFileName)).Returns("invalid json content");
 
-        // Create an invalid JSON file
-        File.WriteAllText(testFileName, "invalid json content");
+        // Act
+        var act = () => _hashiPuzzleLoader.LoadPuzzle(testPuzzleEnum);
 
-        try
-        {
-            // Act
-            var act = () => hashiPuzzleLoader.LoadPuzzle(testPuzzleEnum);
-
-            // Assert
-            act.Should().Throw<JsonException>();
-        }
-        finally
-        {
-            // Cleanup
-            if (File.Exists(testFileName))
-            {
-                File.Delete(testFileName);
-            }
-        }
+        // Assert
+        act.Should().Throw<JsonException>();
     }
 
     [Test]
-    public void LoadPuzzle_WhenFileContainsNull_ShouldThrowException()
+    public void LoadPuzzle_WhenFileContainsNull_ShouldThrowInvalidDataException()
     {
         // Arrange
         var testPuzzleEnum = HashiFileEnum.Hs_16_100_25_00_004;
         var testFileName = GetTestFileName(testPuzzleEnum);
-        var testFileDirectory = Path.GetDirectoryName(testFileName);
 
-        if (!Directory.Exists(testFileDirectory))
-        {
-            Directory.CreateDirectory(testFileDirectory!);
-        }
+        _fileWrapperMock.Setup(f => f.Exists(testFileName)).Returns(true);
+        _fileWrapperMock.Setup(f => f.ReadAllText(testFileName)).Returns("null");
 
-        // Create a file with null content
-        File.WriteAllText(testFileName, "null");
+        // Act
+        var act = () => _hashiPuzzleLoader.LoadPuzzle(testPuzzleEnum);
 
-        try
-        {
-            // Act
-            var act = () => hashiPuzzleLoader.LoadPuzzle(testPuzzleEnum);
-
-            // Assert
-            act.Should().Throw<InvalidDataException>()
-                .WithMessage($"*Failed to deserialize the puzzle from file {testFileName}.*");
-        }
-        finally
-        {
-            // Cleanup
-            if (File.Exists(testFileName))
-            {
-                File.Delete(testFileName);
-            }
-        }
+        // Assert
+        act.Should().Throw<InvalidDataException>()
+            .WithMessage($"*Failed to deserialize the puzzle from file {testFileName}.*");
     }
 
     [Test]
-    public void LoadPuzzle_WhenEmptyFile_ShouldThrowException()
+    public void LoadPuzzle_WhenEmptyFile_ShouldThrowJsonException()
     {
         // Arrange
         var testPuzzleEnum = HashiFileEnum.Hs_16_100_25_00_005;
         var testFileName = GetTestFileName(testPuzzleEnum);
-        var testFileDirectory = Path.GetDirectoryName(testFileName);
 
-        if (!Directory.Exists(testFileDirectory))
-        {
-            Directory.CreateDirectory(testFileDirectory!);
-        }
+        _fileWrapperMock.Setup(f => f.Exists(testFileName)).Returns(true);
+        _fileWrapperMock.Setup(f => f.ReadAllText(testFileName)).Returns("");
 
-        // Create an empty file
-        File.WriteAllText(testFileName, "");
+        // Act
+        var act = () => _hashiPuzzleLoader.LoadPuzzle(testPuzzleEnum);
 
-        try
-        {
-            // Act
-            var act = () => hashiPuzzleLoader.LoadPuzzle(testPuzzleEnum);
-
-            // Assert
-            act.Should().Throw<JsonException>();
-        }
-        finally
-        {
-            // Cleanup
-            if (File.Exists(testFileName))
-            {
-                File.Delete(testFileName);
-            }
-        }
+        // Assert
+        act.Should().Throw<JsonException>();
     }
 
     [Test]
@@ -210,34 +136,18 @@ public class HashiPuzzleLoaderTests
 
         var testFileName = GetTestFileName(testPuzzleEnum);
         var testFileContent = JsonSerializer.Serialize(testPuzzleData).Replace("[", "{").Replace("]", "}");
-        var testFileDirectory = Path.GetDirectoryName(testFileName);
 
-        if (!Directory.Exists(testFileDirectory))
-        {
-            Directory.CreateDirectory(testFileDirectory!);
-        }
+        _fileWrapperMock.Setup(f => f.Exists(testFileName)).Returns(true);
+        _fileWrapperMock.Setup(f => f.ReadAllText(testFileName)).Returns(testFileContent);
 
-        File.WriteAllText(testFileName, testFileContent);
+        // Act
+        var result = _hashiPuzzleLoader.LoadPuzzle(testPuzzleEnum);
 
-        try
-        {
-            // Act
-            var result = hashiPuzzleLoader.LoadPuzzle(testPuzzleEnum);
-
-            // Assert
-            result.Should().NotBeNull();
-            result.Length.Should().Be(5);
-            result[0].Length.Should().Be(5);
-            result.Should().BeEquivalentTo(testPuzzleData);
-        }
-        finally
-        {
-            // Cleanup
-            if (File.Exists(testFileName))
-            {
-                File.Delete(testFileName);
-            }
-        }
+        // Assert
+        result.Should().NotBeNull();
+        result.Length.Should().Be(5);
+        result[0].Length.Should().Be(5);
+        result.Should().BeEquivalentTo(testPuzzleData);
     }
 
     #endregion
@@ -297,8 +207,11 @@ public class HashiPuzzleLoaderTests
     [Test]
     public void Constructor_WhenCalled_ShouldCreateInstance()
     {
+        // Arrange
+        var fileWrapperMock = new Mock<IFileWrapper>(MockBehavior.Strict);
+
         // Act
-        var loader = new HashiPuzzleLoader();
+        var loader = new HashiPuzzleLoader(fileWrapperMock.Object);
 
         // Assert
         loader.Should().NotBeNull();
@@ -312,8 +225,11 @@ public class HashiPuzzleLoaderTests
     [Test]
     public void HashiPuzzleLoader_ShouldImplementIHashiPuzzleLoader()
     {
-        // Arrange & Act
-        var loader = new HashiPuzzleLoader();
+        // Arrange
+        var fileWrapperMock = new Mock<IFileWrapper>(MockBehavior.Strict);
+
+        // Act
+        var loader = new HashiPuzzleLoader(fileWrapperMock.Object);
 
         // Assert
         loader.Should().BeAssignableTo<IHashiPuzzleLoader>();
@@ -336,33 +252,17 @@ public class HashiPuzzleLoaderTests
 
         var testFileName = GetTestFileName(testPuzzleEnum);
         var testFileContent = JsonSerializer.Serialize(testPuzzleData).Replace("[", "{").Replace("]", "}");
-        var testFileDirectory = Path.GetDirectoryName(testFileName);
 
-        if (!Directory.Exists(testFileDirectory))
-        {
-            Directory.CreateDirectory(testFileDirectory!);
-        }
+        _fileWrapperMock.Setup(f => f.Exists(testFileName)).Returns(true);
+        _fileWrapperMock.Setup(f => f.ReadAllText(testFileName)).Returns(testFileContent);
 
-        File.WriteAllText(testFileName, testFileContent);
+        // Act
+        var result1 = _hashiPuzzleLoader.LoadPuzzle(testPuzzleEnum);
+        var result2 = _hashiPuzzleLoader.LoadPuzzle(testPuzzleEnum);
 
-        try
-        {
-            // Act
-            var result1 = hashiPuzzleLoader.LoadPuzzle(testPuzzleEnum);
-            var result2 = hashiPuzzleLoader.LoadPuzzle(testPuzzleEnum);
-
-            // Assert
-            result1.Should().BeEquivalentTo(result2);
-            result1.Should().BeEquivalentTo(testPuzzleData);
-        }
-        finally
-        {
-            // Cleanup
-            if (File.Exists(testFileName))
-            {
-                File.Delete(testFileName);
-            }
-        }
+        // Assert
+        result1.Should().BeEquivalentTo(result2);
+        result1.Should().BeEquivalentTo(testPuzzleData);
     }
 
     #endregion

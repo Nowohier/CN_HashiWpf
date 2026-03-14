@@ -126,20 +126,6 @@ public class HintProviderTests
         result.Should().Be(ruleInfoProviderMock.Object);
     }
 
-    [Test]
-    public void RuleInfoProvider_Property_ShouldBeReadOnly()
-    {
-        // Arrange
-        var hintProvider = new HintProvider(islandProviderMock.Object, dialogWrapperMock.Object,
-            ruleRepositoryMock.Object, ruleInfoProviderMock.Object);
-        var provider = hintProvider.RuleInfoProvider;
-
-        // Assert
-        provider.Should().NotBeNull();
-        // The RuleInfoProvider property should not have a setter
-        // This is verified at compile time
-    }
-
     #endregion
 
     #region Rules Tests
@@ -188,20 +174,6 @@ public class HintProviderTests
 
         // Assert
         result.Should().AllSatisfy(rule => rule.Name.Should().StartWith("_"));
-    }
-
-    [Test]
-    public void Rules_Property_ShouldBeReadOnly()
-    {
-        // Arrange
-        var hintProvider = new HintProvider(islandProviderMock.Object, dialogWrapperMock.Object,
-            ruleRepositoryMock.Object, ruleInfoProviderMock.Object);
-        var rules = hintProvider.Rules;
-
-        // Assert
-        rules.Should().NotBeNull();
-        // The Rules property should not have a setter
-        // This is verified at compile time
     }
 
     [Test]

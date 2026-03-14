@@ -43,4 +43,13 @@ internal static class GeneratorConstants
 
     /// <summary>Minimum field dimension.</summary>
     internal const int MinFieldDimension = 5;
+
+    /// <summary>Amount to reduce beta by when max attempts are reached.</summary>
+    internal const int BetaReductionStep = 5;
+
+    /// <summary>Amount to reduce island count by when rule solvability fails.</summary>
+    internal const int IslandReductionStep = 2;
+
+    /// <summary>Scaling factor for beta bridge calculation.</summary>
+    internal const double BetaScalingFactor = 0.5;
 }

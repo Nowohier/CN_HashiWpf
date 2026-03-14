@@ -89,7 +89,7 @@ public class AutoFacMainModuleTests
 
         // Act
         var act = () => container!
-            .Resolve<Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider>>();
+            .Resolve<Func<IReadOnlyList<int[]>?, IReadOnlyList<IBridgeCoordinates>?, string?, ISolutionProvider>>();
 
         // Assert
         act.Should().NotThrow()

@@ -22,7 +22,7 @@ public class TestSolutionProviderTests
     private Mock<IPathProvider> pathProviderMock;
     private Mock<IFileWrapper> fileWrapperMock;
     private Mock<IDirectoryWrapper> directoryWrapperMock;
-    private Mock<Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider>> solutionProviderFactoryMock;
+    private Mock<Func<IReadOnlyList<int[]>?, IReadOnlyList<IBridgeCoordinates>?, string?, ISolutionProvider>> solutionProviderFactoryMock;
     private Mock<Func<ISolutionProvider, ISetTestSolutionMessage>> setTestSolutionMessageFactoryMock;
     private Mock<ILoggerFactory> loggerFactoryMock;
     private Mock<ILogger> loggerMock;
@@ -38,7 +38,7 @@ public class TestSolutionProviderTests
         pathProviderMock = new Mock<IPathProvider>(MockBehavior.Strict);
         fileWrapperMock = new Mock<IFileWrapper>(MockBehavior.Strict);
         directoryWrapperMock = new Mock<IDirectoryWrapper>(MockBehavior.Strict);
-        solutionProviderFactoryMock = new Mock<Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider>>(MockBehavior.Strict);
+        solutionProviderFactoryMock = new Mock<Func<IReadOnlyList<int[]>?, IReadOnlyList<IBridgeCoordinates>?, string?, ISolutionProvider>>(MockBehavior.Strict);
         setTestSolutionMessageFactoryMock = new Mock<Func<ISolutionProvider, ISetTestSolutionMessage>>(MockBehavior.Strict);
         loggerFactoryMock = new Mock<ILoggerFactory>(MockBehavior.Strict);
         loggerMock = new Mock<ILogger>(MockBehavior.Strict);
@@ -65,7 +65,7 @@ public class TestSolutionProviderTests
             .Returns(new List<ISolutionProvider>());
 
         // Setup solution provider factory
-        solutionProviderFactoryMock.Setup(x => x.Invoke(It.IsAny<IReadOnlyList<int[]>?>(), It.IsAny<List<IBridgeCoordinates>?>(), It.IsAny<string?>()))
+        solutionProviderFactoryMock.Setup(x => x.Invoke(It.IsAny<IReadOnlyList<int[]>?>(), It.IsAny<IReadOnlyList<IBridgeCoordinates>?>(), It.IsAny<string?>()))
             .Returns(solutionProviderMock.Object);
 
         // Setup message factory
@@ -535,7 +535,7 @@ public class TestSolutionProviderTests
         // Assert
         solutionProviderFactoryMock.Verify(x => x(
             It.Is<IReadOnlyList<int[]>?>(hf => hf != null && hf.Count == 3 && hf[2][1] == 3),
-            It.IsAny<List<IBridgeCoordinates>?>(),
+            It.IsAny<IReadOnlyList<IBridgeCoordinates>?>(),
             It.Is<string?>(n => n == "TestSolution")), Times.Once);
         testSolutionProvider.SolutionProviders.Should().HaveCount(1);
         testSolutionProvider.SelectedSolutionProvider.Should().Be(solutionProviderMock.Object);
@@ -580,7 +580,7 @@ public class TestSolutionProviderTests
         // Assert
         solutionProviderFactoryMock.Verify(x => x(
             It.IsAny<IReadOnlyList<int[]>?>(),
-            It.Is<List<IBridgeCoordinates>?>(bc => bc != null && bc.Count == 1),
+            It.Is<IReadOnlyList<IBridgeCoordinates>?>(bc => bc != null && bc.Count == 1),
             It.Is<string?>(n => n == "TestSolution")), Times.Once);
         testSolutionProvider.SolutionProviders.Should().HaveCount(1);
         testSolutionProvider.SelectedSolutionProvider.Should().Be(solutionProviderMock.Object);

@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Hashi.Enums;
+using Hashi.Generator.Extensions;
 using Hashi.Generator.Interfaces.Models;
 using Hashi.Generator.Models;
 using Hashi.Generator.Services;
@@ -35,7 +36,7 @@ public class BridgeManagementServiceTests
         var testArray = originalArray.ToArray();
 
         // Act
-        BridgeManagementService.Shuffle(testArray);
+        ListExtensions.Shuffle(testArray);
 
         // Assert
         testArray.Should().BeEquivalentTo(originalArray);
@@ -49,7 +50,7 @@ public class BridgeManagementServiceTests
         var array = new[] { 42 };
 
         // Act & Assert
-        var act = () => BridgeManagementService.Shuffle(array);
+        var act = () => ListExtensions.Shuffle(array);
         act.Should().NotThrow();
         array[0].Should().Be(42);
     }
@@ -61,7 +62,7 @@ public class BridgeManagementServiceTests
         var array = Array.Empty<int>();
 
         // Act & Assert
-        var act = () => BridgeManagementService.Shuffle(array);
+        var act = () => ListExtensions.Shuffle(array);
         act.Should().NotThrow();
     }
 
@@ -73,7 +74,7 @@ public class BridgeManagementServiceTests
         var testList = new List<int>(originalList);
 
         // Act
-        BridgeManagementService.Shuffle(testList);
+        ListExtensions.Shuffle(testList);
 
         // Assert
         testList.Should().BeEquivalentTo(originalList);
@@ -87,7 +88,7 @@ public class BridgeManagementServiceTests
         var list = new List<int> { 42 };
 
         // Act & Assert
-        var act = () => BridgeManagementService.Shuffle(list);
+        var act = () => ListExtensions.Shuffle(list);
         act.Should().NotThrow();
         list[0].Should().Be(42);
     }
@@ -99,7 +100,7 @@ public class BridgeManagementServiceTests
         var list = new List<int>();
 
         // Act & Assert
-        var act = () => BridgeManagementService.Shuffle(list);
+        var act = () => ListExtensions.Shuffle(list);
         act.Should().NotThrow();
     }
 

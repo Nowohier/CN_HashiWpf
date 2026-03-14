@@ -6,6 +6,7 @@ namespace Hashi.Rules.Test;
 /// <summary>
 /// Unit tests for AutoFacRulesModule class.
 /// </summary>
+[TestFixture]
 public class AutoFacRulesModuleTests
 {
     private ContainerBuilder containerBuilder;

@@ -11,7 +11,12 @@ public class AutoFacLinearSolverModule : Module
     /// <inheritdoc />
     protected override void Load(ContainerBuilder builder)
     {
-        builder.RegisterType<HashiSolver>().As<IHashiSolver>().SingleInstance();
+        builder.RegisterType<HashiSolver>()
+            .As<IHashiSolver>()
+            .As<IPuzzleReader>()
+            .As<IPuzzleSolver>()
+            .As<IPuzzleVisualizer>()
+            .SingleInstance();
         builder.RegisterType<Island>().As<IIsland>().InstancePerDependency();
         builder.RegisterType<Edge>().As<IEdge>().InstancePerDependency();
 

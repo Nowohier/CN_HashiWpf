@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Hashi.Generator;
 using Hashi.Generator.Interfaces.Models;
+using Hashi.Gui.Core;
 using Hashi.Generator.Interfaces.Providers;
 using Hashi.Gui.Helpers;
 using Hashi.Gui.Managers;
@@ -23,6 +24,7 @@ public class AutoFacMainModule : Module
     protected override void Load(ContainerBuilder builder)
     {
         // Register your modules here
+        builder.RegisterModule<AutoFacGuiCoreModule>();
         builder.RegisterModule<AutoFacGeneratorModule>();
 
         builder.RegisterModule<AutoFacViewModelsModule>();
@@ -37,7 +39,7 @@ public class AutoFacMainModule : Module
         builder.RegisterModule<AutoFacManagersModule>();
         builder.RegisterModule<AutoFacLoggingModule>();
 
-        builder.Register<Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider>>(context =>
+        builder.Register<Func<IReadOnlyList<int[]>?, IReadOnlyList<IBridgeCoordinates>?, string?, ISolutionProvider>>(context =>
         {
             var c = context.Resolve<IComponentContext>();
             return (hashiField, bridgeCoordinates, name) => c.Resolve<ISolutionProvider>(

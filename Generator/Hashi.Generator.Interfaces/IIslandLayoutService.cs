@@ -11,7 +11,7 @@ public interface IIslandLayoutService
     ///     Creates a new island adjacent to an existing island.
     /// </summary>
     /// <returns>True if an island was created.</returns>
-    bool CreateIsland(int[][] mainField, IIsland island, List<IIsland> islands, List<IBridge> bridges);
+    bool CreateIsland(int[][] mainField, IIsland island, IList<IIsland> islands, IList<IBridge> bridges);
 
     /// <summary>
     ///     Checks whether there is an adjacent island at the given position.

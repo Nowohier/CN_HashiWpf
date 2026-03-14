@@ -2,6 +2,9 @@
 
 namespace Hashi.Gui.Interfaces.ViewModels;
 
+/// <summary>
+///     Represents a high score entry for a specific difficulty level.
+/// </summary>
 public interface IHighScorePerDifficultyViewModel
 {
     /// <summary>

@@ -29,11 +29,6 @@ public interface IBlockDetectionService
     bool HasBridgeInDirection(IIsland island, DirectionEnum direction, IList<IBridge> bridges);
 
     /// <summary>
-    ///     Updates the bridge direction cache when creating new bridges.
-    /// </summary>
-    void UpdateDirectionCache(IIsland island1, IIsland island2);
-
-    /// <summary>
     ///     Clears all cached block detection results.
     /// </summary>
     void ClearCaches();

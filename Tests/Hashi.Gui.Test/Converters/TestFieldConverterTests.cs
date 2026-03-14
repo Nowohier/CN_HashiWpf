@@ -17,10 +17,10 @@ namespace Hashi.Gui.Test.Converters;
 public class TestFieldConverterTests
 {
     private Mock<ISolutionProvider> solutionProviderMock;
-    private Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider> factory;
+    private Func<IReadOnlyList<int[]>?, IReadOnlyList<IBridgeCoordinates>?, string?, ISolutionProvider> factory;
 
     private IReadOnlyList<int[]>? capturedField;
-    private List<IBridgeCoordinates>? capturedBridges;
+    private IReadOnlyList<IBridgeCoordinates>? capturedBridges;
     private string? capturedName;
 
     [SetUp]

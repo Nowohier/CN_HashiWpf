@@ -9,6 +9,7 @@ namespace Hashi.Gui.Helpers
 {
     public class HashiBrushResolver(IApplicationWrapper applicationWrapper) : IHashiBrushResolver
     {
+        /// <inheritdoc />
         public IHashiBrush ResolveBrush(HashiColor color)
         {
             if (applicationWrapper.GetApplicationResource(color.ToString()) is SolidColorBrush brush)

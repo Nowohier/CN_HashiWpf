@@ -18,27 +18,60 @@ public interface IIsland
     /// <summary>
     ///     Gets the amount of bridges connectable.
     /// </summary>
-    int AmountBridgesConnectable { get; set; }
+    int AmountBridgesConnectable { get; }
 
     /// <summary>
     ///     Gets the amount of bridges up.
     /// </summary>
-    int AmountBridgesUp { get; set; }
+    int AmountBridgesUp { get; }
 
     /// <summary>
     ///     Gets the amount of bridges down.
     /// </summary>
-    int AmountBridgesDown { get; set; }
+    int AmountBridgesDown { get; }
 
     /// <summary>
     ///     Gets the amount of bridges left.
     /// </summary>
-    int AmountBridgesLeft { get; set; }
+    int AmountBridgesLeft { get; }
 
     /// <summary>
     ///     Gets the amount of bridges right.
     /// </summary>
-    int AmountBridgesRight { get; set; }
+    int AmountBridgesRight { get; }
+
+    /// <summary>
+    ///     Increments the connectable bridge count by the specified delta.
+    /// </summary>
+    void IncrementAmountBridgesConnectable(int delta);
+
+    /// <summary>
+    ///     Increments the directional bridge count by the specified delta.
+    /// </summary>
+    void IncrementAmountBridgesUp(int delta);
+
+    /// <inheritdoc cref="IncrementAmountBridgesUp"/>
+    void IncrementAmountBridgesDown(int delta);
+
+    /// <inheritdoc cref="IncrementAmountBridgesUp"/>
+    void IncrementAmountBridgesLeft(int delta);
+
+    /// <inheritdoc cref="IncrementAmountBridgesUp"/>
+    void IncrementAmountBridgesRight(int delta);
+
+    /// <summary>
+    ///     Sets the directional bridge count to the specified value.
+    /// </summary>
+    void SetAmountBridgesUp(int value);
+
+    /// <inheritdoc cref="SetAmountBridgesUp"/>
+    void SetAmountBridgesDown(int value);
+
+    /// <inheritdoc cref="SetAmountBridgesUp"/>
+    void SetAmountBridgesLeft(int value);
+
+    /// <inheritdoc cref="SetAmountBridgesUp"/>
+    void SetAmountBridgesRight(int value);
 
     /// <summary>
     ///     Gets the upper neighbor.
@@ -65,7 +98,7 @@ public interface IIsland
     /// </summary>
     /// <param name="field">The field array.</param>
     /// <param name="islands">The list of islands.</param>
-    void SetAllNeighbors(int[][] field, List<IIsland> islands);
+    void SetAllNeighbors(int[][] field, IReadOnlyList<IIsland> islands);
 
     /// <summary>
     ///     Set all neighbors of the island using a pre-built lookup dictionary.
