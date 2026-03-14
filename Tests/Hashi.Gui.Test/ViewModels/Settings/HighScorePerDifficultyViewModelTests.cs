@@ -1,6 +1,7 @@
 using FluentAssertions;
 using Hashi.Enums;
 using Hashi.Gui.ViewModels.Settings;
+using System.Text.Json.Serialization;
 
 namespace Hashi.Gui.Test.ViewModels.Settings;
 
@@ -51,7 +52,7 @@ public class HighScorePerDifficultyViewModelTests
 
         // Assert
         difficulty.Should().Be(DifficultyEnum.Easy1);
-        
+
         // Verify it's read-only by checking there's no setter
         var property = typeof(HighScorePerDifficultyViewModel).GetProperty(nameof(HighScorePerDifficultyViewModel.Difficulty));
         property!.SetMethod.Should().BeNull();
@@ -208,7 +209,7 @@ public class HighScorePerDifficultyViewModelTests
         // Arrange
         var time = TimeSpan.FromMinutes(5);
         viewModel.HighScoreTime = time;
-        
+
         var propertyChangedRaised = false;
         viewModel.PropertyChanged += (_, _) => propertyChangedRaised = true;
 
@@ -275,11 +276,11 @@ public class HighScorePerDifficultyViewModelTests
         // Assert
         highScoreTimeProperty.Should().NotBeNull();
         difficultyProperty.Should().NotBeNull();
-        
-        // Verify JSON attributes exist (the exact validation would require deeper reflection testing)
-        var highScoreTimeHasJsonProperty = highScoreTimeProperty!.GetCustomAttributes(typeof(Newtonsoft.Json.JsonPropertyAttribute), false).Any();
-        var difficultyHasJsonProperty = difficultyProperty!.GetCustomAttributes(typeof(Newtonsoft.Json.JsonPropertyAttribute), false).Any();
-        
+
+        // Verify JSON attributes exist
+        var highScoreTimeHasJsonProperty = highScoreTimeProperty!.GetCustomAttributes(typeof(JsonPropertyNameAttribute), false).Any();
+        var difficultyHasJsonProperty = difficultyProperty!.GetCustomAttributes(typeof(JsonPropertyNameAttribute), false).Any();
+
         highScoreTimeHasJsonProperty.Should().BeTrue();
         difficultyHasJsonProperty.Should().BeTrue();
     }

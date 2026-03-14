@@ -1,4 +1,3 @@
-using Autofac;
 using FluentAssertions;
 using NLog;
 using ILogger = Hashi.Logging.Interfaces.ILogger;
@@ -9,7 +8,6 @@ namespace Hashi.Logging.Tests;
 public class LoggerTests
 {
     private Logger logger;
-    private IContainer container;
 
     [SetUp]
     public void Setup()
@@ -17,16 +15,6 @@ public class LoggerTests
         // Create a real NLog logger for testing
         var nlogLogger = LogManager.GetLogger("TestLogger");
         logger = new Logger(nlogLogger);
-
-        var builder = new ContainerBuilder();
-        builder.RegisterModule<AutoFacLoggingModule>();
-        container = builder.Build();
-    }
-
-    [TearDown]
-    public void Teardown()
-    {
-        container.Dispose();
     }
 
     #region Constructor Tests

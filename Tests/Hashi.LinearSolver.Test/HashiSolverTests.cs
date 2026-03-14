@@ -1,10 +1,11 @@
-using Autofac;
 using FluentAssertions;
 using Google.OrTools.Sat;
 using Hashi.Enums;
+using Hashi.LinearSolver.Extensions;
 using Hashi.LinearSolver.Interfaces;
 using Hashi.LinearSolver.Interfaces.Models;
 using Hashi.Logging.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 
 namespace Hashi.LinearSolver.Test;
@@ -12,7 +13,7 @@ namespace Hashi.LinearSolver.Test;
 [TestFixture]
 public class HashiSolverTests
 {
-    private IContainer container;
+    private ServiceProvider serviceProvider;
     private IHashiSolver hashiSolver;
     private Mock<ILogger> loggerMock;
     private Mock<ILoggerFactory> loggerFactoryMock;
@@ -28,18 +29,18 @@ public class HashiSolverTests
         loggerMock.Setup(l => l.Info(It.IsAny<string>()));
         loggerMock.Setup(l => l.Debug(It.IsAny<string>()));
 
-        var builder = new ContainerBuilder();
-        builder.RegisterInstance(loggerFactoryMock.Object).As<ILoggerFactory>();
-        builder.RegisterModule<AutoFacLinearSolverModule>();
-        container = builder.Build();
+        var services = new ServiceCollection();
+        services.AddSingleton(loggerFactoryMock.Object);
+        services.AddLinearSolverServices();
+        serviceProvider = services.BuildServiceProvider();
 
-        hashiSolver = container.Resolve<IHashiSolver>();
+        hashiSolver = serviceProvider.GetRequiredService<IHashiSolver>();
     }
 
     [TearDown]
     public void Teardown()
     {
-        container.Dispose();
+        serviceProvider.Dispose();
     }
 
     [Test]
@@ -275,7 +276,7 @@ public class HashiSolverTests
     public async Task SolveLazy_WithIslands_WhenValidInput_ShouldReturnOptimal()
     {
         // arrange
-        var islandFactory = container.Resolve<Func<int, int, int, int, IIsland>>();
+        var islandFactory = serviceProvider.GetRequiredService<Func<int, int, int, int, IIsland>>();
         var islands = new List<IIsland>
         {
             islandFactory(0, 0, 0, 1),
@@ -321,8 +322,8 @@ public class HashiSolverTests
     public async Task PrettyPrint_WhenCalledWithoutSolution_ShouldStillComplete()
     {
         // arrange
-        var islandFactory = container.Resolve<Func<int, int, int, int, IIsland>>();
-        var edgeFactory = container.Resolve<Func<int, int, int, IEdge>>();
+        var islandFactory = serviceProvider.GetRequiredService<Func<int, int, int, int, IIsland>>();
+        var edgeFactory = serviceProvider.GetRequiredService<Func<int, int, int, IEdge>>();
 
         var islands = new List<IIsland>
         {

@@ -1,6 +1,6 @@
 using FluentAssertions;
 using Hashi.Gui.JsonConverters;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace Hashi.Gui.Test.JsonConverters;
 
@@ -11,52 +11,28 @@ namespace Hashi.Gui.Test.JsonConverters;
 public class AbstractConverterTests
 {
     private AbstractConverter<TestDerived, TestBase> converter;
+    private JsonSerializerOptions options;
 
     [SetUp]
     public void SetUp()
     {
         converter = new AbstractConverter<TestDerived, TestBase>();
-    }
-
-    #region CanConvert Tests
-
-    [Test]
-    public void CanConvert_WhenAbstractType_ShouldReturnTrue()
-    {
-        // Act & Assert
-        converter.CanConvert(typeof(TestBase)).Should().BeTrue();
-    }
-
-    [Test]
-    public void CanConvert_WhenRealType_ShouldReturnFalse()
-    {
-        // Act & Assert
-        converter.CanConvert(typeof(TestDerived)).Should().BeFalse();
-    }
-
-    [Test]
-    public void CanConvert_WhenUnrelatedType_ShouldReturnFalse()
-    {
-        // Act & Assert
-        converter.CanConvert(typeof(string)).Should().BeFalse();
-    }
-
-    #endregion
-
-    #region ReadJson Tests
-
-    [Test]
-    public void ReadJson_WhenValidJson_ShouldDeserializeToRealType()
-    {
-        // Arrange
-        var json = """{"Name":"hello","Value":42}""";
-        var settings = new JsonSerializerSettings
+        options = new JsonSerializerOptions
         {
             Converters = { converter }
         };
+    }
+
+    #region Read Tests
+
+    [Test]
+    public void Read_WhenValidJson_ShouldDeserializeToRealType()
+    {
+        // Arrange
+        var json = """{"Name":"hello","Value":42}""";
 
         // Act
-        var result = JsonConvert.DeserializeObject<TestBase>(json, settings);
+        var result = JsonSerializer.Deserialize<TestBase>(json, options);
 
         // Assert
         result.Should().BeOfType<TestDerived>();
@@ -66,20 +42,16 @@ public class AbstractConverterTests
 
     #endregion
 
-    #region WriteJson Tests
+    #region Write Tests
 
     [Test]
-    public void WriteJson_WhenValidObject_ShouldSerialize()
+    public void Write_WhenValidObject_ShouldSerialize()
     {
         // Arrange
         var obj = new TestDerived { Name = "test", Value = 99 };
-        var settings = new JsonSerializerSettings
-        {
-            Converters = { converter }
-        };
 
         // Act
-        var json = JsonConvert.SerializeObject((TestBase)obj, settings);
+        var json = JsonSerializer.Serialize<TestBase>(obj, options);
 
         // Assert
         json.Should().Contain("\"Name\":\"test\"");

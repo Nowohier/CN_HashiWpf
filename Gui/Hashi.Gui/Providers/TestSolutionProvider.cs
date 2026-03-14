@@ -8,13 +8,11 @@ using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Wrappers;
 using Hashi.Logging.Interfaces;
-using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 
 namespace Hashi.Gui.Providers;
 
 /// <inheritdoc cref="ITestSolutionProvider" />
-[JsonObject(MemberSerialization.OptIn)]
 public class TestSolutionProvider : ObservableObject, ITestSolutionProvider
 {
     private readonly IJsonWrapper jsonWrapper;

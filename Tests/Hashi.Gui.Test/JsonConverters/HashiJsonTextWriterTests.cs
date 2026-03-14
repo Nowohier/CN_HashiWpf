@@ -1,73 +1,76 @@
 using FluentAssertions;
 using Hashi.Gui.JsonConverters;
-using Newtonsoft.Json;
 
 namespace Hashi.Gui.Test.JsonConverters;
 
 /// <summary>
-/// Unit tests for <see cref="HashiJsonTextWriter"/> class.
+/// Unit tests for <see cref="InlineArrayJsonFormatter"/> class.
 /// </summary>
 [TestFixture]
 public class HashiJsonTextWriterTests
 {
     [Test]
-    public void Constructor_WhenTextWriterProvided_ShouldNotThrow()
+    public void FormatInlineArrays_WhenArrayContainsNumbers_ShouldCollapseToSingleLine()
     {
         // Arrange
-        using var stringWriter = new StringWriter();
+        var json = """
+            {
+              "Field": [
+                1,
+                2,
+                3
+              ]
+            }
+            """;
 
         // Act
-        var action = () => new HashiJsonTextWriter(stringWriter);
+        var result = InlineArrayJsonFormatter.FormatInlineArrays(json);
 
         // Assert
-        action.Should().NotThrow();
+        result.Should().Contain("[1, 2, 3]");
+        result.Should().Contain("\"Field\"");
     }
 
     [Test]
-    public void WriteIndent_WhenWriteStateIsArray_ShouldWriteSpace()
+    public void FormatInlineArrays_WhenObjectProperties_ShouldPreserveNormalIndent()
     {
         // Arrange
-        using var stringWriter = new StringWriter();
-        using var writer = new HashiJsonTextWriter(stringWriter)
-        {
-            Formatting = Formatting.Indented
-        };
+        var json = """
+            {
+              "key": "value"
+            }
+            """;
 
-        // Act — write an array with values to trigger array indent
-        writer.WriteStartArray();
-        writer.WriteValue(1);
-        writer.WriteValue(2);
-        writer.WriteEndArray();
-        writer.Flush();
+        // Act
+        var result = InlineArrayJsonFormatter.FormatInlineArrays(json);
 
-        var result = stringWriter.ToString();
-
-        // Assert — array elements should be space-separated, not newline-indented
-        result.Should().NotContain("\n  1");
-        result.Should().Contain("1, 2");
-    }
-
-    [Test]
-    public void WriteIndent_WhenWriteStateIsNotArray_ShouldWriteNormalIndent()
-    {
-        // Arrange
-        using var stringWriter = new StringWriter();
-        using var writer = new HashiJsonTextWriter(stringWriter)
-        {
-            Formatting = Formatting.Indented
-        };
-
-        // Act — write an object with a property to trigger object indent
-        writer.WriteStartObject();
-        writer.WritePropertyName("key");
-        writer.WriteValue("value");
-        writer.WriteEndObject();
-        writer.Flush();
-
-        var result = stringWriter.ToString();
-
-        // Assert — object properties should be indented normally
-        result.Should().Contain("\n");
+        // Assert
         result.Should().Contain("\"key\"");
+        result.Should().Contain("\n");
+    }
+
+    [Test]
+    public void FormatInlineArrays_WhenNestedArrays_ShouldCollapseInnerArrays()
+    {
+        // Arrange
+        var json = """
+            [
+              [
+                1,
+                2
+              ],
+              [
+                3,
+                4
+              ]
+            ]
+            """;
+
+        // Act
+        var result = InlineArrayJsonFormatter.FormatInlineArrays(json);
+
+        // Assert
+        result.Should().Contain("[1, 2]");
+        result.Should().Contain("[3, 4]");
     }
 }

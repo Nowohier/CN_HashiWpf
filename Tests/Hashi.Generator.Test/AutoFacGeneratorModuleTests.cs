@@ -1,10 +1,12 @@
-using Autofac;
 using FluentAssertions;
+using Hashi.Generator.Extensions;
 using Hashi.Generator.Interfaces;
 using Hashi.Generator.Interfaces.Models;
 using Hashi.Generator.Interfaces.Providers;
+using Hashi.Gui.Core.Extensions;
 using Hashi.LinearSolver.Interfaces;
 using Hashi.Logging.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System.Drawing;
 
@@ -13,12 +15,12 @@ namespace Hashi.Generator.Test;
 [TestFixture]
 public class AutoFacGeneratorModuleTests
 {
-    private IContainer container = null!;
+    private ServiceProvider serviceProvider = null!;
 
     [SetUp]
     public void Setup()
     {
-        var builder = new ContainerBuilder();
+        var services = new ServiceCollection();
 
         // Register the logging dependencies as mocks since they're required
         var loggerFactoryMock = new Mock<ILoggerFactory>(MockBehavior.Strict);
@@ -27,28 +29,29 @@ public class AutoFacGeneratorModuleTests
         // Setup the logger factory to return a mock logger
         loggerFactoryMock.Setup(f => f.CreateLogger<It.IsAnyType>()).Returns(loggerMock.Object);
 
-        builder.RegisterInstance(loggerFactoryMock.Object).As<ILoggerFactory>();
+        services.AddSingleton(loggerFactoryMock.Object);
 
         // Register the solver dependency as mock since it's required
         var hashiSolverMock = new Mock<IHashiSolver>(MockBehavior.Strict);
-        builder.RegisterInstance(hashiSolverMock.Object).As<IHashiSolver>().As<IPuzzleSolver>();
+        services.AddSingleton(hashiSolverMock.Object);
+        services.AddSingleton<IPuzzleSolver>(hashiSolverMock.As<IPuzzleSolver>().Object);
 
-        builder.RegisterModule<Hashi.Gui.Core.AutoFacGuiCoreModule>();
-        builder.RegisterModule<AutoFacGeneratorModule>();
-        container = builder.Build();
+        services.AddGuiCoreServices();
+        services.AddGeneratorServices();
+        serviceProvider = services.BuildServiceProvider();
     }
 
     [TearDown]
     public void Teardown()
     {
-        container.Dispose();
+        serviceProvider.Dispose();
     }
 
     [Test]
     public void Load_WhenCalled_ShouldRegisterHashiGenerator()
     {
         // Arrange & Act
-        var hashiGenerator = container.Resolve<IHashiGenerator>();
+        var hashiGenerator = serviceProvider.GetRequiredService<IHashiGenerator>();
 
         // Assert
         hashiGenerator.Should().NotBeNull();
@@ -59,8 +62,8 @@ public class AutoFacGeneratorModuleTests
     public void Load_WhenCalled_ShouldRegisterHashiGeneratorAsSingleton()
     {
         // Arrange & Act
-        var hashiGenerator1 = container.Resolve<IHashiGenerator>();
-        var hashiGenerator2 = container.Resolve<IHashiGenerator>();
+        var hashiGenerator1 = serviceProvider.GetRequiredService<IHashiGenerator>();
+        var hashiGenerator2 = serviceProvider.GetRequiredService<IHashiGenerator>();
 
         // Assert
         hashiGenerator1.Should().BeSameAs(hashiGenerator2);
@@ -70,7 +73,7 @@ public class AutoFacGeneratorModuleTests
     public void Load_WhenCalled_ShouldRegisterIslandFactory()
     {
         // Arrange & Act
-        var islandFactory = container.Resolve<Func<int, int, int, IIsland>>();
+        var islandFactory = serviceProvider.GetRequiredService<Func<int, int, int, IIsland>>();
 
         // Assert
         islandFactory.Should().NotBeNull();
@@ -80,7 +83,7 @@ public class AutoFacGeneratorModuleTests
     public void IslandFactory_WhenInvoked_ShouldCreateIslandWithCorrectProperties()
     {
         // Arrange
-        var islandFactory = container.Resolve<Func<int, int, int, IIsland>>();
+        var islandFactory = serviceProvider.GetRequiredService<Func<int, int, int, IIsland>>();
         var amountBridges = 3;
         var row = 5;
         var column = 7;
@@ -99,7 +102,7 @@ public class AutoFacGeneratorModuleTests
     public void Load_WhenCalled_ShouldRegisterBridgeCoordinatesFactory()
     {
         // Arrange & Act
-        var bridgeCoordinatesFactory = container.Resolve<Func<Point, Point, int, IBridgeCoordinates>>();
+        var bridgeCoordinatesFactory = serviceProvider.GetRequiredService<Func<Point, Point, int, IBridgeCoordinates>>();
 
         // Assert
         bridgeCoordinatesFactory.Should().NotBeNull();
@@ -109,7 +112,7 @@ public class AutoFacGeneratorModuleTests
     public void BridgeCoordinatesFactory_WhenInvoked_ShouldCreateBridgeCoordinatesWithCorrectProperties()
     {
         // Arrange
-        var bridgeCoordinatesFactory = container.Resolve<Func<Point, Point, int, IBridgeCoordinates>>();
+        var bridgeCoordinatesFactory = serviceProvider.GetRequiredService<Func<Point, Point, int, IBridgeCoordinates>>();
         var location1 = new Point(1, 2);
         var location2 = new Point(3, 4);
         var amountBridges = 2;
@@ -128,7 +131,7 @@ public class AutoFacGeneratorModuleTests
     public void Load_WhenCalled_ShouldRegisterSolutionProviderFactory()
     {
         // Arrange & Act
-        var solutionProviderFactory = container.Resolve<Func<int[][], IReadOnlyList<IBridgeCoordinates>, ISolutionProvider>>();
+        var solutionProviderFactory = serviceProvider.GetRequiredService<Func<int[][], IReadOnlyList<IBridgeCoordinates>, ISolutionProvider>>();
 
         // Assert
         solutionProviderFactory.Should().NotBeNull();
@@ -138,7 +141,7 @@ public class AutoFacGeneratorModuleTests
     public void SolutionProviderFactory_WhenInvoked_ShouldCreateSolutionProviderWithCorrectProperties()
     {
         // Arrange
-        var solutionProviderFactory = container.Resolve<Func<int[][], IReadOnlyList<IBridgeCoordinates>, ISolutionProvider>>();
+        var solutionProviderFactory = serviceProvider.GetRequiredService<Func<int[][], IReadOnlyList<IBridgeCoordinates>, ISolutionProvider>>();
         var hashiField = new int[][]
         {
             [0, 1, 0],
@@ -160,7 +163,7 @@ public class AutoFacGeneratorModuleTests
     public void Load_WhenCalled_ShouldRegisterBridgeFactory()
     {
         // Arrange & Act
-        var bridgeFactory = container.Resolve<Func<IIsland, IIsland, int, IBridge>>();
+        var bridgeFactory = serviceProvider.GetRequiredService<Func<IIsland, IIsland, int, IBridge>>();
 
         // Assert
         bridgeFactory.Should().NotBeNull();
@@ -170,8 +173,8 @@ public class AutoFacGeneratorModuleTests
     public void BridgeFactory_WhenInvoked_ShouldCreateBridgeWithCorrectProperties()
     {
         // Arrange
-        var bridgeFactory = container.Resolve<Func<IIsland, IIsland, int, IBridge>>();
-        var islandFactory = container.Resolve<Func<int, int, int, IIsland>>();
+        var bridgeFactory = serviceProvider.GetRequiredService<Func<IIsland, IIsland, int, IBridge>>();
+        var islandFactory = serviceProvider.GetRequiredService<Func<int, int, int, IIsland>>();
 
         var island1 = islandFactory(2, 1, 1);
         var island2 = islandFactory(2, 1, 3);
@@ -188,17 +191,14 @@ public class AutoFacGeneratorModuleTests
     }
 
     [Test]
-    public void Load_WhenCalled_ShouldRegisterIslandAsInstancePerDependency()
+    public void IslandFactory_WhenInvokedMultipleTimes_ShouldCreateDifferentInstances()
     {
-        // Arrange & Act
-        var island1 = container.Resolve<IIsland>(
-            new NamedParameter("amountBridgesConnectable", 2),
-            new NamedParameter("y", 1),
-            new NamedParameter("x", 1));
-        var island2 = container.Resolve<IIsland>(
-            new NamedParameter("amountBridgesConnectable", 2),
-            new NamedParameter("y", 1),
-            new NamedParameter("x", 1));
+        // Arrange
+        var islandFactory = serviceProvider.GetRequiredService<Func<int, int, int, IIsland>>();
+
+        // Act
+        var island1 = islandFactory(2, 1, 1);
+        var island2 = islandFactory(2, 1, 1);
 
         // Assert
         island1.Should().NotBeSameAs(island2); // Should be different instances
@@ -206,50 +206,41 @@ public class AutoFacGeneratorModuleTests
     }
 
     [Test]
-    public void Load_WhenCalled_ShouldRegisterBridgeAsInstancePerDependency()
+    public void BridgeFactory_WhenInvokedMultipleTimes_ShouldCreateDifferentInstances()
     {
         // Arrange
-        var islandFactory = container.Resolve<Func<int, int, int, IIsland>>();
+        var islandFactory = serviceProvider.GetRequiredService<Func<int, int, int, IIsland>>();
         var island1 = islandFactory(2, 1, 1);
         var island2 = islandFactory(2, 1, 3);
 
+        var bridgeFactory = serviceProvider.GetRequiredService<Func<IIsland, IIsland, int, IBridge>>();
+
         // Act
-        var bridge1 = container.Resolve<IBridge>(
-            new NamedParameter("island1", island1),
-            new NamedParameter("island2", island2),
-            new NamedParameter("amountBridgesSet", 1));
-        var bridge2 = container.Resolve<IBridge>(
-            new NamedParameter("island1", island1),
-            new NamedParameter("island2", island2),
-            new NamedParameter("amountBridgesSet", 1));
+        var bridge1 = bridgeFactory(island1, island2, 1);
+        var bridge2 = bridgeFactory(island1, island2, 1);
 
         // Assert
         bridge1.Should().NotBeSameAs(bridge2); // Should be different instances
     }
 
     [Test]
-    public void Load_WhenCalled_ShouldRegisterBridgeCoordinatesAsInstancePerDependency()
+    public void BridgeCoordinatesFactory_WhenInvokedMultipleTimes_ShouldCreateDifferentInstances()
     {
         // Arrange
         var location1 = new Point(1, 2);
         var location2 = new Point(3, 4);
+        var bridgeCoordinatesFactory = serviceProvider.GetRequiredService<Func<Point, Point, int, IBridgeCoordinates>>();
 
         // Act
-        var bridgeCoordinates1 = container.Resolve<IBridgeCoordinates>(
-            new NamedParameter("location1", location1),
-            new NamedParameter("location2", location2),
-            new NamedParameter("amountBridges", 1));
-        var bridgeCoordinates2 = container.Resolve<IBridgeCoordinates>(
-            new NamedParameter("location1", location1),
-            new NamedParameter("location2", location2),
-            new NamedParameter("amountBridges", 1));
+        var bridgeCoordinates1 = bridgeCoordinatesFactory(location1, location2, 1);
+        var bridgeCoordinates2 = bridgeCoordinatesFactory(location1, location2, 1);
 
         // Assert
         bridgeCoordinates1.Should().NotBeSameAs(bridgeCoordinates2); // Should be different instances
     }
 
     [Test]
-    public void Load_WhenCalled_ShouldRegisterSolutionProviderAsInstancePerDependency()
+    public void SolutionProviderFactory_WhenInvokedMultipleTimes_ShouldCreateDifferentInstances()
     {
         // Arrange
         var hashiField = new int[][]
@@ -257,14 +248,11 @@ public class AutoFacGeneratorModuleTests
             [1, 2, 1]
         };
         var bridgeCoordinates = new List<IBridgeCoordinates>();
+        var solutionProviderFactory = serviceProvider.GetRequiredService<Func<int[][], IReadOnlyList<IBridgeCoordinates>, ISolutionProvider>>();
 
         // Act
-        var solutionProvider1 = container.Resolve<ISolutionProvider>(
-            new NamedParameter("hashiField", hashiField),
-            new NamedParameter("bridgeCoordinates", bridgeCoordinates));
-        var solutionProvider2 = container.Resolve<ISolutionProvider>(
-            new NamedParameter("hashiField", hashiField),
-            new NamedParameter("bridgeCoordinates", bridgeCoordinates));
+        var solutionProvider1 = solutionProviderFactory(hashiField, bridgeCoordinates);
+        var solutionProvider2 = solutionProviderFactory(hashiField, bridgeCoordinates);
 
         // Assert
         solutionProvider1.Should().NotBeSameAs(solutionProvider2); // Should be different instances

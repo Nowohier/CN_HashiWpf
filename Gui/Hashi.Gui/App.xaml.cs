@@ -1,9 +1,9 @@
-﻿using Autofac;
 using Hashi.Enums;
-using Hashi.Gui.AutoFac;
+using Hashi.Gui.Extensions;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Views;
 using Hashi.Gui.Interfaces.Wrappers;
+using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -14,8 +14,7 @@ namespace Hashi.Gui;
 /// </summary>
 public partial class App
 {
-    private IContainer? container;
-    private ILifetimeScope? scope;
+    private ServiceProvider? serviceProvider;
     private IDialogWrapper? dialogWrapper;
     private IMainViewModel? mainViewModel;
 
@@ -40,17 +39,15 @@ public partial class App
     {
         base.OnStartup(e);
 
-        var builder = new ContainerBuilder();
-        builder.RegisterModule<AutoFacMainModule>();
-        container = builder.Build();
+        var services = new ServiceCollection();
+        services.AddHashiServices();
+        serviceProvider = services.BuildServiceProvider();
 
-        scope = container.BeginLifetimeScope();
-
-        dialogWrapper = scope.Resolve<IDialogWrapper>();
-        mainViewModel = scope.Resolve<IMainViewModel>();
+        dialogWrapper = serviceProvider.GetRequiredService<IDialogWrapper>();
+        mainViewModel = serviceProvider.GetRequiredService<IMainViewModel>();
         mainViewModel.Initialize();
 
-        var gui = scope.Resolve<IWindow>();
+        var gui = serviceProvider.GetRequiredService<IWindow>();
         gui.DataContext = mainViewModel;
         gui.ShowDialog();
     }
@@ -64,8 +61,7 @@ public partial class App
 
         mainViewModel?.SettingsProvider.SaveSettings();
 
-        scope?.Dispose();
-        container?.Dispose();
+        serviceProvider?.Dispose();
     }
 
     /// <summary>
