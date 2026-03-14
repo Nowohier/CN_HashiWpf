@@ -2,8 +2,8 @@
 using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Enums;
 using Hashi.Generator.Interfaces;
+using Hashi.Generator.Interfaces.Models;
 using Hashi.Generator.Interfaces.Providers;
-using Hashi.Generator.Providers;
 using Hashi.Gui.Interfaces.Helpers;
 using Hashi.Gui.Interfaces.Managers;
 using Hashi.Gui.Interfaces.Messages;
@@ -30,6 +30,7 @@ public class MainViewModel : AsyncObservableRecipient,
     private readonly IHashiGenerator hashiGenerator;
     private readonly IResourceManager resourceManager;
     private readonly IHashiBrushResolver brushResolver;
+    private readonly Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider> solutionProviderFactory;
     private readonly ILogger logger;
 
     private bool isCheating;
@@ -52,6 +53,7 @@ public class MainViewModel : AsyncObservableRecipient,
     /// <param name="resourceManager">The resource manager.</param>
     /// <param name="loggerFactory">The logger factory.</param>
     /// <param name="brushResolver">The brush resolver instance.</param>
+    /// <param name="solutionProviderFactory">The factory for creating solution providers.</param>
     public MainViewModel
     (
         IDialogWrapper dialogWrapper,
@@ -63,7 +65,8 @@ public class MainViewModel : AsyncObservableRecipient,
         ITestSolutionProvider testSolutionProvider,
         IResourceManager resourceManager,
         ILoggerFactory loggerFactory,
-        IHashiBrushResolver brushResolver)
+        IHashiBrushResolver brushResolver,
+        Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider> solutionProviderFactory)
     {
         SettingsProvider = settingsProvider ?? throw new ArgumentNullException(nameof(settingsProvider));
         TimerProvider = timerProvider ?? throw new ArgumentNullException(nameof(timerProvider));
@@ -74,6 +77,7 @@ public class MainViewModel : AsyncObservableRecipient,
         this.hashiGenerator = hashiGenerator ?? throw new ArgumentNullException(nameof(hashiGenerator));
         this.resourceManager = resourceManager ?? throw new ArgumentNullException(nameof(resourceManager));
         this.brushResolver = brushResolver ?? throw new ArgumentNullException(nameof(brushResolver));
+        this.solutionProviderFactory = solutionProviderFactory ?? throw new ArgumentNullException(nameof(solutionProviderFactory));
         logger = (loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory))).CreateLogger<MainViewModel>();
 
         WeakReferenceMessenger.Default.Register<IBridgeConnectionChangedMessage>(this);
@@ -596,7 +600,7 @@ public class MainViewModel : AsyncObservableRecipient,
 
     internal void CreateTestFieldCommandExecute()
     {
-        var solutionProvider = new SolutionProvider(TestSolutionProvider.HashiFieldReference, null, NewRuleName);
+        var solutionProvider = solutionProviderFactory(TestSolutionProvider.HashiFieldReference, null, NewRuleName);
         TestSolutionProvider.SolutionProviders.Add(solutionProvider);
         TestSolutionProvider.SelectedSolutionProvider = solutionProvider;
         TestSolutionProvider.SaveTestFields();
