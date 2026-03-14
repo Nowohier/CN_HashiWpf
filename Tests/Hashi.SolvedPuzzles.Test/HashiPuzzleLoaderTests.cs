@@ -84,9 +84,11 @@ public class HashiPuzzleLoaderTests
             File.Delete(testFileName);
         }
 
-        // Act & Assert
-        var exception = Assert.Throws<FileNotFoundException>(() => hashiPuzzleLoader.LoadPuzzle(testPuzzleEnum));
-        exception.Message.Should().Contain($"File {testFileName} not found.");
+        // Act
+        var act = () => hashiPuzzleLoader.LoadPuzzle(testPuzzleEnum);
+
+        // Assert
+        act.Should().Throw<FileNotFoundException>().WithMessage($"*File {testFileName} not found.*");
     }
 
     [Test]
@@ -107,9 +109,11 @@ public class HashiPuzzleLoaderTests
 
         try
         {
-            // Act & Assert
-            var exception = Assert.Throws<JsonException>(() => hashiPuzzleLoader.LoadPuzzle(testPuzzleEnum));
-            exception.Should().NotBeNull();
+            // Act
+            var act = () => hashiPuzzleLoader.LoadPuzzle(testPuzzleEnum);
+
+            // Assert
+            act.Should().Throw<JsonException>();
         }
         finally
         {
@@ -139,9 +143,12 @@ public class HashiPuzzleLoaderTests
 
         try
         {
-            // Act & Assert
-            var exception = Assert.Throws<InvalidDataException>(() => hashiPuzzleLoader.LoadPuzzle(testPuzzleEnum));
-            exception.Message.Should().Contain($"Failed to deserialize the puzzle from file {testFileName}.");
+            // Act
+            var act = () => hashiPuzzleLoader.LoadPuzzle(testPuzzleEnum);
+
+            // Assert
+            act.Should().Throw<InvalidDataException>()
+                .WithMessage($"*Failed to deserialize the puzzle from file {testFileName}.*");
         }
         finally
         {
@@ -171,9 +178,11 @@ public class HashiPuzzleLoaderTests
 
         try
         {
-            // Act & Assert
-            var exception = Assert.Throws<JsonException>(() => hashiPuzzleLoader.LoadPuzzle(testPuzzleEnum));
-            exception.Should().NotBeNull();
+            // Act
+            var act = () => hashiPuzzleLoader.LoadPuzzle(testPuzzleEnum);
+
+            // Assert
+            act.Should().Throw<JsonException>();
         }
         finally
         {

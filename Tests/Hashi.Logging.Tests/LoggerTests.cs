@@ -64,8 +64,11 @@ public class LoggerTests
         // Arrange
         var message = "Test trace message";
 
-        // Act & Assert
-        Assert.DoesNotThrow(() => logger.Trace(message));
+        // Act
+        var act = () => logger.Trace(message);
+
+        // Assert
+        act.Should().NotThrow();
     }
 
     [Test]
@@ -74,8 +77,11 @@ public class LoggerTests
         // Arrange
         var message = "";
 
-        // Act & Assert
-        Assert.DoesNotThrow(() => logger.Trace(message));
+        // Act
+        var act = () => logger.Trace(message);
+
+        // Assert
+        act.Should().NotThrow();
     }
 
     [Test]
@@ -84,8 +90,11 @@ public class LoggerTests
         // Arrange
         string? message = null;
 
-        // Act & Assert
-        Assert.DoesNotThrow(() => logger.Trace(message!));
+        // Act
+        var act = () => logger.Trace(message!);
+
+        // Assert
+        act.Should().NotThrow();
     }
 
     #endregion
@@ -98,8 +107,11 @@ public class LoggerTests
         // Arrange
         var message = "Test debug message";
 
-        // Act & Assert
-        Assert.DoesNotThrow(() => logger.Debug(message));
+        // Act
+        var act = () => logger.Debug(message);
+
+        // Assert
+        act.Should().NotThrow();
     }
 
     [Test]
@@ -108,8 +120,11 @@ public class LoggerTests
         // Arrange
         var message = "";
 
-        // Act & Assert
-        Assert.DoesNotThrow(() => logger.Debug(message));
+        // Act
+        var act = () => logger.Debug(message);
+
+        // Assert
+        act.Should().NotThrow();
     }
 
     [Test]
@@ -118,8 +133,11 @@ public class LoggerTests
         // Arrange
         string? message = null;
 
-        // Act & Assert
-        Assert.DoesNotThrow(() => logger.Debug(message!));
+        // Act
+        var act = () => logger.Debug(message!);
+
+        // Assert
+        act.Should().NotThrow();
     }
 
     #endregion
@@ -132,8 +150,11 @@ public class LoggerTests
         // Arrange
         var message = "Test info message";
 
-        // Act & Assert
-        Assert.DoesNotThrow(() => logger.Info(message));
+        // Act
+        var act = () => logger.Info(message);
+
+        // Assert
+        act.Should().NotThrow();
     }
 
     [Test]
@@ -142,8 +163,11 @@ public class LoggerTests
         // Arrange
         var message = "";
 
-        // Act & Assert
-        Assert.DoesNotThrow(() => logger.Info(message));
+        // Act
+        var act = () => logger.Info(message);
+
+        // Assert
+        act.Should().NotThrow();
     }
 
     [Test]
@@ -152,8 +176,11 @@ public class LoggerTests
         // Arrange
         string? message = null;
 
-        // Act & Assert
-        Assert.DoesNotThrow(() => logger.Info(message!));
+        // Act
+        var act = () => logger.Info(message!);
+
+        // Assert
+        act.Should().NotThrow();
     }
 
     #endregion
@@ -166,8 +193,11 @@ public class LoggerTests
         // Arrange
         var message = "Test warn message";
 
-        // Act & Assert
-        Assert.DoesNotThrow(() => logger.Warn(message));
+        // Act
+        var act = () => logger.Warn(message);
+
+        // Assert
+        act.Should().NotThrow();
     }
 
     [Test]
@@ -176,8 +206,11 @@ public class LoggerTests
         // Arrange
         var message = "";
 
-        // Act & Assert
-        Assert.DoesNotThrow(() => logger.Warn(message));
+        // Act
+        var act = () => logger.Warn(message);
+
+        // Assert
+        act.Should().NotThrow();
     }
 
     [Test]
@@ -186,8 +219,11 @@ public class LoggerTests
         // Arrange
         string? message = null;
 
-        // Act & Assert
-        Assert.DoesNotThrow(() => logger.Warn(message!));
+        // Act
+        var act = () => logger.Warn(message!);
+
+        // Assert
+        act.Should().NotThrow();
     }
 
     #endregion
@@ -200,8 +236,11 @@ public class LoggerTests
         // Arrange
         var message = "Test error message";
 
-        // Act & Assert
-        Assert.DoesNotThrow(() => logger.Error(message));
+        // Act
+        var act = () => logger.Error(message);
+
+        // Assert
+        act.Should().NotThrow();
     }
 
     [Test]
@@ -210,8 +249,11 @@ public class LoggerTests
         // Arrange
         var message = "";
 
-        // Act & Assert
-        Assert.DoesNotThrow(() => logger.Error(message));
+        // Act
+        var act = () => logger.Error(message);
+
+        // Assert
+        act.Should().NotThrow();
     }
 
     [Test]
@@ -220,8 +262,11 @@ public class LoggerTests
         // Arrange
         string? message = null;
 
-        // Act & Assert
-        Assert.DoesNotThrow(() => logger.Error(message!));
+        // Act
+        var act = () => logger.Error(message!);
+
+        // Assert
+        act.Should().NotThrow();
     }
 
     [Test]
@@ -231,8 +276,11 @@ public class LoggerTests
         var message = "Test error message with exception";
         var exception = new InvalidOperationException("Test exception");
 
-        // Act & Assert
-        Assert.DoesNotThrow(() => logger.Error(message, exception));
+        // Act
+        var act = () => logger.Error(message, exception);
+
+        // Assert
+        act.Should().NotThrow();
     }
 
     [Test]
@@ -242,8 +290,11 @@ public class LoggerTests
         var message = "Test error message with null exception";
         Exception? exception = null;
 
-        // Act & Assert
-        Assert.DoesNotThrow(() => logger.Error(message, exception!));
+        // Act
+        var act = () => logger.Error(message, exception!);
+
+        // Assert
+        act.Should().NotThrow();
     }
 
     #endregion
@@ -256,8 +307,11 @@ public class LoggerTests
         // Arrange
         var message = "Test fatal message";
 
-        // Act & Assert
-        Assert.DoesNotThrow(() => logger.Fatal(message));
+        // Act
+        var act = () => logger.Fatal(message);
+
+        // Assert
+        act.Should().NotThrow();
     }
 
     [Test]
@@ -266,8 +320,11 @@ public class LoggerTests
         // Arrange
         var message = "";
 
-        // Act & Assert
-        Assert.DoesNotThrow(() => logger.Fatal(message));
+        // Act
+        var act = () => logger.Fatal(message);
+
+        // Assert
+        act.Should().NotThrow();
     }
 
     [Test]
@@ -276,8 +333,11 @@ public class LoggerTests
         // Arrange
         string? message = null;
 
-        // Act & Assert
-        Assert.DoesNotThrow(() => logger.Fatal(message!));
+        // Act
+        var act = () => logger.Fatal(message!);
+
+        // Assert
+        act.Should().NotThrow();
     }
 
     [Test]
@@ -287,8 +347,11 @@ public class LoggerTests
         var message = "Test fatal message with exception";
         var exception = new InvalidOperationException("Test exception");
 
-        // Act & Assert
-        Assert.DoesNotThrow(() => logger.Fatal(message, exception));
+        // Act
+        var act = () => logger.Fatal(message, exception);
+
+        // Assert
+        act.Should().NotThrow();
     }
 
     [Test]
@@ -298,8 +361,11 @@ public class LoggerTests
         var message = "Test fatal message with null exception";
         Exception? exception = null;
 
-        // Act & Assert
-        Assert.DoesNotThrow(() => logger.Fatal(message, exception!));
+        // Act
+        var act = () => logger.Fatal(message, exception!);
+
+        // Assert
+        act.Should().NotThrow();
     }
 
     #endregion
@@ -332,8 +398,8 @@ public class LoggerTests
         var errorMessage = "Error message";
         var fatalMessage = "Fatal message";
 
-        // Act & Assert
-        Assert.DoesNotThrow(() =>
+        // Act
+        var act = () =>
         {
             logger.Trace(traceMessage);
             logger.Debug(debugMessage);
@@ -341,7 +407,10 @@ public class LoggerTests
             logger.Warn(warnMessage);
             logger.Error(errorMessage);
             logger.Fatal(fatalMessage);
-        });
+        };
+
+        // Assert
+        act.Should().NotThrow();
     }
 
     [Test]
@@ -351,12 +420,15 @@ public class LoggerTests
         var factory = new LoggerFactory();
         var factoryLogger = factory.CreateLogger<LoggerTests>();
 
-        // Act & Assert
-        Assert.DoesNotThrow(() =>
+        // Act
+        var act = () =>
         {
             factoryLogger.Info("Test message from factory logger");
             factoryLogger.Error("Test error from factory logger");
-        });
+        };
+
+        // Assert
+        act.Should().NotThrow();
     }
 
     [Test]
@@ -367,13 +439,16 @@ public class LoggerTests
         var complexException = new InvalidOperationException("Complex exception",
             new ArgumentException("Inner exception"));
 
-        // Act & Assert
-        Assert.DoesNotThrow(() =>
+        // Act
+        var act = () =>
         {
             logger.Error("Error with simple exception", simpleException);
             logger.Fatal("Fatal with complex exception", complexException);
             logger.Error("Error with null exception", null!);
-        });
+        };
+
+        // Assert
+        act.Should().NotThrow();
     }
 
     #endregion

@@ -84,9 +84,12 @@ public class AutoFacLoggingModuleTests
     [Test]
     public void AutoFacLoggingModule_WhenInstantiated_ShouldNotThrow()
     {
-        // Act & Assert
+        // Act
         // ReSharper disable once ObjectCreationAsStatement
-        Assert.DoesNotThrow(() => new AutoFacLoggingModule());
+        var act = () => new AutoFacLoggingModule();
+
+        // Assert
+        act.Should().NotThrow();
     }
 
     #endregion
@@ -117,8 +120,8 @@ public class AutoFacLoggingModuleTests
         var loggerFactory = container.Resolve<ILoggerFactory>();
         var logger = loggerFactory.CreateLogger<AutoFacLoggingModuleTests>();
 
-        // Act & Assert
-        Assert.DoesNotThrow(() =>
+        // Act
+        var act = () =>
         {
             logger.Trace("Trace message");
             logger.Debug("Debug message");
@@ -126,7 +129,10 @@ public class AutoFacLoggingModuleTests
             logger.Warn("Warn message");
             logger.Error("Error message");
             logger.Fatal("Fatal message");
-        });
+        };
+
+        // Assert
+        act.Should().NotThrow();
     }
 
     #endregion

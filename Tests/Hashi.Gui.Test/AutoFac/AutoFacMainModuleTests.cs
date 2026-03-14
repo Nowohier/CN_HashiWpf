@@ -32,11 +32,11 @@ public class AutoFacMainModuleTests
         {
             container = builder.Build();
         }
-        catch (Exception ex)
+        catch
         {
             // Some dependencies might not be available in test context
-            // We'll test what we can
-            Assert.Inconclusive($"Container could not be built due to missing dependencies: {ex.Message}");
+            // Container remains null; tests that need it will be skipped via Assume.That
+            container = null;
         }
     }
 
@@ -84,34 +84,16 @@ public class AutoFacMainModuleTests
     [Test]
     public void Load_WhenCalled_ShouldRegisterSolutionProviderFactory()
     {
-        // This test would require all dependencies to be properly mocked
-        // Since the AutoFac modules have complex dependencies, we'll skip detailed registration tests
-        // and focus on the basic structure tests above
+        // Skip if container could not be built due to missing dependencies
+        Assume.That(container, Is.Not.Null, "Container not available for testing");
 
-        // In a real scenario, you would:
-        // 1. Mock all required dependencies
-        // 2. Build the container
-        // 3. Verify specific registrations like:
+        // Act
+        var act = () => container!
+            .Resolve<Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider>>();
 
-        if (container != null)
-        {
-            try
-            {
-                var solutionProviderFactory =
-                    container
-                        .Resolve<Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider>>();
-                solutionProviderFactory.Should().NotBeNull();
-            }
-            catch (Exception)
-            {
-                // Dependencies not available in test context
-                Assert.Inconclusive("Cannot test factory registration due to missing dependencies");
-            }
-        }
-        else
-        {
-            Assert.Inconclusive("Container not available for testing");
-        }
+        // Assert
+        act.Should().NotThrow()
+            .Which.Should().NotBeNull();
     }
 
     [Test]
