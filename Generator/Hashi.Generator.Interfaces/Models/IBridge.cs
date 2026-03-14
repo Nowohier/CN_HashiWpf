@@ -1,5 +1,8 @@
 ﻿namespace Hashi.Generator.Interfaces.Models;
 
+/// <summary>
+///     Represents a bridge connecting two islands in the Hashi game.
+/// </summary>
 public interface IBridge
 {
     /// <summary>
@@ -18,10 +21,10 @@ public interface IBridge
     int AmountBridgesSet { get; }
 
     /// <summary>
-    ///     Adds the other side of the bridge.
+    ///     Creates a reverse bridge with swapped islands and applies directional bridge counts to both islands.
     /// </summary>
-    /// <returns>the added bridge.</returns>
-    IBridge AddOtherSide();
+    /// <returns>The newly created reverse bridge.</returns>
+    IBridge CreateReverseBridgeAndApplyDirections();
 
     /// <summary>
     ///     Adds another bridge to this bridge.

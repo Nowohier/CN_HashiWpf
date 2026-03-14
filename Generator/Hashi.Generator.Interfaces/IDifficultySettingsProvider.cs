@@ -9,9 +9,8 @@ public interface IDifficultySettingsProvider
     ///     Gets the preconfigured settings for a given difficulty level.
     /// </summary>
     /// <param name="difficulty">The difficulty level (0-9).</param>
-    /// <returns>A tuple containing min/max length/width, divisor, alpha, and beta values.</returns>
-    (int minLength, int maxLength, int minWidth, int maxWidth, int divisor, int alpha, int beta) GetDifficultySettings(
-        int difficulty);
+    /// <returns>The difficulty settings for the given level.</returns>
+    DifficultySettings GetDifficultySettings(int difficulty);
 
     /// <summary>
     ///     Gets the alpha value for a given difficulty level.

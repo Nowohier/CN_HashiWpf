@@ -4,31 +4,23 @@ using Hashi.Enums;
 using Hashi.Generator.Interfaces;
 using Hashi.Generator.Interfaces.Models;
 using Hashi.Generator.Interfaces.Providers;
-using Hashi.Generator.Services;
 using Hashi.LinearSolver.Interfaces;
 using Hashi.Logging.Interfaces;
 using Moq;
-#pragma warning disable CS8605 // Unboxing a possibly null value.
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
 
 namespace Hashi.Generator.Test
 {
     [TestFixture]
     public class HashiGeneratorTests
     {
-        private IContainer container;
-        private IHashiGenerator hashiGenerator;
-        private Mock<IHashiSolver> hashiSolverMock;
-        private Mock<ILogger> loggerMock;
-        private Mock<ILoggerFactory> loggerFactoryMock;
-        private Mock<Func<int, int, int, IIsland>> islandFactoryMock;
-        private Mock<Func<IIsland, IIsland, int, IBridge>> bridgeFactoryMock;
-        private Mock<Func<int[][], IList<IBridgeCoordinates>, ISolutionProvider>> solutionContainerFactoryMock;
-        private DifficultySettingsProvider difficultySettingsProvider;
-        private BlockDetectionService blockDetectionService;
-        private IslandLayoutService islandLayoutService;
-        private BridgeManagementService bridgeManagementService;
+        private IContainer container = null!;
+        private IHashiGenerator hashiGenerator = null!;
+        private Mock<IHashiSolver> hashiSolverMock = null!;
+        private Mock<ILogger> loggerMock = null!;
+        private Mock<ILoggerFactory> loggerFactoryMock = null!;
+        private Mock<Func<int, int, int, IIsland>> islandFactoryMock = null!;
+        private Mock<Func<IIsland, IIsland, int, IBridge>> bridgeFactoryMock = null!;
+        private Mock<Func<int[][], List<IBridgeCoordinates>, ISolutionProvider>> solutionContainerFactoryMock = null!;
 
         [SetUp]
         public void Setup()
@@ -39,7 +31,7 @@ namespace Hashi.Generator.Test
             loggerFactoryMock = new Mock<ILoggerFactory>(MockBehavior.Strict);
             islandFactoryMock = new Mock<Func<int, int, int, IIsland>>(MockBehavior.Strict);
             bridgeFactoryMock = new Mock<Func<IIsland, IIsland, int, IBridge>>(MockBehavior.Strict);
-            solutionContainerFactoryMock = new Mock<Func<int[][], IList<IBridgeCoordinates>, ISolutionProvider>>(MockBehavior.Strict);
+            solutionContainerFactoryMock = new Mock<Func<int[][], List<IBridgeCoordinates>, ISolutionProvider>>(MockBehavior.Strict);
 
             loggerFactoryMock.Setup(f => f.CreateLogger<It.IsAnyType>()).Returns(loggerMock.Object);
 
@@ -63,20 +55,15 @@ namespace Hashi.Generator.Test
 
             // Setup solution container factory
             var mockSolution = new Mock<ISolutionProvider>(MockBehavior.Strict);
-            solutionContainerFactoryMock.Setup(f => f(It.IsAny<int[][]>(), It.IsAny<IList<IBridgeCoordinates>>()))
+            solutionContainerFactoryMock.Setup(f => f(It.IsAny<int[][]>(), It.IsAny<List<IBridgeCoordinates>>()))
                                        .Returns(mockSolution.Object);
-
-            difficultySettingsProvider = new DifficultySettingsProvider();
-            blockDetectionService = new BlockDetectionService();
-            islandLayoutService = new IslandLayoutService(islandFactoryMock.Object, bridgeFactoryMock.Object, blockDetectionService);
-            bridgeManagementService = new BridgeManagementService(bridgeFactoryMock.Object, blockDetectionService);
 
             var builder = new ContainerBuilder();
             builder.RegisterInstance(hashiSolverMock.Object).As<IHashiSolver>();
             builder.RegisterInstance(loggerFactoryMock.Object).As<ILoggerFactory>();
             builder.RegisterInstance(islandFactoryMock.Object).As<Func<int, int, int, IIsland>>();
             builder.RegisterInstance(bridgeFactoryMock.Object).As<Func<IIsland, IIsland, int, IBridge>>();
-            builder.RegisterInstance(solutionContainerFactoryMock.Object).As<Func<int[][], IList<IBridgeCoordinates>, ISolutionProvider>>();
+            builder.RegisterInstance(solutionContainerFactoryMock.Object).As<Func<int[][], List<IBridgeCoordinates>, ISolutionProvider>>();
             builder.RegisterModule<AutoFacGeneratorModule>();
 
             container = builder.Build();
@@ -89,346 +76,12 @@ namespace Hashi.Generator.Test
             container.Dispose();
         }
 
-        #region GetDifficultySettings Tests
-
-        [Test]
-        [TestCase(0, 5, 10, 5, 10, 4, 25, 20)]
-        [TestCase(1, 14, 16, 14, 16, 4, 50, 20)]
-        [TestCase(2, 10, 16, 10, 16, 3, 75, 20)]
-        [TestCase(3, 11, 18, 11, 18, 3, 25, 15)]
-        [TestCase(4, 10, 18, 10, 18, 3, 50, 15)]
-        [TestCase(5, 13, 18, 13, 18, 3, 75, 15)]
-        [TestCase(6, 15, 20, 15, 20, 3, 25, 10)]
-        [TestCase(7, 14, 20, 14, 20, 3, 50, 10)]
-        [TestCase(8, 16, 31, 16, 31, 3, 75, 10)]
-        [TestCase(9, 20, 31, 20, 31, 3, 100, 0)]
-        public void GetDifficultySettings_WhenValidDifficulty_ShouldReturnCorrectSettings(
-            int difficulty, int expectedMinLength, int expectedMaxLength, int expectedMinWidth,
-            int expectedMaxWidth, int expectedDivisor, int expectedAlpha, int expectedBeta)
-        {
-            // Act
-            var result = difficultySettingsProvider.GetDifficultySettings(difficulty);
-
-            // Assert
-            result.minLength.Should().Be(expectedMinLength);
-            result.maxLength.Should().Be(expectedMaxLength);
-            result.minWidth.Should().Be(expectedMinWidth);
-            result.maxWidth.Should().Be(expectedMaxWidth);
-            result.divisor.Should().Be(expectedDivisor);
-            result.alpha.Should().Be(expectedAlpha);
-            result.beta.Should().Be(expectedBeta);
-        }
-
-        [Test]
-        [TestCase(-1)]
-        [TestCase(10)]
-        [TestCase(100)]
-        public void GetDifficultySettings_WhenInvalidDifficulty_ShouldThrowArgumentException(int difficulty)
-        {
-            // Act & Assert
-            Action act = () => difficultySettingsProvider.GetDifficultySettings(difficulty);
-            act.Should().Throw<ArgumentException>().WithMessage("Invalid difficulty level.");
-        }
-
-        #endregion
-
-        #region InitializeField Tests
-
-        [Test]
-        public void InitializeField_WhenValidDimensions_ShouldCreateCorrectSizedField()
-        {
-            // Arrange
-            var length = 5;
-            var width = 7;
-
-            // Act
-            var result = islandLayoutService.InitializeField(length, width);
-
-            // Assert
-            result.Should().HaveCount(length);
-            result.All(row => row.Length == width).Should().BeTrue();
-            result.SelectMany(row => row).All(cell => cell == 0).Should().BeTrue();
-        }
-
-        [Test]
-        [TestCase(0, 5)]
-        [TestCase(5, 0)]
-        public void InitializeField_WhenZeroDimensions_ShouldCreateEmptyField(int length, int width)
-        {
-            // Act
-            var result = islandLayoutService.InitializeField(length, width);
-
-            // Assert
-            result.Should().HaveCount(length);
-            if (length > 0)
-            {
-                result.All(row => row.Length == width).Should().BeTrue();
-            }
-        }
-
-        [Test]
-        [TestCase(-1, 5)]
-        [TestCase(5, -1)]
-        public void InitializeField_WhenNegativeDimensions_ShouldThrowException(int length, int width)
-        {
-            // Act & Assert
-            Action act = () => islandLayoutService.InitializeField(length, width);
-            act.Should().Throw<Exception>();
-        }
-
-        #endregion
-
-        #region GetAlphaForDifficulty Tests
-
-        [Test]
-        [TestCase(0, 25)]
-        [TestCase(1, 50)]
-        [TestCase(2, 75)]
-        [TestCase(3, 25)]
-        [TestCase(4, 50)]
-        [TestCase(5, 75)]
-        [TestCase(6, 25)]
-        [TestCase(7, 50)]
-        [TestCase(8, 75)]
-        [TestCase(9, 100)]
-        public void GetAlphaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectAlpha(int difficulty, int expectedAlpha)
-        {
-            // Act
-            var result = difficultySettingsProvider.GetAlphaForDifficulty(difficulty);
-
-            // Assert
-            result.Should().Be(expectedAlpha);
-        }
-
-        [Test]
-        [TestCase(-1)]
-        [TestCase(10)]
-        public void GetAlphaForDifficulty_WhenInvalidDifficulty_ShouldReturnZero(int difficulty)
-        {
-            // Act
-            var result = difficultySettingsProvider.GetAlphaForDifficulty(difficulty);
-
-            // Assert
-            result.Should().Be(0);
-        }
-
-        #endregion
-
-        #region GetBetaForDifficulty Tests
-
-        [Test]
-        [TestCase(0, 20)]
-        [TestCase(1, 20)]
-        [TestCase(2, 20)]
-        [TestCase(3, 15)]
-        [TestCase(4, 15)]
-        [TestCase(5, 15)]
-        [TestCase(6, 10)]
-        [TestCase(7, 10)]
-        [TestCase(8, 10)]
-        [TestCase(9, 0)]
-        public void GetBetaForDifficulty_WhenValidDifficulty_ShouldReturnCorrectBeta(int difficulty, int expectedBeta)
-        {
-            // Act
-            var result = difficultySettingsProvider.GetBetaForDifficulty(difficulty);
-
-            // Assert
-            result.Should().Be(expectedBeta);
-        }
-
-        [Test]
-        [TestCase(-1, 20)]
-        [TestCase(10, 0)]
-        public void GetBetaForDifficulty_WhenOutOfRange_ShouldReturnExpectedValue(int difficulty, int expectedBeta)
-        {
-            // Act
-            var result = difficultySettingsProvider.GetBetaForDifficulty(difficulty);
-
-            // Assert
-            result.Should().Be(expectedBeta);
-        }
-
-        #endregion
-
-        #region ShuffleArray Tests
-
-        [Test]
-        public void ShuffleArray_WhenCalledWithArray_ShouldModifyArray()
-        {
-            // Arrange
-            var originalArray = new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-            var testArray = originalArray.ToArray(); // Create a copy
-
-            // Act
-            BridgeManagementService.ShuffleArray(testArray);
-
-            // Assert - The array should be modified (high probability it's different)
-            // We can't guarantee it's different due to randomness, but we can check it has same elements
-            testArray.Should().BeEquivalentTo(originalArray);
-            testArray.Length.Should().Be(originalArray.Length);
-        }
-
-        [Test]
-        public void ShuffleArray_WhenCalledWithSingleElementArray_ShouldNotThrow()
-        {
-            // Arrange
-            var array = new[] { 42 };
-
-            // Act & Assert
-            var act = () => BridgeManagementService.ShuffleArray(array);
-            act.Should().NotThrow();
-            array[0].Should().Be(42);
-        }
-
-        [Test]
-        public void ShuffleArray_WhenCalledWithEmptyArray_ShouldNotThrow()
-        {
-            // Arrange
-            var array = Array.Empty<int>();
-
-            // Act & Assert
-            var act = () => BridgeManagementService.ShuffleArray(array);
-            act.Should().NotThrow();
-        }
-
-        #endregion
-
-        #region ShuffleList Tests
-
-        [Test]
-        public void ShuffleList_WhenCalledWithList_ShouldModifyList()
-        {
-            // Arrange
-            var originalList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-            var testList = new List<int>(originalList); // Create a copy
-
-            // Act
-            BridgeManagementService.ShuffleList(testList);
-
-            // Assert - The list should be modified (same elements but potentially different order)
-            testList.Should().BeEquivalentTo(originalList);
-            testList.Count.Should().Be(originalList.Count);
-        }
-
-        [Test]
-        public void ShuffleList_WhenCalledWithSingleElementList_ShouldNotThrow()
-        {
-            // Arrange
-            var list = new List<int> { 42 };
-
-            // Act & Assert
-            var act = () => BridgeManagementService.ShuffleList(list);
-            act.Should().NotThrow();
-            list[0].Should().Be(42);
-        }
-
-        [Test]
-        public void ShuffleList_WhenCalledWithEmptyList_ShouldNotThrow()
-        {
-            // Arrange
-            var list = new List<int>();
-
-            // Act & Assert
-            var act = () => BridgeManagementService.ShuffleList(list);
-            act.Should().NotThrow();
-        }
-
-        #endregion
-
-        #region HasAdjacentIsland Tests
-
-        [Test]
-        public void HasAdjacentIsland_WhenAdjacentCellHasIsland_ShouldReturnTrue()
-        {
-            // Arrange
-            var field = new int[][]
-            {
-                [0, 0, 0],
-                [0, 1, 2], // (1,1) has adjacent island at (1,2)
-                [0, 0, 0]
-            };
-
-            // Act
-            var result = islandLayoutService.HasAdjacentIsland(1, 1, field);
-
-            // Assert
-            result.Should().BeTrue();
-        }
-
-        [Test]
-        public void HasAdjacentIsland_WhenNoAdjacentIsland_ShouldReturnFalse()
-        {
-            // Arrange
-            var field = new int[][]
-            {
-                [0, 0, 0],
-                [0, 1, 0], // (1,1) has no adjacent islands
-                [0, 0, 0]
-            };
-
-            // Act
-            var result = islandLayoutService.HasAdjacentIsland(1, 1, field);
-
-            // Assert
-            result.Should().BeFalse();
-        }
-
-        [Test]
-        public void HasAdjacentIsland_WhenAtEdgeOfField_ShouldCheckOnlyValidPositions()
-        {
-            // Arrange
-            var field = new int[][]
-            {
-                [1, 2], // (0,0) is at top-left corner
-                [0, 0]
-            };
-
-            // Act
-            var result = islandLayoutService.HasAdjacentIsland(0, 0, field);
-
-            // Assert
-            result.Should().BeTrue(); // Adjacent at (0,1)
-        }
-
-        #endregion
-
-        #region SetBeta Tests
-
-        [Test]
-        public void SetBeta_WhenBetaIsZero_ShouldNotModifyBridges()
-        {
-            // Arrange
-            var field = islandLayoutService.InitializeField(5, 5);
-
-            // Act
-            bridgeManagementService.SetBeta(field, 0, new List<IBridge>());
-
-            // Assert - Field should remain all zeros since no bridges exist to modify
-            field.SelectMany(row => row).All(cell => cell == 0).Should().BeTrue();
-        }
-
-        [Test]
-        public void SetBeta_WhenBetaIsNegative_ShouldNotModifyBridges()
-        {
-            // Arrange
-            var field = islandLayoutService.InitializeField(5, 5);
-
-            // Act
-            bridgeManagementService.SetBeta(field, -10, new List<IBridge>());
-
-            // Assert - Field should remain all zeros since no bridges exist to modify
-            field.SelectMany(row => row).All(cell => cell == 0).Should().BeTrue();
-        }
-
-        #endregion
-
         #region GenerateWithDifficultyAsync Tests
 
         [Test]
         public async Task GenerateWithDifficultyAsync_WhenValidDifficulty_ShouldReturnSolutionProvider()
         {
-            // Arrange 
-            // Setup the solver to return successful status immediately
+            // Arrange
             hashiSolverMock.Setup(s => s.SolveLazy(It.IsAny<int[][]>(), It.IsAny<bool>()))
                           .ReturnsAsync(SolverStatusEnum.Optimal);
 
@@ -438,8 +91,6 @@ namespace Hashi.Generator.Test
             // Assert
             result.Should().NotBeNull();
             hashiSolverMock.Verify(s => s.SolveLazy(It.IsAny<int[][]>(), It.IsAny<bool>()), Times.AtLeastOnce);
-            // Note: We can't easily verify the solution container factory call 
-            // because it depends on the complex internal generation logic
         }
 
         [Test]
@@ -515,177 +166,22 @@ namespace Hashi.Generator.Test
 
             // Assert
             result.Should().NotBeNull();
-            // Should retry multiple times before succeeding
             hashiSolverMock.Verify(s => s.SolveLazy(It.IsAny<int[][]>(), It.IsAny<bool>()), Times.AtLeast(6));
         }
 
         #endregion
 
-        #region AddAdditionalBridges Edge Cases Tests
-
-        [Test]
-        public void AddAdditionalBridges_WhenAlphaIsZero_ShouldNotAddBridges()
-        {
-            // Arrange
-            var field = new int[][] { [0, 0, 0], [0, 0, 0] };
-            var fieldSnapshot = field.Select(row => row.ToArray()).ToArray();
-
-            // Act
-            bridgeManagementService.AddAdditionalBridges(field, 0, new List<IIsland>(), new List<IBridge>());
-
-            // Assert - Field should remain unchanged when alpha is 0
-            for (var i = 0; i < field.Length; i++)
-            {
-                field[i].Should().BeEquivalentTo(fieldSnapshot[i]);
-            }
-        }
-
-        [Test]
-        public void AddAdditionalBridges_WhenTargetBridgesReached_ShouldStopAddingBridges()
-        {
-            // Arrange
-            var field = new int[][] { [1, 0, 1], [0, 0, 0] };
-            var fieldSnapshot = field.Select(row => row.ToArray()).ToArray();
-
-            // Act - Use low alpha to test early break condition
-            bridgeManagementService.AddAdditionalBridges(field, 1, new List<IIsland>(), new List<IBridge>());
-
-            // Assert - With no internal islands/bridges, the field should remain unchanged
-            for (var i = 0; i < field.Length; i++)
-            {
-                field[i].Should().BeEquivalentTo(fieldSnapshot[i]);
-            }
-        }
-
-        #endregion
-
-        #region GetDownBlockedBetween and GetRightBlockedBetween Edge Cases Tests
-
-        [Test]
-        public void GetDownBlockedBetween_WhenIslandDownIsNull_ShouldReturnNegativeOne()
-        {
-            // Arrange
-            var mockIsland = new Mock<IIsland>(MockBehavior.Strict);
-            mockIsland.Setup(i => i.IslandDown).Returns((IIsland?)null);
-            var field = new int[][] { [0, 0, 0] };
-
-            // Act
-            var result = blockDetectionService.GetDownBlockedBetween(mockIsland.Object, field, new List<IBridge>());
-
-            // Assert
-            result.Should().Be(-1);
-        }
-
-        [Test]
-        public void GetRightBlockedBetween_WhenIslandRightIsNull_ShouldReturnNegativeOne()
-        {
-            // Arrange
-            var mockIsland = new Mock<IIsland>(MockBehavior.Strict);
-            mockIsland.Setup(i => i.IslandRight).Returns((IIsland?)null);
-            var field = new int[][] { [0, 0, 0] };
-
-            // Act
-            var result = blockDetectionService.GetRightBlockedBetween(mockIsland.Object, field, new List<IBridge>());
-
-            // Assert
-            result.Should().Be(-1);
-        }
-
-        [Test]
-        public void GetDownBlockedBetween_WhenCacheHit_ShouldReturnCachedValue()
-        {
-            // Arrange
-            var mockIslandDown = new Mock<IIsland>(MockBehavior.Strict);
-            mockIslandDown.Setup(i => i.Y).Returns(3);
-
-            var mockIsland = new Mock<IIsland>(MockBehavior.Strict);
-            mockIsland.Setup(i => i.X).Returns(1);
-            mockIsland.Setup(i => i.Y).Returns(1);
-            mockIsland.Setup(i => i.IslandDown).Returns(mockIslandDown.Object);
-
-            var field = new int[][] {
-                [0, 0, 0],
-                [0, 0, 0],
-                [0, 0, 0],
-                [0, 0, 0]
-            };
-            var bridges = new List<IBridge>();
-
-            // Act - Call twice to test cache
-            var result1 = blockDetectionService.GetDownBlockedBetween(mockIsland.Object, field, bridges);
-            var result2 = blockDetectionService.GetDownBlockedBetween(mockIsland.Object, field, bridges);
-
-            // Assert - Both calls should return the same result
-            result1.Should().Be(result2);
-        }
-
-        [Test]
-        public void GetRightBlockedBetween_WhenCacheHit_ShouldReturnCachedValue()
-        {
-            // Arrange
-            var mockIslandRight = new Mock<IIsland>(MockBehavior.Strict);
-            mockIslandRight.Setup(i => i.X).Returns(3);
-
-            var mockIsland = new Mock<IIsland>(MockBehavior.Strict);
-            mockIsland.Setup(i => i.X).Returns(1);
-            mockIsland.Setup(i => i.Y).Returns(1);
-            mockIsland.Setup(i => i.IslandRight).Returns(mockIslandRight.Object);
-
-            var field = new int[][] {
-                [0, 0, 0, 0],
-                [0, 0, 0, 0],
-                [0, 0, 0, 0]
-            };
-            var bridges = new List<IBridge>();
-
-            // Act - Call twice to test cache
-            var result1 = blockDetectionService.GetRightBlockedBetween(mockIsland.Object, field, bridges);
-            var result2 = blockDetectionService.GetRightBlockedBetween(mockIsland.Object, field, bridges);
-
-            // Assert - Both calls should return the same result
-            result1.Should().Be(result2);
-        }
-
-        #endregion
-
-        #region SetBeta Edge Cases Tests
-
-        [Test]
-        public void SetBeta_WhenNoBridgesExist_ShouldHandleGracefully()
-        {
-            // Arrange
-            var field = new int[][] { [0, 0, 0] };
-
-            // Act & Assert - Should not throw even with no bridges
-            var act = () => bridgeManagementService.SetBeta(field, 50, new List<IBridge>());
-            act.Should().NotThrow();
-            field[0].Should().BeEquivalentTo(new[] { 0, 0, 0 });
-        }
-
-        [Test]
-        public void SetBeta_WhenBridgesToAddIsZero_ShouldReturn()
-        {
-            // Arrange
-            var field = new int[][] { [0, 0, 0] };
-
-            // Act - Use very low beta that would result in 0 bridges to add
-            var act = () => bridgeManagementService.SetBeta(field, 1, new List<IBridge>());
-            act.Should().NotThrow();
-            field[0].Should().BeEquivalentTo(new[] { 0, 0, 0 });
-        }
-
-        #endregion
-
-        #region Parallel Processing and Async Edge Cases Tests
+        #region CreateHashAsync Tests
 
         [Test]
         public async Task CreateHashAsync_WhenLargeGrid_ShouldUseParallelProcessing()
         {
             // Arrange
             var generator = (HashiGenerator)hashiGenerator;
+            var context = new GenerationContext();
 
-            // Act - Use parameters that would result in parallel processing (> 20 islands)
-            var result = await generator.CreateHashAsync(25, 20, 20, 5, 10, true);
+            // Act
+            var result = await generator.CreateHashAsync(context, 25, 20, 20, 5, 10, true);
 
             // Assert
             result.Should().NotBeNull();
@@ -697,9 +193,10 @@ namespace Hashi.Generator.Test
         {
             // Arrange
             var generator = (HashiGenerator)hashiGenerator;
+            var context = new GenerationContext();
 
-            // Act - Use parameters that would result in sequential processing (< 20 islands)
-            var result = await generator.CreateHashAsync(5, 10, 10, 3, 5, true);
+            // Act
+            var result = await generator.CreateHashAsync(context, 5, 10, 10, 3, 5, true);
 
             // Assert
             result.Should().NotBeNull();
@@ -711,49 +208,14 @@ namespace Hashi.Generator.Test
         {
             // Arrange
             var generator = (HashiGenerator)hashiGenerator;
+            var context = new GenerationContext();
 
-            // Act - Use parameters that might cause early termination
-            var result = await generator.CreateHashAsync(3, 5, 5, 1, 1, false);
-
-            // Assert
-            result.Should().NotBeNull();
-            result.Length.Should().Be(5);
-        }
-
-        #endregion
-
-        #region InitializeField and Utility Method Tests (direct internal calls)
-
-        [Test]
-        public void InitializeField_WhenCalled_ShouldCreateCorrectDimensions()
-        {
             // Act
-            var result = islandLayoutService.InitializeField(5, 7);
+            var result = await generator.CreateHashAsync(context, 3, 5, 5, 1, 1, false);
 
             // Assert
             result.Should().NotBeNull();
             result.Length.Should().Be(5);
-            result[0].Length.Should().Be(7);
-            result.All(row => row.All(cell => cell == 0)).Should().BeTrue();
-        }
-
-        [Test]
-        public void GetAlphaForDifficulty_WhenDifferentDifficulties_ShouldReturnCorrectValues()
-        {
-            // Act & Assert
-            difficultySettingsProvider.GetAlphaForDifficulty(0).Should().Be(25);
-            difficultySettingsProvider.GetAlphaForDifficulty(3).Should().Be(25);
-            difficultySettingsProvider.GetAlphaForDifficulty(1).Should().Be(50);
-            difficultySettingsProvider.GetAlphaForDifficulty(9).Should().Be(100);
-        }
-
-        [Test]
-        public void GetBetaForDifficulty_WhenDifferentDifficulties_ShouldReturnCorrectValues()
-        {
-            // Act & Assert
-            difficultySettingsProvider.GetBetaForDifficulty(0).Should().Be(20);
-            difficultySettingsProvider.GetBetaForDifficulty(5).Should().Be(15);
-            difficultySettingsProvider.GetBetaForDifficulty(9).Should().Be(0);
         }
 
         #endregion

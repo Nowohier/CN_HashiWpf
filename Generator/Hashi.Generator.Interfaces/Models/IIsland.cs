@@ -66,4 +66,11 @@ public interface IIsland
     /// <param name="field">The field array.</param>
     /// <param name="islands">The list of islands.</param>
     void SetAllNeighbors(int[][] field, List<IIsland> islands);
+
+    /// <summary>
+    ///     Set all neighbors of the island using a pre-built lookup dictionary.
+    /// </summary>
+    /// <param name="field">The field array.</param>
+    /// <param name="islandLookup">A dictionary mapping (Y, X) coordinates to islands.</param>
+    void SetAllNeighbors(int[][] field, Dictionary<(int Y, int X), IIsland> islandLookup);
 }

@@ -31,7 +31,7 @@ namespace Hashi.LinearSolver
         }
 
         /// <inheritdoc />
-        public async Task<(List<IIsland>, List<(int, int, int, int)>)> ConvertData(int[][] data)
+        public Task<(List<IIsland>, List<(int, int, int, int)>)> ConvertData(int[][] data)
         {
             var rows = data.Length;
             var columns = data[0].Length;
@@ -44,7 +44,7 @@ namespace Hashi.LinearSolver
                 }
             }
 
-            return await BuildIslandsAndIntersections(grid, rows, columns);
+            return Task.FromResult(BuildIslandsAndIntersections(grid, rows, columns));
         }
 
         /// <inheritdoc />
@@ -65,7 +65,7 @@ namespace Hashi.LinearSolver
                     grid[r, c] = rowVals[c];
                 }
             }
-            return await BuildIslandsAndIntersections(grid, rows, columns);
+            return BuildIslandsAndIntersections(grid, rows, columns);
         }
 
         /// <inheritdoc />
@@ -128,12 +128,12 @@ namespace Hashi.LinearSolver
             logger.Debug("Grid visualization:");
             for (var r = 0; r < 2 * rows + 1; r++)
             {
-                var line = "";
+                var lineParts = new string[2 * cols + 1];
                 for (var c = 0; c < 2 * cols + 1; c++)
                 {
-                    line += grid[r, c];
+                    lineParts[c] = grid[r, c];
                 }
-                logger.Debug(line);
+                logger.Debug(string.Join("", lineParts));
             }
 
             return Task.CompletedTask;
@@ -259,7 +259,7 @@ namespace Hashi.LinearSolver
                     xSol[edgeId, 2] = (int)solver.Value(x[edgeId, 2]);
                 }
 
-                var cuts = await FindComponentCuts(islands, xSol, edgeMap, revEdgeMap);
+                var cuts = FindComponentCuts(islands, xSol, edgeMap, revEdgeMap);
 
                 if (cuts is [{ Count: 0 }])
                 {
@@ -308,8 +308,8 @@ namespace Hashi.LinearSolver
         /// <param name="grid">The integer grid.</param>
         /// <param name="rows">The amount of rows.</param>
         /// <param name="columns">The amount of columns.</param>
-        /// <returns>>A list of islands and a list of intersections.</returns>
-        private Task<(List<IIsland>, List<(int, int, int, int)>)> BuildIslandsAndIntersections(
+        /// <returns>A list of islands and a list of intersections.</returns>
+        private (List<IIsland>, List<(int, int, int, int)>) BuildIslandsAndIntersections(
         int[,] grid, int rows, int columns)
         {
             var islandMap = new Dictionary<(int, int), int>();
@@ -378,7 +378,7 @@ namespace Hashi.LinearSolver
                 }
             }
 
-            return Task.FromResult((islands, intersections));
+            return (islands, intersections);
         }
 
         /// <summary>
@@ -386,10 +386,10 @@ namespace Hashi.LinearSolver
         /// </summary>
         /// <param name="islands">The islands.</param>
         /// <param name="xSol">xSol is a 2D array holding the current integer solution for bridge variables, extracted from the solver, and is used for connectivity checks and cut generation in the lazy constraint loop.</param>
-        /// <param name="edgeMap"></param>
-        /// <param name="revEdgeMap"></param>
+        /// <param name="edgeMap">Maps edge IDs to their endpoint island index pairs (islandA, islandB).</param>
+        /// <param name="revEdgeMap">Maps island index pairs to their edge ID for reverse lookup.</param>
         /// <returns>The returned value is a list of integer lists. Each inner list contains the edge IDs that, if at least one is activated (i.e., a bridge is built), would connect that component to the rest of the puzzle.</returns>
-        private Task<List<List<int>>> FindComponentCuts(
+        private List<List<int>> FindComponentCuts(
             List<IIsland> islands,
             int[,] xSol,
             Dictionary<int, (int, int)> edgeMap,
@@ -460,7 +460,7 @@ namespace Hashi.LinearSolver
                     allVisited.Add(v);
             }
 
-            return Task.FromResult(componentCuts);
+            return componentCuts;
         }
     }
 }

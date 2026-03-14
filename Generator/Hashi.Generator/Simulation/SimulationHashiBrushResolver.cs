@@ -16,12 +16,3 @@ internal class SimulationHashiBrushResolver : IHashiBrushResolver
         return new SimulationHashiBrush();
     }
 }
-
-/// <summary>
-///     A lightweight simulation implementation of <see cref="IHashiBrush" />.
-/// </summary>
-internal class SimulationHashiBrush : IHashiBrush
-{
-    /// <inheritdoc />
-    public object Brush => new object();
-}

@@ -118,7 +118,7 @@ public class BridgeManagementService : IBridgeManagementService
 
         var bridge = bridgeFactory.Invoke(island, island.IslandDown, 1);
         bridges.Add(bridge);
-        bridges.Add(bridge.AddOtherSide());
+        bridges.Add(bridge.CreateReverseBridgeAndApplyDirections());
 
         island.AmountBridgesConnectable += 1;
         island.IslandDown.AmountBridgesConnectable += 1;
@@ -143,12 +143,12 @@ public class BridgeManagementService : IBridgeManagementService
 
         var bridge = bridgeFactory.Invoke(island, island.IslandRight, 1);
         bridges.Add(bridge);
-        bridges.Add(bridge.AddOtherSide());
+        bridges.Add(bridge.CreateReverseBridgeAndApplyDirections());
 
         island.AmountBridgesConnectable += 1;
         island.IslandRight.AmountBridgesConnectable += 1;
         mainField[island.Y][island.X] += 1;
-        mainField[island.IslandRight.Y][island.X] += 1;
+        mainField[island.IslandRight.Y][island.IslandRight.X] += 1;
 
         blockDetectionService.UpdateDirectionCache(island, island.IslandRight);
 
@@ -164,7 +164,7 @@ public class BridgeManagementService : IBridgeManagementService
         }
     }
 
-    internal static void ShuffleList(List<int> list)
+    internal static void ShuffleList<T>(List<T> list)
     {
         for (var i = list.Count - 1; i > 0; i--)
         {

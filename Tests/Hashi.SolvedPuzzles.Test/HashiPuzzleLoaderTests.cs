@@ -140,7 +140,7 @@ public class HashiPuzzleLoaderTests
         try
         {
             // Act & Assert
-            var exception = Assert.Throws<Exception>(() => hashiPuzzleLoader.LoadPuzzle(testPuzzleEnum));
+            var exception = Assert.Throws<InvalidDataException>(() => hashiPuzzleLoader.LoadPuzzle(testPuzzleEnum));
             exception.Message.Should().Contain($"Failed to deserialize the puzzle from file {testFileName}.");
         }
         finally
@@ -372,9 +372,9 @@ public class HashiPuzzleLoaderTests
     private string GetHashiFileNameViaReflection(HashiFileEnum hashiFileEnum)
     {
         var method = typeof(HashiPuzzleLoader).GetMethod("GetHashiFileName",
-            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
         method.Should().NotBeNull();
-        return (string)method?.Invoke(hashiPuzzleLoader, [hashiFileEnum])!;
+        return (string)method?.Invoke(null, [hashiFileEnum])!;
     }
 
     #endregion

@@ -34,7 +34,7 @@ namespace Hashi.Generator.Test.Models
         }
 
         [Test]
-        public void AddOtherSide_WhenVerticalBridgeIsland1Above_ShouldUpdateBridgeCounts()
+        public void CreateReverseBridgeAndApplyDirections_WhenVerticalBridgeIsland1Above_ShouldUpdateBridgeCounts()
         {
             // Arrange
             var topIsland = new Island(2, 1, 1);
@@ -42,7 +42,7 @@ namespace Hashi.Generator.Test.Models
             var bridge = new Bridge(topIsland, bottomIsland, 1);
 
             // Act
-            var otherSide = bridge.AddOtherSide();
+            var otherSide = bridge.CreateReverseBridgeAndApplyDirections();
 
             // Assert
             otherSide.Should().NotBeNull();
@@ -53,7 +53,7 @@ namespace Hashi.Generator.Test.Models
         }
 
         [Test]
-        public void AddOtherSide_WhenVerticalBridgeIsland1Below_ShouldUpdateBridgeCounts()
+        public void CreateReverseBridgeAndApplyDirections_WhenVerticalBridgeIsland1Below_ShouldUpdateBridgeCounts()
         {
             // Arrange
             var bottomIsland = new Island(2, 3, 1);
@@ -61,7 +61,7 @@ namespace Hashi.Generator.Test.Models
             var bridge = new Bridge(bottomIsland, topIsland, 1);
 
             // Act
-            var otherSide = bridge.AddOtherSide();
+            var otherSide = bridge.CreateReverseBridgeAndApplyDirections();
 
             // Assert
             otherSide.Should().NotBeNull();
@@ -70,7 +70,7 @@ namespace Hashi.Generator.Test.Models
         }
 
         [Test]
-        public void AddOtherSide_WhenHorizontalBridgeIsland1Left_ShouldUpdateBridgeCounts()
+        public void CreateReverseBridgeAndApplyDirections_WhenHorizontalBridgeIsland1Left_ShouldUpdateBridgeCounts()
         {
             // Arrange
             var leftIsland = new Island(2, 1, 1);
@@ -78,7 +78,7 @@ namespace Hashi.Generator.Test.Models
             var bridge = new Bridge(leftIsland, rightIsland, 1);
 
             // Act
-            var otherSide = bridge.AddOtherSide();
+            var otherSide = bridge.CreateReverseBridgeAndApplyDirections();
 
             // Assert
             otherSide.Should().NotBeNull();
@@ -87,7 +87,7 @@ namespace Hashi.Generator.Test.Models
         }
 
         [Test]
-        public void AddOtherSide_WhenHorizontalBridgeIsland1Right_ShouldUpdateBridgeCounts()
+        public void CreateReverseBridgeAndApplyDirections_WhenHorizontalBridgeIsland1Right_ShouldUpdateBridgeCounts()
         {
             // Arrange
             var rightIsland = new Island(2, 1, 3);
@@ -95,7 +95,7 @@ namespace Hashi.Generator.Test.Models
             var bridge = new Bridge(rightIsland, leftIsland, 1);
 
             // Act
-            var otherSide = bridge.AddOtherSide();
+            var otherSide = bridge.CreateReverseBridgeAndApplyDirections();
 
             // Assert
             otherSide.Should().NotBeNull();
@@ -104,7 +104,7 @@ namespace Hashi.Generator.Test.Models
         }
 
         [Test]
-        public void AddOtherSide_WhenMultipleBridges_ShouldAddCorrectAmount()
+        public void CreateReverseBridgeAndApplyDirections_WhenMultipleBridges_ShouldAddCorrectAmount()
         {
             // Arrange
             var leftIsland = new Island(4, 1, 1);
@@ -112,7 +112,7 @@ namespace Hashi.Generator.Test.Models
             var bridge = new Bridge(leftIsland, rightIsland, 2);
 
             // Act
-            var otherSide = bridge.AddOtherSide();
+            var otherSide = bridge.CreateReverseBridgeAndApplyDirections();
 
             // Assert
             leftIsland.AmountBridgesRight.Should().Be(2);

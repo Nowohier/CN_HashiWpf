@@ -59,7 +59,7 @@ public class IslandLayoutService : IIslandLayoutService
         var amountBridges = 1;
         var newBridge = bridgeFactory.Invoke(island, newIsland, amountBridges);
         bridges.Add(newBridge);
-        bridges.Add(newBridge.AddOtherSide());
+        bridges.Add(newBridge.CreateReverseBridgeAndApplyDirections());
 
         // Update bridge counts
         island.AmountBridgesConnectable += amountBridges;
