@@ -1,6 +1,6 @@
 using Hashi.Generator.Interfaces.Models;
+using Hashi.Generator.Interfaces.Providers;
 using Hashi.Generator.Models;
-using Hashi.Generator.Providers;
 using Hashi.Gui.Interfaces.ViewModels;
 using System.Drawing;
 
@@ -16,12 +16,15 @@ public static class TestFieldConverter
     /// </summary>
     /// <param name="allIslandEnumerable">The island view models to convert.</param>
     /// <param name="solutionName">The name for the solution.</param>
+    /// <param name="solutionProviderFactory">The factory for creating solution providers.</param>
     /// <returns>A new solution provider containing the converted data.</returns>
-    public static SolutionProvider ConvertIslandsToSolutionProvider(
-        IEnumerable<IIslandViewModel> allIslandEnumerable, string solutionName)
+    public static ISolutionProvider ConvertIslandsToSolutionProvider(
+        IEnumerable<IIslandViewModel> allIslandEnumerable, string solutionName,
+        Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider> solutionProviderFactory)
     {
         ArgumentNullException.ThrowIfNull(allIslandEnumerable);
         ArgumentNullException.ThrowIfNull(solutionName);
+        ArgumentNullException.ThrowIfNull(solutionProviderFactory);
 
         var allIslands = allIslandEnumerable.ToList();
 
@@ -76,6 +79,6 @@ public static class TestFieldConverter
 
         bridgeCoordinates = bridgeCoordinates.Distinct().ToList();
 
-        return new SolutionProvider(hashiField, bridgeCoordinates, solutionName);
+        return solutionProviderFactory(hashiField, bridgeCoordinates, solutionName);
     }
 }

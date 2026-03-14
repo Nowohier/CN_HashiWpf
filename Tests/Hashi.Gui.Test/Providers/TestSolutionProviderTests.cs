@@ -532,12 +532,13 @@ public class TestSolutionProviderTests
         // Act
         testSolutionProvider.ConvertIslandsToSolutionProvider(islands);
 
-        // Assert - The implementation creates a SolutionProvider directly, not via factory
-        // So we verify that the new solution was added to the collection
+        // Assert
+        solutionProviderFactoryMock.Verify(x => x(
+            It.Is<IReadOnlyList<int[]>?>(hf => hf != null && hf.Count == 3 && hf[2][1] == 3),
+            It.IsAny<List<IBridgeCoordinates>?>(),
+            It.Is<string?>(n => n == "TestSolution")), Times.Once);
         testSolutionProvider.SolutionProviders.Should().HaveCount(1);
-        var addedSolution = testSolutionProvider.SolutionProviders.First();
-        addedSolution.Name.Should().Be("TestSolution");
-        testSolutionProvider.SelectedSolutionProvider.Should().Be(addedSolution);
+        testSolutionProvider.SelectedSolutionProvider.Should().Be(solutionProviderMock.Object);
     }
 
     [Test]
@@ -576,13 +577,13 @@ public class TestSolutionProviderTests
         // Act
         testSolutionProvider.ConvertIslandsToSolutionProvider(islands);
 
-        // Assert - The implementation creates a SolutionProvider directly, not via factory
-        // So we verify that the new solution was added with bridge coordinates
+        // Assert
+        solutionProviderFactoryMock.Verify(x => x(
+            It.IsAny<IReadOnlyList<int[]>?>(),
+            It.Is<List<IBridgeCoordinates>?>(bc => bc != null && bc.Count == 1),
+            It.Is<string?>(n => n == "TestSolution")), Times.Once);
         testSolutionProvider.SolutionProviders.Should().HaveCount(1);
-        var addedSolution = testSolutionProvider.SolutionProviders.First();
-        addedSolution.Name.Should().Be("TestSolution");
-        addedSolution.BridgeCoordinates.Should().HaveCount(1);
-        testSolutionProvider.SelectedSolutionProvider.Should().Be(addedSolution);
+        testSolutionProvider.SelectedSolutionProvider.Should().Be(solutionProviderMock.Object);
     }
 
     [Test]
@@ -620,9 +621,7 @@ public class TestSolutionProviderTests
         // Assert
         testSolutionProvider.SolutionProviders.Should().NotContain(existingSolutionMock.Object);
         testSolutionProvider.SolutionProviders.Should().HaveCount(1);
-        var newSolution = testSolutionProvider.SolutionProviders.First();
-        newSolution.Name.Should().Be("TestSolution");
-        testSolutionProvider.SelectedSolutionProvider.Should().Be(newSolution);
+        testSolutionProvider.SelectedSolutionProvider.Should().Be(solutionProviderMock.Object);
         testSolutionProvider.SelectedSolutionProvider.Should().NotBe(existingSolutionMock.Object);
     }
 

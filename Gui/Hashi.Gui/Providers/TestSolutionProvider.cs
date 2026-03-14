@@ -104,7 +104,7 @@ public class TestSolutionProvider : ObservableObject, ITestSolutionProvider
 
         var solutionName = SelectedSolutionProvider.Name;
         var solutionProvider = Converters.TestFieldConverter.ConvertIslandsToSolutionProvider(
-            allIslandEnumerable, solutionName!);
+            allIslandEnumerable, solutionName!, solutionProviderFactory);
 
         // Add the solution provider to the list
         if (SolutionProviders.Select(x => x.Name).Contains(solutionName))
