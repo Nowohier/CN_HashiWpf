@@ -294,4 +294,10 @@
   <data name="MessageDeleteScenarioText" xml:space="preserve">
     <value>You are about to delete the scenario {0}. Continue?</value>
   </data>
+  <data name="GameTitle" xml:space="preserve">
+    <value>Hashiwokakero</value>
+  </data>
+  <data name="GameTitleTestmodeSuffix" xml:space="preserve">
+    <value> - Testmode</value>
+  </data>
 </root>

@@ -312,4 +312,10 @@
   <data name="_9GeneralRule6" xml:space="preserve">
     <value>If an island's remaining connections equal the total neighbor capacity minus one, every neighbor with at least two remaining connections must receive at least one connection (capacity-aware pigeonhole).</value>
   </data>
+  <data name="GameTitle" xml:space="preserve">
+    <value>Hashiwokakero</value>
+  </data>
+  <data name="GameTitleTestmodeSuffix" xml:space="preserve">
+    <value> - Testmode</value>
+  </data>
 </root>

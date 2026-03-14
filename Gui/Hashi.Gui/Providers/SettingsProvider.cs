@@ -11,6 +11,7 @@ namespace Hashi.Gui.Providers;
 /// <inheritdoc cref="ISettingsProvider" />
 public class SettingsProvider : ISettingsProvider
 {
+    private const string DefaultLanguageCulture = "en-GB";
     private readonly IJsonWrapper jsonWrapper;
     private readonly Func<ISettingsViewModel> settingsFactory;
     private readonly IPathProvider pathProvider;
@@ -93,7 +94,7 @@ public class SettingsProvider : ISettingsProvider
                         typeof(SettingsViewModel))!;
 
                 TranslationSource.Instance.CurrentCulture =
-                    new CultureInfo(loadedSettings.SelectedLanguageCulture ?? "en-GB");
+                    new CultureInfo(loadedSettings.SelectedLanguageCulture ?? DefaultLanguageCulture);
                 logger.Info("Settings loaded successfully from file");
                 return loadedSettings;
             }
@@ -106,7 +107,7 @@ public class SettingsProvider : ISettingsProvider
         loadedSettings = settingsFactory.Invoke();
         loadedSettings.InitializeHighScores();
         loadedSettings.SelectedLanguageCulture = loadedSettings.Languages[0].Culture;
-        TranslationSource.Instance.CurrentCulture = new CultureInfo(loadedSettings.SelectedLanguageCulture ?? "en-GB");
+        TranslationSource.Instance.CurrentCulture = new CultureInfo(loadedSettings.SelectedLanguageCulture ?? DefaultLanguageCulture);
         logger.Info("Created new default settings");
 
         return loadedSettings;
