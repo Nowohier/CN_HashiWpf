@@ -13,7 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Hashi.SolvedPuzzles.Interfaces\Hashi.SolvedPuzzles.Interfaces.csproj" />
     <ProjectReference Include="..\..\Gui\Hashi.Gui.Interfaces\Hashi.Gui.Interfaces.csproj" />
   </ItemGroup>
 
