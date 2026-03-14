@@ -1,8 +1,5 @@
 using FluentAssertions;
-using Hashi.Gui.Interfaces.Providers;
-using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Rules.Test.Helpers;
-using Moq;
 using Times = NRules.Testing.Times;
 
 namespace Hashi.Rules.Test;
@@ -43,12 +40,12 @@ public class _9GeneralRule4Tests : TestBase<_9GeneralRule4>
     public void Rule_WhenRemainingEquals2TimesNeighborCount_ShouldTrigger()
     {
         // Arrange - island with 4 remaining, 2 connectable neighbors (2*2 = 4)
-        var island = CreateIslandMock(TestIslandEnum.TestIsland, 4, false);
-        var neighbor1 = CreateIslandMock(TestIslandEnum.RightIsland, 3, false);
-        var neighbor2 = CreateIslandMock(TestIslandEnum.LeftIsland, 2, false);
+        var island = CreateIslandMock(TestIslandEnum.TestIsland, 4);
+        var neighbor1 = CreateIslandMock(TestIslandEnum.RightIsland, 3);
+        var neighbor2 = CreateIslandMock(TestIslandEnum.LeftIsland, 2);
 
         IslandProviderMock.Setup(x => x.GetAllVisibleNeighbors(island.Object))
-            .Returns(new List<IIslandViewModel> { neighbor1.Object, neighbor2.Object });
+            .Returns([neighbor1.Object, neighbor2.Object]);
 
         // Act
         Session.Insert(island.Object);
@@ -64,7 +61,7 @@ public class _9GeneralRule4Tests : TestBase<_9GeneralRule4>
         var island = CreateIslandMock(TestIslandEnum.TestIsland, 4, true);
 
         IslandProviderMock.Setup(x => x.GetAllVisibleNeighbors(island.Object))
-            .Returns(new List<IIslandViewModel>());
+            .Returns([]);
 
         // Act
         Session.Insert(island.Object);
@@ -78,10 +75,10 @@ public class _9GeneralRule4Tests : TestBase<_9GeneralRule4>
     public void Rule_WhenIslandHasMaxConnections0_ShouldNotTrigger()
     {
         // Arrange
-        var island = CreateIslandMock(TestIslandEnum.TestIsland, 0, false);
+        var island = CreateIslandMock(TestIslandEnum.TestIsland, 0);
 
         IslandProviderMock.Setup(x => x.GetAllVisibleNeighbors(island.Object))
-            .Returns(new List<IIslandViewModel>());
+            .Returns([]);
 
         // Act
         Session.Insert(island.Object);
@@ -95,11 +92,11 @@ public class _9GeneralRule4Tests : TestBase<_9GeneralRule4>
     public void Rule_WhenOnlyOneConnectableNeighbor_ShouldNotTrigger()
     {
         // Arrange - formula requires at least 2 connectable neighbors
-        var island = CreateIslandMock(TestIslandEnum.TestIsland, 2, false);
-        var neighbor1 = CreateIslandMock(TestIslandEnum.RightIsland, 2, false);
+        var island = CreateIslandMock(TestIslandEnum.TestIsland, 2);
+        var neighbor1 = CreateIslandMock(TestIslandEnum.RightIsland, 2);
 
         IslandProviderMock.Setup(x => x.GetAllVisibleNeighbors(island.Object))
-            .Returns(new List<IIslandViewModel> { neighbor1.Object });
+            .Returns([neighbor1.Object]);
 
         // Act
         Session.Insert(island.Object);
@@ -113,12 +110,12 @@ public class _9GeneralRule4Tests : TestBase<_9GeneralRule4>
     public void Rule_WhenRemainingDoesNotMatchFormula_ShouldNotTrigger()
     {
         // Arrange - island with 3 remaining, 2 connectable neighbors (2*2 = 4 != 3)
-        var island = CreateIslandMock(TestIslandEnum.TestIsland, 3, false);
-        var neighbor1 = CreateIslandMock(TestIslandEnum.RightIsland, 3, false);
-        var neighbor2 = CreateIslandMock(TestIslandEnum.LeftIsland, 2, false);
+        var island = CreateIslandMock(TestIslandEnum.TestIsland, 3);
+        var neighbor1 = CreateIslandMock(TestIslandEnum.RightIsland, 3);
+        var neighbor2 = CreateIslandMock(TestIslandEnum.LeftIsland, 2);
 
         IslandProviderMock.Setup(x => x.GetAllVisibleNeighbors(island.Object))
-            .Returns(new List<IIslandViewModel> { neighbor1.Object, neighbor2.Object });
+            .Returns([neighbor1.Object, neighbor2.Object]);
 
         // Act
         Session.Insert(island.Object);
@@ -132,12 +129,12 @@ public class _9GeneralRule4Tests : TestBase<_9GeneralRule4>
     public void Rule_WhenAllNeighborsMaxedOut_ShouldNotTrigger()
     {
         // Arrange
-        var island = CreateIslandMock(TestIslandEnum.TestIsland, 4, false);
+        var island = CreateIslandMock(TestIslandEnum.TestIsland, 4);
         var neighbor1 = CreateIslandMock(TestIslandEnum.RightIsland, 2, true);
         var neighbor2 = CreateIslandMock(TestIslandEnum.LeftIsland, 2, true);
 
         IslandProviderMock.Setup(x => x.GetAllVisibleNeighbors(island.Object))
-            .Returns(new List<IIslandViewModel> { neighbor1.Object, neighbor2.Object });
+            .Returns([neighbor1.Object, neighbor2.Object]);
 
         // Act
         Session.Insert(island.Object);

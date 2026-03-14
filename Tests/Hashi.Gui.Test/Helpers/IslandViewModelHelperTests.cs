@@ -4,7 +4,6 @@ using Hashi.Gui.Core.Helpers;
 using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.ViewModels;
 using Moq;
-using System.Collections.ObjectModel;
 
 namespace Hashi.Gui.Test.Helpers;
 
@@ -177,12 +176,12 @@ public class IslandViewModelHelperTests
         var sourceMock = new Mock<IIslandViewModel>(MockBehavior.Strict);
         sourceMock.Setup(x => x.Coordinates).Returns(sourceCoord);
         sourceMock.Setup(x => x.AllConnections)
-            .Returns(new ObservableCollection<IHashiPoint> { connection });
+            .Returns([connection]);
 
         var targetMock = new Mock<IIslandViewModel>(MockBehavior.Strict);
         targetMock.Setup(x => x.Coordinates).Returns(targetCoord);
         targetMock.Setup(x => x.AllConnections)
-            .Returns(new ObservableCollection<IHashiPoint>());
+            .Returns([]);
 
         // Act
         var result = helper.MaxBridgesReachedToTarget(sourceMock.Object, targetMock.Object);
@@ -203,12 +202,12 @@ public class IslandViewModelHelperTests
         var sourceMock = new Mock<IIslandViewModel>(MockBehavior.Strict);
         sourceMock.Setup(x => x.Coordinates).Returns(sourceCoord);
         sourceMock.Setup(x => x.AllConnections)
-            .Returns(new ObservableCollection<IHashiPoint> { conn1, conn2 });
+            .Returns([conn1, conn2]);
 
         var targetMock = new Mock<IIslandViewModel>(MockBehavior.Strict);
         targetMock.Setup(x => x.Coordinates).Returns(targetCoord);
         targetMock.Setup(x => x.AllConnections)
-            .Returns(new ObservableCollection<IHashiPoint>());
+            .Returns([]);
 
         // Act
         var result = helper.MaxBridgesReachedToTarget(sourceMock.Object, targetMock.Object);
@@ -232,7 +231,7 @@ public class IslandViewModelHelperTests
         var islandMock = new Mock<IIslandViewModel>(MockBehavior.Strict);
         islandMock.Setup(x => x.Coordinates).Returns(coord);
         islandMock.Setup(x => x.AllConnections)
-            .Returns(new ObservableCollection<IHashiPoint> { leftConn, rightConn });
+            .Returns([leftConn, rightConn]);
 
         // Act
         var result = helper.GetBridgesLeft(islandMock.Object);
@@ -253,7 +252,7 @@ public class IslandViewModelHelperTests
         var islandMock = new Mock<IIslandViewModel>(MockBehavior.Strict);
         islandMock.Setup(x => x.Coordinates).Returns(coord);
         islandMock.Setup(x => x.AllConnections)
-            .Returns(new ObservableCollection<IHashiPoint> { leftConn, rightConn });
+            .Returns([leftConn, rightConn]);
 
         // Act
         var result = helper.GetBridgesRight(islandMock.Object);
@@ -274,7 +273,7 @@ public class IslandViewModelHelperTests
         var islandMock = new Mock<IIslandViewModel>(MockBehavior.Strict);
         islandMock.Setup(x => x.Coordinates).Returns(coord);
         islandMock.Setup(x => x.AllConnections)
-            .Returns(new ObservableCollection<IHashiPoint> { upConn, downConn });
+            .Returns([upConn, downConn]);
 
         // Act
         var result = helper.GetBridgesUp(islandMock.Object);
@@ -295,7 +294,7 @@ public class IslandViewModelHelperTests
         var islandMock = new Mock<IIslandViewModel>(MockBehavior.Strict);
         islandMock.Setup(x => x.Coordinates).Returns(coord);
         islandMock.Setup(x => x.AllConnections)
-            .Returns(new ObservableCollection<IHashiPoint> { upConn, downConn });
+            .Returns([upConn, downConn]);
 
         // Act
         var result = helper.GetBridgesDown(islandMock.Object);

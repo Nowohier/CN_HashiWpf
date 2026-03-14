@@ -52,7 +52,7 @@ public class IslandProviderCoreTests
     public void CheckDirection_WhenNeighborExists_ShouldReturnNeighbor()
     {
         // Arrange
-        var islands = CreateGrid(3, 1, new[] { (0, 0, 2, false), (2, 0, 2, false) });
+        var islands = CreateGrid(3, 1, [(0, 0, 2, false), (2, 0, 2, false)]);
         var source = islands[0][0];
 
         // Act
@@ -67,7 +67,7 @@ public class IslandProviderCoreTests
     public void CheckDirection_WhenNoNeighborInDirection_ShouldReturnNull()
     {
         // Arrange
-        var islands = CreateGrid(3, 1, new[] { (0, 0, 2, false) });
+        var islands = CreateGrid(3, 1, [(0, 0, 2, false)]);
         var source = islands[0][0];
 
         // Act
@@ -85,7 +85,8 @@ public class IslandProviderCoreTests
     public void GetAllVisibleNeighbors_ShouldReturnAllDirections()
     {
         // Arrange — center island with neighbors in all 4 directions
-        var islands = CreateGrid(3, 3, new[] { (1, 0, 1, false), (0, 1, 1, false), (2, 1, 1, false), (1, 2, 1, false), (1, 1, 2, false) });
+        var islands = CreateGrid(3, 3, [(1, 0, 1, false), (0, 1, 1, false), (2, 1, 1, false), (1, 2, 1, false), (1, 1, 2, false)
+        ]);
         var source = islands[1][1];
 
         // Act
@@ -129,7 +130,7 @@ public class IslandProviderCoreTests
     public void IsValidConnectionBetweenSourceAndTarget_WhenSameIsland_ShouldReturnFalse()
     {
         // Arrange
-        var islands = CreateGrid(1, 1, new[] { (0, 0, 2, false) });
+        var islands = CreateGrid(1, 1, [(0, 0, 2, false)]);
         var source = islands[0][0];
 
         // Act
@@ -143,7 +144,7 @@ public class IslandProviderCoreTests
     public void IsValidConnectionBetweenSourceAndTarget_WhenDiagonal_ShouldReturnFalse()
     {
         // Arrange
-        var islands = CreateGrid(3, 3, new[] { (0, 0, 2, false), (2, 2, 2, false) });
+        var islands = CreateGrid(3, 3, [(0, 0, 2, false), (2, 2, 2, false)]);
         var source = islands[0][0];
         var target = islands[2][2];
 
@@ -158,7 +159,7 @@ public class IslandProviderCoreTests
     public void IsValidConnectionBetweenSourceAndTarget_WhenMaxedSource_ShouldReturnFalse()
     {
         // Arrange
-        var islands = CreateGrid(3, 1, new[] { (0, 0, 2, true), (2, 0, 2, false) });
+        var islands = CreateGrid(3, 1, [(0, 0, 2, true), (2, 0, 2, false)]);
         var source = islands[0][0];
         var target = islands[0][2];
 
@@ -173,7 +174,7 @@ public class IslandProviderCoreTests
     public void IsValidConnectionBetweenSourceAndTarget_WhenValid_ShouldReturnTrue()
     {
         // Arrange
-        var islands = CreateGrid(3, 1, new[] { (0, 0, 2, false), (2, 0, 2, false) });
+        var islands = CreateGrid(3, 1, [(0, 0, 2, false), (2, 0, 2, false)]);
         var source = islands[0][0];
         var target = islands[0][2];
 
@@ -192,7 +193,7 @@ public class IslandProviderCoreTests
     public void IsIslandInBetweenSourceAndTarget_WhenIslandBetween_ShouldReturnTrue()
     {
         // Arrange
-        var islands = CreateGrid(3, 1, new[] { (0, 0, 2, false), (1, 0, 1, false), (2, 0, 2, false) });
+        var islands = CreateGrid(3, 1, [(0, 0, 2, false), (1, 0, 1, false), (2, 0, 2, false)]);
         var source = islands[0][0];
         var target = islands[0][2];
 
@@ -207,7 +208,7 @@ public class IslandProviderCoreTests
     public void IsIslandInBetweenSourceAndTarget_WhenNoIslandBetween_ShouldReturnFalse()
     {
         // Arrange
-        var islands = CreateGrid(3, 1, new[] { (0, 0, 2, false), (2, 0, 2, false) });
+        var islands = CreateGrid(3, 1, [(0, 0, 2, false), (2, 0, 2, false)]);
         var source = islands[0][0];
         var target = islands[0][2];
 
@@ -222,7 +223,7 @@ public class IslandProviderCoreTests
     public void IsIslandInBetweenSourceAndTarget_WhenAdjacentIslands_ShouldReturnFalse()
     {
         // Arrange
-        var islands = CreateGrid(2, 1, new[] { (0, 0, 2, false), (1, 0, 2, false) });
+        var islands = CreateGrid(2, 1, [(0, 0, 2, false), (1, 0, 2, false)]);
         var source = islands[0][0];
         var target = islands[0][1];
 
@@ -263,7 +264,7 @@ public class IslandProviderCoreTests
     public void ManageConnections_WhenDiagonal_ShouldThrowInvalidOperationException()
     {
         // Arrange
-        var islands = CreateGrid(3, 3, new[] { (0, 0, 2, false), (2, 2, 2, false) });
+        var islands = CreateGrid(3, 3, [(0, 0, 2, false), (2, 2, 2, false)]);
 
         // Act & Assert
         var action = () => core.ManageConnections(islands, islands[0][0], islands[2][2], (_, _) => { });
@@ -274,7 +275,7 @@ public class IslandProviderCoreTests
     public void ManageConnections_WhenValidHorizontal_ShouldInvokeAction()
     {
         // Arrange
-        var islands = CreateGrid(3, 1, new[] { (0, 0, 2, false), (2, 0, 2, false) });
+        var islands = CreateGrid(3, 1, [(0, 0, 2, false), (2, 0, 2, false)]);
         var actionCalls = new List<(IIslandViewModel island, IHashiPoint point)>();
 
         // Act
@@ -293,7 +294,7 @@ public class IslandProviderCoreTests
     public void CountIsolatedIslandGroups_WhenNoConnections_ShouldReturnZero()
     {
         // Arrange
-        var islands = CreateGrid(3, 1, new[] { (0, 0, 2, false), (2, 0, 2, false) });
+        var islands = CreateGrid(3, 1, [(0, 0, 2, false), (2, 0, 2, false)]);
         var islandsFlat = islands.SelectMany(r => r);
 
         // Act
@@ -340,11 +341,11 @@ public class IslandProviderCoreTests
         mock.Setup(m => m.Coordinates).Returns(coordMock.Object);
         mock.Setup(m => m.MaxConnections).Returns(maxConnections);
         mock.Setup(m => m.MaxConnectionsReached).Returns(maxReached);
-        mock.Setup(m => m.AllConnections).Returns(new ObservableCollection<IHashiPoint>());
-        mock.Setup(m => m.BridgesLeft).Returns(new List<IHashiPoint>());
-        mock.Setup(m => m.BridgesRight).Returns(new List<IHashiPoint>());
-        mock.Setup(m => m.BridgesUp).Returns(new List<IHashiPoint>());
-        mock.Setup(m => m.BridgesDown).Returns(new List<IHashiPoint>());
+        mock.Setup(m => m.AllConnections).Returns([]);
+        mock.Setup(m => m.BridgesLeft).Returns([]);
+        mock.Setup(m => m.BridgesRight).Returns([]);
+        mock.Setup(m => m.BridgesUp).Returns([]);
+        mock.Setup(m => m.BridgesDown).Returns([]);
 
         return mock.Object;
     }

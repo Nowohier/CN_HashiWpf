@@ -20,7 +20,7 @@ public class ObservableCollectionExtensionsTests
         collection.AddRange(items);
 
         // Assert
-        collection.Should().BeEquivalentTo(new[] { 1, 2, 3, 4, 5 });
+        collection.Should().BeEquivalentTo([1, 2, 3, 4, 5]);
     }
 
     [Test]
@@ -34,7 +34,7 @@ public class ObservableCollectionExtensionsTests
         collection.AddRange(items);
 
         // Assert
-        collection.Should().BeEquivalentTo(new[] { 1, 2 });
+        collection.Should().BeEquivalentTo([1, 2]);
     }
 
     [Test]
@@ -103,7 +103,7 @@ public class ObservableCollectionExtensionsTests
         collection.RemoveAll(x => x > 3);
 
         // Assert
-        collection.Should().BeEquivalentTo(new[] { 1, 2, 3 });
+        collection.Should().BeEquivalentTo([1, 2, 3]);
     }
 
     [Test]
@@ -116,7 +116,7 @@ public class ObservableCollectionExtensionsTests
         collection.RemoveAll(x => x > 10);
 
         // Assert
-        collection.Should().BeEquivalentTo(new[] { 1, 2, 3 });
+        collection.Should().BeEquivalentTo([1, 2, 3]);
     }
 
     [Test]
@@ -177,7 +177,7 @@ public class ObservableCollectionExtensionsTests
         collection.RemoveAll(x => x % 2 == 0);
 
         // Assert
-        collection.Should().BeEquivalentTo(new[] { 1, 3, 5 });
+        collection.Should().BeEquivalentTo([1, 3, 5]);
     }
 
     [Test]

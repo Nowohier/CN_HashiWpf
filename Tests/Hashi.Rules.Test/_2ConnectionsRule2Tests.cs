@@ -1,9 +1,5 @@
 using FluentAssertions;
-using Hashi.Gui.Interfaces.Providers;
-using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Rules.Test.Helpers;
-using Moq;
-using System.Collections.ObjectModel;
 using Times = NRules.Testing.Times;
 
 namespace Hashi.Rules.Test;
@@ -60,17 +56,17 @@ public class _2ConnectionsRule2Tests : TestBase<_2ConnectionsRule2>
     public void Rule_WhenConditionsAreMet_ShouldTrigger()
     {
         // Arrange
-        var island = CreateIslandMock(TestIslandEnum.TestIsland, 2, false);
-        var neighbor1 = CreateIslandMock(TestIslandEnum.RightIsland, 2, false);
-        var neighbor2 = CreateIslandMock(TestIslandEnum.LeftIsland, 3, false);
+        var island = CreateIslandMock(TestIslandEnum.TestIsland, 2);
+        var neighbor1 = CreateIslandMock(TestIslandEnum.RightIsland, 2);
+        var neighbor2 = CreateIslandMock(TestIslandEnum.LeftIsland, 3);
         
         // Setup island with some connections but not max
         var connection1 = CreateHashiPointMock(2, 1);
-        island.Setup(x => x.AllConnections).Returns(new ObservableCollection<Hashi.Gui.Interfaces.Models.IHashiPoint> { connection1.Object });
+        island.Setup(x => x.AllConnections).Returns([connection1.Object]);
         island.Setup(x => x.RemainingConnections).Returns(1);
         
         IslandProviderMock.Setup(x => x.GetAllVisibleNeighbors(island.Object))
-            .Returns(new List<IIslandViewModel> { neighbor1.Object, neighbor2.Object });
+            .Returns([neighbor1.Object, neighbor2.Object]);
 
         // Act
         Session.Insert(island.Object);
@@ -87,10 +83,10 @@ public class _2ConnectionsRule2Tests : TestBase<_2ConnectionsRule2>
     {
         // Arrange
         var island = CreateIslandMock(TestIslandEnum.TestIsland, 2, true); // Max connections reached
-        var neighbor = CreateIslandMock(TestIslandEnum.RightIsland, 2, false);
+        var neighbor = CreateIslandMock(TestIslandEnum.RightIsland, 2);
         
         IslandProviderMock.Setup(x => x.GetAllVisibleNeighbors(island.Object))
-            .Returns(new List<IIslandViewModel> { neighbor.Object });
+            .Returns([neighbor.Object]);
 
         // Act
         Session.Insert(island.Object);
@@ -104,10 +100,10 @@ public class _2ConnectionsRule2Tests : TestBase<_2ConnectionsRule2>
     public void Rule_WhenNoNeighbors_ShouldNotTrigger()
     {
         // Arrange
-        var island = CreateIslandMock(TestIslandEnum.TestIsland, 2, false);
+        var island = CreateIslandMock(TestIslandEnum.TestIsland, 2);
         
         IslandProviderMock.Setup(x => x.GetAllVisibleNeighbors(island.Object))
-            .Returns(new List<IIslandViewModel>());
+            .Returns([]);
 
         // Act
         Session.Insert(island.Object);

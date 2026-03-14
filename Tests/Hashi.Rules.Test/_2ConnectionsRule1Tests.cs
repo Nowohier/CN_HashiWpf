@@ -1,9 +1,5 @@
 using FluentAssertions;
-using Hashi.Gui.Interfaces.Providers;
-using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Rules.Test.Helpers;
-using Moq;
-using System.Collections.ObjectModel;
 using Times = NRules.Testing.Times;
 
 namespace Hashi.Rules.Test;
@@ -44,15 +40,15 @@ public class _2ConnectionsRule1Tests : TestBase<_2ConnectionsRule1>
     public void Rule_WhenIslandHasMaxConnections2AndTwoValidNeighborsWithMaxConnections2_ShouldTrigger()
     {
         // Arrange
-        var island = CreateIslandMock(TestIslandEnum.TestIsland, 2, false);
-        var neighbor1 = CreateIslandMock(TestIslandEnum.RightIsland, 2, false);
-        var neighbor2 = CreateIslandMock(TestIslandEnum.LeftIsland, 2, false);
+        var island = CreateIslandMock(TestIslandEnum.TestIsland, 2);
+        var neighbor1 = CreateIslandMock(TestIslandEnum.RightIsland, 2);
+        var neighbor2 = CreateIslandMock(TestIslandEnum.LeftIsland, 2);
         
         // Setup island with no existing connections
-        island.Setup(x => x.AllConnections).Returns(new ObservableCollection<Hashi.Gui.Interfaces.Models.IHashiPoint>());
+        island.Setup(x => x.AllConnections).Returns([]);
         
         IslandProviderMock.Setup(x => x.GetAllVisibleNeighbors(island.Object))
-            .Returns(new List<IIslandViewModel> { neighbor1.Object, neighbor2.Object });
+            .Returns([neighbor1.Object, neighbor2.Object]);
 
         // Act
         Session.Insert(island.Object);
@@ -66,16 +62,16 @@ public class _2ConnectionsRule1Tests : TestBase<_2ConnectionsRule1>
     public void Rule_WhenIslandHasExistingConnections_ShouldNotTrigger()
     {
         // Arrange
-        var island = CreateIslandMock(TestIslandEnum.TestIsland, 2, false);
-        var neighbor1 = CreateIslandMock(TestIslandEnum.RightIsland, 2, false);
-        var neighbor2 = CreateIslandMock(TestIslandEnum.LeftIsland, 2, false);
+        var island = CreateIslandMock(TestIslandEnum.TestIsland, 2);
+        var neighbor1 = CreateIslandMock(TestIslandEnum.RightIsland, 2);
+        var neighbor2 = CreateIslandMock(TestIslandEnum.LeftIsland, 2);
         
         // Setup island with existing connections
         var existingConnection = CreateHashiPointMock(2, 1);
-        island.Setup(x => x.AllConnections).Returns(new ObservableCollection<Hashi.Gui.Interfaces.Models.IHashiPoint> { existingConnection.Object });
+        island.Setup(x => x.AllConnections).Returns([existingConnection.Object]);
         
         IslandProviderMock.Setup(x => x.GetAllVisibleNeighbors(island.Object))
-            .Returns(new List<IIslandViewModel> { neighbor1.Object, neighbor2.Object });
+            .Returns([neighbor1.Object, neighbor2.Object]);
 
         // Act
         Session.Insert(island.Object);
@@ -89,14 +85,14 @@ public class _2ConnectionsRule1Tests : TestBase<_2ConnectionsRule1>
     public void Rule_WhenIslandHasMaxConnectionsNot2_ShouldNotTrigger()
     {
         // Arrange
-        var island = CreateIslandMock(TestIslandEnum.TestIsland, 3, false); // Max connections != 2
-        var neighbor1 = CreateIslandMock(TestIslandEnum.RightIsland, 2, false);
-        var neighbor2 = CreateIslandMock(TestIslandEnum.LeftIsland, 2, false);
+        var island = CreateIslandMock(TestIslandEnum.TestIsland, 3); // Max connections != 2
+        var neighbor1 = CreateIslandMock(TestIslandEnum.RightIsland, 2);
+        var neighbor2 = CreateIslandMock(TestIslandEnum.LeftIsland, 2);
         
-        island.Setup(x => x.AllConnections).Returns(new ObservableCollection<Hashi.Gui.Interfaces.Models.IHashiPoint>());
+        island.Setup(x => x.AllConnections).Returns([]);
         
         IslandProviderMock.Setup(x => x.GetAllVisibleNeighbors(island.Object))
-            .Returns(new List<IIslandViewModel> { neighbor1.Object, neighbor2.Object });
+            .Returns([neighbor1.Object, neighbor2.Object]);
 
         // Act
         Session.Insert(island.Object);

@@ -10,8 +10,6 @@ using Hashi.Gui.Core.Helpers;
 using Hashi.Gui.Core.Providers;
 using Hashi.Gui.Interfaces.Helpers;
 using Hashi.Gui.Interfaces.Providers;
-using Hashi.Logging;
-using Hashi.Logging.Interfaces;
 
 namespace Hashi.Generator;
 

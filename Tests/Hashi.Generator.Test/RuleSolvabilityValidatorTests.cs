@@ -1,5 +1,4 @@
 using FluentAssertions;
-using Hashi.Generator;
 using Hashi.Gui.Core.Helpers;
 using Hashi.Gui.Core.Providers;
 using Hashi.Gui.Interfaces.Helpers;

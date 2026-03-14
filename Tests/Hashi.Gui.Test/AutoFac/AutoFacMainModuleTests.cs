@@ -162,6 +162,6 @@ public static class AutoFacMainModuleExtensions
     public static void TestableLoad(this AutoFacMainModule module, ContainerBuilder builder)
     {
         var loadMethod = typeof(AutoFacMainModule).GetMethod("Load", BindingFlags.NonPublic | BindingFlags.Instance);
-        loadMethod?.Invoke(module, new object[] { builder });
+        loadMethod?.Invoke(module, [builder]);
     }
 }

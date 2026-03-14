@@ -12,7 +12,6 @@ using Hashi.Gui.Views;
 using Hashi.Gui.Wrappers;
 using Hashi.LinearSolver;
 using Hashi.Logging;
-using Hashi.Logging.Interfaces;
 using Hashi.Rules;
 
 namespace Hashi.Gui.AutoFac;
