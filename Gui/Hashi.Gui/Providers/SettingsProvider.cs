@@ -74,6 +74,10 @@ public class SettingsProvider : ISettingsProvider
         }
     }
 
+    /// <summary>
+    ///     Loads the settings from the settings file, or creates default settings if no file exists.
+    /// </summary>
+    /// <returns>The loaded or default <see cref="ISettingsViewModel" />.</returns>
     public ISettingsViewModel LoadSettings()
     {
         logger.Debug($"Loading settings from {pathProvider.HashiSettingsFilePath}");

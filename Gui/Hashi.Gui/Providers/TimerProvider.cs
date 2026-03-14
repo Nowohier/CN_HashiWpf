@@ -11,6 +11,9 @@ public class TimerProvider : ObservableObject, ITimerProvider
     private readonly DispatcherTimer dispatcherTimer = new() { Interval = TimeSpan.FromSeconds(1) };
     private bool isTimerRunning;
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="TimerProvider" /> class.
+    /// </summary>
     public TimerProvider()
     {
         dispatcherTimer.Tick += (_, _) => OnPropertyChanged(nameof(Timer));
