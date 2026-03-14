@@ -22,6 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Generator\Hashi.Generator\Hashi.Generator.csproj" />
     <ProjectReference Include="..\..\Generator\Hashi.Generator.Interfaces\Hashi.Generator.Interfaces.csproj" />
+    <ProjectReference Include="..\..\Gui\Hashi.Gui.Core\Hashi.Gui.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
