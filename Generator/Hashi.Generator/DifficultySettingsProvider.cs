@@ -10,16 +10,20 @@ public class DifficultySettingsProvider : IDifficultySettingsProvider
     {
         return difficulty switch
         {
-            0 => new DifficultySettings(5, 10, 5, 10, 4, 25, 20),
-            1 => new DifficultySettings(14, 16, 14, 16, 4, 50, 20),
-            2 => new DifficultySettings(10, 16, 10, 16, 3, 75, 20),
-            3 => new DifficultySettings(11, 18, 11, 18, 3, 25, 15),
-            4 => new DifficultySettings(10, 18, 10, 18, 3, 50, 15),
-            5 => new DifficultySettings(13, 18, 13, 18, 3, 75, 15),
-            6 => new DifficultySettings(15, 20, 15, 20, 3, 25, 10),
-            7 => new DifficultySettings(14, 20, 14, 20, 3, 50, 10),
-            8 => new DifficultySettings(16, 31, 16, 31, 3, 75, 10),
-            9 => new DifficultySettings(20, 31, 20, 31, 3, 100, 0),
+            // Easy
+            0 => new DifficultySettings(MinLength: 5, MaxLength: 10, MinWidth: 5, MaxWidth: 10, Divisor: 4, Alpha: 25, Beta: 20),
+            1 => new DifficultySettings(MinLength: 14, MaxLength: 16, MinWidth: 14, MaxWidth: 16, Divisor: 4, Alpha: 50, Beta: 20),
+            2 => new DifficultySettings(MinLength: 10, MaxLength: 16, MinWidth: 10, MaxWidth: 16, Divisor: 3, Alpha: 75, Beta: 20),
+            // Medium
+            3 => new DifficultySettings(MinLength: 11, MaxLength: 18, MinWidth: 11, MaxWidth: 18, Divisor: 3, Alpha: 25, Beta: 15),
+            4 => new DifficultySettings(MinLength: 10, MaxLength: 18, MinWidth: 10, MaxWidth: 18, Divisor: 3, Alpha: 50, Beta: 15),
+            5 => new DifficultySettings(MinLength: 13, MaxLength: 18, MinWidth: 13, MaxWidth: 18, Divisor: 3, Alpha: 75, Beta: 15),
+            // Hard
+            6 => new DifficultySettings(MinLength: 15, MaxLength: 20, MinWidth: 15, MaxWidth: 20, Divisor: 3, Alpha: 25, Beta: 10),
+            7 => new DifficultySettings(MinLength: 14, MaxLength: 20, MinWidth: 14, MaxWidth: 20, Divisor: 3, Alpha: 50, Beta: 10),
+            8 => new DifficultySettings(MinLength: 16, MaxLength: 31, MinWidth: 16, MaxWidth: 31, Divisor: 3, Alpha: 75, Beta: 10),
+            // Expert
+            9 => new DifficultySettings(MinLength: 20, MaxLength: 31, MinWidth: 20, MaxWidth: 31, Divisor: 3, Alpha: 100, Beta: 0),
             _ => throw new ArgumentException("Invalid difficulty level.")
         };
     }

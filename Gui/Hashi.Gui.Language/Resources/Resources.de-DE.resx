@@ -312,4 +312,10 @@
   <data name="_9GeneralRule6" xml:space="preserve">
     <value>Wenn die verbleibenden Verbindungen einer Insel der Gesamtkapazität aller Nachbarn minus eins entsprechen, muss jeder Nachbar mit mindestens zwei verbleibenden Verbindungen mindestens eine Verbindung erhalten (kapazitätsbewusstes Schubfachprinzip).</value>
   </data>
+  <data name="GameTitle" xml:space="preserve">
+    <value>Hashiwokakero</value>
+  </data>
+  <data name="GameTitleTestmodeSuffix" xml:space="preserve">
+    <value> - Testmodus</value>
+  </data>
 </root>

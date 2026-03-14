@@ -118,7 +118,7 @@ public class MainViewModel : AsyncObservableRecipient,
     /// <summary>
     ///     Gets the title of the game window.
     /// </summary>
-    public string Title => $"Hashiwokakero{(IsTestFieldMode ? " - Testmode" : string.Empty)}";
+    public string Title => $"{TranslationSource.Instance["GameTitle"] ?? "Hashiwokakero"}{(IsTestFieldMode ? TranslationSource.Instance["GameTitleTestmodeSuffix"] ?? " - Testmode" : string.Empty)}";
 
     /// <summary>
     ///     Gets the color of the window bar.
