@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Enums;
 using Hashi.Generator.Interfaces.Providers;
 using Hashi.Gui.Extensions;
+using Hashi.Gui.Interfaces.Extensions;
 using Hashi.Gui.Interfaces.Helpers;
 using Hashi.Gui.Interfaces.Messages;
 using Hashi.Gui.Interfaces.Models;
@@ -265,16 +266,8 @@ public class IslandProvider :
 
         foreach (var island in IslandsFlat)
         {
-            var connectionsToRemove = pointType switch
-            {
-                HashiPointTypeEnum.All => island.AllConnections,
-                HashiPointTypeEnum.Hint => island.AllConnections.Where(x => x.PointType == HashiPointTypeEnum.Hint),
-                HashiPointTypeEnum.Test => island.AllConnections.Where(x => x.PointType == HashiPointTypeEnum.Test),
-                HashiPointTypeEnum.Normal => island.AllConnections.Where(x => x.PointType == HashiPointTypeEnum.Normal),
-                _ => throw new ArgumentOutOfRangeException(nameof(pointType), pointType, @"Invalid point type.")
-            };
-
-            foreach (var hashiPoint in connectionsToRemove.ToList()) island.AllConnections.Remove(hashiPoint);
+            foreach (var hashiPoint in island.AllConnections.GetConnectionsByPointType(pointType).ToList())
+                island.AllConnections.Remove(hashiPoint);
 
             island.NotifyBridgeConnections();
         }
