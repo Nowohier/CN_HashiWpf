@@ -1,6 +1,7 @@
 using FluentAssertions;
 using Hashi.Enums;
 using Hashi.Generator.Interfaces;
+using Hashi.Generator.Interfaces.Models;
 using Hashi.Generator.Interfaces.Providers;
 using Hashi.Gui.Interfaces.Helpers;
 using Hashi.Gui.Interfaces.Managers;
@@ -115,6 +116,11 @@ public class MainViewModelTests
         testSolutionProviderMock.Setup(x => x.SaveTestFields());
         testSolutionProviderMock.Setup(x => x.HashiFieldReference).Returns([[1, 2]]);
 
+        // Setup solution provider factory
+        solutionProviderFactoryMock = new Mock<Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider>>(MockBehavior.Strict);
+        solutionProviderFactoryMock.Setup(x => x(It.IsAny<IReadOnlyList<int[]>?>(), It.IsAny<List<IBridgeCoordinates>?>(), It.IsAny<string?>()))
+            .Returns(solutionProviderMock.Object);
+
         // Setup resource manager
         resourceManagerMock.Setup(x => x.PrepareUi());
         resourceManagerMock.Setup(x => x.ResetSettingsAndLoadFromDefault());
@@ -141,7 +147,8 @@ public class MainViewModelTests
             testSolutionProviderMock.Object,
             resourceManagerMock.Object,
             loggerFactoryMock.Object,
-            hashiBrushResolverMock.Object);
+            hashiBrushResolverMock.Object,
+            solutionProviderFactoryMock.Object);
     }
 
     private Mock<IHashiBrushResolver> hashiBrushResolverMock;
@@ -157,6 +164,7 @@ public class MainViewModelTests
     private Mock<ILogger> loggerMock;
     private Mock<IHashiBrush> hashiBrushMock;
     private Mock<ISolutionProvider> solutionProviderMock;
+    private Mock<Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider>> solutionProviderFactoryMock;
     private TestableStopwatch testStopwatch;
     private MainViewModel mainViewModel;
 
@@ -201,6 +209,27 @@ public class MainViewModelTests
             testSolutionProviderMock.Object,
             resourceManagerMock.Object,
             loggerFactoryMock.Object,
+            null!,
+            solutionProviderFactoryMock.Object);
+
+        action.Should().Throw<ArgumentNullException>();
+    }
+
+    [Test]
+    public void Constructor_WhenSolutionProviderFactoryIsNull_ShouldThrowArgumentNullException()
+    {
+        // Arrange & Act & Assert
+        var action = () => new MainViewModel(
+            dialogWrapperMock.Object,
+            hashiGeneratorMock.Object,
+            settingsProviderMock.Object,
+            timerProviderMock.Object,
+            islandProviderMock.Object,
+            hintProviderMock.Object,
+            testSolutionProviderMock.Object,
+            resourceManagerMock.Object,
+            loggerFactoryMock.Object,
+            hashiBrushResolverMock.Object,
             null!);
 
         action.Should().Throw<ArgumentNullException>();
@@ -220,7 +249,8 @@ public class MainViewModelTests
             testSolutionProviderMock.Object,
             resourceManagerMock.Object,
             loggerFactoryMock.Object,
-            hashiBrushResolverMock.Object);
+            hashiBrushResolverMock.Object,
+            solutionProviderFactoryMock.Object);
 
         action.Should().Throw<ArgumentNullException>();
     }
@@ -239,7 +269,8 @@ public class MainViewModelTests
             testSolutionProviderMock.Object,
             resourceManagerMock.Object,
             loggerFactoryMock.Object,
-            hashiBrushResolverMock.Object);
+            hashiBrushResolverMock.Object,
+            solutionProviderFactoryMock.Object);
 
         action.Should().Throw<ArgumentNullException>();
     }
@@ -258,7 +289,8 @@ public class MainViewModelTests
             testSolutionProviderMock.Object,
             resourceManagerMock.Object,
             loggerFactoryMock.Object,
-            hashiBrushResolverMock.Object);
+            hashiBrushResolverMock.Object,
+            solutionProviderFactoryMock.Object);
 
         action.Should().Throw<ArgumentNullException>();
     }
@@ -277,7 +309,8 @@ public class MainViewModelTests
             testSolutionProviderMock.Object,
             resourceManagerMock.Object,
             loggerFactoryMock.Object,
-            hashiBrushResolverMock.Object);
+            hashiBrushResolverMock.Object,
+            solutionProviderFactoryMock.Object);
 
         action.Should().Throw<ArgumentNullException>();
     }
@@ -296,7 +329,8 @@ public class MainViewModelTests
             testSolutionProviderMock.Object,
             resourceManagerMock.Object,
             loggerFactoryMock.Object,
-            hashiBrushResolverMock.Object);
+            hashiBrushResolverMock.Object,
+            solutionProviderFactoryMock.Object);
 
         action.Should().Throw<ArgumentNullException>();
     }
@@ -315,7 +349,8 @@ public class MainViewModelTests
             testSolutionProviderMock.Object,
             resourceManagerMock.Object,
             loggerFactoryMock.Object,
-            hashiBrushResolverMock.Object);
+            hashiBrushResolverMock.Object,
+            solutionProviderFactoryMock.Object);
 
         action.Should().Throw<ArgumentNullException>();
     }
@@ -334,7 +369,8 @@ public class MainViewModelTests
             null!,
             resourceManagerMock.Object,
             loggerFactoryMock.Object,
-            hashiBrushResolverMock.Object);
+            hashiBrushResolverMock.Object,
+            solutionProviderFactoryMock.Object);
 
         action.Should().Throw<ArgumentNullException>();
     }
@@ -353,7 +389,8 @@ public class MainViewModelTests
             testSolutionProviderMock.Object,
             null!,
             loggerFactoryMock.Object,
-            hashiBrushResolverMock.Object);
+            hashiBrushResolverMock.Object,
+            solutionProviderFactoryMock.Object);
 
         action.Should().Throw<ArgumentNullException>();
     }
@@ -372,7 +409,8 @@ public class MainViewModelTests
             testSolutionProviderMock.Object,
             resourceManagerMock.Object,
             null!,
-            hashiBrushResolverMock.Object);
+            hashiBrushResolverMock.Object,
+            solutionProviderFactoryMock.Object);
 
         action.Should().Throw<ArgumentNullException>();
     }
