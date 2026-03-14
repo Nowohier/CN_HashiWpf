@@ -1,3 +1,6 @@
+![License](https://img.shields.io/github/license/Nowohier/CN_HashiWpf)
+![GitHub stars](https://img.shields.io/github/stars/Nowohier/CN_HashiWpf)
+![.NET Core Desktop](https://github.com/Nowohier/CN_HashiWpf/actions/workflows/dotnet-desktop.yml/badge.svg)
 
 # Hashiwokakero ("build bridges!")
 
@@ -15,6 +18,69 @@ The goal is to connect all of the islands by drawing a series of bridges between
 - The number of bridges connected to each island must match the number on that island.
 - The bridges must connect the islands into a single connected group.
 
+## Tech Stack
+
+| Category | Technology |
+|---|---|
+| **Platform** | .NET 8.0 / C# 12 |
+| **UI Framework** | WPF (Windows Presentation Foundation) |
+| **UI Theming** | MahApps.Metro 2.4 |
+| **MVVM Toolkit** | CommunityToolkit.Mvvm 8.4 |
+| **Rule Engine** | NRules 1.0 |
+| **Logging** | NLog 5.3 |
+| **Dependency Injection** | Microsoft.Extensions.DependencyInjection |
+| **Testing** | NUnit 4.2 + FluentAssertions 7.0 + Moq 4.20 |
+
+## Prerequisites
+
+- [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) or later
+- Windows 10/11 (required for WPF)
+- (Optional) Visual Studio 2022 17.x or JetBrains Rider
+
+## Installation & Build
+
+```bash
+# Clone the repository
+git clone https://github.com/Nowohier/CN_HashiWpf.git
+cd CN_HashiWpf
+
+# Restore dependencies
+dotnet restore
+
+# Build the solution
+dotnet build CN_HashiWpf.sln --configuration Release
+```
+
+## Running the Application
+
+```bash
+dotnet run --project Gui/Hashi.Gui/Hashi.Gui.csproj
+```
+
+Or open `CN_HashiWpf.sln` in Visual Studio and run the `Hashi.Gui` project.
+
+## Running Tests
+
+```bash
+# Run all tests
+dotnet test
+
+# Run tests with detailed output
+dotnet test --verbosity normal
+```
+
+## Project Structure
+
+```
+CN_HashiWpf/
+├── Gui/                    # WPF application (MVVM, theming, translations)
+├── Generator/              # Puzzle generation
+├── Solver/                 # Linear solver + NRules-based solver
+├── PuzzleLoader/           # Loads pre-built puzzle files (.has format)
+├── Logging/                # Centralized NLog logging
+├── Enums/                  # Shared enumerations
+└── Tests/                  # Unit tests (NUnit)
+```
 
 ## Solution Methods
 Solving a Hashiwokakero puzzle is a matter of procedural force: having determined where a bridge must be placed, placing it there can eliminate other possible places for bridges, forcing the placement of another bridge, and so on.

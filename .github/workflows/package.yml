@@ -1,0 +1,77 @@
+name: Package
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  package:
+    runs-on: windows-latest
+
+    env:
+      Solution_Name: CN_HashiWpf.sln
+      Project_Path: Gui/Hashi.Gui/Hashi.Gui.csproj
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Restore dependencies
+      run: dotnet restore $env:Solution_Name
+
+    - name: Execute unit tests
+      run: dotnet test $env:Solution_Name --configuration Release --no-restore
+
+    - name: Publish application (self-contained)
+      run: |
+        dotnet publish $env:Project_Path `
+          --configuration Release `
+          --runtime win-x64 `
+          --self-contained true `
+          --output ./publish/self-contained `
+          -p:PublishSingleFile=true `
+          -p:IncludeNativeLibrariesForSelfExtract=true
+
+    - name: Publish application (framework-dependent)
+      run: |
+        dotnet publish $env:Project_Path `
+          --configuration Release `
+          --runtime win-x64 `
+          --self-contained false `
+          --output ./publish/framework-dependent `
+          -p:PublishSingleFile=true
+
+    - name: Create ZIP archives
+      run: |
+        Compress-Archive -Path ./publish/self-contained/* -DestinationPath ./publish/CN_HashiWpf-self-contained-win-x64.zip
+        Compress-Archive -Path ./publish/framework-dependent/* -DestinationPath ./publish/CN_HashiWpf-framework-dependent-win-x64.zip
+
+    - name: Upload self-contained artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: CN_HashiWpf-self-contained-win-x64
+        path: ./publish/CN_HashiWpf-self-contained-win-x64.zip
+
+    - name: Upload framework-dependent artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: CN_HashiWpf-framework-dependent-win-x64
+        path: ./publish/CN_HashiWpf-framework-dependent-win-x64.zip
+
+    - name: Create GitHub Release
+      if: startsWith(github.ref, 'refs/tags/v')
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
+          ./publish/CN_HashiWpf-self-contained-win-x64.zip
+          ./publish/CN_HashiWpf-framework-dependent-win-x64.zip
+        generate_release_notes: true
