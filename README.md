@@ -1,4 +1,4 @@
-![License](https://img.shields.io/github/license/Nowohier/CN_HashiWpf)
+![License](https://img.shields.io/github/license/Nowohier/CN_HashiWpf?cacheSeconds=1)
 ![GitHub stars](https://img.shields.io/github/stars/Nowohier/CN_HashiWpf)
 ![.NET Core Desktop](https://github.com/Nowohier/CN_HashiWpf/actions/workflows/dotnet-desktop.yml/badge.svg)
 
