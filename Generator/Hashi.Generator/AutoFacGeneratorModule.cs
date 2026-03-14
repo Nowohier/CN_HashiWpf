@@ -6,6 +6,7 @@ using Hashi.Generator.Interfaces.Providers;
 using Hashi.Generator.Models;
 using Hashi.Generator.Providers;
 using Hashi.Generator.Services;
+using Hashi.Generator.Simulation;
 namespace Hashi.Generator;
 
 /// <inheritdoc />
@@ -19,6 +20,7 @@ public class AutoFacGeneratorModule : Module
         builder.RegisterType<BlockDetectionService>().AsSelf().As<IBlockDetectionService>().SingleInstance();
         builder.RegisterType<IslandLayoutService>().As<IIslandLayoutService>().SingleInstance();
         builder.RegisterType<BridgeManagementService>().As<IBridgeManagementService>().SingleInstance();
+        builder.RegisterType<SimulationFactory>().As<ISimulationFactory>().SingleInstance();
         builder.RegisterType<RuleSolvabilityValidator>().As<IRuleSolvabilityValidator>().SingleInstance();
         builder.RegisterType<Island>().As<IIsland>().InstancePerDependency();
         builder.RegisterType<Bridge>().As<IBridge>().InstancePerDependency();

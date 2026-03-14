@@ -5,6 +5,8 @@ using Hashi.Gui.Core.Helpers;
 using Hashi.Gui.Core.Providers;
 using Hashi.Gui.Interfaces.Helpers;
 using Hashi.Gui.Interfaces.Providers;
+using Hashi.Gui.Interfaces.Services;
+using Hashi.Gui.Services;
 
 namespace Hashi.Gui.Providers;
 
@@ -23,6 +25,8 @@ public class AutoFacProvidersModule : Module
         builder.RegisterType<RuleInfoProvider>().As<IRuleInfoProvider>().SingleInstance();
         builder.RegisterType<TestSolutionProvider>().As<ITestSolutionProvider>().SingleInstance();
         builder.RegisterType<PathProvider>().As<IPathProvider>().SingleInstance();
+        builder.RegisterType<GameCompletionHandler>().As<IGameCompletionHandler>().SingleInstance();
+        builder.RegisterType<TestFieldService>().As<ITestFieldService>().SingleInstance();
 
         builder.Register<Func<IReadOnlyList<int[]>?, IReadOnlyList<IBridgeCoordinates>?, string?, ISolutionProvider>>(context =>
         {

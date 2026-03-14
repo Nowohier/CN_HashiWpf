@@ -1,14 +1,14 @@
-﻿using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Hashi.Enums;
 using Hashi.Generator.Interfaces;
-using Hashi.Generator.Interfaces.Models;
 using Hashi.Generator.Interfaces.Providers;
 using Hashi.Gui.Interfaces.Helpers;
 using Hashi.Gui.Interfaces.Managers;
 using Hashi.Gui.Interfaces.Messages;
 using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.Providers;
+using Hashi.Gui.Interfaces.Services;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Wrappers;
 using Hashi.Gui.Messaging;
@@ -30,7 +30,8 @@ public class MainViewModel : AsyncObservableRecipient,
     private readonly IHashiGenerator hashiGenerator;
     private readonly IResourceManager resourceManager;
     private readonly IHashiBrushResolver brushResolver;
-    private readonly Func<IReadOnlyList<int[]>?, IReadOnlyList<IBridgeCoordinates>?, string?, ISolutionProvider> solutionProviderFactory;
+    private readonly IGameCompletionHandler gameCompletionHandler;
+    private readonly ITestFieldService testFieldService;
     private readonly ILogger logger;
 
     private bool isCheating;
@@ -38,7 +39,6 @@ public class MainViewModel : AsyncObservableRecipient,
     private bool isTestFieldMode;
     private DifficultyEnum selectedDifficulty = DifficultyEnum.Easy3;
     private Type? selectedRule;
-    private string newRuleName = string.Empty;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="MainViewModel" /> class.
@@ -49,11 +49,11 @@ public class MainViewModel : AsyncObservableRecipient,
     /// <param name="timerProvider">The timer provider.</param>
     /// <param name="islandProvider">The islands provider.</param>
     /// <param name="hintProvider">The hint provider.</param>
-    /// <param name="testSolutionProvider">The test solution provider.</param>
     /// <param name="resourceManager">The resource manager.</param>
     /// <param name="loggerFactory">The logger factory.</param>
     /// <param name="brushResolver">The brush resolver instance.</param>
-    /// <param name="solutionProviderFactory">The factory for creating solution providers.</param>
+    /// <param name="gameCompletionHandler">The game completion handler.</param>
+    /// <param name="testFieldService">The test field service.</param>
     public MainViewModel
     (
         IDialogWrapper dialogWrapper,
@@ -62,22 +62,22 @@ public class MainViewModel : AsyncObservableRecipient,
         ITimerProvider timerProvider,
         IIslandProvider islandProvider,
         IHintProvider hintProvider,
-        ITestSolutionProvider testSolutionProvider,
         IResourceManager resourceManager,
         ILoggerFactory loggerFactory,
         IHashiBrushResolver brushResolver,
-        Func<IReadOnlyList<int[]>?, IReadOnlyList<IBridgeCoordinates>?, string?, ISolutionProvider> solutionProviderFactory)
+        IGameCompletionHandler gameCompletionHandler,
+        ITestFieldService testFieldService)
     {
         SettingsProvider = settingsProvider ?? throw new ArgumentNullException(nameof(settingsProvider));
         TimerProvider = timerProvider ?? throw new ArgumentNullException(nameof(timerProvider));
         IslandProvider = islandProvider ?? throw new ArgumentNullException(nameof(islandProvider));
         HintProvider = hintProvider ?? throw new ArgumentNullException(nameof(hintProvider));
-        TestSolutionProvider = testSolutionProvider ?? throw new ArgumentNullException(nameof(testSolutionProvider));
         this.dialogWrapper = dialogWrapper ?? throw new ArgumentNullException(nameof(dialogWrapper));
         this.hashiGenerator = hashiGenerator ?? throw new ArgumentNullException(nameof(hashiGenerator));
         this.resourceManager = resourceManager ?? throw new ArgumentNullException(nameof(resourceManager));
         this.brushResolver = brushResolver ?? throw new ArgumentNullException(nameof(brushResolver));
-        this.solutionProviderFactory = solutionProviderFactory ?? throw new ArgumentNullException(nameof(solutionProviderFactory));
+        this.gameCompletionHandler = gameCompletionHandler ?? throw new ArgumentNullException(nameof(gameCompletionHandler));
+        this.testFieldService = testFieldService ?? throw new ArgumentNullException(nameof(testFieldService));
         logger = (loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory))).CreateLogger<MainViewModel>();
 
         WeakReferenceMessenger.Default.Register<IBridgeConnectionChangedMessage>(this);
@@ -101,7 +101,6 @@ public class MainViewModel : AsyncObservableRecipient,
         DeleteTestFieldCommand = new RelayCommand(DeleteTestFieldCommandExecute);
         CreateTestFieldCommand = new RelayCommand(CreateTestFieldCommandExecute, CreateTestFieldCommandCanExecute);
         ResetAllSettingsToDefaultCommand = new RelayCommand(ResetAllSettingsToDefaultExecute);
-
     }
 
     /// <inheritdoc />
@@ -147,7 +146,7 @@ public class MainViewModel : AsyncObservableRecipient,
             HintProvider.ResetSession();
             if (IsTestFieldMode)
             {
-                SetTestSolution(TestSolutionProvider.SelectedSolutionProvider);
+                SetTestSolution(testFieldService.TestSolutionProvider.SelectedSolutionProvider);
             }
         }
     }
@@ -300,9 +299,9 @@ public class MainViewModel : AsyncObservableRecipient,
     public IHintProvider HintProvider { get; }
 
     /// <summary>
-    ///    Gets the test solution provider for the game.
+    ///    Gets the test solution provider for the game (exposed for XAML data binding).
     /// </summary>
-    public ITestSolutionProvider TestSolutionProvider { get; }
+    public ITestSolutionProvider TestSolutionProvider => testFieldService.TestSolutionProvider;
 
     /// <inheritdoc />
     public ISettingsProvider SettingsProvider { get; }
@@ -312,13 +311,17 @@ public class MainViewModel : AsyncObservableRecipient,
     /// </summary>
     public string NewRuleName
     {
-        get => newRuleName;
+        get => testFieldService.NewRuleName;
         set
         {
-            if (SetProperty(ref newRuleName, value))
+            if (testFieldService.NewRuleName == value)
             {
-                ((RelayCommand)CreateTestFieldCommand).NotifyCanExecuteChanged();
+                return;
             }
+
+            testFieldService.NewRuleName = value;
+            OnPropertyChanged();
+            ((RelayCommand)CreateTestFieldCommand).NotifyCanExecuteChanged();
         }
     }
 
@@ -351,7 +354,7 @@ public class MainViewModel : AsyncObservableRecipient,
 
         if (bridgeOperationType == BridgeOperationTypeEnum.Add)
         {
-            IslandProvider.RedoHistory.Clear();
+            IslandProvider.ClearRedoHistory();
         }
 
         IslandProvider.RefreshIslandColors();
@@ -367,39 +370,14 @@ public class MainViewModel : AsyncObservableRecipient,
         var actualScore = TimerProvider.Elapsed;
         TimerProvider.StopTimer();
 
-        var caption = TranslationSource.Instance.GetRequired("MessageGameOverCaption");
-        var dialogMessage = string.Format(TranslationSource.Instance.GetRequired("MessageGameOverText"), actualScore.ToString(@"hh\:mm\:ss"));
+        var shouldStartNewGame = gameCompletionHandler.HandleGameCompletion(
+            actualScore, SelectedDifficulty, IsCheating, IsTestFieldMode);
 
-        if (IsCheating || IsTestFieldMode)
+        if (shouldStartNewGame)
         {
-            dialogWrapper.Show(caption, dialogMessage, DialogButton.Ok, DialogImage.Success);
-            if (!IsTestFieldMode)
-            {
-                CreateNewGameCommand.Execute(null);
-            }
-
-            return;
-        }
-
-        //Check if highscore - when yes, write highscore to json and show message
-        var currentSettingForSetDifficulty =
-            SettingsProvider.Settings.HighScores.FirstOrDefault(x => x.Difficulty == SelectedDifficulty);
-        var currentHighScore = currentSettingForSetDifficulty?.HighScoreTime;
-        if (currentSettingForSetDifficulty != null && (currentHighScore == null || actualScore < currentHighScore))
-        {
-            caption = TranslationSource.Instance.GetRequired("MessageNewHighscoreCaption");
-            dialogMessage += string.Format(
-                TranslationSource.Instance.GetRequired("MessageNewHighscoreText").Replace(@"\n", Environment.NewLine),
-                SelectedDifficulty.ToString(), actualScore.ToString(@"hh\:mm\:ss"),
-                currentHighScore == null ? "-" : ((TimeSpan)currentHighScore).ToString(@"hh\:mm\:ss"));
-            currentSettingForSetDifficulty.HighScoreTime = actualScore;
-            SettingsProvider.SaveSettings();
             OnPropertyChanged(nameof(HighscoreForSelectedDifficulty));
+            CreateNewGameCommand.Execute(null);
         }
-
-        dialogWrapper.Show(caption, dialogMessage, DialogButton.Ok, DialogImage.Success);
-
-        CreateNewGameCommand.Execute(null);
     }
 
     /// <inheritdoc cref="IMainViewModel.Receive(ISetTestSolutionMessage)" />
@@ -459,16 +437,21 @@ public class MainViewModel : AsyncObservableRecipient,
         IsGeneratingHashiPuzzle = true;
         IsCheating = false;
 
-        HintProvider.ResetSession();
-        IslandProvider.InitializeNewSolutionAndSetBridges(solutionProvider);
-        TimerProvider.StopTimer();
-
-        if (HintProvider.Rules.FirstOrDefault(x => x.Name.Equals(solutionProvider.Name)) is { } rule)
+        try
         {
-            SelectedRule = rule;
-        }
+            HintProvider.ResetSession();
+            IslandProvider.InitializeNewSolutionAndSetBridges(solutionProvider);
+            TimerProvider.StopTimer();
 
-        IsGeneratingHashiPuzzle = false;
+            if (HintProvider.Rules.FirstOrDefault(x => x.Name.Equals(solutionProvider.Name)) is { } rule)
+            {
+                SelectedRule = rule;
+            }
+        }
+        finally
+        {
+            IsGeneratingHashiPuzzle = false;
+        }
 
         return Task.CompletedTask;
     }
@@ -506,7 +489,7 @@ public class MainViewModel : AsyncObservableRecipient,
 
         if (IsTestFieldMode)
         {
-            await SetTestSolution(TestSolutionProvider.SelectedSolutionProvider);
+            await SetTestSolution(testFieldService.TestSolutionProvider.SelectedSolutionProvider);
         }
         else
         {
@@ -558,13 +541,12 @@ public class MainViewModel : AsyncObservableRecipient,
 
     internal async Task ResetTestFieldCommandExecute()
     {
-        await SetTestSolution(TestSolutionProvider.SelectedSolutionProvider);
+        await SetTestSolution(testFieldService.TestSolutionProvider.SelectedSolutionProvider);
     }
 
     internal void SaveTestFieldCommandExecute()
     {
-        TestSolutionProvider.ConvertIslandsToSolutionProvider(IslandProvider.IslandsFlat);
-        TestSolutionProvider.SaveTestFields();
+        testFieldService.SaveTestField(IslandProvider.IslandsFlat);
     }
 
     internal void ResetAllSettingsToDefaultExecute()
@@ -575,39 +557,24 @@ public class MainViewModel : AsyncObservableRecipient,
         {
             resourceManager.ResetSettingsAndLoadFromDefault();
             SettingsProvider.ResetSettings();
-            TestSolutionProvider.ResetSettings();
-            TestSolutionProvider.SelectedSolutionProvider = TestSolutionProvider.SolutionProviders.First();
+            testFieldService.TestSolutionProvider.ResetSettings();
+            testFieldService.TestSolutionProvider.SelectedSolutionProvider =
+                testFieldService.TestSolutionProvider.SolutionProviders.First();
         }
     }
 
     internal void DeleteTestFieldCommandExecute()
     {
-        if (TestSolutionProvider.SelectedSolutionProvider == null)
-        {
-            return;
-        }
-
-        if (dialogWrapper.Show(TranslationSource.Instance.GetRequired("MessageDeleteScenarioCaption"),
-                string.Format(TranslationSource.Instance.GetRequired("MessageDeleteScenarioText"),
-                    TestSolutionProvider.SelectedSolutionProvider.Name),
-                DialogButton.YesNo, DialogImage.Question) == DialogResult.Yes)
-        {
-            TestSolutionProvider.SolutionProviders.Remove(TestSolutionProvider.SelectedSolutionProvider);
-            TestSolutionProvider.SelectedSolutionProvider = TestSolutionProvider.SolutionProviders.FirstOrDefault();
-            TestSolutionProvider.SaveTestFields();
-        }
+        testFieldService.DeleteTestField();
     }
 
     internal void CreateTestFieldCommandExecute()
     {
-        var solutionProvider = solutionProviderFactory(TestSolutionProvider.HashiFieldReference, null, NewRuleName);
-        TestSolutionProvider.SolutionProviders.Add(solutionProvider);
-        TestSolutionProvider.SelectedSolutionProvider = solutionProvider;
-        TestSolutionProvider.SaveTestFields();
+        testFieldService.CreateTestField();
     }
 
     internal bool CreateTestFieldCommandCanExecute()
     {
-        return !string.IsNullOrEmpty(NewRuleName) && !TestSolutionProvider.SolutionProviders.Any(x => x.Name == null || x.Name.Equals(NewRuleName));
+        return testFieldService.CanCreateTestField();
     }
 }

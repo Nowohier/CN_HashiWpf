@@ -60,11 +60,18 @@ public class IslandProvider :
     /// <inheritdoc />
     public ObservableCollection<ObservableCollection<IIslandViewModel>> Islands { get; } = [];
 
-    /// <inheritdoc />
-    public IList<IHashiBridge> History { get; } = new List<IHashiBridge>();
+    private readonly List<IHashiBridge> history = [];
+
+    private readonly List<IHashiBridge> redoHistory = [];
 
     /// <inheritdoc />
-    public IList<IHashiBridge> RedoHistory { get; } = new List<IHashiBridge>();
+    public IReadOnlyList<IHashiBridge> History => history;
+
+    /// <inheritdoc />
+    public IReadOnlyList<IHashiBridge> RedoHistory => redoHistory;
+
+    /// <inheritdoc />
+    public void ClearRedoHistory() => redoHistory.Clear();
 
     /// <summary>
     ///     The solution provider that contains the current solution.
@@ -82,8 +89,8 @@ public class IslandProvider :
 
         var hashiField = solutionProvider.HashiField;
         Islands.Clear();
-        History.Clear();
-        RedoHistory.Clear();
+        history.Clear();
+        redoHistory.Clear();
 
         Solution = solutionProvider;
         for (var row = 0; row < hashiField.Count; row++)
@@ -151,7 +158,7 @@ public class IslandProvider :
 
         if (pointType == HashiPointTypeEnum.Normal)
         {
-            History.Add(bridgeFactory.Invoke(BridgeOperationTypeEnum.Add, sourceIsland.Coordinates,
+            history.Add(bridgeFactory.Invoke(BridgeOperationTypeEnum.Add, sourceIsland.Coordinates,
                 targetIsland.Coordinates));
         }
 
@@ -261,8 +268,8 @@ public class IslandProvider :
     /// <inheritdoc />
     public void RemoveAllBridges(HashiPointTypeEnum pointType)
     {
-        History.Clear();
-        RedoHistory.Clear();
+        history.Clear();
+        redoHistory.Clear();
 
         foreach (var island in IslandsFlat)
         {
@@ -276,12 +283,12 @@ public class IslandProvider :
     /// <inheritdoc />
     public void UndoConnection()
     {
-        if (!History.Any())
+        if (history.Count == 0)
         {
             return;
         }
 
-        var lastEntry = History.Last();
+        var lastEntry = history[^1];
         var island1 = GetIslandByCoordinates(lastEntry.Point1);
         var island2 = GetIslandByCoordinates(lastEntry.Point2);
 
@@ -295,23 +302,23 @@ public class IslandProvider :
 
         island1.RefreshIslandColor();
         island2.RefreshIslandColor();
-        History.Remove(lastEntry);
-        RedoHistory.Add(lastEntry);
+        history.Remove(lastEntry);
+        redoHistory.Add(lastEntry);
     }
 
     /// <inheritdoc />
     public void RedoConnection()
     {
-        if (!RedoHistory.Any())
+        if (redoHistory.Count == 0)
         {
             return;
         }
 
-        var lastEntry = RedoHistory.Last();
+        var lastEntry = redoHistory[^1];
         var island1 = GetIslandByCoordinates(lastEntry.Point1);
         var island2 = GetIslandByCoordinates(lastEntry.Point2);
         AddConnection(island1, island2);
-        RedoHistory.Remove(lastEntry);
+        redoHistory.Remove(lastEntry);
     }
 
     /// <inheritdoc />

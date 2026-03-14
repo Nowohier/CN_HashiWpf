@@ -51,8 +51,33 @@ public class HashiSolver : IHashiSolver
     public async Task<(List<IIsland>, List<(int, int, int, int)>)> ReadFile(string file)
     {
         var lines = await File.ReadAllLinesAsync(file);
-        var header = lines[0].Split(' ').Select(int.Parse).ToArray();
-        int rows = header[0], columns = header[1]; //, islands = header[2];
+
+        if (lines.Length == 0)
+        {
+            throw new FormatException("File is empty.");
+        }
+
+        var headerParts = lines[0].Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (headerParts.Length < 2)
+        {
+            throw new FormatException("Header must contain at least two integers (rows and columns).");
+        }
+
+        if (!int.TryParse(headerParts[0], out var rows) || !int.TryParse(headerParts[1], out var columns))
+        {
+            throw new FormatException("Header values must be valid integers.");
+        }
+
+        if (rows <= 0 || columns <= 0)
+        {
+            throw new FormatException($"Dimensions must be positive. Got rows={rows}, columns={columns}.");
+        }
+
+        if (lines.Length < rows + 1)
+        {
+            throw new FormatException($"Expected {rows} data rows but file contains only {lines.Length - 1}.");
+        }
+
         var grid = new int[rows, columns];
         for (var r = 0; r < rows; r++)
         {
@@ -298,14 +323,17 @@ public class HashiSolver : IHashiSolver
         }
     }
 
+    private const int MaxLazyCutIterations = 1000;
+
     private async Task<SolverStatusEnum> SolveWithLazyCuts(CpModel model, IntVar[,] x, List<IIsland> islands,
         Dictionary<int, (int, int)> edgeMap, Dictionary<(int, int), int> revEdgeMap, int m, bool prettyPrint)
     {
         var solver = new CpSolver();
         var watch = Stopwatch.StartNew();
         var addedCuts = new HashSet<string>();
+        var iteration = 0;
 
-        while (true)
+        while (iteration++ < MaxLazyCutIterations)
         {
             var status = solver.Solve(model);
             if (status != CpSolverStatus.Optimal && status != CpSolverStatus.Feasible)
@@ -362,6 +390,10 @@ public class HashiSolver : IHashiSolver
                 return SolverStatusEnum.Infeasible;
             }
         }
+
+        logger.Warn($"Lazy cut iteration limit ({MaxLazyCutIterations}) exceeded. Declaring infeasible.");
+        watch.Stop();
+        return SolverStatusEnum.Infeasible;
     }
 
     /// <summary>

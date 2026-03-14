@@ -368,4 +368,84 @@ public class HashiSolverTests
         // assert
         loggerMock.Verify(l => l.Info(It.IsAny<string>()), Times.AtLeastOnce);
     }
+
+    [Test]
+    public async Task ReadFile_WhenFileIsEmpty_ShouldThrowFormatException()
+    {
+        // arrange
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            await File.WriteAllTextAsync(tempFile, string.Empty);
+
+            // act & assert
+            await hashiSolver.Invoking(s => s.ReadFile(tempFile))
+                .Should().ThrowAsync<FormatException>()
+                .WithMessage("*empty*");
+        }
+        finally
+        {
+            if (File.Exists(tempFile)) File.Delete(tempFile);
+        }
+    }
+
+    [Test]
+    public async Task ReadFile_WhenHeaderTooShort_ShouldThrowFormatException()
+    {
+        // arrange
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            await File.WriteAllTextAsync(tempFile, "5");
+
+            // act & assert
+            await hashiSolver.Invoking(s => s.ReadFile(tempFile))
+                .Should().ThrowAsync<FormatException>()
+                .WithMessage("*Header*");
+        }
+        finally
+        {
+            if (File.Exists(tempFile)) File.Delete(tempFile);
+        }
+    }
+
+    [Test]
+    public async Task ReadFile_WhenDimensionsNotPositive_ShouldThrowFormatException()
+    {
+        // arrange
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            await File.WriteAllTextAsync(tempFile, "0 3");
+
+            // act & assert
+            await hashiSolver.Invoking(s => s.ReadFile(tempFile))
+                .Should().ThrowAsync<FormatException>()
+                .WithMessage("*positive*");
+        }
+        finally
+        {
+            if (File.Exists(tempFile)) File.Delete(tempFile);
+        }
+    }
+
+    [Test]
+    public async Task ReadFile_WhenInsufficientDataRows_ShouldThrowFormatException()
+    {
+        // arrange
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            await File.WriteAllTextAsync(tempFile, "3 3\n1 0 1");
+
+            // act & assert
+            await hashiSolver.Invoking(s => s.ReadFile(tempFile))
+                .Should().ThrowAsync<FormatException>()
+                .WithMessage("*Expected*");
+        }
+        finally
+        {
+            if (File.Exists(tempFile)) File.Delete(tempFile);
+        }
+    }
 }

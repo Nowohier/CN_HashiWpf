@@ -9,6 +9,7 @@ using Hashi.Gui.Interfaces.Messages;
 using Hashi.Gui.Interfaces.Messages.MessageContainers;
 using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.Providers;
+using Hashi.Gui.Interfaces.Services;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Gui.Interfaces.Wrappers;
 using Hashi.Gui.ViewModels;
@@ -38,7 +39,8 @@ public class MainViewModelTests
         loggerMock = new Mock<ILogger>(MockBehavior.Strict);
         hashiBrushMock = new Mock<IHashiBrush>(MockBehavior.Strict);
         solutionProviderMock = new Mock<ISolutionProvider>(MockBehavior.Strict);
-        // Timer mock setup is done below
+        gameCompletionHandlerMock = new Mock<IGameCompletionHandler>(MockBehavior.Strict);
+        testFieldServiceMock = new Mock<ITestFieldService>(MockBehavior.Strict);
 
         // Setup logger factory
         loggerFactoryMock.Setup(x => x.CreateLogger<MainViewModel>()).Returns(loggerMock.Object);
@@ -101,6 +103,7 @@ public class MainViewModelTests
         islandProviderMock.Setup(x => x.RedoConnection());
         islandProviderMock.Setup(x => x.History).Returns(new List<IHashiBridge>());
         islandProviderMock.Setup(x => x.RedoHistory).Returns(new List<IHashiBridge>());
+        islandProviderMock.Setup(x => x.ClearRedoHistory());
         islandProviderMock.Setup(x => x.GetVisibleNeighbor(It.IsAny<IIslandViewModel>(), It.IsAny<DirectionEnum>()))
             .Returns((IIslandViewModel)null!);
         islandProviderMock.Setup(x =>
@@ -117,10 +120,18 @@ public class MainViewModelTests
         testSolutionProviderMock.Setup(x => x.SaveTestFields());
         testSolutionProviderMock.Setup(x => x.HashiFieldReference).Returns([[1, 2]]);
 
-        // Setup solution provider factory
-        solutionProviderFactoryMock = new Mock<Func<IReadOnlyList<int[]>?, IReadOnlyList<IBridgeCoordinates>?, string?, ISolutionProvider>>(MockBehavior.Strict);
-        solutionProviderFactoryMock.Setup(x => x(It.IsAny<IReadOnlyList<int[]>?>(), It.IsAny<IReadOnlyList<IBridgeCoordinates>?>(), It.IsAny<string?>()))
-            .Returns(solutionProviderMock.Object);
+        // Setup game completion handler
+        gameCompletionHandlerMock.Setup(x => x.HandleGameCompletion(
+                It.IsAny<TimeSpan>(), It.IsAny<DifficultyEnum>(), It.IsAny<bool>(), It.IsAny<bool>()))
+            .Returns(true);
+
+        // Setup test field service
+        testFieldServiceMock.Setup(x => x.TestSolutionProvider).Returns(testSolutionProviderMock.Object);
+        testFieldServiceMock.SetupProperty(x => x.NewRuleName, string.Empty);
+        testFieldServiceMock.Setup(x => x.SaveTestField(It.IsAny<IEnumerable<IIslandViewModel>>()));
+        testFieldServiceMock.Setup(x => x.DeleteTestField());
+        testFieldServiceMock.Setup(x => x.CreateTestField());
+        testFieldServiceMock.Setup(x => x.CanCreateTestField()).Returns(false);
 
         // Setup resource manager
         resourceManagerMock.Setup(x => x.PrepareUi());
@@ -145,11 +156,11 @@ public class MainViewModelTests
             timerProviderMock.Object,
             islandProviderMock.Object,
             hintProviderMock.Object,
-            testSolutionProviderMock.Object,
             resourceManagerMock.Object,
             loggerFactoryMock.Object,
             hashiBrushResolverMock.Object,
-            solutionProviderFactoryMock.Object);
+            gameCompletionHandlerMock.Object,
+            testFieldServiceMock.Object);
     }
 
     private Mock<IHashiBrushResolver> hashiBrushResolverMock;
@@ -165,8 +176,8 @@ public class MainViewModelTests
     private Mock<ILogger> loggerMock;
     private Mock<IHashiBrush> hashiBrushMock;
     private Mock<ISolutionProvider> solutionProviderMock;
-    private Mock<Func<IReadOnlyList<int[]>?, IReadOnlyList<IBridgeCoordinates>?, string?, ISolutionProvider>> solutionProviderFactoryMock;
-    // Timer is now mocked via ITimerProvider.Elapsed
+    private Mock<IGameCompletionHandler> gameCompletionHandlerMock;
+    private Mock<ITestFieldService> testFieldServiceMock;
     private MainViewModel mainViewModel;
 
     #region Constructor Tests
@@ -201,37 +212,36 @@ public class MainViewModelTests
     {
         // Arrange & Act & Assert
         var action = () => new MainViewModel(
-            dialogWrapperMock.Object,
-            hashiGeneratorMock.Object,
-            settingsProviderMock.Object,
-            timerProviderMock.Object,
-            islandProviderMock.Object,
-            hintProviderMock.Object,
-            testSolutionProviderMock.Object,
-            resourceManagerMock.Object,
-            loggerFactoryMock.Object,
-            null!,
-            solutionProviderFactoryMock.Object);
+            dialogWrapperMock.Object, hashiGeneratorMock.Object, settingsProviderMock.Object,
+            timerProviderMock.Object, islandProviderMock.Object, hintProviderMock.Object,
+            resourceManagerMock.Object, loggerFactoryMock.Object, null!,
+            gameCompletionHandlerMock.Object, testFieldServiceMock.Object);
 
         action.Should().Throw<ArgumentNullException>();
     }
 
     [Test]
-    public void Constructor_WhenSolutionProviderFactoryIsNull_ShouldThrowArgumentNullException()
+    public void Constructor_WhenGameCompletionHandlerIsNull_ShouldThrowArgumentNullException()
     {
         // Arrange & Act & Assert
         var action = () => new MainViewModel(
-            dialogWrapperMock.Object,
-            hashiGeneratorMock.Object,
-            settingsProviderMock.Object,
-            timerProviderMock.Object,
-            islandProviderMock.Object,
-            hintProviderMock.Object,
-            testSolutionProviderMock.Object,
-            resourceManagerMock.Object,
-            loggerFactoryMock.Object,
-            hashiBrushResolverMock.Object,
-            null!);
+            dialogWrapperMock.Object, hashiGeneratorMock.Object, settingsProviderMock.Object,
+            timerProviderMock.Object, islandProviderMock.Object, hintProviderMock.Object,
+            resourceManagerMock.Object, loggerFactoryMock.Object, hashiBrushResolverMock.Object,
+            null!, testFieldServiceMock.Object);
+
+        action.Should().Throw<ArgumentNullException>();
+    }
+
+    [Test]
+    public void Constructor_WhenTestFieldServiceIsNull_ShouldThrowArgumentNullException()
+    {
+        // Arrange & Act & Assert
+        var action = () => new MainViewModel(
+            dialogWrapperMock.Object, hashiGeneratorMock.Object, settingsProviderMock.Object,
+            timerProviderMock.Object, islandProviderMock.Object, hintProviderMock.Object,
+            resourceManagerMock.Object, loggerFactoryMock.Object, hashiBrushResolverMock.Object,
+            gameCompletionHandlerMock.Object, null!);
 
         action.Should().Throw<ArgumentNullException>();
     }
@@ -241,17 +251,10 @@ public class MainViewModelTests
     {
         // Arrange & Act & Assert
         var action = () => new MainViewModel(
-            null!,
-            hashiGeneratorMock.Object,
-            settingsProviderMock.Object,
-            timerProviderMock.Object,
-            islandProviderMock.Object,
-            hintProviderMock.Object,
-            testSolutionProviderMock.Object,
-            resourceManagerMock.Object,
-            loggerFactoryMock.Object,
-            hashiBrushResolverMock.Object,
-            solutionProviderFactoryMock.Object);
+            null!, hashiGeneratorMock.Object, settingsProviderMock.Object,
+            timerProviderMock.Object, islandProviderMock.Object, hintProviderMock.Object,
+            resourceManagerMock.Object, loggerFactoryMock.Object, hashiBrushResolverMock.Object,
+            gameCompletionHandlerMock.Object, testFieldServiceMock.Object);
 
         action.Should().Throw<ArgumentNullException>();
     }
@@ -261,17 +264,10 @@ public class MainViewModelTests
     {
         // Arrange & Act & Assert
         var action = () => new MainViewModel(
-            dialogWrapperMock.Object,
-            null!,
-            settingsProviderMock.Object,
-            timerProviderMock.Object,
-            islandProviderMock.Object,
-            hintProviderMock.Object,
-            testSolutionProviderMock.Object,
-            resourceManagerMock.Object,
-            loggerFactoryMock.Object,
-            hashiBrushResolverMock.Object,
-            solutionProviderFactoryMock.Object);
+            dialogWrapperMock.Object, null!, settingsProviderMock.Object,
+            timerProviderMock.Object, islandProviderMock.Object, hintProviderMock.Object,
+            resourceManagerMock.Object, loggerFactoryMock.Object, hashiBrushResolverMock.Object,
+            gameCompletionHandlerMock.Object, testFieldServiceMock.Object);
 
         action.Should().Throw<ArgumentNullException>();
     }
@@ -281,17 +277,10 @@ public class MainViewModelTests
     {
         // Arrange & Act & Assert
         var action = () => new MainViewModel(
-            dialogWrapperMock.Object,
-            hashiGeneratorMock.Object,
-            null!,
-            timerProviderMock.Object,
-            islandProviderMock.Object,
-            hintProviderMock.Object,
-            testSolutionProviderMock.Object,
-            resourceManagerMock.Object,
-            loggerFactoryMock.Object,
-            hashiBrushResolverMock.Object,
-            solutionProviderFactoryMock.Object);
+            dialogWrapperMock.Object, hashiGeneratorMock.Object, null!,
+            timerProviderMock.Object, islandProviderMock.Object, hintProviderMock.Object,
+            resourceManagerMock.Object, loggerFactoryMock.Object, hashiBrushResolverMock.Object,
+            gameCompletionHandlerMock.Object, testFieldServiceMock.Object);
 
         action.Should().Throw<ArgumentNullException>();
     }
@@ -301,17 +290,10 @@ public class MainViewModelTests
     {
         // Arrange & Act & Assert
         var action = () => new MainViewModel(
-            dialogWrapperMock.Object,
-            hashiGeneratorMock.Object,
-            settingsProviderMock.Object,
-            null!,
-            islandProviderMock.Object,
-            hintProviderMock.Object,
-            testSolutionProviderMock.Object,
-            resourceManagerMock.Object,
-            loggerFactoryMock.Object,
-            hashiBrushResolverMock.Object,
-            solutionProviderFactoryMock.Object);
+            dialogWrapperMock.Object, hashiGeneratorMock.Object, settingsProviderMock.Object,
+            null!, islandProviderMock.Object, hintProviderMock.Object,
+            resourceManagerMock.Object, loggerFactoryMock.Object, hashiBrushResolverMock.Object,
+            gameCompletionHandlerMock.Object, testFieldServiceMock.Object);
 
         action.Should().Throw<ArgumentNullException>();
     }
@@ -321,17 +303,10 @@ public class MainViewModelTests
     {
         // Arrange & Act & Assert
         var action = () => new MainViewModel(
-            dialogWrapperMock.Object,
-            hashiGeneratorMock.Object,
-            settingsProviderMock.Object,
-            timerProviderMock.Object,
-            null!,
-            hintProviderMock.Object,
-            testSolutionProviderMock.Object,
-            resourceManagerMock.Object,
-            loggerFactoryMock.Object,
-            hashiBrushResolverMock.Object,
-            solutionProviderFactoryMock.Object);
+            dialogWrapperMock.Object, hashiGeneratorMock.Object, settingsProviderMock.Object,
+            timerProviderMock.Object, null!, hintProviderMock.Object,
+            resourceManagerMock.Object, loggerFactoryMock.Object, hashiBrushResolverMock.Object,
+            gameCompletionHandlerMock.Object, testFieldServiceMock.Object);
 
         action.Should().Throw<ArgumentNullException>();
     }
@@ -341,37 +316,10 @@ public class MainViewModelTests
     {
         // Arrange & Act & Assert
         var action = () => new MainViewModel(
-            dialogWrapperMock.Object,
-            hashiGeneratorMock.Object,
-            settingsProviderMock.Object,
-            timerProviderMock.Object,
-            islandProviderMock.Object,
-            null!,
-            testSolutionProviderMock.Object,
-            resourceManagerMock.Object,
-            loggerFactoryMock.Object,
-            hashiBrushResolverMock.Object,
-            solutionProviderFactoryMock.Object);
-
-        action.Should().Throw<ArgumentNullException>();
-    }
-
-    [Test]
-    public void Constructor_WhenTestSolutionProviderIsNull_ShouldThrowArgumentNullException()
-    {
-        // Arrange & Act & Assert
-        var action = () => new MainViewModel(
-            dialogWrapperMock.Object,
-            hashiGeneratorMock.Object,
-            settingsProviderMock.Object,
-            timerProviderMock.Object,
-            islandProviderMock.Object,
-            hintProviderMock.Object,
-            null!,
-            resourceManagerMock.Object,
-            loggerFactoryMock.Object,
-            hashiBrushResolverMock.Object,
-            solutionProviderFactoryMock.Object);
+            dialogWrapperMock.Object, hashiGeneratorMock.Object, settingsProviderMock.Object,
+            timerProviderMock.Object, islandProviderMock.Object, null!,
+            resourceManagerMock.Object, loggerFactoryMock.Object, hashiBrushResolverMock.Object,
+            gameCompletionHandlerMock.Object, testFieldServiceMock.Object);
 
         action.Should().Throw<ArgumentNullException>();
     }
@@ -381,17 +329,10 @@ public class MainViewModelTests
     {
         // Arrange & Act & Assert
         var action = () => new MainViewModel(
-            dialogWrapperMock.Object,
-            hashiGeneratorMock.Object,
-            settingsProviderMock.Object,
-            timerProviderMock.Object,
-            islandProviderMock.Object,
-            hintProviderMock.Object,
-            testSolutionProviderMock.Object,
-            null!,
-            loggerFactoryMock.Object,
-            hashiBrushResolverMock.Object,
-            solutionProviderFactoryMock.Object);
+            dialogWrapperMock.Object, hashiGeneratorMock.Object, settingsProviderMock.Object,
+            timerProviderMock.Object, islandProviderMock.Object, hintProviderMock.Object,
+            null!, loggerFactoryMock.Object, hashiBrushResolverMock.Object,
+            gameCompletionHandlerMock.Object, testFieldServiceMock.Object);
 
         action.Should().Throw<ArgumentNullException>();
     }
@@ -401,17 +342,10 @@ public class MainViewModelTests
     {
         // Arrange & Act & Assert
         var action = () => new MainViewModel(
-            dialogWrapperMock.Object,
-            hashiGeneratorMock.Object,
-            settingsProviderMock.Object,
-            timerProviderMock.Object,
-            islandProviderMock.Object,
-            hintProviderMock.Object,
-            testSolutionProviderMock.Object,
-            resourceManagerMock.Object,
-            null!,
-            hashiBrushResolverMock.Object,
-            solutionProviderFactoryMock.Object);
+            dialogWrapperMock.Object, hashiGeneratorMock.Object, settingsProviderMock.Object,
+            timerProviderMock.Object, islandProviderMock.Object, hintProviderMock.Object,
+            resourceManagerMock.Object, null!, hashiBrushResolverMock.Object,
+            gameCompletionHandlerMock.Object, testFieldServiceMock.Object);
 
         action.Should().Throw<ArgumentNullException>();
     }
@@ -690,22 +624,19 @@ public class MainViewModelTests
     }
 
     [Test]
-    public void Receive_WhenAllConnectionsSetMessageWhileCheating_ShouldShowDialogAndCreateNewGame()
+    public void Receive_WhenAllConnectionsSetMessage_ShouldDelegateToGameCompletionHandler()
     {
         // Arrange
         mainViewModel.IsCheating = true;
         var messageMock = new Mock<IAllConnectionsSetMessage>(MockBehavior.Strict);
-        dialogWrapperMock.Setup(x =>
-                x.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DialogButton>(), It.IsAny<DialogImage>()))
-            .Returns(DialogResult.Ok);
 
         // Act
         mainViewModel.Receive(messageMock.Object);
 
         // Assert
         timerProviderMock.Verify(x => x.StopTimer(), Times.AtLeastOnce);
-        dialogWrapperMock.Verify(
-            x => x.Show(It.IsAny<string>(), It.IsAny<string>(), DialogButton.Ok, DialogImage.Success), Times.Once);
+        gameCompletionHandlerMock.Verify(x => x.HandleGameCompletion(
+            It.IsAny<TimeSpan>(), It.IsAny<DifficultyEnum>(), true, false), Times.Once);
         hashiGeneratorMock.Verify(
             x => x.GenerateHashAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(),
                 It.IsAny<int>(), It.IsAny<int>()), Times.Once);
@@ -1105,14 +1036,13 @@ public class MainViewModelTests
     }
 
     [Test]
-    public void SaveTestFieldCommandExecute_WhenCalled_ShouldConvertAndSaveTestFields()
+    public void SaveTestFieldCommandExecute_WhenCalled_ShouldDelegateToTestFieldService()
     {
         // Act
         mainViewModel.SaveTestFieldCommandExecute();
 
         // Assert
-        testSolutionProviderMock.Verify(x => x.ConvertIslandsToSolutionProvider(It.IsAny<IEnumerable<IIslandViewModel>>()), Times.Once);
-        testSolutionProviderMock.Verify(x => x.SaveTestFields(), Times.Once);
+        testFieldServiceMock.Verify(x => x.SaveTestField(It.IsAny<IEnumerable<IIslandViewModel>>()), Times.Once);
     }
 
     [Test]
@@ -1145,77 +1075,34 @@ public class MainViewModelTests
         resourceManagerMock.Verify(x => x.ResetSettingsAndLoadFromDefault(), Times.Once);
         settingsProviderMock.Verify(x => x.ResetSettings(), Times.Once);
         testSolutionProviderMock.Verify(x => x.ResetSettings(), Times.Once);
-        testSolutionProviderMock.VerifySet(x => x.SelectedSolutionProvider = It.IsAny<ISolutionProvider>(), Times.Once);
+        testSolutionProviderMock.VerifySet(x => x.SelectedSolutionProvider = It.IsAny<ISolutionProvider>());
     }
 
     [Test]
-    public void DeleteTestFieldCommandExecute_WhenSelectedSolutionProviderIsNull_ShouldNotDelete()
+    public void DeleteTestFieldCommandExecute_WhenCalled_ShouldDelegateToTestFieldService()
     {
-        // Arrange
-        testSolutionProviderMock.SetupGet(x => x.SelectedSolutionProvider).Returns((ISolutionProvider)null!);
-
         // Act
         mainViewModel.DeleteTestFieldCommandExecute();
 
         // Assert
-        dialogWrapperMock.Verify(x => x.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DialogButton>(), It.IsAny<DialogImage>()), Times.Never);
-        testSolutionProviderMock.Verify(x => x.SaveTestFields(), Times.Never);
+        testFieldServiceMock.Verify(x => x.DeleteTestField(), Times.Once);
     }
 
     [Test]
-    public void DeleteTestFieldCommandExecute_WhenUserClicksNo_ShouldNotDelete()
+    public void CreateTestFieldCommandExecute_WhenCalled_ShouldDelegateToTestFieldService()
     {
-        // Arrange
-        dialogWrapperMock.Setup(x => x.Show(It.IsAny<string>(), It.IsAny<string>(), DialogButton.YesNo, DialogImage.Question))
-            .Returns(DialogResult.No);
-
-        // Act
-        mainViewModel.DeleteTestFieldCommandExecute();
-
-        // Assert
-        testSolutionProviderMock.Object.SolutionProviders.Should().Contain(solutionProviderMock.Object);
-        testSolutionProviderMock.Verify(x => x.SaveTestFields(), Times.Never);
-    }
-
-    [Test]
-    public void DeleteTestFieldCommandExecute_WhenUserClicksYes_ShouldDeleteSolutionProvider()
-    {
-        // Arrange
-        dialogWrapperMock.Setup(x => x.Show(It.IsAny<string>(), It.IsAny<string>(), DialogButton.YesNo, DialogImage.Question))
-            .Returns(DialogResult.Yes);
-
-        var otherSolutionMock = new Mock<ISolutionProvider>(MockBehavior.Strict);
-        testSolutionProviderMock.Object.SolutionProviders.Add(otherSolutionMock.Object);
-
-        // Act
-        mainViewModel.DeleteTestFieldCommandExecute();
-
-        // Assert
-        testSolutionProviderMock.Object.SolutionProviders.Should().NotContain(solutionProviderMock.Object);
-        testSolutionProviderMock.VerifySet(x => x.SelectedSolutionProvider = It.IsAny<ISolutionProvider>(), Times.Once);
-        testSolutionProviderMock.Verify(x => x.SaveTestFields(), Times.Once);
-    }
-
-    [Test]
-    public void CreateTestFieldCommandExecute_WhenCalled_ShouldCreateAndSelectNewSolutionProvider()
-    {
-        // Arrange
-        mainViewModel.NewRuleName = "NewTestRule";
-
         // Act
         mainViewModel.CreateTestFieldCommandExecute();
 
         // Assert
-        testSolutionProviderMock.Object.SolutionProviders.Should().HaveCount(2); // Original + new one
-        testSolutionProviderMock.VerifySet(x => x.SelectedSolutionProvider = It.IsAny<ISolutionProvider>(), Times.Once);
-        testSolutionProviderMock.Verify(x => x.SaveTestFields(), Times.Once);
+        testFieldServiceMock.Verify(x => x.CreateTestField(), Times.Once);
     }
 
     [Test]
-    public void CreateTestFieldCommandCanExecute_WhenNewRuleNameIsEmpty_ShouldReturnFalse()
+    public void CreateTestFieldCommandCanExecute_WhenServiceReturnsFalse_ShouldReturnFalse()
     {
         // Arrange
-        mainViewModel.NewRuleName = string.Empty;
+        testFieldServiceMock.Setup(x => x.CanCreateTestField()).Returns(false);
 
         // Act
         var result = mainViewModel.CreateTestFieldCommandCanExecute();
@@ -1225,42 +1112,31 @@ public class MainViewModelTests
     }
 
     [Test]
-    public void CreateTestFieldCommandCanExecute_WhenNewRuleNameIsNull_ShouldReturnFalse()
+    public void CreateTestFieldCommandCanExecute_WhenServiceReturnsTrue_ShouldReturnTrue()
     {
         // Arrange
-        mainViewModel.NewRuleName = null!;
-
-        // Act
-        var result = mainViewModel.CreateTestFieldCommandCanExecute();
-
-        // Assert
-        result.Should().BeFalse();
-    }
-
-    [Test]
-    public void CreateTestFieldCommandCanExecute_WhenNewRuleNameAlreadyExists_ShouldReturnFalse()
-    {
-        // Arrange
-        mainViewModel.NewRuleName = "TestSolution"; // Same as existing solution name
-
-        // Act
-        var result = mainViewModel.CreateTestFieldCommandCanExecute();
-
-        // Assert
-        result.Should().BeFalse();
-    }
-
-    [Test]
-    public void CreateTestFieldCommandCanExecute_WhenNewRuleNameIsValidAndUnique_ShouldReturnTrue()
-    {
-        // Arrange
-        mainViewModel.NewRuleName = "UniqueNewRule";
+        testFieldServiceMock.Setup(x => x.CanCreateTestField()).Returns(true);
 
         // Act
         var result = mainViewModel.CreateTestFieldCommandCanExecute();
 
         // Assert
         result.Should().BeTrue();
+    }
+
+    [Test]
+    public async Task SetTestSolution_WhenInitializationThrows_ShouldResetIsGeneratingFlag()
+    {
+        // Arrange
+        islandProviderMock.Setup(x => x.InitializeNewSolutionAndSetBridges(It.IsAny<ISolutionProvider>()))
+            .Throws(new InvalidOperationException("Test exception"));
+
+        // Act
+        var action = () => mainViewModel.SetTestSolution(solutionProviderMock.Object);
+
+        // Assert
+        await action.Should().ThrowAsync<InvalidOperationException>();
+        mainViewModel.IsGeneratingHashiPuzzle.Should().BeFalse();
     }
 
     #endregion

@@ -10,12 +10,12 @@ public interface IIslandHistoryProvider
     /// <summary>
     ///     The history of all connections made in the game.
     /// </summary>
-    IList<IHashiBridge> History { get; }
+    IReadOnlyList<IHashiBridge> History { get; }
 
     /// <summary>
     ///     The redo history of undone connections.
     /// </summary>
-    IList<IHashiBridge> RedoHistory { get; }
+    IReadOnlyList<IHashiBridge> RedoHistory { get; }
 
     /// <summary>
     ///     Undo the last connection made in the game.
@@ -26,4 +26,9 @@ public interface IIslandHistoryProvider
     ///     Redo the last undone connection.
     /// </summary>
     void RedoConnection();
+
+    /// <summary>
+    ///     Clears the redo history.
+    /// </summary>
+    void ClearRedoHistory();
 }
