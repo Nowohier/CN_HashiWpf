@@ -713,10 +713,10 @@ public class IslandViewModelTests
     public void ResetDropTarget_WhenCalled_ShouldResetInternalState()
     {
         // Act
-        islandViewModel.ResetDropTarget();
+        var act = () => islandViewModel.ResetDropTarget();
 
-        // Assert - This method resets internal state, so we just verify it doesn't throw
-        Assert.Pass("ResetDropTarget completed without throwing");
+        // Assert
+        act.Should().NotThrow();
     }
 
     [Test]
@@ -766,10 +766,10 @@ public class IslandViewModelTests
     public void NotifyBridgeConnections_WhenCalled_ShouldNotifyPropertyChanges()
     {
         // Act
-        islandViewModel.NotifyBridgeConnections();
+        var act = () => islandViewModel.NotifyBridgeConnections();
 
-        // Assert - This method notifies property changes, so we just verify it doesn't throw
-        Assert.Pass("NotifyBridgeConnections completed without throwing");
+        // Assert
+        act.Should().NotThrow();
     }
 
     #endregion

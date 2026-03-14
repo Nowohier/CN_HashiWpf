@@ -83,9 +83,12 @@ public class AutoFacHashiSolvedPuzzlesModuleTests
     [Test]
     public void AutoFacHashiSolvedPuzzlesModule_WhenInstantiated_ShouldNotThrow()
     {
-        // Act & Assert
+        // Act
         // ReSharper disable once ObjectCreationAsStatement
-        Assert.DoesNotThrow(() => new AutoFacHashiSolvedPuzzlesModule());
+        var act = () => new AutoFacHashiSolvedPuzzlesModule();
+
+        // Assert
+        act.Should().NotThrow();
     }
 
     #endregion
@@ -128,12 +131,15 @@ public class AutoFacHashiSolvedPuzzlesModuleTests
 
         try
         {
-            // Act & Assert
-            Assert.DoesNotThrow(() =>
+            // Act
+            var act = () =>
             {
                 var result = puzzleLoader.LoadPuzzle(testPuzzleEnum);
                 result.Should().NotBeNull();
-            });
+            };
+
+            // Assert
+            act.Should().NotThrow();
         }
         finally
         {

@@ -560,10 +560,10 @@ public class IslandProviderTests
             .Returns(new List<IIslandViewModel> { sourceIslandMock.Object, islandViewModelMock.Object, targetIslandMock.Object });
 
         // Act
-        islandProvider.HighlightPathToTargetIsland(sourceIslandMock.Object, targetIslandMock.Object);
+        var act = () => islandProvider.HighlightPathToTargetIsland(sourceIslandMock.Object, targetIslandMock.Object);
 
         // Assert
-        Assert.Pass("HighlightPathToTargetIsland completed without throwing");
+        act.Should().NotThrow();
     }
 
     [Test]
@@ -578,11 +578,10 @@ public class IslandProviderTests
         islandProvider.InitializeNewSolution(solutionProviderMock.Object);
 
         // Act
-        islandProvider.RemoveAllHighlights();
+        var act = () => islandProvider.RemoveAllHighlights();
 
         // Assert
-        // The method should set all highlight properties to false
-        Assert.Pass("RemoveAllHighlights completed without throwing");
+        act.Should().NotThrow();
     }
 
     [Test]
@@ -717,10 +716,10 @@ public class IslandProviderTests
     public void UndoConnection_WhenCalled_ShouldNotThrow()
     {
         // Act
-        islandProvider.UndoConnection();
+        var act = () => islandProvider.UndoConnection();
 
         // Assert
-        Assert.Pass("UndoConnection completed without throwing");
+        act.Should().NotThrow();
     }
 
     [Test]

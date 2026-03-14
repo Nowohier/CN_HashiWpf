@@ -18,6 +18,7 @@ namespace Hashi.Generator.Test
         private Mock<IHashiSolver> hashiSolverMock = null!;
         private Mock<ILogger> loggerMock = null!;
         private Mock<ILoggerFactory> loggerFactoryMock = null!;
+        private Mock<IRuleSolvabilityValidator> ruleSolvabilityValidatorMock = null!;
         private Mock<Func<int, int, int, IIsland>> islandFactoryMock = null!;
         private Mock<Func<IIsland, IIsland, int, IBridge>> bridgeFactoryMock = null!;
         private Mock<Func<int[][], List<IBridgeCoordinates>, ISolutionProvider>> solutionContainerFactoryMock = null!;
@@ -27,6 +28,7 @@ namespace Hashi.Generator.Test
         {
             // Arrange - Set up mocks
             hashiSolverMock = new Mock<IHashiSolver>(MockBehavior.Strict);
+            ruleSolvabilityValidatorMock = new Mock<IRuleSolvabilityValidator>(MockBehavior.Strict);
             loggerMock = new Mock<ILogger>(MockBehavior.Strict);
             loggerFactoryMock = new Mock<ILoggerFactory>(MockBehavior.Strict);
             islandFactoryMock = new Mock<Func<int, int, int, IIsland>>(MockBehavior.Strict);
@@ -44,6 +46,10 @@ namespace Hashi.Generator.Test
             // Setup default successful solver behavior
             hashiSolverMock.Setup(s => s.SolveLazy(It.IsAny<int[][]>(), It.IsAny<bool>()))
                           .ReturnsAsync(SolverStatusEnum.Optimal);
+
+            // Setup default rule solvability - always returns true to avoid NRules overhead
+            ruleSolvabilityValidatorMock.Setup(v => v.IsFullySolvableByRules(It.IsAny<int[][]>()))
+                                       .ReturnsAsync(true);
 
             // Setup island factory to return real islands
             islandFactoryMock.Setup(f => f(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
@@ -65,6 +71,7 @@ namespace Hashi.Generator.Test
             builder.RegisterInstance(bridgeFactoryMock.Object).As<Func<IIsland, IIsland, int, IBridge>>();
             builder.RegisterInstance(solutionContainerFactoryMock.Object).As<Func<int[][], List<IBridgeCoordinates>, ISolutionProvider>>();
             builder.RegisterModule<AutoFacGeneratorModule>();
+            builder.RegisterInstance(ruleSolvabilityValidatorMock.Object).As<IRuleSolvabilityValidator>();
 
             container = builder.Build();
             hashiGenerator = container.Resolve<IHashiGenerator>();

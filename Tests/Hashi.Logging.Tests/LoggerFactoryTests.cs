@@ -145,9 +145,11 @@ public class LoggerFactoryTests
         // Arrange
         string? loggerName = null;
 
-        // Act & Assert
-        var exception = Assert.Throws<ArgumentNullException>(() => loggerFactory.CreateLogger(loggerName!));
-        exception.Should().NotBeNull();
+        // Act
+        var act = () => loggerFactory.CreateLogger(loggerName!);
+
+        // Assert
+        act.Should().Throw<ArgumentNullException>();
     }
 
     [Test]
@@ -301,12 +303,15 @@ public class LoggerFactoryTests
         var logger1 = loggerFactory.CreateLogger("TestLogger1");
         var logger2 = loggerFactory.CreateLogger<LoggerFactoryTests>();
 
-        // Act & Assert (No exceptions should be thrown)
-        Assert.DoesNotThrow(() =>
+        // Act
+        var act = () =>
         {
             logger1.Info("Test message from logger1");
             logger2.Debug("Test message from logger2");
-        });
+        };
+
+        // Assert
+        act.Should().NotThrow();
     }
 
     [Test]
@@ -325,11 +330,13 @@ public class LoggerFactoryTests
         logger2.Should().NotBeNull();
 
         // Both should be able to log without issues
-        Assert.DoesNotThrow(() =>
+        var act = () =>
         {
             logger1.Info("Message from factory 1");
             logger2.Info("Message from factory 2");
-        });
+        };
+
+        act.Should().NotThrow();
     }
 
     #endregion
