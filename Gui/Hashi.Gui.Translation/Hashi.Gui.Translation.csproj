@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -8,7 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Hashi.Gui.Language\Hashi.Gui.Language.csproj" />
+    <EmbeddedResource Update="Language\Resources\Resources.resx">
+      <ManifestResourceName>Hashi.Gui.Language.Resources.Resources</ManifestResourceName>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>
