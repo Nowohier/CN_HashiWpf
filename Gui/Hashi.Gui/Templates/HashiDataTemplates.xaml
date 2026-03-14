@@ -3,7 +3,7 @@
                     xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
                     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                     xmlns:behaviors="clr-namespace:Hashi.Gui.Behaviors"
-                    xmlns:enums="clr-namespace:Hashi.Enums;assembly=Hashi.Enums"
+                    xmlns:enums="clr-namespace:Hashi.Enums;assembly=Hashi.Core"
                     xmlns:viewModels="clr-namespace:Hashi.Gui.ViewModels">
 
     <DataTemplate x:Key="DataTemplateIsland" DataType="{x:Type viewModels:IslandViewModel}">

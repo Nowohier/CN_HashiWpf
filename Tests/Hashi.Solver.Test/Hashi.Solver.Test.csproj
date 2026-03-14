@@ -1,10 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>12</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <LangVersion>12</LangVersion>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\PuzzleLoader\Hashi.SolvedPuzzles\Hashi.SolvedPuzzles.csproj" />
+    <ProjectReference Include="..\..\Solver\Hashi.LinearSolver\Hashi.LinearSolver.csproj" />
     <ProjectReference Include="..\..\Gui\Hashi.Gui.Interfaces\Hashi.Gui.Interfaces.csproj" />
   </ItemGroup>
 
