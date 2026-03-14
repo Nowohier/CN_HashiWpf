@@ -32,6 +32,9 @@ internal static class GeneratorConstants
     /// <summary>Maximum connectable bridges before blocking additional bridge creation.</summary>
     internal const int MaxConnectableBridgesForAdding = 7;
 
+    /// <summary>Maximum iterations for rule simulation solving.</summary>
+    internal const int MaxRuleSimulationIterations = 500;
+
     /// <summary>Search radius for blocked path calculations.</summary>
     internal const int BlockedSearchRadius = 10;
 

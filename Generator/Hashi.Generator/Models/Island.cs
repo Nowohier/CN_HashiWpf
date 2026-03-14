@@ -63,13 +63,18 @@ public class Island : IIsland
     /// <inheritdoc />
     public void SetAllNeighbors(int[][] field, List<IIsland> islands)
     {
-        // Build O(1) lookup by coordinates
         var islandLookup = new Dictionary<(int Y, int X), IIsland>(islands.Count);
         foreach (var island in islands)
         {
             islandLookup.TryAdd((island.Y, island.X), island);
         }
 
+        SetAllNeighbors(field, islandLookup);
+    }
+
+    /// <inheritdoc />
+    public void SetAllNeighbors(int[][] field, Dictionary<(int Y, int X), IIsland> islandLookup)
+    {
         // Look up
         for (var u = Y - 1; u >= 0; u--)
         {

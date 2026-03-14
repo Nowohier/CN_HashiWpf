@@ -14,7 +14,7 @@ namespace Hashi.Generator;
 public class HashiGenerator : IHashiGenerator
 {
     private readonly Func<int, int, int, IIsland> islandFactory;
-    private readonly Func<int[][], IList<IBridgeCoordinates>, ISolutionProvider> solutionContainerFactory;
+    private readonly Func<int[][], List<IBridgeCoordinates>, ISolutionProvider> solutionContainerFactory;
     private readonly IHashiSolver hashiSolver;
     private readonly IRuleSolvabilityValidator ruleSolvabilityValidator;
     private readonly IDifficultySettingsProvider difficultySettingsProvider;
@@ -22,14 +22,13 @@ public class HashiGenerator : IHashiGenerator
     private readonly IIslandLayoutService islandLayoutService;
     private readonly IBridgeManagementService bridgeManagementService;
     private readonly ILogger logger;
-    private readonly GenerationContext context = new();
 
     /// <summary>
     ///     Constructor for HashiGenerator.
     /// </summary>
     public HashiGenerator(
         Func<int, int, int, IIsland> islandFactory,
-        Func<int[][], IList<IBridgeCoordinates>, ISolutionProvider> solutionContainerFactory,
+        Func<int[][], List<IBridgeCoordinates>, ISolutionProvider> solutionContainerFactory,
         IHashiSolver hashiSolver,
         IRuleSolvabilityValidator ruleSolvabilityValidator,
         IDifficultySettingsProvider difficultySettingsProvider,
@@ -73,11 +72,11 @@ public class HashiGenerator : IHashiGenerator
 
         var settings = difficultySettingsProvider.GetDifficultySettings(difficulty);
 
-        var sizeLength = Random.Shared.Next(settings.minLength, settings.maxLength);
-        var sizeWidth = Random.Shared.Next(settings.minWidth, settings.maxWidth);
-        var n = (int)Math.Round(sizeWidth * sizeLength / (double)settings.divisor);
+        var sizeLength = Random.Shared.Next(settings.MinLength, settings.MaxLength);
+        var sizeWidth = Random.Shared.Next(settings.MinWidth, settings.MaxWidth);
+        var n = (int)Math.Round(sizeWidth * sizeLength / (double)settings.Divisor);
 
-        return await GenerateHashAsync(n, sizeLength, sizeWidth, difficulty, settings.beta, false);
+        return await GenerateHashAsync(n, sizeLength, sizeWidth, difficulty, settings.Beta, false);
     }
 
     /// <summary>
@@ -89,12 +88,13 @@ public class HashiGenerator : IHashiGenerator
         int[][] field;
         var attempts = 0;
         var ruleAttempts = 0;
+        var context = new GenerationContext();
 
         while (true)
         {
             blockDetectionService.ClearCaches();
 
-            field = await CreateHashAsync(numberOfIslands, sizeLength, sizeWidth, difficulty, beta, checkDifficulty);
+            field = await CreateHashAsync(context, numberOfIslands, sizeLength, sizeWidth, difficulty, beta, checkDifficulty);
             attempts++;
             ruleAttempts++;
 
@@ -109,9 +109,7 @@ public class HashiGenerator : IHashiGenerator
                 continue;
             }
 
-            var candidateBridgeCoordinates = bridgeManagementService.BuildBridgeCoordinates(context.Bridges);
-
-            if (await ruleSolvabilityValidator.IsFullySolvableByRules(field, candidateBridgeCoordinates))
+            if (await ruleSolvabilityValidator.IsFullySolvableByRules(field))
             {
                 logger.Info($"Rule-solvable puzzle found after {ruleAttempts} attempt(s)");
                 break;
@@ -147,7 +145,7 @@ public class HashiGenerator : IHashiGenerator
         return solutionContainerFactory.Invoke(field, bridgeCoordinates);
     }
 
-    internal async Task<int[][]> CreateHashAsync(int numberOfIslands, int sizeLength, int sizeWidth, int difficulty,
+    internal async Task<int[][]> CreateHashAsync(GenerationContext context, int numberOfIslands, int sizeLength, int sizeWidth, int difficulty,
         int beta, bool checkDifficulty)
     {
         return await Task.Run(() =>
@@ -194,14 +192,20 @@ public class HashiGenerator : IHashiGenerator
             }
 
             // Set all neighbors for each island
+            var islandLookup = new Dictionary<(int Y, int X), IIsland>(context.Islands.Count);
+            foreach (var island in context.Islands)
+            {
+                islandLookup.TryAdd((island.Y, island.X), island);
+            }
+
             if (context.Islands.Count > GeneratorConstants.ParallelProcessingThreshold)
             {
-                Parallel.ForEach(context.Islands, node => { node.SetAllNeighbors(mainField, context.Islands); });
+                Parallel.ForEach(context.Islands, node => { node.SetAllNeighbors(mainField, islandLookup); });
             }
             else
             {
                 foreach (var node in context.Islands)
-                    node.SetAllNeighbors(mainField, context.Islands);
+                    node.SetAllNeighbors(mainField, islandLookup);
             }
 
             // Apply difficulty settings

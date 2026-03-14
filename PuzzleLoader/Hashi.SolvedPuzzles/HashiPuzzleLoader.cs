@@ -36,13 +36,13 @@ public class HashiPuzzleLoader : IHashiPuzzleLoader
 
         if (puzzle == null)
         {
-            throw new Exception($"Failed to deserialize the puzzle from file {fileName}.");
+            throw new InvalidDataException($"Failed to deserialize the puzzle from file {fileName}.");
         }
 
         return puzzle;
     }
 
-    private string GetHashiFileName(HashiFileEnum hashiFileEnum)
+    private static string GetHashiFileName(HashiFileEnum hashiFileEnum)
     {
         var hashiId = hashiFileEnum.ToString();
         var parts = hashiId.Split('_');

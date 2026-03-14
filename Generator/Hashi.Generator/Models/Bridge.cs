@@ -35,11 +35,8 @@ public class Bridge : IBridge
     /// </summary>
     public int AmountBridgesSet { get; private set; }
 
-    /// <summary>
-    ///     Adds the other side of the bridge.
-    /// </summary>
-    /// <returns>the added bridge.</returns>
-    public IBridge AddOtherSide()
+    /// <inheritdoc />
+    public IBridge CreateReverseBridgeAndApplyDirections()
     {
         var otherSideBridge = new Bridge(Island2, Island1, AmountBridgesSet);
         ApplyDirectionBridgeCounts(Island1, Island2, AmountBridgesSet);
@@ -63,7 +60,7 @@ public class Bridge : IBridge
 
     /// <summary>
     ///     Determines the direction between two islands by coordinate comparison and sets bridge counts.
-    ///     Used by <see cref="AddOtherSide"/> where neighbor references are not yet established.
+    ///     Used by <see cref="CreateReverseBridgeAndApplyDirections"/> where neighbor references are not yet established.
     /// </summary>
     private static void ApplyDirectionBridgeCounts(IIsland source, IIsland target, int bridgeCount)
     {

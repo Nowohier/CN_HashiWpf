@@ -13,7 +13,7 @@ namespace Hashi.Generator.Test
     [TestFixture]
     public class AutoFacGeneratorModuleTests
     {
-        private IContainer container;
+        private IContainer container = null!;
 
         [SetUp]
         public void Setup()
@@ -127,7 +127,7 @@ namespace Hashi.Generator.Test
         public void Load_WhenCalled_ShouldRegisterSolutionProviderFactory()
         {
             // Arrange & Act
-            var solutionProviderFactory = container.Resolve<Func<int[][], IList<IBridgeCoordinates>, ISolutionProvider>>();
+            var solutionProviderFactory = container.Resolve<Func<int[][], List<IBridgeCoordinates>, ISolutionProvider>>();
 
             // Assert
             solutionProviderFactory.Should().NotBeNull();
@@ -137,7 +137,7 @@ namespace Hashi.Generator.Test
         public void SolutionProviderFactory_WhenInvoked_ShouldCreateSolutionProviderWithCorrectProperties()
         {
             // Arrange
-            var solutionProviderFactory = container.Resolve<Func<int[][], IList<IBridgeCoordinates>, ISolutionProvider>>();
+            var solutionProviderFactory = container.Resolve<Func<int[][], List<IBridgeCoordinates>, ISolutionProvider>>();
             var hashiField = new int[][]
             {
                 [0, 1, 0],
