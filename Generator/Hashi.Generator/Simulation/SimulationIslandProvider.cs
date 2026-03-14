@@ -1,5 +1,6 @@
 using Hashi.Enums;
 using Hashi.Generator.Interfaces.Providers;
+using Hashi.Gui.Interfaces.Extensions;
 using Hashi.Gui.Interfaces.Helpers;
 using Hashi.Gui.Interfaces.Messages;
 using Hashi.Gui.Interfaces.Models;
@@ -129,22 +130,8 @@ internal class SimulationIslandProvider : IIslandProvider
     {
         foreach (var island in IslandsFlat)
         {
-            var connectionsToRemove = pointType switch
-            {
-                HashiPointTypeEnum.All => island.AllConnections.ToList(),
-                HashiPointTypeEnum.Hint => island.AllConnections.Where(x => x.PointType == HashiPointTypeEnum.Hint)
-                    .ToList(),
-                HashiPointTypeEnum.Test => island.AllConnections.Where(x => x.PointType == HashiPointTypeEnum.Test)
-                    .ToList(),
-                HashiPointTypeEnum.Normal => island.AllConnections
-                    .Where(x => x.PointType == HashiPointTypeEnum.Normal).ToList(),
-                _ => throw new ArgumentOutOfRangeException(nameof(pointType), pointType, @"Invalid point type.")
-            };
-
-            foreach (var hashiPoint in connectionsToRemove)
-            {
+            foreach (var hashiPoint in island.AllConnections.GetConnectionsByPointType(pointType).ToList())
                 island.AllConnections.Remove(hashiPoint);
-            }
         }
     }
 
