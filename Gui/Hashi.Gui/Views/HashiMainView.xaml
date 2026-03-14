@@ -9,7 +9,7 @@
                  xmlns:system="clr-namespace:System;assembly=System.Runtime"
                  xmlns:viewModels="clr-namespace:Hashi.Gui.ViewModels"
                  xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
-                 xmlns:enums="clr-namespace:Hashi.Enums;assembly=Hashi.Enums"
+                 xmlns:enums="clr-namespace:Hashi.Enums;assembly=Hashi.Core"
                  xmlns:ns="clr-namespace:Hashi.Gui.Localization"
                  xmlns:helpers="clr-namespace:Hashi.Gui.Helpers"
                  xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"

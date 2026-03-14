@@ -12,8 +12,5 @@
     <PackageReference Include="NLog" Version="5.3.4" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Hashi.Logging.Interfaces\Hashi.Logging.Interfaces.csproj" />
-  </ItemGroup>
 
 </Project>

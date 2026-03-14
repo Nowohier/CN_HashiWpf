@@ -8,9 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Enums\Hashi.Enums\Hashi.Enums.csproj" />
-    <ProjectReference Include="..\..\Generator\Hashi.Generator.Interfaces\Hashi.Generator.Interfaces.csproj" />
-    <ProjectReference Include="..\..\Logging\Hashi.Logging.Interfaces\Hashi.Logging.Interfaces.csproj" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Hashi.Core\Hashi.Core.csproj" />
+    <ProjectReference Include="..\..\Logging\Hashi.Logging\Hashi.Logging.csproj" />
   </ItemGroup>
 
 </Project>
