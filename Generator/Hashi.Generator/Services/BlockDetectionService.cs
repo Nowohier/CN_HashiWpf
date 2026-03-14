@@ -46,6 +46,40 @@ public class BlockDetectionService : IBlockDetectionService
         return GetBlockedBetween(mainIsland, mainField, DirectionEnum.Right, bridges);
     }
 
+    /// <summary>
+    ///     Updates the bridge direction cache when creating new bridges.
+    ///     This is an implementation detail used by services that hold a reference to the concrete type.
+    /// </summary>
+    public void UpdateDirectionCache(IIsland island1, IIsland island2)
+    {
+        if (island1.X == island2.X)
+        {
+            if (island1.Y > island2.Y)
+            {
+                bridgeDirectionCache[(island1, DirectionEnum.Up)] = true;
+                bridgeDirectionCache[(island2, DirectionEnum.Down)] = true;
+            }
+            else
+            {
+                bridgeDirectionCache[(island1, DirectionEnum.Down)] = true;
+                bridgeDirectionCache[(island2, DirectionEnum.Up)] = true;
+            }
+        }
+        else
+        {
+            if (island1.X > island2.X)
+            {
+                bridgeDirectionCache[(island1, DirectionEnum.Left)] = true;
+                bridgeDirectionCache[(island2, DirectionEnum.Right)] = true;
+            }
+            else
+            {
+                bridgeDirectionCache[(island1, DirectionEnum.Right)] = true;
+                bridgeDirectionCache[(island2, DirectionEnum.Left)] = true;
+            }
+        }
+    }
+
     /// <inheritdoc />
     public bool HasBridgeInDirection(IIsland island, DirectionEnum direction, IList<IBridge> bridges)
     {
@@ -77,39 +111,6 @@ public class BlockDetectionService : IBlockDetectionService
 
         bridgeDirectionCache[(island, direction)] = result;
         return result;
-    }
-
-    /// <summary>
-    ///     Updates the bridge direction cache when creating new bridges.
-    /// </summary>
-    public void UpdateDirectionCache(IIsland island1, IIsland island2)
-    {
-        if (island1.X == island2.X)
-        {
-            if (island1.Y > island2.Y)
-            {
-                bridgeDirectionCache[(island1, DirectionEnum.Up)] = true;
-                bridgeDirectionCache[(island2, DirectionEnum.Down)] = true;
-            }
-            else
-            {
-                bridgeDirectionCache[(island1, DirectionEnum.Down)] = true;
-                bridgeDirectionCache[(island2, DirectionEnum.Up)] = true;
-            }
-        }
-        else
-        {
-            if (island1.X > island2.X)
-            {
-                bridgeDirectionCache[(island1, DirectionEnum.Left)] = true;
-                bridgeDirectionCache[(island2, DirectionEnum.Right)] = true;
-            }
-            else
-            {
-                bridgeDirectionCache[(island1, DirectionEnum.Right)] = true;
-                bridgeDirectionCache[(island2, DirectionEnum.Left)] = true;
-            }
-        }
     }
 
     /// <inheritdoc />

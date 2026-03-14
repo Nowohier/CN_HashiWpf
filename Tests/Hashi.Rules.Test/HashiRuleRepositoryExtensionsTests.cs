@@ -7,6 +7,7 @@ namespace Hashi.Rules.Test;
 /// <summary>
 /// Unit tests for HashiRuleRepositoryExtensions class.
 /// </summary>
+[TestFixture]
 public class HashiRuleRepositoryExtensionsTests
 {
     private RuleRepository ruleRepository;

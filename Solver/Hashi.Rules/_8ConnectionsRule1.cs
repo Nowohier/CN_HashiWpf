@@ -12,6 +12,7 @@ public class _8ConnectionsRule1(IRuleInfoProvider ruleInfoProvider, IIslandProvi
 {
     protected override string RuleMessage => TranslationSource.Instance.GetRequired(nameof(_8ConnectionsRule1));
 
+    /// <inheritdoc />
     public override void Define()
     {
         IIslandViewModel island = null!;

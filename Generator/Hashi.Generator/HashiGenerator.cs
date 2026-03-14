@@ -14,8 +14,8 @@ namespace Hashi.Generator;
 public class HashiGenerator : IHashiGenerator
 {
     private readonly Func<int, int, int, IIsland> islandFactory;
-    private readonly Func<int[][], List<IBridgeCoordinates>, ISolutionProvider> solutionContainerFactory;
-    private readonly IHashiSolver hashiSolver;
+    private readonly Func<int[][], IReadOnlyList<IBridgeCoordinates>, ISolutionProvider> solutionContainerFactory;
+    private readonly IPuzzleSolver hashiSolver;
     private readonly IRuleSolvabilityValidator ruleSolvabilityValidator;
     private readonly IDifficultySettingsProvider difficultySettingsProvider;
     private readonly IBlockDetectionService blockDetectionService;
@@ -28,8 +28,8 @@ public class HashiGenerator : IHashiGenerator
     /// </summary>
     public HashiGenerator(
         Func<int, int, int, IIsland> islandFactory,
-        Func<int[][], List<IBridgeCoordinates>, ISolutionProvider> solutionContainerFactory,
-        IHashiSolver hashiSolver,
+        Func<int[][], IReadOnlyList<IBridgeCoordinates>, ISolutionProvider> solutionContainerFactory,
+        IPuzzleSolver hashiSolver,
         IRuleSolvabilityValidator ruleSolvabilityValidator,
         IDifficultySettingsProvider difficultySettingsProvider,
         IBlockDetectionService blockDetectionService,
@@ -103,7 +103,7 @@ public class HashiGenerator : IHashiGenerator
                 if (attempts >= GeneratorConstants.MaxGenerationAttempts)
                 {
                     attempts = 0;
-                    beta = Math.Max(0, beta - 5);
+                    beta = Math.Max(0, beta - GeneratorConstants.BetaReductionStep);
                 }
 
                 continue;
@@ -122,7 +122,7 @@ public class HashiGenerator : IHashiGenerator
                 logger.Warn(
                     $"Could not find rule-solvable puzzle after {GeneratorConstants.MaxRuleSolvabilityAttempts} attempts. Reducing complexity.");
                 ruleAttempts = 0;
-                numberOfIslands = Math.Max(GeneratorConstants.MinIslandsBeforeReduction, numberOfIslands - 2);
+                numberOfIslands = Math.Max(GeneratorConstants.MinIslandsBeforeReduction, numberOfIslands - GeneratorConstants.IslandReductionStep);
                 sizeLength = Math.Max(GeneratorConstants.MinFieldDimension, sizeLength - 1);
                 sizeWidth = Math.Max(GeneratorConstants.MinFieldDimension, sizeWidth - 1);
             }
@@ -211,11 +211,9 @@ public class HashiGenerator : IHashiGenerator
             // Apply difficulty settings
             if (!checkDifficulty)
             {
-                var alphaValue = difficultySettingsProvider.GetAlphaForDifficulty(difficulty);
-                bridgeManagementService.AddAdditionalBridges(mainField, alphaValue, context.Islands, context.Bridges);
-
-                var betaValue = difficultySettingsProvider.GetBetaForDifficulty(difficulty);
-                bridgeManagementService.SetBeta(mainField, betaValue, context.Bridges);
+                var settings = difficultySettingsProvider.GetDifficultySettings(difficulty);
+                bridgeManagementService.AddAdditionalBridges(mainField, settings.Alpha, context.Islands, context.Bridges);
+                bridgeManagementService.SetBeta(mainField, settings.Beta, context.Bridges);
             }
             else
             {

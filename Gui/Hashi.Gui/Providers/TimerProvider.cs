@@ -11,16 +11,21 @@ public class TimerProvider : ObservableObject, ITimerProvider
     private readonly DispatcherTimer dispatcherTimer = new() { Interval = TimeSpan.FromSeconds(1) };
     private bool isTimerRunning;
 
+    private readonly Stopwatch stopwatch = new();
+
     /// <summary>
     ///     Initializes a new instance of the <see cref="TimerProvider" /> class.
     /// </summary>
     public TimerProvider()
     {
-        dispatcherTimer.Tick += (_, _) => OnPropertyChanged(nameof(Timer));
+        dispatcherTimer.Tick += (_, _) => OnPropertyChanged(nameof(Elapsed));
     }
 
     /// <inheritdoc />
-    public Stopwatch Timer { get; } = new();
+    public TimeSpan Elapsed => stopwatch.Elapsed;
+
+    /// <inheritdoc />
+    public bool IsRunning => stopwatch.IsRunning;
 
     /// <summary>
     ///     Gets a value indicating whether the timer is running.
@@ -31,26 +36,25 @@ public class TimerProvider : ObservableObject, ITimerProvider
         private set => SetProperty(ref isTimerRunning, value);
     }
 
-
     /// <inheritdoc />
     public void StartTimer()
     {
-        if (Timer.IsRunning)
+        if (stopwatch.IsRunning)
         {
             return;
         }
 
         dispatcherTimer.Start();
-        Timer.Start();
+        stopwatch.Start();
         IsTimerRunning = true;
     }
 
     /// <inheritdoc />
     public void StopTimer()
     {
-        Timer.Reset();
+        stopwatch.Reset();
         dispatcherTimer.Stop();
         IsTimerRunning = false;
-        OnPropertyChanged(nameof(Timer));
+        OnPropertyChanged(nameof(Elapsed));
     }
 }

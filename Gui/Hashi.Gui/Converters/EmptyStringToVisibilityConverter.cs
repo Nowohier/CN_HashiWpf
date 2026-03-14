@@ -5,7 +5,7 @@ using System.Windows.Data;
 namespace Hashi.Gui.Converters;
 
 /// <summary>
-///     Converts an empty string to a boolean value: True if the string is not empty, false otherwise.
+///     Converts an empty string to a <see cref="Visibility" /> value: Visible if the string is not empty, Hidden otherwise.
 /// </summary>
 public class EmptyStringToVisibilityConverter : IValueConverter
 {

@@ -58,7 +58,7 @@ public class LoggerFactory : ILoggerFactory
             // Create file target
             var fileTarget = new FileTarget("fileTarget")
             {
-                FileName = Path.Combine(GetLogsDirectory(), "${date:format=yyyyddMM}.hashi_log.txt"),
+                FileName = Path.Combine(GetLogsDirectory(), "${date:format=yyyyMMdd}.hashi_log.txt"),
                 Layout = "${longdate}\t${level:uppercase=true}\t${logger}\t${message}",
                 ArchiveEvery = FileArchivePeriod.Day,
                 ArchiveNumbering = ArchiveNumberingMode.Date,

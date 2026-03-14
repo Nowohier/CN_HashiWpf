@@ -1,7 +1,7 @@
 ﻿namespace Hashi.Gui.Interfaces.Managers
 {
     /// <summary>
-    ///   Interface for the setup manager.
+    ///   Interface for the resource manager.
     /// </summary>
     public interface IResourceManager
     {

@@ -27,8 +27,7 @@ public interface IBridge
     IBridge CreateReverseBridgeAndApplyDirections();
 
     /// <summary>
-    ///     Adds another bridge to this bridge.
+    ///     Adds another bridge to this bridge, incrementing bridge counts and updating directional data.
     /// </summary>
-    /// <param name="mainField">The main field array.</param>
-    void AddBridge(int[][] mainField);
+    void AddBridge();
 }

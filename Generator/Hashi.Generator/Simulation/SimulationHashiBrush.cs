@@ -7,6 +7,8 @@ namespace Hashi.Generator.Simulation;
 /// </summary>
 internal class SimulationHashiBrush : IHashiBrush
 {
+    private static readonly object LockObject = new object();
+
     /// <inheritdoc />
-    public object Brush => new object();
+    public object Brush => LockObject;
 }

@@ -5,6 +5,7 @@ namespace Hashi.Rules.Test;
 /// <summary>
 /// Unit tests for _0AllRules class.
 /// </summary>
+[TestFixture]
 public class _0AllRulesTests
 {
     [Test]

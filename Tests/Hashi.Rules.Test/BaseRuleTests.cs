@@ -11,6 +11,7 @@ namespace Hashi.Rules.Test;
 /// <summary>
 /// Unit tests for BaseRule class.
 /// </summary>
+[TestFixture]
 public class BaseRuleTests
 {
     private Mock<IIslandProvider> islandProviderMock;

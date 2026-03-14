@@ -22,6 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\PuzzleLoader\Hashi.SolvedPuzzles\Hashi.SolvedPuzzles.csproj" />
     <ProjectReference Include="..\..\PuzzleLoader\Hashi.SolvedPuzzles.Interfaces\Hashi.SolvedPuzzles.Interfaces.csproj" />
+    <ProjectReference Include="..\..\Gui\Hashi.Gui.Interfaces\Hashi.Gui.Interfaces.csproj" />
   </ItemGroup>
 
   <ItemGroup>

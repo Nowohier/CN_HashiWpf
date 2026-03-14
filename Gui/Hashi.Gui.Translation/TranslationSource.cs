@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Globalization;
 using System.Resources;
 using Hashi.Gui.Language;
@@ -8,36 +8,25 @@ namespace Hashi.Gui.Translation;
 /// <summary>
 ///     Provides a singleton instance for accessing localized strings.
 /// </summary>
-public class TranslationSource : INotifyPropertyChanged
+public class TranslationSource : ITranslationSource
 {
     private readonly ResourceManager resManager = Resources.ResourceManager;
     private CultureInfo? currentCulture;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="TranslationSource" /> class.
+    ///     Gets the singleton instance used for XAML bindings.
     /// </summary>
     public static TranslationSource Instance { get; } = new();
 
 
-    /// <summary>
-    ///     Gets the localized string for the specified key.
-    /// </summary>
-    /// <param name="key">The key.</param>
-    /// <returns>the localized string.</returns>
+    /// <inheritdoc />
     public string? this[string key] => resManager.GetString(key, currentCulture);
 
-    /// <summary>
-    ///     Gets the localized string for the specified key, throwing if the key is missing.
-    /// </summary>
-    /// <param name="key">The resource key.</param>
-    /// <returns>the localized string.</returns>
-    /// <exception cref="InvalidOperationException">Thrown when the key is not found.</exception>
+    /// <inheritdoc />
     public string GetRequired(string key) =>
         this[key] ?? throw new InvalidOperationException($"Missing translation: {key}");
 
-    /// <summary>
-    ///     Gets or sets the current culture for localization.
-    /// </summary>
+    /// <inheritdoc />
     public CultureInfo? CurrentCulture
     {
         get => currentCulture;
@@ -54,8 +43,6 @@ public class TranslationSource : INotifyPropertyChanged
         }
     }
 
-    /// <summary>
-    ///     Occurs when a property value changes.
-    /// </summary>
+    /// <inheritdoc />
     public event PropertyChangedEventHandler? PropertyChanged;
 }

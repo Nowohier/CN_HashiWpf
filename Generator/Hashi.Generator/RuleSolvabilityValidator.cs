@@ -1,3 +1,4 @@
+using System.Reflection;
 using Hashi.Generator.Interfaces;
 using Hashi.Generator.Simulation;
 using Hashi.Gui.Interfaces.Helpers;
@@ -6,7 +7,6 @@ using Hashi.Logging.Interfaces;
 using Hashi.Rules;
 using NRules;
 using NRules.Fluent;
-using NRules.Fluent.Dsl;
 
 namespace Hashi.Generator;
 
@@ -45,6 +45,11 @@ public class RuleSolvabilityValidator : IRuleSolvabilityValidator
     /// </summary>
     /// <param name="field">The puzzle field.</param>
     /// <returns><c>true</c> if all bridges can be placed via rules alone.</returns>
+    /// <summary>
+    ///     The assembly containing all rule implementations.
+    /// </summary>
+    private static readonly Assembly RulesAssembly = typeof(BaseRule).Assembly;
+
     internal bool SimulateRuleSolving(int[][] field)
     {
         var islandProvider = new SimulationIslandProvider(core, helper);
@@ -54,7 +59,7 @@ public class RuleSolvabilityValidator : IRuleSolvabilityValidator
 
         var ruleActivator = new SimulationRuleActivator(ruleInfoProvider, islandProvider);
         var repository = new RuleRepository(ruleActivator);
-        repository.Load(x => x.From(typeof(_1ConnectionRule1).Assembly));
+        repository.Load(x => x.From(RulesAssembly));
 
         var factory = repository.Compile();
 
@@ -97,35 +102,4 @@ public class RuleSolvabilityValidator : IRuleSolvabilityValidator
         return false;
     }
 
-    /// <summary>
-    ///     A rule activator that provides the simulation-specific implementations
-    ///     of <see cref="IRuleInfoProvider" /> and <see cref="IIslandProvider" /> to NRules
-    ///     when instantiating rule types during repository loading.
-    /// </summary>
-    private class SimulationRuleActivator(
-        IRuleInfoProvider ruleInfoProvider,
-        IIslandProvider islandProvider) : IRuleActivator
-    {
-        /// <inheritdoc />
-        public IEnumerable<Rule> Activate(Type type)
-        {
-            var constructor = type.GetConstructors()
-                .FirstOrDefault(c =>
-                {
-                    var parameters = c.GetParameters();
-                    return parameters.Length == 2
-                           && parameters[0].ParameterType == typeof(IRuleInfoProvider)
-                           && parameters[1].ParameterType == typeof(IIslandProvider);
-                });
-
-            if (constructor == null)
-            {
-                throw new InvalidOperationException(
-                    $"Rule type {type.FullName} does not have a constructor accepting (IRuleInfoProvider, IIslandProvider).");
-            }
-
-            var rule = (Rule)constructor.Invoke([ruleInfoProvider, islandProvider]);
-            yield return rule;
-        }
-    }
 }

@@ -19,9 +19,9 @@ public class _9GeneralRule1(IRuleInfoProvider ruleInfoProvider, IIslandProvider 
         List<IIslandViewModel> validNeighbors = null!;
 
         When()
-            .Match(() => island, x => x.MaxConnectionsReached == false)
+            .Match(() => island, x => !x.MaxConnectionsReached)
             .Let(() => validNeighbors,
-                () => Analyzer.GetAllVisibleNeighbors(island).Where(x => x.MaxConnectionsReached == false).ToList())
+                () => Analyzer.GetAllVisibleNeighbors(island).Where(x => !x.MaxConnectionsReached).ToList())
             .Having(() => validNeighbors.Count == 1);
 
         Then()

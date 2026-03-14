@@ -30,7 +30,7 @@ public abstract class BaseRule : Rule
     /// <summary>
     ///     Provides query and analysis methods for neighbor inspection.
     /// </summary>
-    protected RuleNeighborAnalyzer Analyzer { get; }
+    protected IRuleNeighborAnalyzer Analyzer { get; }
 
     /// <summary>
     ///     The message to be displayed when the rule is applied.
@@ -145,8 +145,8 @@ public abstract class BaseRule : Rule
         if (source == null || target == null || source == target ||
             source.MaxConnectionsReached ||
             target.MaxConnectionsReached ||
-            target.AllConnections.Count(x => Analyzer.DoCoordinatesMatch(source.Coordinates, x)) == 2 ||
-            source.AllConnections.Count(x => Analyzer.DoCoordinatesMatch(target.Coordinates, x)) == 2)
+            target.AllConnections.Count(x => Analyzer.DoCoordinatesMatch(source.Coordinates, x)) == RuleConstants.MaxBridgesPerConnection ||
+            source.AllConnections.Count(x => Analyzer.DoCoordinatesMatch(target.Coordinates, x)) == RuleConstants.MaxBridgesPerConnection)
         {
             return false;
         }

@@ -28,28 +28,4 @@ public class DifficultySettingsProvider : IDifficultySettingsProvider
         };
     }
 
-    /// <inheritdoc />
-    public int GetAlphaForDifficulty(int difficulty)
-    {
-        return difficulty switch
-        {
-            0 or 3 or 6 => 25,
-            1 or 4 or 7 => 50,
-            2 or 5 or 8 => 75,
-            9 => 100,
-            _ => 0
-        };
-    }
-
-    /// <inheritdoc />
-    public int GetBetaForDifficulty(int difficulty)
-    {
-        return difficulty switch
-        {
-            <= 2 => 20,
-            <= 5 => 15,
-            <= 8 => 10,
-            _ => 0
-        };
-    }
 }

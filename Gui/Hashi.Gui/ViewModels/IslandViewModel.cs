@@ -32,6 +32,7 @@ public class IslandViewModel :
     private readonly Func<IIslandViewModel, DirectionEnum, IDragDirectionChangedRequestTargetMessage>
         dragDirectionChangedRequestTargetMessageFactory;
 
+    private readonly IDragDropService dragDropService;
     private readonly IIslandViewModelHelper helper;
     private readonly Func<IIsTestModeRequestMessage> isTestModeRequestMessageFactory;
     private readonly IHashiPoint mouseDownPosition;
@@ -62,6 +63,7 @@ public class IslandViewModel :
     /// <param name="dragDirectionChangedRequestTargetMessageFactory">The drag direction changed request target message factory.</param>
     /// <param name="brushResolver">The hashi brush resolver.</param>
     /// <param name="helper">The island view model helper.</param>
+    /// <param name="dragDropService">The drag-drop direction service.</param>
     public IslandViewModel
     (
         int x,
@@ -78,7 +80,8 @@ public class IslandViewModel :
         Func<IIslandViewModel, DirectionEnum, IDragDirectionChangedRequestTargetMessage>
             dragDirectionChangedRequestTargetMessageFactory,
         IHashiBrushResolver brushResolver,
-        IIslandViewModelHelper helper
+        IIslandViewModelHelper helper,
+        IDragDropService dragDropService
     )
     {
         MaxConnections = maxConnections;
@@ -91,6 +94,7 @@ public class IslandViewModel :
         this.dragDirectionChangedRequestTargetMessageFactory = dragDirectionChangedRequestTargetMessageFactory ?? throw new ArgumentNullException(nameof(dragDirectionChangedRequestTargetMessageFactory));
         BrushResolver = brushResolver ?? throw new ArgumentNullException(nameof(brushResolver));
         this.helper = helper ?? throw new ArgumentNullException(nameof(helper));
+        this.dragDropService = dragDropService ?? throw new ArgumentNullException(nameof(dragDropService));
 
         DragEnterCommand = new RelayCommand<DragEventArgs>(DragEnterCommandExecute);
         DropCommand = new RelayCommand<DragEventArgs>(DropCommandExecute);
@@ -499,30 +503,6 @@ public class IslandViewModel :
 
     internal DirectionEnum GetDragDirection(double deltaX, double deltaY)
     {
-        const double threshold = 1.0; // Minimum movement to consider a direction
-
-        // Ignore small movements
-        if (Math.Abs(deltaX) < threshold && Math.Abs(deltaY) < threshold)
-        {
-            return DirectionEnum.None;
-        }
-
-        // Calculate angle in degrees
-        var angle = Math.Atan2(deltaY, deltaX) * (180 / Math.PI);
-
-        // Normalize angle to range [0, 360)
-        if (angle < 0)
-        {
-            angle += 360;
-        }
-
-        // Determine direction based on angle
-        return angle switch
-        {
-            >= 45 and < 135 => DirectionEnum.Down,
-            >= 135 and < 225 => DirectionEnum.Left,
-            >= 225 and < 315 => DirectionEnum.Up,
-            _ => DirectionEnum.Right
-        };
+        return dragDropService.GetDragDirection(deltaX, deltaY);
     }
 }

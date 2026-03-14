@@ -24,7 +24,7 @@ public class AutoFacProvidersModule : Module
         builder.RegisterType<TestSolutionProvider>().As<ITestSolutionProvider>().SingleInstance();
         builder.RegisterType<PathProvider>().As<IPathProvider>().SingleInstance();
 
-        builder.Register<Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider>>(context =>
+        builder.Register<Func<IReadOnlyList<int[]>?, IReadOnlyList<IBridgeCoordinates>?, string?, ISolutionProvider>>(context =>
         {
             var c = context.Resolve<IComponentContext>();
             return (hashiField, bridgeCoordinates, name) => c.Resolve<ISolutionProvider>(

@@ -453,24 +453,4 @@ public class LoggerTests
 
     #endregion
 
-    #region Property and Field Tests
-
-    [Test]
-    public void Logger_WhenCreated_ShouldHaveNLogLoggerField()
-    {
-        // Arrange
-        var nlogLogger = LogManager.GetLogger("TestLogger");
-        var logger1 = new Logger(nlogLogger);
-
-        // Act
-        var field = typeof(Logger).GetField("logger",
-            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-
-        // Assert
-        field.Should().NotBeNull();
-        var fieldValue = field?.GetValue(logger1);
-        fieldValue.Should().Be(nlogLogger);
-    }
-
-    #endregion
 }

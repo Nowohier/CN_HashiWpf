@@ -10,15 +10,15 @@ public interface IBridgeManagementService
     /// <summary>
     ///     Adds additional bridges based on the alpha parameter.
     /// </summary>
-    void AddAdditionalBridges(int[][] mainField, int alpha, List<IIsland> islands, List<IBridge> bridges);
+    void AddAdditionalBridges(int[][] mainField, int alpha, IList<IIsland> islands, IList<IBridge> bridges);
 
     /// <summary>
     ///     Adjusts bridge counts based on the beta parameter.
     /// </summary>
-    void SetBeta(int[][] mainField, int beta, List<IBridge> bridges);
+    void SetBeta(int[][] mainField, int beta, IList<IBridge> bridges);
 
     /// <summary>
     ///     Builds bridge coordinates from the current bridge list.
     /// </summary>
-    List<IBridgeCoordinates> BuildBridgeCoordinates(List<IBridge> bridges);
+    IReadOnlyList<IBridgeCoordinates> BuildBridgeCoordinates(IList<IBridge> bridges);
 }

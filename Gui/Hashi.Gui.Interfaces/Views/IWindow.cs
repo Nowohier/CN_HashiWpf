@@ -1,5 +1,8 @@
 ﻿namespace Hashi.Gui.Interfaces.Views;
 
+/// <summary>
+///     Represents the main application window.
+/// </summary>
 public interface IWindow : IViewBoxControl
 {
     /// <summary>

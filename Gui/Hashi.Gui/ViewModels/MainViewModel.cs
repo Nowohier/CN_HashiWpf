@@ -30,7 +30,7 @@ public class MainViewModel : AsyncObservableRecipient,
     private readonly IHashiGenerator hashiGenerator;
     private readonly IResourceManager resourceManager;
     private readonly IHashiBrushResolver brushResolver;
-    private readonly Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider> solutionProviderFactory;
+    private readonly Func<IReadOnlyList<int[]>?, IReadOnlyList<IBridgeCoordinates>?, string?, ISolutionProvider> solutionProviderFactory;
     private readonly ILogger logger;
 
     private bool isCheating;
@@ -66,7 +66,7 @@ public class MainViewModel : AsyncObservableRecipient,
         IResourceManager resourceManager,
         ILoggerFactory loggerFactory,
         IHashiBrushResolver brushResolver,
-        Func<IReadOnlyList<int[]>?, List<IBridgeCoordinates>?, string?, ISolutionProvider> solutionProviderFactory)
+        Func<IReadOnlyList<int[]>?, IReadOnlyList<IBridgeCoordinates>?, string?, ISolutionProvider> solutionProviderFactory)
     {
         SettingsProvider = settingsProvider ?? throw new ArgumentNullException(nameof(settingsProvider));
         TimerProvider = timerProvider ?? throw new ArgumentNullException(nameof(timerProvider));
@@ -364,7 +364,7 @@ public class MainViewModel : AsyncObservableRecipient,
     /// <inheritdoc cref="IMainViewModel.Receive(IAllConnectionsSetMessage)" />
     public void Receive(IAllConnectionsSetMessage message)
     {
-        var actualScore = TimerProvider.Timer.Elapsed;
+        var actualScore = TimerProvider.Elapsed;
         TimerProvider.StopTimer();
 
         var caption = TranslationSource.Instance.GetRequired("MessageGameOverCaption");

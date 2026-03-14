@@ -13,6 +13,7 @@ public class _5ConnectionsRule2(IRuleInfoProvider ruleInfoProvider, IIslandProvi
 {
     protected override string RuleMessage => TranslationSource.Instance.GetRequired(nameof(_5ConnectionsRule2));
 
+    /// <inheritdoc />
     public override void Define()
     {
         IIslandViewModel island = null!;

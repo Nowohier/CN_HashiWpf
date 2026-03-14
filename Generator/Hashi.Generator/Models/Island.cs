@@ -34,19 +34,46 @@ public class Island : IIsland
     public int X { get; }
 
     /// <inheritdoc />
-    public int AmountBridgesConnectable { get; set; }
+    public int AmountBridgesConnectable { get; private set; }
 
     /// <inheritdoc />
-    public int AmountBridgesUp { get; set; }
+    public int AmountBridgesUp { get; private set; }
 
     /// <inheritdoc />
-    public int AmountBridgesDown { get; set; }
+    public int AmountBridgesDown { get; private set; }
 
     /// <inheritdoc />
-    public int AmountBridgesLeft { get; set; }
+    public int AmountBridgesLeft { get; private set; }
 
     /// <inheritdoc />
-    public int AmountBridgesRight { get; set; }
+    public int AmountBridgesRight { get; private set; }
+
+    /// <inheritdoc />
+    public void IncrementAmountBridgesConnectable(int delta) => AmountBridgesConnectable += delta;
+
+    /// <inheritdoc />
+    public void IncrementAmountBridgesUp(int delta) => AmountBridgesUp += delta;
+
+    /// <inheritdoc />
+    public void IncrementAmountBridgesDown(int delta) => AmountBridgesDown += delta;
+
+    /// <inheritdoc />
+    public void IncrementAmountBridgesLeft(int delta) => AmountBridgesLeft += delta;
+
+    /// <inheritdoc />
+    public void IncrementAmountBridgesRight(int delta) => AmountBridgesRight += delta;
+
+    /// <inheritdoc />
+    public void SetAmountBridgesUp(int value) => AmountBridgesUp = value;
+
+    /// <inheritdoc />
+    public void SetAmountBridgesDown(int value) => AmountBridgesDown = value;
+
+    /// <inheritdoc />
+    public void SetAmountBridgesLeft(int value) => AmountBridgesLeft = value;
+
+    /// <inheritdoc />
+    public void SetAmountBridgesRight(int value) => AmountBridgesRight = value;
 
     /// <inheritdoc />
     public IIsland? IslandUp { get; private set; }
@@ -61,7 +88,7 @@ public class Island : IIsland
     public IIsland? IslandRight { get; private set; }
 
     /// <inheritdoc />
-    public void SetAllNeighbors(int[][] field, List<IIsland> islands)
+    public void SetAllNeighbors(int[][] field, IReadOnlyList<IIsland> islands)
     {
         var islandLookup = new Dictionary<(int Y, int X), IIsland>(islands.Count);
         foreach (var island in islands)
