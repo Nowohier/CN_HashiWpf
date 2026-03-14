@@ -25,17 +25,17 @@ public class BridgeManagementServiceTests
         bridgeManagementService = new BridgeManagementService(bridgeFactoryMock.Object, blockDetectionService);
     }
 
-    #region ShuffleArray Tests
+    #region Shuffle Tests
 
     [Test]
-    public void ShuffleArray_WhenCalledWithArray_ShouldModifyArray()
+    public void Shuffle_WhenCalledWithArray_ShouldPreserveElements()
     {
         // Arrange
         var originalArray = new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
         var testArray = originalArray.ToArray();
 
         // Act
-        BridgeManagementService.ShuffleArray(testArray);
+        BridgeManagementService.Shuffle(testArray);
 
         // Assert
         testArray.Should().BeEquivalentTo(originalArray);
@@ -43,41 +43,37 @@ public class BridgeManagementServiceTests
     }
 
     [Test]
-    public void ShuffleArray_WhenCalledWithSingleElementArray_ShouldNotThrow()
+    public void Shuffle_WhenCalledWithSingleElementArray_ShouldNotThrow()
     {
         // Arrange
         var array = new[] { 42 };
 
         // Act & Assert
-        var act = () => BridgeManagementService.ShuffleArray(array);
+        var act = () => BridgeManagementService.Shuffle(array);
         act.Should().NotThrow();
         array[0].Should().Be(42);
     }
 
     [Test]
-    public void ShuffleArray_WhenCalledWithEmptyArray_ShouldNotThrow()
+    public void Shuffle_WhenCalledWithEmptyArray_ShouldNotThrow()
     {
         // Arrange
         var array = Array.Empty<int>();
 
         // Act & Assert
-        var act = () => BridgeManagementService.ShuffleArray(array);
+        var act = () => BridgeManagementService.Shuffle(array);
         act.Should().NotThrow();
     }
 
-    #endregion
-
-    #region ShuffleList Tests
-
     [Test]
-    public void ShuffleList_WhenCalledWithList_ShouldModifyList()
+    public void Shuffle_WhenCalledWithList_ShouldPreserveElements()
     {
         // Arrange
         var originalList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
         var testList = new List<int>(originalList);
 
         // Act
-        BridgeManagementService.ShuffleList(testList);
+        BridgeManagementService.Shuffle(testList);
 
         // Assert
         testList.Should().BeEquivalentTo(originalList);
@@ -85,25 +81,25 @@ public class BridgeManagementServiceTests
     }
 
     [Test]
-    public void ShuffleList_WhenCalledWithSingleElementList_ShouldNotThrow()
+    public void Shuffle_WhenCalledWithSingleElementList_ShouldNotThrow()
     {
         // Arrange
         var list = new List<int> { 42 };
 
         // Act & Assert
-        var act = () => BridgeManagementService.ShuffleList(list);
+        var act = () => BridgeManagementService.Shuffle(list);
         act.Should().NotThrow();
         list[0].Should().Be(42);
     }
 
     [Test]
-    public void ShuffleList_WhenCalledWithEmptyList_ShouldNotThrow()
+    public void Shuffle_WhenCalledWithEmptyList_ShouldNotThrow()
     {
         // Arrange
         var list = new List<int>();
 
         // Act & Assert
-        var act = () => BridgeManagementService.ShuffleList(list);
+        var act = () => BridgeManagementService.Shuffle(list);
         act.Should().NotThrow();
     }
 

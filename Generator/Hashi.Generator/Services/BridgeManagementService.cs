@@ -35,7 +35,7 @@ public class BridgeManagementService : IBridgeManagementService
             islandIndices[i] = i;
         }
 
-        ShuffleArray(islandIndices);
+        Shuffle(islandIndices);
 
         foreach (var idx in islandIndices)
         {
@@ -82,7 +82,7 @@ public class BridgeManagementService : IBridgeManagementService
             candidates.Add(i);
         }
 
-        ShuffleList(candidates);
+        Shuffle(candidates);
 
         for (var i = 0; i < Math.Min(bridgesToAdd, candidates.Count); i++)
         {
@@ -155,21 +155,12 @@ public class BridgeManagementService : IBridgeManagementService
         return true;
     }
 
-    internal static void ShuffleArray<T>(T[] array)
+    internal static void Shuffle<T>(IList<T> collection)
     {
-        for (var i = array.Length - 1; i > 0; i--)
+        for (var i = collection.Count - 1; i > 0; i--)
         {
             var j = Random.Shared.Next(i + 1);
-            (array[i], array[j]) = (array[j], array[i]);
-        }
-    }
-
-    internal static void ShuffleList<T>(List<T> list)
-    {
-        for (var i = list.Count - 1; i > 0; i--)
-        {
-            var j = Random.Shared.Next(i + 1);
-            (list[i], list[j]) = (list[j], list[i]);
+            (collection[i], collection[j]) = (collection[j], collection[i]);
         }
     }
 }
