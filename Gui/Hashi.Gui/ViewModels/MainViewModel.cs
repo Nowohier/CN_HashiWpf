@@ -170,6 +170,9 @@ public class MainViewModel : AsyncObservableRecipient,
         }
     }
 
+    /// <summary>
+    ///     Gets or sets a value indicating whether the application is in test field mode.
+    /// </summary>
     public bool IsTestFieldMode
     {
         get => isTestFieldMode;
@@ -268,7 +271,7 @@ public class MainViewModel : AsyncObservableRecipient,
     public ICommand ResetAllSettingsToDefaultCommand { get; }
 
     /// <summary>
-    ///      Deletes the test field.
+    ///      Creates a new test field.
     /// </summary>
     public ICommand CreateTestFieldCommand { get; }
 

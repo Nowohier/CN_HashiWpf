@@ -17,6 +17,7 @@ using System.Windows.Input;
 
 namespace Hashi.Gui.ViewModels;
 
+/// <inheritdoc cref="IIslandViewModel" />
 public class IslandViewModel :
     ObservableRecipient,
     IIslandViewModel
@@ -238,10 +239,10 @@ public class IslandViewModel :
     }
 
     /// <inheritdoc />
-    public void RemoveAllConnectionsMatchingCoordinates(IHashiPoint sourceSonnection)
+    public void RemoveAllConnectionsMatchingCoordinates(IHashiPoint sourceConnection)
     {
         AllConnections.RemoveAll(connection =>
-            sourceSonnection.X == connection.X && sourceSonnection.Y == connection.Y);
+            sourceConnection.X == connection.X && sourceConnection.Y == connection.Y);
         NotifyBridgeConnections();
     }
 

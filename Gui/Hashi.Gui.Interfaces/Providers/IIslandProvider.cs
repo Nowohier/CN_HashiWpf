@@ -7,6 +7,9 @@ using System.Collections.ObjectModel;
 
 namespace Hashi.Gui.Interfaces.Providers;
 
+/// <summary>
+///     Provides island management operations for the Hashi game board.
+/// </summary>
 public interface IIslandProvider
 {
     /// <summary>

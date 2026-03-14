@@ -13,6 +13,7 @@ using System.Collections.ObjectModel;
 
 namespace Hashi.Gui.Providers;
 
+/// <inheritdoc cref="ITestSolutionProvider" />
 [JsonObject(MemberSerialization.OptIn)]
 public class TestSolutionProvider : ObservableObject, ITestSolutionProvider
 {
@@ -25,6 +26,16 @@ public class TestSolutionProvider : ObservableObject, ITestSolutionProvider
     private readonly ILogger logger;
     private ISolutionProvider? selectedSolutionProvider;
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="TestSolutionProvider" /> class.
+    /// </summary>
+    /// <param name="jsonWrapper">The JSON serialization wrapper.</param>
+    /// <param name="pathProvider">The path provider for file locations.</param>
+    /// <param name="fileWrapper">The file system wrapper.</param>
+    /// <param name="directoryWrapper">The directory wrapper.</param>
+    /// <param name="solutionProviderFactory">The factory for creating solution providers.</param>
+    /// <param name="setTestSolutionMessageFactory">The factory for creating test solution messages.</param>
+    /// <param name="loggerFactory">The logger factory.</param>
     public TestSolutionProvider
     (
         IJsonWrapper jsonWrapper,
