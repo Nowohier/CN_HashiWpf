@@ -46,7 +46,7 @@ public class BridgeManagementService : IBridgeManagementService
 
             var island = islands[idx];
 
-            if (TryAddBridgeDown(island, mainField, bridges))
+            if (TryAddBridge(island, DirectionEnum.Down, mainField, bridges))
             {
                 bridgesAdded++;
                 if (bridgesAdded >= targetBridges)
@@ -55,7 +55,7 @@ public class BridgeManagementService : IBridgeManagementService
                 }
             }
 
-            if (TryAddBridgeRight(island, mainField, bridges))
+            if (TryAddBridge(island, DirectionEnum.Right, mainField, bridges))
             {
                 bridgesAdded++;
             }
@@ -105,52 +105,36 @@ public class BridgeManagementService : IBridgeManagementService
         return bridgeCoordinates;
     }
 
-    internal bool TryAddBridgeDown(IIsland island, int[][] mainField, IList<IBridge> bridges)
+    internal bool TryAddBridge(IIsland island, DirectionEnum direction, int[][] mainField, IList<IBridge> bridges)
     {
-        if (island.IslandDown == null ||
-            island.AmountBridgesDown > 0 ||
+        var (neighbor, bridgeCount, isBlocked) = direction switch
+        {
+            DirectionEnum.Down => (island.IslandDown, island.AmountBridgesDown,
+                blockDetectionService.GetDownBlockedBetween(island, mainField, bridges) != -1),
+            DirectionEnum.Right => (island.IslandRight, island.AmountBridgesRight,
+                blockDetectionService.GetRightBlockedBetween(island, mainField, bridges) != -1),
+            _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, @"Only Down and Right are supported.")
+        };
+
+        if (neighbor == null ||
+            bridgeCount > 0 ||
             island.AmountBridgesConnectable + 1 > GeneratorConstants.MaxConnectableBridgesForAdding ||
-            island.IslandDown.AmountBridgesConnectable + 1 > GeneratorConstants.MaxConnectableBridgesForAdding ||
-            blockDetectionService.GetDownBlockedBetween(island, mainField, bridges) != -1)
+            neighbor.AmountBridgesConnectable + 1 > GeneratorConstants.MaxConnectableBridgesForAdding ||
+            isBlocked)
         {
             return false;
         }
 
-        var bridge = bridgeFactory.Invoke(island, island.IslandDown, 1);
+        var bridge = bridgeFactory.Invoke(island, neighbor, 1);
         bridges.Add(bridge);
         bridges.Add(bridge.CreateReverseBridgeAndApplyDirections());
 
         island.AmountBridgesConnectable += 1;
-        island.IslandDown.AmountBridgesConnectable += 1;
+        neighbor.AmountBridgesConnectable += 1;
         mainField[island.Y][island.X] += 1;
-        mainField[island.IslandDown.Y][island.X] += 1;
+        mainField[neighbor.Y][neighbor.X] += 1;
 
-        blockDetectionService.UpdateDirectionCache(island, island.IslandDown);
-
-        return true;
-    }
-
-    internal bool TryAddBridgeRight(IIsland island, int[][] mainField, IList<IBridge> bridges)
-    {
-        if (island.IslandRight == null ||
-            island.AmountBridgesRight > 0 ||
-            island.AmountBridgesConnectable + 1 > GeneratorConstants.MaxConnectableBridgesForAdding ||
-            island.IslandRight.AmountBridgesConnectable + 1 > GeneratorConstants.MaxConnectableBridgesForAdding ||
-            blockDetectionService.GetRightBlockedBetween(island, mainField, bridges) != -1)
-        {
-            return false;
-        }
-
-        var bridge = bridgeFactory.Invoke(island, island.IslandRight, 1);
-        bridges.Add(bridge);
-        bridges.Add(bridge.CreateReverseBridgeAndApplyDirections());
-
-        island.AmountBridgesConnectable += 1;
-        island.IslandRight.AmountBridgesConnectable += 1;
-        mainField[island.Y][island.X] += 1;
-        mainField[island.IslandRight.Y][island.IslandRight.X] += 1;
-
-        blockDetectionService.UpdateDirectionCache(island, island.IslandRight);
+        blockDetectionService.UpdateDirectionCache(island, neighbor);
 
         return true;
     }

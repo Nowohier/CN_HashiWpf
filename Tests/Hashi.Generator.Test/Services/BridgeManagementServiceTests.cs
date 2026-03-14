@@ -1,4 +1,5 @@
 using FluentAssertions;
+using Hashi.Enums;
 using Hashi.Generator.Interfaces;
 using Hashi.Generator.Interfaces.Models;
 using Hashi.Generator.Models;
@@ -197,10 +198,10 @@ public class BridgeManagementServiceTests
 
     #endregion
 
-    #region TryAddBridgeRight Bug Regression Test
+    #region TryAddBridge Tests
 
     [Test]
-    public void TryAddBridgeRight_WhenBridgeAdded_ShouldUpdateBothSourceAndTargetFieldCells()
+    public void TryAddBridge_WhenDirectionIsRight_ShouldUpdateBothSourceAndTargetFieldCells()
     {
         // Arrange
         var sourceIsland = new Island(2, 0, 0);
@@ -212,14 +213,13 @@ public class BridgeManagementServiceTests
             [2, 0, 0, 2]
         };
 
-        // Set up neighbors
         sourceIsland.SetAllNeighbors(field, islands);
         targetIsland.SetAllNeighbors(field, islands);
 
         var bridges = new List<IBridge>();
 
         // Act
-        var result = bridgeManagementService.TryAddBridgeRight(sourceIsland, field, bridges);
+        var result = bridgeManagementService.TryAddBridge(sourceIsland, DirectionEnum.Right, field, bridges);
 
         // Assert
         result.Should().BeTrue();
@@ -227,12 +227,8 @@ public class BridgeManagementServiceTests
         field[0][3].Should().Be(3, "target island field cell should be incremented");
     }
 
-    #endregion
-
-    #region TryAddBridgeDown Tests
-
     [Test]
-    public void TryAddBridgeDown_WhenBridgeAdded_ShouldUpdateBothSourceAndTargetFieldCells()
+    public void TryAddBridge_WhenDirectionIsDown_ShouldUpdateBothSourceAndTargetFieldCells()
     {
         // Arrange
         var sourceIsland = new Island(2, 0, 0);
@@ -253,7 +249,7 @@ public class BridgeManagementServiceTests
         var bridges = new List<IBridge>();
 
         // Act
-        var result = bridgeManagementService.TryAddBridgeDown(sourceIsland, field, bridges);
+        var result = bridgeManagementService.TryAddBridge(sourceIsland, DirectionEnum.Down, field, bridges);
 
         // Assert
         result.Should().BeTrue();
