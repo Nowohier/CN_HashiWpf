@@ -1,4 +1,5 @@
 using FluentAssertions;
+using Hashi.Generator.Simulation;
 using Hashi.Gui.Core.Helpers;
 using Hashi.Gui.Core.Providers;
 using Hashi.Gui.Interfaces.Helpers;
@@ -15,6 +16,7 @@ public class RuleSolvabilityValidatorTests
     private Mock<ILogger> loggerMock;
     private IIslandViewModelHelper helper;
     private IIslandProviderCore core;
+    private ISimulationFactory simulationFactory;
     private RuleSolvabilityValidator validator;
 
     [SetUp]
@@ -28,7 +30,8 @@ public class RuleSolvabilityValidatorTests
 
         helper = new IslandViewModelHelper();
         core = new IslandProviderCore(helper);
-        validator = new RuleSolvabilityValidator(loggerFactoryMock.Object, helper, core);
+        simulationFactory = new SimulationFactory(core, helper);
+        validator = new RuleSolvabilityValidator(loggerFactoryMock.Object, simulationFactory);
     }
 
     #region Constructor Tests
@@ -37,26 +40,16 @@ public class RuleSolvabilityValidatorTests
     public void Constructor_WhenLoggerFactoryIsNull_ShouldThrowException()
     {
         // Act & Assert
-        var action = () => new RuleSolvabilityValidator(null!, helper, core);
+        var action = () => new RuleSolvabilityValidator(null!, simulationFactory);
         action.Should().Throw<Exception>();
     }
 
     [Test]
-    public void Constructor_WhenHelperIsNull_ShouldNotThrow()
+    public void Constructor_WhenSimulationFactoryIsNull_ShouldThrowArgumentNullException()
     {
-        // Note: The constructor doesn't guard helper/core with null checks
-        // This test documents the current behavior
-        var action = () => new RuleSolvabilityValidator(loggerFactoryMock.Object, null!, core);
-        action.Should().NotThrow();
-    }
-
-    [Test]
-    public void Constructor_WhenCoreIsNull_ShouldNotThrow()
-    {
-        // Note: The constructor doesn't guard helper/core with null checks
-        // This test documents the current behavior
-        var action = () => new RuleSolvabilityValidator(loggerFactoryMock.Object, helper, null!);
-        action.Should().NotThrow();
+        // Act & Assert
+        var action = () => new RuleSolvabilityValidator(loggerFactoryMock.Object, null!);
+        action.Should().Throw<ArgumentNullException>();
     }
 
     #endregion

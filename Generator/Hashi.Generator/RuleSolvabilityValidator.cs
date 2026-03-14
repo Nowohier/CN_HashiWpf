@@ -1,8 +1,6 @@
 using System.Reflection;
 using Hashi.Generator.Interfaces;
 using Hashi.Generator.Simulation;
-using Hashi.Gui.Interfaces.Helpers;
-using Hashi.Gui.Interfaces.Providers;
 using Hashi.Logging.Interfaces;
 using Hashi.Rules;
 using NRules;
@@ -14,23 +12,19 @@ namespace Hashi.Generator;
 public class RuleSolvabilityValidator : IRuleSolvabilityValidator
 {
     private readonly ILogger logger;
-    private readonly IIslandViewModelHelper helper;
-    private readonly IIslandProviderCore core;
+    private readonly ISimulationFactory simulationFactory;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="RuleSolvabilityValidator" /> class.
     /// </summary>
     /// <param name="loggerFactory">The logger factory.</param>
-    /// <param name="helper">The island view model helper.</param>
-    /// <param name="core">The island provider core.</param>
+    /// <param name="simulationFactory">The simulation factory for creating rule-solving simulation contexts.</param>
     public RuleSolvabilityValidator(
         ILoggerFactory loggerFactory,
-        IIslandViewModelHelper helper,
-        IIslandProviderCore core)
+        ISimulationFactory simulationFactory)
     {
         logger = loggerFactory.CreateLogger<RuleSolvabilityValidator>();
-        this.helper = helper;
-        this.core = core;
+        this.simulationFactory = simulationFactory ?? throw new ArgumentNullException(nameof(simulationFactory));
     }
 
     /// <inheritdoc />
@@ -52,12 +46,8 @@ public class RuleSolvabilityValidator : IRuleSolvabilityValidator
 
     internal bool SimulateRuleSolving(int[][] field)
     {
-        var islandProvider = new SimulationIslandProvider(core, helper);
-        islandProvider.InitializeFromField(field);
+        var (islandProvider, ruleInfoProvider, ruleActivator) = simulationFactory.CreateSimulation(field);
 
-        var ruleInfoProvider = new SimulationRuleInfoProvider();
-
-        var ruleActivator = new SimulationRuleActivator(ruleInfoProvider, islandProvider);
         var repository = new RuleRepository(ruleActivator);
         repository.Load(x => x.From(RulesAssembly));
 
@@ -83,7 +73,7 @@ public class RuleSolvabilityValidator : IRuleSolvabilityValidator
 
             totalRulesFired += rulesFired;
 
-            if (islandProvider.AreAllConnectionsSet)
+            if (islandProvider.IslandsFlat.All(island => island.MaxConnections == 0 || island.MaxConnectionsReached))
             {
                 logger.Debug(
                     $"Rule-based simulation solved puzzle in {iteration + 1} iterations ({totalRulesFired} rules fired)");

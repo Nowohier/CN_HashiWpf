@@ -108,10 +108,16 @@ internal class SimulationIslandProvider : IIslandProvider
     }
 
     /// <inheritdoc />
-    public IList<IHashiBridge> History { get; } = new List<IHashiBridge>();
+    public IReadOnlyList<IHashiBridge> History { get; } = new List<IHashiBridge>();
 
     /// <inheritdoc />
-    public IList<IHashiBridge> RedoHistory { get; } = new List<IHashiBridge>();
+    public IReadOnlyList<IHashiBridge> RedoHistory { get; } = new List<IHashiBridge>();
+
+    /// <inheritdoc />
+    public void ClearRedoHistory()
+    {
+        // Not used in simulation
+    }
 
     /// <inheritdoc />
     public void UndoConnection()

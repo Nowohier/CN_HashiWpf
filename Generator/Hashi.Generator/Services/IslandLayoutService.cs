@@ -116,93 +116,57 @@ public class IslandLayoutService : IIslandLayoutService
 
     internal List<Point> GetPossiblePositions(IIsland island, int[][] mainField, IList<IBridge> bridges)
     {
-        var result = new List<Point>();
         var range = Random.Shared.Next(GeneratorConstants.MinIslandRange, GeneratorConstants.MaxIslandRange);
-        var sizeLength = mainField.Length;
-        var sizeWidth = mainField[0].Length;
+        var result = new List<Point>();
 
-        // Check upward direction
-        if (island.Y > 0 && !blockDetectionService.HasBridgeInDirection(island, DirectionEnum.Up, bridges))
+        foreach (var direction in new[] { DirectionEnum.Up, DirectionEnum.Left, DirectionEnum.Down, DirectionEnum.Right })
         {
-            var block = blockDetectionService.GetBlocked(island, mainField, DirectionEnum.Up, bridges);
-            var minY = Math.Max(0, island.Y - range);
-
-            for (var y = island.Y - 1; y >= minY; y--)
-            {
-                if (mainField[y][island.X] != 0)
-                {
-                    break;
-                }
-
-                if (block == -1 || y > block)
-                {
-                    result.Add(new Point(island.X, y));
-                }
-            }
-        }
-
-        // Check leftward direction
-        if (island.X > 0 && !blockDetectionService.HasBridgeInDirection(island, DirectionEnum.Left, bridges))
-        {
-            var block = blockDetectionService.GetBlocked(island, mainField, DirectionEnum.Left, bridges);
-            var minX = Math.Max(0, island.X - range);
-
-            for (var x = island.X - 1; x >= minX; x--)
-            {
-                if (mainField[island.Y][x] != 0)
-                {
-                    break;
-                }
-
-                if (block == -1 || x > block)
-                {
-                    result.Add(new Point(x, island.Y));
-                }
-            }
-        }
-
-        // Check downward direction
-        if (island.Y < sizeLength - 1 &&
-            !blockDetectionService.HasBridgeInDirection(island, DirectionEnum.Down, bridges))
-        {
-            var block = blockDetectionService.GetBlocked(island, mainField, DirectionEnum.Down, bridges);
-            var maxY = Math.Min(sizeLength - 1, island.Y + range);
-
-            for (var y = island.Y + 1; y <= maxY; y++)
-            {
-                if (mainField[y][island.X] != 0)
-                {
-                    break;
-                }
-
-                if (block == -1 || y < block)
-                {
-                    result.Add(new Point(island.X, y));
-                }
-            }
-        }
-
-        // Check rightward direction
-        if (island.X < sizeWidth - 1 &&
-            !blockDetectionService.HasBridgeInDirection(island, DirectionEnum.Right, bridges))
-        {
-            var block = blockDetectionService.GetBlocked(island, mainField, DirectionEnum.Right, bridges);
-            var maxX = Math.Min(sizeWidth - 1, island.X + range);
-
-            for (var x = island.X + 1; x <= maxX; x++)
-            {
-                if (mainField[island.Y][x] != 0)
-                {
-                    break;
-                }
-
-                if (block == -1 || x < block)
-                {
-                    result.Add(new Point(x, island.Y));
-                }
-            }
+            result.AddRange(GetPositionsInDirection(island, mainField, bridges, direction, range));
         }
 
         return result;
+    }
+
+    internal IEnumerable<Point> GetPositionsInDirection(
+        IIsland island, int[][] mainField, IList<IBridge> bridges, DirectionEnum direction, int range)
+    {
+        var sizeLength = mainField.Length;
+        var sizeWidth = mainField[0].Length;
+
+        var isVertical = direction is DirectionEnum.Up or DirectionEnum.Down;
+        var isNegative = direction is DirectionEnum.Up or DirectionEnum.Left;
+
+        var position = isVertical ? island.Y : island.X;
+        var maxBound = isVertical ? sizeLength : sizeWidth;
+
+        if (isNegative && position <= 0 || !isNegative && position >= maxBound - 1)
+        {
+            yield break;
+        }
+
+        if (blockDetectionService.HasBridgeInDirection(island, direction, bridges))
+        {
+            yield break;
+        }
+
+        var block = blockDetectionService.GetBlocked(island, mainField, direction, bridges);
+        var step = isNegative ? -1 : 1;
+        var limit = isNegative
+            ? Math.Max(0, position - range)
+            : Math.Min(maxBound - 1, position + range);
+
+        for (var i = position + step; isNegative ? i >= limit : i <= limit; i += step)
+        {
+            var fieldValue = isVertical ? mainField[i][island.X] : mainField[island.Y][i];
+            if (fieldValue != 0)
+            {
+                break;
+            }
+
+            if (block == -1 || (isNegative ? i > block : i < block))
+            {
+                yield return isVertical ? new Point(island.X, i) : new Point(i, island.Y);
+            }
+        }
     }
 }
