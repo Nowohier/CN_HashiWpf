@@ -1,6 +1,5 @@
 using Autofac;
 using FluentAssertions;
-using NRules.Integration.Autofac;
 
 namespace Hashi.Rules.Test;
 
@@ -58,6 +57,6 @@ public static class AutoFacRulesModuleExtensions
     public static void ProtectedLoad(this AutoFacRulesModule module, ContainerBuilder builder)
     {
         var loadMethod = typeof(AutoFacRulesModule).GetMethod("Load", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-        loadMethod?.Invoke(module, new object[] { builder });
+        loadMethod?.Invoke(module, [builder]);
     }
 }

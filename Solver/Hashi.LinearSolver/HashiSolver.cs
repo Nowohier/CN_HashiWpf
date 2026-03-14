@@ -402,7 +402,7 @@ namespace Hashi.LinearSolver
             var adj = new Dictionary<int, List<int>>();
             for (var i = 0; i < n; i++)
             {
-                adj[i] = new List<int>();
+                adj[i] = [];
             }
 
             for (var e = 1; e <= m; e++)

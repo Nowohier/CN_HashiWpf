@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Interfaces.Wrappers;
 using Moq;

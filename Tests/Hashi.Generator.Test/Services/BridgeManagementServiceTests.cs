@@ -1,6 +1,5 @@
 using FluentAssertions;
 using Hashi.Enums;
-using Hashi.Generator.Interfaces;
 using Hashi.Generator.Interfaces.Models;
 using Hashi.Generator.Models;
 using Hashi.Generator.Services;
@@ -115,7 +114,7 @@ public class BridgeManagementServiceTests
         var field = new int[][] { [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0] };
 
         // Act
-        bridgeManagementService.SetBeta(field, 0, new List<IBridge>());
+        bridgeManagementService.SetBeta(field, 0, []);
 
         // Assert
         field.SelectMany(row => row).All(cell => cell == 0).Should().BeTrue();
@@ -128,7 +127,7 @@ public class BridgeManagementServiceTests
         var field = new int[][] { [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0] };
 
         // Act
-        bridgeManagementService.SetBeta(field, -10, new List<IBridge>());
+        bridgeManagementService.SetBeta(field, -10, []);
 
         // Assert
         field.SelectMany(row => row).All(cell => cell == 0).Should().BeTrue();
@@ -141,9 +140,9 @@ public class BridgeManagementServiceTests
         var field = new int[][] { [0, 0, 0] };
 
         // Act & Assert
-        var act = () => bridgeManagementService.SetBeta(field, 50, new List<IBridge>());
+        var act = () => bridgeManagementService.SetBeta(field, 50, []);
         act.Should().NotThrow();
-        field[0].Should().BeEquivalentTo(new[] { 0, 0, 0 });
+        field[0].Should().BeEquivalentTo([0, 0, 0]);
     }
 
     [Test]
@@ -153,9 +152,9 @@ public class BridgeManagementServiceTests
         var field = new int[][] { [0, 0, 0] };
 
         // Act
-        var act = () => bridgeManagementService.SetBeta(field, 1, new List<IBridge>());
+        var act = () => bridgeManagementService.SetBeta(field, 1, []);
         act.Should().NotThrow();
-        field[0].Should().BeEquivalentTo(new[] { 0, 0, 0 });
+        field[0].Should().BeEquivalentTo([0, 0, 0]);
     }
 
     #endregion
@@ -170,7 +169,7 @@ public class BridgeManagementServiceTests
         var fieldSnapshot = field.Select(row => row.ToArray()).ToArray();
 
         // Act
-        bridgeManagementService.AddAdditionalBridges(field, 0, new List<IIsland>(), new List<IBridge>());
+        bridgeManagementService.AddAdditionalBridges(field, 0, [], []);
 
         // Assert
         for (var i = 0; i < field.Length; i++)
@@ -187,7 +186,7 @@ public class BridgeManagementServiceTests
         var fieldSnapshot = field.Select(row => row.ToArray()).ToArray();
 
         // Act
-        bridgeManagementService.AddAdditionalBridges(field, 1, new List<IIsland>(), new List<IBridge>());
+        bridgeManagementService.AddAdditionalBridges(field, 1, [], []);
 
         // Assert
         for (var i = 0; i < field.Length; i++)
@@ -286,7 +285,7 @@ public class BridgeManagementServiceTests
     public void BuildBridgeCoordinates_WhenNoBridges_ShouldReturnEmptyList()
     {
         // Act
-        var result = bridgeManagementService.BuildBridgeCoordinates(new List<IBridge>());
+        var result = bridgeManagementService.BuildBridgeCoordinates([]);
 
         // Assert
         result.Should().BeEmpty();

@@ -512,7 +512,7 @@ public class TestSolutionProviderTests
 
         islandViewModelMock.Setup(x => x.Coordinates).Returns(coordinatesMock.Object);
         islandViewModelMock.Setup(x => x.MaxConnections).Returns(3);
-        islandViewModelMock.Setup(x => x.AllConnections).Returns(new ObservableCollection<Hashi.Gui.Interfaces.Models.IHashiPoint>());
+        islandViewModelMock.Setup(x => x.AllConnections).Returns([]);
 
         var islands = new List<IIslandViewModel> { islandViewModelMock.Object };
 
@@ -599,7 +599,7 @@ public class TestSolutionProviderTests
 
         islandViewModelMock.Setup(x => x.Coordinates).Returns(coordinatesMock.Object);
         islandViewModelMock.Setup(x => x.MaxConnections).Returns(1);
-        islandViewModelMock.Setup(x => x.AllConnections).Returns(new ObservableCollection<Hashi.Gui.Interfaces.Models.IHashiPoint>());
+        islandViewModelMock.Setup(x => x.AllConnections).Returns([]);
 
         var islands = new List<IIslandViewModel> { islandViewModelMock.Object };
 

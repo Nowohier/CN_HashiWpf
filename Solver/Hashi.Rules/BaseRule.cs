@@ -1,5 +1,4 @@
 using Hashi.Enums;
-using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Rules.Helpers;

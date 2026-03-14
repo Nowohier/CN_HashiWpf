@@ -2,8 +2,6 @@
 using Hashi.LinearSolver.Interfaces;
 using Hashi.LinearSolver.Interfaces.Models;
 using Hashi.LinearSolver.Models;
-using Hashi.Logging;
-using Hashi.Logging.Interfaces;
 
 namespace Hashi.LinearSolver;
 

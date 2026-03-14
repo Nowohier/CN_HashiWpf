@@ -4,9 +4,7 @@ using Hashi.Gui.Interfaces.Models;
 using Hashi.Gui.Interfaces.Providers;
 using Hashi.Gui.Interfaces.ViewModels;
 using Moq;
-using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
 
 namespace Hashi.Rules.Test;
 
@@ -208,7 +206,7 @@ public class BaseRuleTests
         
         // Setup two existing connections from target to source
         var sourceCoords = sourceMock.Object.Coordinates;
-        targetMock.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint> { sourceCoords, sourceCoords });
+        targetMock.Setup(x => x.AllConnections).Returns([sourceCoords, sourceCoords]);
 
         // Act
         var result = baseRule.ExecuteAddConnection(sourceMock.Object, targetMock.Object);
@@ -323,8 +321,8 @@ public class BaseRuleTests
         var neighbor2 = CreateIslandMock(1, 2, 2, false);
         
         // The neighbors should contain the source's coordinates in their connections
-        neighbor1.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint> { source.Object.Coordinates });
-        neighbor2.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint> { source.Object.Coordinates });
+        neighbor1.Setup(x => x.AllConnections).Returns([source.Object.Coordinates]);
+        neighbor2.Setup(x => x.AllConnections).Returns([source.Object.Coordinates]);
         
         var neighbors = new List<IIslandViewModel> { neighbor1.Object, neighbor2.Object };
 
@@ -344,8 +342,8 @@ public class BaseRuleTests
         var neighbor2 = CreateIslandMock(1, 2, 2, false);
         
         // Only neighbor1 contains the source's coordinates
-        neighbor1.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint> { source.Object.Coordinates });
-        neighbor2.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint>());
+        neighbor1.Setup(x => x.AllConnections).Returns([source.Object.Coordinates]);
+        neighbor2.Setup(x => x.AllConnections).Returns([]);
         
         var neighbors = new List<IIslandViewModel> { neighbor1.Object, neighbor2.Object };
 
@@ -365,8 +363,8 @@ public class BaseRuleTests
         var neighbor2 = CreateIslandMock(1, 2, 2, false);
         
         // neighbor1 has 2 connections to source, neighbor2 has 1 connection to source
-        neighbor1.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint> { source.Object.Coordinates, source.Object.Coordinates });
-        neighbor2.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint> { source.Object.Coordinates });
+        neighbor1.Setup(x => x.AllConnections).Returns([source.Object.Coordinates, source.Object.Coordinates]);
+        neighbor2.Setup(x => x.AllConnections).Returns([source.Object.Coordinates]);
         
         var neighbors = new List<IIslandViewModel> { neighbor1.Object, neighbor2.Object };
 
@@ -385,8 +383,8 @@ public class BaseRuleTests
         var neighbor1 = CreateIslandMock(2, 1, 2, false);
         var neighbor2 = CreateIslandMock(1, 2, 2, false);
         
-        neighbor1.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint>());
-        neighbor2.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint>());
+        neighbor1.Setup(x => x.AllConnections).Returns([]);
+        neighbor2.Setup(x => x.AllConnections).Returns([]);
         
         var neighbors = new List<IIslandViewModel> { neighbor1.Object, neighbor2.Object };
 
@@ -407,9 +405,9 @@ public class BaseRuleTests
         var neighbor3 = CreateIslandMock(3, 1, 2, false);
         
         // neighbor1 and neighbor2 have connections to source, neighbor3 doesn't
-        neighbor1.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint> { source.Object.Coordinates });
-        neighbor2.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint> { source.Object.Coordinates });
-        neighbor3.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint>());
+        neighbor1.Setup(x => x.AllConnections).Returns([source.Object.Coordinates]);
+        neighbor2.Setup(x => x.AllConnections).Returns([source.Object.Coordinates]);
+        neighbor3.Setup(x => x.AllConnections).Returns([]);
         
         var neighbors = new List<IIslandViewModel> { neighbor1.Object, neighbor2.Object, neighbor3.Object };
 
@@ -431,8 +429,8 @@ public class BaseRuleTests
         var neighbor2 = CreateIslandMock(1, 2, 2, false);
         
         // neighbor1 has 2 connections to source, neighbor2 has 1 connection to source
-        neighbor1.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint> { source.Object.Coordinates, source.Object.Coordinates });
-        neighbor2.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint> { source.Object.Coordinates });
+        neighbor1.Setup(x => x.AllConnections).Returns([source.Object.Coordinates, source.Object.Coordinates]);
+        neighbor2.Setup(x => x.AllConnections).Returns([source.Object.Coordinates]);
         
         var neighbors = new List<IIslandViewModel> { neighbor1.Object, neighbor2.Object };
 
@@ -453,8 +451,8 @@ public class BaseRuleTests
         var neighbor2 = CreateIslandMock(1, 2, 2, false); // Not maxed out
         
         // Both neighbors have connections to source
-        neighbor1.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint> { source.Object.Coordinates });
-        neighbor2.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint> { source.Object.Coordinates });
+        neighbor1.Setup(x => x.AllConnections).Returns([source.Object.Coordinates]);
+        neighbor2.Setup(x => x.AllConnections).Returns([source.Object.Coordinates]);
         
         var neighbors = new List<IIslandViewModel> { neighbor1.Object, neighbor2.Object };
 
@@ -495,8 +493,8 @@ public class BaseRuleTests
         var target = CreateIslandMock(2, 1, 2, false);
         
         // Setup that target already has 2 connections to source (max connections for a bridge pair)
-        target.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint> { source.Object.Coordinates, source.Object.Coordinates });
-        source.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint>());
+        target.Setup(x => x.AllConnections).Returns([source.Object.Coordinates, source.Object.Coordinates]);
+        source.Setup(x => x.AllConnections).Returns([]);
 
         // Act
         var result = baseRule.ExecuteAddConnection(source.Object, target.Object);
@@ -514,8 +512,8 @@ public class BaseRuleTests
         var neighbor2 = CreateIslandMock(1, 2, 2, false); // No connection to source
         
         // neighbor1 has a connection to source coordinates
-        neighbor1.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint> { source.Object.Coordinates });
-        neighbor2.Setup(x => x.AllConnections).Returns(new ObservableCollection<IHashiPoint>());
+        neighbor1.Setup(x => x.AllConnections).Returns([source.Object.Coordinates]);
+        neighbor2.Setup(x => x.AllConnections).Returns([]);
         
         var neighbors = new List<IIslandViewModel> { neighbor1.Object, neighbor2.Object };
 
@@ -540,7 +538,7 @@ public class BaseRuleTests
         islandMock.Setup(m => m.Coordinates).Returns(coordinatesMock.Object);
         islandMock.Setup(m => m.MaxConnections).Returns(maxConnections);
         islandMock.Setup(m => m.MaxConnectionsReached).Returns(maxConnectionsReached);
-        islandMock.Setup(m => m.AllConnections).Returns(new ObservableCollection<IHashiPoint>());
+        islandMock.Setup(m => m.AllConnections).Returns([]);
         islandMock.Setup(m => m.RemainingConnections).Returns(maxConnectionsReached ? 0 : maxConnections);
         
         return islandMock;

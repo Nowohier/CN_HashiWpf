@@ -1,8 +1,5 @@
 using FluentAssertions;
-using Hashi.Gui.Interfaces.Providers;
-using Hashi.Gui.Interfaces.ViewModels;
 using Hashi.Rules.Test.Helpers;
-using Moq;
 using Times = NRules.Testing.Times;
 
 namespace Hashi.Rules.Test;
@@ -46,7 +43,7 @@ public class _1ConnectionRule1Tests : TestBase<_1ConnectionRule1>
         var island = CreateIslandMock(TestIslandEnum.TestIsland, 1, true); // Max connections already reached
         
         IslandProviderMock.Setup(x => x.GetAllVisibleNeighbors(island.Object))
-            .Returns(new List<IIslandViewModel>());
+            .Returns([]);
 
         // Act
         Session.Insert(island.Object);
@@ -60,11 +57,11 @@ public class _1ConnectionRule1Tests : TestBase<_1ConnectionRule1>
     public void Rule_WhenIslandHasMaxConnections1AndOneValidNeighbor_ShouldTrigger()
     {
         // Arrange
-        var island = CreateIslandMock(TestIslandEnum.TestIsland, 1, false);
-        var neighbor = CreateIslandMock(TestIslandEnum.RightIsland, 2, false);
+        var island = CreateIslandMock(TestIslandEnum.TestIsland, 1);
+        var neighbor = CreateIslandMock(TestIslandEnum.RightIsland, 2);
         
         IslandProviderMock.Setup(x => x.GetAllVisibleNeighbors(island.Object))
-            .Returns(new List<IIslandViewModel> { neighbor.Object });
+            .Returns([neighbor.Object]);
 
         // Act
         Session.Insert(island.Object);
@@ -78,12 +75,12 @@ public class _1ConnectionRule1Tests : TestBase<_1ConnectionRule1>
     public void Rule_WhenIslandHasMaxConnections1AndMultipleValidNeighbors_ShouldNotTrigger()
     {
         // Arrange
-        var island = CreateIslandMock(TestIslandEnum.TestIsland, 1, false);
-        var neighbor1 = CreateIslandMock(TestIslandEnum.RightIsland, 2, false);
-        var neighbor2 = CreateIslandMock(TestIslandEnum.LeftIsland, 2, false);
+        var island = CreateIslandMock(TestIslandEnum.TestIsland, 1);
+        var neighbor1 = CreateIslandMock(TestIslandEnum.RightIsland, 2);
+        var neighbor2 = CreateIslandMock(TestIslandEnum.LeftIsland, 2);
         
         IslandProviderMock.Setup(x => x.GetAllVisibleNeighbors(island.Object))
-            .Returns(new List<IIslandViewModel> { neighbor1.Object, neighbor2.Object });
+            .Returns([neighbor1.Object, neighbor2.Object]);
 
         // Act
         Session.Insert(island.Object);
@@ -97,11 +94,11 @@ public class _1ConnectionRule1Tests : TestBase<_1ConnectionRule1>
     public void Rule_WhenIslandHasMaxConnections1AndNeighborAlsoHasMaxConnections1_ShouldNotTrigger()
     {
         // Arrange
-        var island = CreateIslandMock(TestIslandEnum.TestIsland, 1, false);
-        var neighbor = CreateIslandMock(TestIslandEnum.RightIsland, 1, false); // Neighbor also has max 1
+        var island = CreateIslandMock(TestIslandEnum.TestIsland, 1);
+        var neighbor = CreateIslandMock(TestIslandEnum.RightIsland, 1); // Neighbor also has max 1
         
         IslandProviderMock.Setup(x => x.GetAllVisibleNeighbors(island.Object))
-            .Returns(new List<IIslandViewModel> { neighbor.Object });
+            .Returns([neighbor.Object]);
 
         // Act
         Session.Insert(island.Object);
@@ -115,11 +112,11 @@ public class _1ConnectionRule1Tests : TestBase<_1ConnectionRule1>
     public void Rule_WhenIslandHasMaxConnections1AndNeighborHasMaxConnectionsReached_ShouldNotTrigger()
     {
         // Arrange
-        var island = CreateIslandMock(TestIslandEnum.TestIsland, 1, false);
+        var island = CreateIslandMock(TestIslandEnum.TestIsland, 1);
         var neighbor = CreateIslandMock(TestIslandEnum.RightIsland, 2, true); // Neighbor has max connections reached
         
         IslandProviderMock.Setup(x => x.GetAllVisibleNeighbors(island.Object))
-            .Returns(new List<IIslandViewModel> { neighbor.Object });
+            .Returns([neighbor.Object]);
 
         // Act
         Session.Insert(island.Object);
@@ -133,11 +130,11 @@ public class _1ConnectionRule1Tests : TestBase<_1ConnectionRule1>
     public void Rule_WhenIslandHasMoreThanOneConnection_ShouldNotTrigger()
     {
         // Arrange
-        var island = CreateIslandMock(TestIslandEnum.TestIsland, 2, false); // Max connections > 1
-        var neighbor = CreateIslandMock(TestIslandEnum.RightIsland, 2, false);
+        var island = CreateIslandMock(TestIslandEnum.TestIsland, 2); // Max connections > 1
+        var neighbor = CreateIslandMock(TestIslandEnum.RightIsland, 2);
         
         IslandProviderMock.Setup(x => x.GetAllVisibleNeighbors(island.Object))
-            .Returns(new List<IIslandViewModel> { neighbor.Object });
+            .Returns([neighbor.Object]);
 
         // Act
         Session.Insert(island.Object);

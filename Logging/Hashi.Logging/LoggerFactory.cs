@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Reflection;
 using Hashi.Logging.Interfaces;
 using NLog;
 using NLog.Config;
